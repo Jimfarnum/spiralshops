@@ -161,6 +161,7 @@ export class MemStorage implements IStorage {
       isOpen: true,
       hours: insertStore.hours || "Mon-Fri: 9AM-5PM",
       perks: insertStore.perks || [],
+      imageUrl: insertStore.imageUrl || null,
     };
     this.stores.set(id, store);
     return store;
@@ -193,6 +194,7 @@ export class MemStorage implements IStorage {
       ...insertRetailer,
       id,
       approved: false,
+      description: insertRetailer.description || null,
     };
     this.retailers.set(id, retailer);
     return retailer;
