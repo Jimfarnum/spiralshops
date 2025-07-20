@@ -17,6 +17,10 @@ import Spirals from "@/pages/spirals";
 import ProfileSettings from "@/pages/profile-settings";
 import { ProductsPage } from "@/pages/products";
 import { ProductDetailPage } from "@/pages/product-detail";
+import MallDirectory from "@/pages/mall-directory";
+import Account from "@/pages/account";
+import RetailerLogin from "@/pages/retailer-login";
+import RetailerDashboard from "@/pages/retailer-dashboard";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 
@@ -37,6 +41,10 @@ function Router() {
       <Route path="/mall" component={Mall} />
       <Route path="/spirals" component={Spirals} />
       <Route path="/profile" component={ProfileSettings} />
+      <Route path="/mall-directory" component={MallDirectory} />
+      <Route path="/account" component={Account} />
+      <Route path="/retailer-login" component={RetailerLogin} />
+      <Route path="/retailer-dashboard" component={RetailerDashboard} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
       <Route path="/loyalty-program" component={LoyaltyProgramPage} />

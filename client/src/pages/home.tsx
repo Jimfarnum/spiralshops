@@ -172,7 +172,7 @@ export default function Home() {
             </Link>
 
             {/* Retailer Sign-Up */}
-            <Link href="/signup" className="group">
+            <Link href="/retailer-login" className="group">
               <div className="bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
                 <div className="text-5xl mb-4">🏪</div>
                 <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Join as Retailer</h3>

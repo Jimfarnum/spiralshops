@@ -7,7 +7,7 @@ import Footer from '@/components/footer';
 import SocialShare from '@/components/social-share';
 import { useCartStore } from '@/lib/cartStore';
 import { useToast } from '@/hooks/use-toast';
-import { ShoppingCart, MapPin, ArrowLeft, Star, Heart, Share2 } from 'lucide-react';
+import { ShoppingCart, MapPin, ArrowLeft, Star, Heart, Share2, Gift, Package, Store, ShoppingBag } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -220,8 +220,26 @@ export function ProductDetailPage() {
                 </span>
               </div>
 
-              <div className="text-3xl font-bold text-[hsl(183,100%,23%)] mb-6 font-['Poppins']">
+              <div className="text-3xl font-bold text-[var(--spiral-navy)] mb-4 font-['Poppins']">
                 ${product.price.toFixed(2)}
+              </div>
+
+              {/* SPIRAL Earnings Info */}
+              <div className="bg-gradient-to-r from-[var(--spiral-sage)]/20 to-[var(--spiral-coral)]/20 rounded-xl p-4 mb-6 border border-[var(--spiral-sage)]/30">
+                <h4 className="font-semibold text-[var(--spiral-navy)] mb-2 font-['Poppins'] flex items-center">
+                  <Gift className="h-4 w-4 mr-2" />
+                  Earn SPIRALs with this purchase
+                </h4>
+                <div className="grid grid-cols-2 gap-3 text-sm font-['Inter']">
+                  <div className="bg-white rounded-lg p-3">
+                    <p className="font-semibold text-[var(--spiral-coral)]">+{Math.floor(product.price / 20)} SPIRALs</p>
+                    <p className="text-gray-600">Online Purchase</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-3">
+                    <p className="font-semibold text-[var(--spiral-coral)]">+{Math.floor(product.price / 10)} SPIRALs</p>
+                    <p className="text-gray-600">In-Store Pickup</p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -255,6 +273,42 @@ export function ProductDetailPage() {
               </span>
             </div>
 
+            {/* Fulfillment Options */}
+            <div className="space-y-4">
+              <h4 className="font-semibold text-[var(--spiral-navy)] font-['Poppins']">
+                Choose Your Fulfillment Method
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="border border-[var(--spiral-sage)] rounded-xl p-3 hover:bg-[var(--spiral-sage)]/5 cursor-pointer transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-[var(--spiral-navy)] font-['Inter']">Ship to Me</p>
+                      <p className="text-sm text-gray-600 font-['Inter']">Ships in 2-3 days</p>
+                    </div>
+                    <Package className="h-5 w-5 text-[var(--spiral-sage)]" />
+                  </div>
+                </div>
+                <div className="border border-[var(--spiral-coral)] rounded-xl p-3 hover:bg-[var(--spiral-coral)]/5 cursor-pointer transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-[var(--spiral-navy)] font-['Inter']">In-Store Pickup</p>
+                      <p className="text-sm text-gray-600 font-['Inter']">Ready today</p>
+                    </div>
+                    <Store className="h-5 w-5 text-[var(--spiral-coral)]" />
+                  </div>
+                </div>
+                <div className="border border-[var(--spiral-gold)] rounded-xl p-3 hover:bg-[var(--spiral-gold)]/5 cursor-pointer transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-[var(--spiral-navy)] font-['Inter']">Mall Center</p>
+                      <p className="text-sm text-gray-600 font-['Inter']">Ready tomorrow</p>
+                    </div>
+                    <ShoppingBag className="h-5 w-5 text-[var(--spiral-gold)]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Quantity and Add to Cart */}
             <div className="space-y-4">
               <div className="flex items-center gap-4">
@@ -286,7 +340,7 @@ export function ProductDetailPage() {
                   size="lg"
                   onClick={handleAddToCart}
                   disabled={!product.inStock}
-                  className="flex-1 bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white h-12 text-lg font-semibold rounded-2xl"
+                  className="flex-1 bg-[var(--spiral-navy)] hover:bg-[var(--spiral-coral)] text-white h-12 text-lg font-semibold rounded-2xl"
                 >
                   <ShoppingCart className="h-5 w-5 mr-2" />
                   Add to Cart
@@ -294,7 +348,7 @@ export function ProductDetailPage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="px-8 h-12 rounded-2xl border-[hsl(183,100%,23%)] text-[hsl(183,100%,23%)] hover:bg-[hsl(183,100%,96%)]"
+                  className="px-8 h-12 rounded-2xl border-[var(--spiral-navy)] text-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)] hover:text-white"
                 >
                   <MapPin className="h-5 w-5 mr-2" />
                   Find in Store
