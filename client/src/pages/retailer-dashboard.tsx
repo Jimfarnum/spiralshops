@@ -23,7 +23,8 @@ import {
   Users,
   DollarSign,
   Gift,
-  Image
+  Image,
+  Megaphone
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/header';
@@ -254,10 +255,54 @@ const RetailerDashboard = () => {
           </Card>
         </div>
 
+        {/* Quick Links */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <Link href="/marketing-center">
+            <Card className="shadow-lg border-0 hover:shadow-xl transition-shadow cursor-pointer bg-gradient-to-r from-[var(--spiral-sage)]/10 to-[var(--spiral-coral)]/10">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[var(--spiral-sage)] rounded-xl flex items-center justify-center">
+                    <Megaphone className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-[var(--spiral-navy)] font-['Poppins']">
+                      Marketing Center
+                    </h3>
+                    <p className="text-gray-600 text-sm font-['Inter']">
+                      Create campaigns, coupons, and social posts
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/analytics-dashboard">
+            <Card className="shadow-lg border-0 hover:shadow-xl transition-shadow cursor-pointer bg-gradient-to-r from-[var(--spiral-coral)]/10 to-[var(--spiral-gold)]/10">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[var(--spiral-coral)] rounded-xl flex items-center justify-center">
+                    <BarChart3 className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-[var(--spiral-navy)] font-['Poppins']">
+                      Analytics Dashboard
+                    </h3>
+                    <p className="text-gray-600 text-sm font-['Inter']">
+                      View platform performance and insights
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+
         {/* Main Content */}
         <Tabs defaultValue="products" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 rounded-xl">
+          <TabsList className="grid w-full grid-cols-4 rounded-xl">
             <TabsTrigger value="products" className="rounded-lg">Products</TabsTrigger>
+            <TabsTrigger value="inventory" className="rounded-lg">Inventory</TabsTrigger>
             <TabsTrigger value="analytics" className="rounded-lg">Analytics</TabsTrigger>
             <TabsTrigger value="spirals" className="rounded-lg">SPIRAL Activity</TabsTrigger>
           </TabsList>
@@ -454,6 +499,81 @@ const RetailerDashboard = () => {
                 </Card>
               ))}
             </div>
+          </TabsContent>
+
+          {/* Inventory Tab */}
+          <TabsContent value="inventory" className="space-y-6">
+            <Card className="shadow-lg border-0">
+              <CardHeader>
+                <CardTitle className="text-[var(--spiral-navy)] font-['Poppins'] flex items-center gap-2">
+                  <Package className="h-5 w-5" />
+                  Inventory Management
+                </CardTitle>
+                <CardDescription className="font-['Inter']">
+                  Import and export your product inventory
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* CSV Import Section */}
+                <div className="border rounded-xl p-6 bg-gray-50">
+                  <h3 className="text-lg font-semibold text-[var(--spiral-navy)] mb-4 font-['Poppins']">
+                    Import Products from CSV
+                  </h3>
+                  <p className="text-gray-600 mb-4 font-['Inter']">
+                    Upload a CSV file with the following format: product_id, title, description, price, stock, category
+                  </p>
+                  <div className="space-y-4">
+                    <div>
+                      <input
+                        type="file"
+                        accept=".csv"
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[var(--spiral-navy)] file:text-white hover:file:bg-[var(--spiral-coral)]"
+                      />
+                    </div>
+                    <Button className="bg-[var(--spiral-navy)] hover:bg-[var(--spiral-coral)] text-white rounded-xl">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Import Products
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Export Section */}
+                <div className="border rounded-xl p-6">
+                  <h3 className="text-lg font-semibold text-[var(--spiral-navy)] mb-4 font-['Poppins']">
+                    Export Current Inventory
+                  </h3>
+                  <p className="text-gray-600 mb-4 font-['Inter']">
+                    Download your current product inventory as a CSV file
+                  </p>
+                  <Button variant="outline" className="border-[var(--spiral-navy)] text-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)] hover:text-white rounded-xl">
+                    Download CSV
+                  </Button>
+                </div>
+
+                {/* Import Status */}
+                <div className="border rounded-xl p-6">
+                  <h3 className="text-lg font-semibold text-[var(--spiral-navy)] mb-4 font-['Poppins']">
+                    Recent Import Status
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                      <div>
+                        <p className="font-medium text-green-800 font-['Inter']">inventory_update_2024-01-20.csv</p>
+                        <p className="text-sm text-green-600 font-['Inter']">15 products imported successfully</p>
+                      </div>
+                      <Badge className="bg-green-500 text-white">Success</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                      <div>
+                        <p className="font-medium text-yellow-800 font-['Inter']">inventory_update_2024-01-18.csv</p>
+                        <p className="text-sm text-yellow-600 font-['Inter']">12 imported, 3 failed validation</p>
+                      </div>
+                      <Badge className="bg-yellow-500 text-white">Partial</Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Analytics Tab */}
