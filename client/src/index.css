@@ -5,34 +5,34 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 99.6%);
-  --foreground: hsl(20, 14.3%, 4.1%);
-  --muted: hsl(60, 4.8%, 95.9%);
+  /* New Warm Navy & Cream Color Palette */
+  --background: hsl(42, 15%, 96%); /* #F5F3EF - Soft cream */
+  --foreground: hsl(210, 22%, 22%); /* #2C3E50 - Warm navy */
+  --muted: hsl(42, 15%, 92%);
   --muted-foreground: hsl(25, 5.3%, 44.7%);
   --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --popover-foreground: hsl(210, 22%, 22%);
   --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --card-foreground: hsl(210, 22%, 22%);
   --border: hsl(20, 5.9%, 90%);
   --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(183, 100%, 23%);
+  --primary: hsl(210, 22%, 22%); /* #2C3E50 - Warm navy */
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(60, 4.8%, 95.9%);
-  --secondary-foreground: hsl(24, 9.8%, 10%);
-  --accent: hsl(60, 4.8%, 95.9%);
-  --accent-foreground: hsl(24, 9.8%, 10%);
+  --secondary: hsl(42, 15%, 96%); /* #F5F3EF - Soft cream */
+  --secondary-foreground: hsl(210, 22%, 22%);
+  --accent: hsl(14, 65%, 65%); /* #E27D60 - Muted coral */
+  --accent-foreground: hsl(0, 0%, 100%);
   --destructive: hsl(0, 84.2%, 60.2%);
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
-  --ring: hsl(20, 14.3%, 4.1%);
-  --radius: 1rem;
+  --ring: hsl(210, 22%, 22%);
+  --radius: 0.5rem;
   
-  /* SPIRAL updated warm colors */
-  --spiral-teal: hsl(183, 100%, 23%);
-  --spiral-teal-light: hsl(183, 60%, 40%);
-  --spiral-orange: hsl(32, 98%, 56%);
-  --spiral-orange-light: hsl(32, 98%, 70%);
-  --spiral-background: hsl(0, 0%, 99.6%);
-  --spiral-warm-gray: hsl(35, 15%, 88%);
+  /* SPIRAL new warm colors */
+  --spiral-navy: hsl(210, 22%, 22%); /* #2C3E50 - Warm navy */
+  --spiral-cream: hsl(42, 15%, 96%); /* #F5F3EF - Soft cream */
+  --spiral-coral: hsl(14, 65%, 65%); /* #E27D60 - Muted coral */
+  --spiral-sage: hsl(100, 25%, 70%); /* #A8BFAA - Sage green */
+  --spiral-gold: hsl(43, 85%, 67%); /* #F4B860 - Warm gold */
 }
 
 /* Enhanced styling for modern, polished look */
@@ -46,29 +46,38 @@
 
 /* Smooth transitions for all interactive elements */
 * {
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Updated font families */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
 }
 
 .dark {
-  --background: hsl(240, 10%, 3.9%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 3.7%, 15.9%);
+  --background: hsl(210, 22%, 15%);
+  --foreground: hsl(42, 15%, 96%);
+  --muted: hsl(210, 22%, 20%);
   --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(240, 10%, 3.9%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(240, 10%, 3.9%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(183, 100%, 23%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(240, 3.7%, 15.9%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(240, 3.7%, 15.9%);
-  --accent-foreground: hsl(0, 0%, 98%);
+  --popover: hsl(210, 22%, 18%);
+  --popover-foreground: hsl(42, 15%, 96%);
+  --card: hsl(210, 22%, 18%);
+  --card-foreground: hsl(42, 15%, 96%);
+  --border: hsl(210, 22%, 25%);
+  --input: hsl(210, 22%, 25%);
+  --primary: hsl(42, 15%, 96%);
+  --primary-foreground: hsl(210, 22%, 22%);
+  --secondary: hsl(210, 22%, 20%);
+  --secondary-foreground: hsl(42, 15%, 96%);
+  --accent: hsl(14, 65%, 65%);
+  --accent-foreground: hsl(0, 0%, 100%);
   --destructive: hsl(0, 62.8%, 30.6%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 4.9%, 83.9%);
+  --ring: hsl(42, 15%, 96%);
   --radius: 0.5rem;
 }
 

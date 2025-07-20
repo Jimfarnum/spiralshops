@@ -154,54 +154,58 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Shop Local Stores */}
-            <Link href="/stores" className="group">
-              <div className="bg-gradient-to-br from-[hsl(183,100%,23%)] to-[hsl(183,60%,40%)] p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+            <Link href="/products" className="group">
+              <div className="bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
                 <div className="text-5xl mb-4">🛍️</div>
-                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Shop Local Stores</h3>
-                <p className="text-white/90 font-['Inter']">Browse amazing products from neighborhood businesses</p>
+                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Shop Local</h3>
+                <p className="text-white/90 font-['Inter']">Browse products from neighborhood businesses and support your local community</p>
               </div>
             </Link>
 
-            {/* Explore Malls */}
-            <Link href="/mall" className="group">
-              <div className="bg-gradient-to-br from-[hsl(32,98%,56%)] to-[hsl(32,98%,70%)] p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-                <div className="text-5xl mb-4">🏬</div>
-                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Explore Malls Near You</h3>
-                <p className="text-white/90 font-['Inter']">Discover shopping centers and their featured stores</p>
+            {/* Explore SPIRALs */}
+            <Link href="/explore-spirals" className="group">
+              <div className="bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-gold)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="text-5xl mb-4">🌟</div>
+                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Explore SPIRALs</h3>
+                <p className="text-white/90 font-['Inter']">Discover unique local experiences and hidden gems in your neighborhood</p>
               </div>
             </Link>
 
             {/* Retailer Sign-Up */}
             <Link href="/signup" className="group">
-              <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-                <div className="text-5xl mb-4">🧑‍💼</div>
-                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Retailer Sign-Up</h3>
-                <p className="text-white/90 font-['Inter']">Join SPIRAL and showcase your business to locals</p>
+              <div className="bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="text-5xl mb-4">🏪</div>
+                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Join as Retailer</h3>
+                <p className="text-white/90 font-['Inter']">List your business and connect with local customers in your area</p>
               </div>
             </Link>
 
             {/* Discover New Finds */}
-            <Link href="/discover" className="group">
-              <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-                <div className="text-5xl mb-4">🧭</div>
-                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Discover New Local Finds</h3>
-                <p className="text-white/90 font-['Inter']">Explore trending products and hidden gems nearby</p>
+            <Link href="/products?category=featured" className="group">
+              <div className="bg-gradient-to-br from-[var(--spiral-gold)] to-[var(--spiral-coral)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="text-5xl mb-4">💎</div>
+                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Discover Finds</h3>
+                <p className="text-white/90 font-['Inter']">Explore curated collections and trending products from local stores</p>
               </div>
             </Link>
 
             {/* Loyalty Program */}
-            <div className="bg-gradient-to-br from-rose-500 to-rose-600 p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-              <div className="text-5xl mb-4">💳</div>
-              <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Earn Spirals: Loyalty Program</h3>
-              <p className="text-white/90 font-['Inter']">Collect points and unlock exclusive rewards</p>
-            </div>
+            <Link href="/redeem-spirals" className="group">
+              <div className="bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-sage)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="text-5xl mb-4">🎁</div>
+                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Redeem SPIRALs</h3>
+                <p className="text-white/90 font-['Inter']">Use your SPIRAL points to unlock exclusive perks and local experiences</p>
+              </div>
+            </Link>
 
             {/* Delivery Options */}
-            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-              <div className="text-5xl mb-4">🚚</div>
-              <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Delivery & Pickup Options</h3>
-              <p className="text-white/90 font-['Inter']">Flexible fulfillment options for every lifestyle</p>
-            </div>
+            <Link href="/delivery-options" className="group">
+              <div className="bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-gold)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="text-5xl mb-4">🚚</div>
+                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Delivery Options</h3>
+                <p className="text-white/90 font-['Inter']">Choose from same-day delivery, in-store pickup, and ship-to-store options</p>
+              </div>
+            </Link>
           </div>
         </div>
       </section>
