@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import SocialShare from '@/components/social-share';
 import { useCartStore } from '@/lib/cartStore';
 import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart, MapPin, ArrowLeft, Star, Heart, Share2 } from 'lucide-react';
@@ -131,21 +132,7 @@ export function ProductDetailPage() {
     });
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: product.name,
-        text: `Check out this ${product.name} from ${product.store}`,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast({
-        title: "Link copied!",
-        description: "Product link copied to clipboard.",
-      });
-    }
-  };
+  // Social sharing now handled by SocialShare component
 
   return (
     <div className="min-h-screen bg-[hsl(0,0%,99.6%)]">
@@ -203,9 +190,10 @@ export function ProductDetailPage() {
                   >
                     <Heart className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} />
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={handleShare}>
-                    <Share2 className="h-5 w-5" />
-                  </Button>
+                  <SocialShare 
+                    context="product"
+                    productName={product.name}
+                  />
                 </div>
               </div>
               

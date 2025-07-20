@@ -71,6 +71,18 @@ Preferred communication style: Simple, everyday language.
   - Frontend loyalty store with persistent transaction history and balance management
   - Order confirmation displays showing SPIRALs earned with motivational messaging
 
+✓ **MVP Phase 6 Complete - Advanced Logistics & Social Sharing (January 2025)**:
+  - Split shipping functionality: users can choose different fulfillment methods per item
+  - Three fulfillment options: Ship to Me, In-Store Pickup, Ship to Mall SPIRAL Center
+  - Conditional messaging system: "Ready today for pickup", "Ships in 2 days", etc.
+  - Social sharing integration with X (Twitter), Facebook, and unique SPIRAL link generation
+  - Templated sharing messages promoting local retailer support and community engagement
+  - Profile settings page with retailer suggestions and SPIRAL experiences toggles
+  - Modular logistics and social-sharing architecture ready for future API integrations
+  - Enhanced checkout flow showing SPIRAL earnings preview and fulfillment timing
+  - Product detail pages with integrated social sharing for individual items
+  - User profile link in header navigation for easy settings access
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -100,14 +112,16 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Client-Side Components
-- **Pages**: Home (store discovery with mall access), Store (individual store profiles with follow functionality), ProductSearch (product filtering/sorting with mall integration), ProductDetail (individual product pages), Cart (shopping cart management), Login (authentication), SignUp (user registration), Checkout (order processing), Mall (shopping mall directory), NotFound
-- **UI Components**: Store cards, retailer signup forms, store profiles, product cards with filtering, mall tenant directories, store follower placeholders
-- **Layout**: Header with navigation and cart icon with item count, Footer with links and branding
+- **Pages**: Home (store discovery with mall access), Store (individual store profiles with follow functionality), ProductSearch (product filtering/sorting with mall integration), ProductDetail (individual product pages with social sharing), Cart (shopping cart management), Login (authentication), SignUp (user registration), Checkout (order processing with split shipping), Mall (shopping mall directory), ProfileSettings (user preferences and loyalty dashboard), NotFound
+- **UI Components**: Store cards, retailer signup forms, store profiles, product cards with filtering, mall tenant directories, social sharing dialogs, split shipping controls, SPIRAL balance displays
+- **Layout**: Header with navigation, cart icon with item count, SPIRAL balance display, and profile link, Footer with links and branding
 - **Form Handling**: React Hook Form with Zod validation
-- **Product Features**: Search by name, category filtering, sorting by price/distance, mall-based filtering, clickable product links
-- **E-commerce Features**: Global cart state management with localStorage persistence, add to cart buttons, quantity controls, one-cart checkout system, order processing simulation, cart restoration notifications
+- **Product Features**: Search by name, category filtering, sorting by price/distance, mall-based filtering, clickable product links, social sharing integration
+- **E-commerce Features**: Global cart state management with localStorage persistence, add to cart buttons, quantity controls, split shipping checkout system, order processing simulation, cart restoration notifications
 - **Authentication Features**: User registration with form validation, auto-login functionality, local login system with mock credentials, persistent user sessions, login/logout functionality with toast notifications
 - **Mall Features**: Dynamic mall routes, tenant store listings, category-based filtering, map-style directory layout, store follower system placeholders
+- **Social Features**: X/Twitter and Facebook sharing, unique SPIRAL link generation, templated community messages, profile settings for sharing preferences
+- **Logistics Features**: Item-level fulfillment method selection, conditional delivery messaging, three shipping options with timing estimates
 
 ### Server-Side Components
 - **Storage Layer**: Abstracted storage interface with in-memory implementation

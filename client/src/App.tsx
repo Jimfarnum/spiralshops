@@ -14,6 +14,7 @@ import SignUp from "@/pages/signup";
 import Checkout from "@/pages/checkout";
 import Mall from "@/pages/mall";
 import Spirals from "@/pages/spirals";
+import ProfileSettings from "@/pages/profile-settings";
 import { ProductsPage } from "@/pages/products";
 import { ProductDetailPage } from "@/pages/product-detail";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/mall/:mallName" component={Mall} />
       <Route path="/mall" component={Mall} />
       <Route path="/spirals" component={Spirals} />
+      <Route path="/profile" component={ProfileSettings} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
       <Route path="/loyalty-program" component={LoyaltyProgramPage} />

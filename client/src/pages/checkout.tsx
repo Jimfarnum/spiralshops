@@ -11,6 +11,8 @@ import { ArrowLeft, CreditCard, Shield, CheckCircle, Package } from 'lucide-reac
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import SplitShipping from '@/components/split-shipping';
+import SocialShare from '@/components/social-share';
 
 const Checkout = () => {
   const { items, getTotalPrice, getTotalItems, clearCart } = useCartStore();
@@ -29,11 +31,13 @@ const Checkout = () => {
     email: '',
     phone: '',
     fulfillmentMethod: 'ship-to-me',
+    itemFulfillmentMethods: {} as Record<string, string>,
     address: '',
     city: '',
     state: '',
     zipCode: '',
     selectedMall: '',
+    selectedStore: '',
     cardNumber: '',
     expiryDate: '',
     cvv: '',
@@ -244,15 +248,19 @@ const Checkout = () => {
               </div>
             </div>
 
-            <div className="space-x-4">
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center items-center">
+              <SocialShare 
+                context="order" 
+                orderNumber={orderNumber}
+              />
               <Link href="/products">
                 <Button className="bg-[var(--spiral-navy)] hover:bg-[var(--spiral-coral)] text-white px-8 py-3 rounded-xl">
                   Continue Shopping
                 </Button>
               </Link>
-              <Link href="/">
-                <Button variant="outline" className="border-[var(--spiral-navy)] text-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)] hover:text-white px-8 py-3 rounded-xl">
-                  Back to Home
+              <Link href="/spirals">
+                <Button variant="outline" className="border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)] hover:text-white px-8 py-3 rounded-xl">
+                  View SPIRALs
                 </Button>
               </Link>
             </div>
@@ -348,7 +356,17 @@ const Checkout = () => {
               {/* Fulfillment Method */}
               <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
                 <h2 className="text-2xl font-bold text-[var(--spiral-navy)] mb-6 font-['Poppins']">Fulfillment Method</h2>
-                <div className="mb-6">
+                
+                {/* Split Shipping Component */}
+                <SplitShipping 
+                  formData={formData}
+                  setFormData={setFormData}
+                  errors={errors}
+                />
+                
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                  <h3 className="text-lg font-semibold text-[var(--spiral-navy)] mb-4 font-['Poppins']">Default Method for New Items</h3>
+                  <div className="mb-6">
                   <Label htmlFor="fulfillmentMethod" className="text-sm font-medium text-gray-700 font-['Inter']">How would you like to receive your order? *</Label>
                   <Select value={formData.fulfillmentMethod} onValueChange={(value) => handleInputChange('fulfillmentMethod', value)}>
                     <SelectTrigger className="mt-1 rounded-lg">
@@ -360,6 +378,7 @@ const Checkout = () => {
                       <SelectItem value="ship-to-mall">Ship to Mall for Pickup</SelectItem>
                     </SelectContent>
                   </Select>
+                  </div>
                 </div>
 
                 {/* Conditional fields based on fulfillment method */}
