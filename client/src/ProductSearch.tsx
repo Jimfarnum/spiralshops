@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'wouter';
+import { Button } from '@/components/ui/button';
+import { ShoppingCart } from 'lucide-react';
+import { useCartStore } from '@/lib/cartStore';
+import { useToast } from '@/hooks/use-toast';
 
 const mockProducts = [
   {
@@ -80,6 +84,8 @@ const ProductSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState('');
   const [category, setCategory] = useState('');
+  const addItem = useCartStore(state => state.addItem);
+  const { toast } = useToast();
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(e.target.value);
@@ -87,6 +93,24 @@ const ProductSearch = () => {
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent, product: typeof mockProducts[0]) => {
+    e.preventDefault(); // Prevent Link navigation when clicking the button
+    e.stopPropagation();
+    
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: product.category
+    });
+    
+    toast({
+      title: "Added to cart!",
+      description: `${product.name} has been added to your cart.`,
+    });
   };
 
   const filteredProducts = mockProducts
@@ -139,28 +163,37 @@ const ProductSearch = () => {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {filteredProducts.map((product) => (
-          <Link key={product.id} href={`/products/${product.id}`}>
-            <div
-              className={`border p-2 rounded shadow cursor-pointer hover:shadow-lg transition-shadow ${
-                product.promoted ? 'border-blue-500' : 'border-gray-200 hover:border-gray-300'
-              }`}
+          <div key={product.id} className="relative">
+            <Link href={`/products/${product.id}`}>
+              <div
+                className={`border p-2 rounded shadow cursor-pointer hover:shadow-lg transition-shadow ${
+                  product.promoted ? 'border-blue-500' : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <img 
+                  src={product.image} 
+                  alt={product.name} 
+                  className="w-full h-40 object-cover rounded mb-2" 
+                />
+                <h2 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                  {product.name}
+                </h2>
+                <p className="text-lg font-bold text-green-600">${product.price.toFixed(2)}</p>
+                <p className="text-sm text-gray-600">{product.distance} miles away</p>
+                <p className="text-xs text-gray-500 capitalize">{product.category}</p>
+                {product.promoted && (
+                  <span className="text-sm text-blue-500 font-bold">Promoted</span>
+                )}
+              </div>
+            </Link>
+            <Button
+              size="sm"
+              onClick={(e) => handleAddToCart(e, product)}
+              className="absolute bottom-2 right-2 bg-blue-600 hover:bg-blue-700 text-white"
             >
-              <img 
-                src={product.image} 
-                alt={product.name} 
-                className="w-full h-40 object-cover rounded mb-2" 
-              />
-              <h2 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
-                {product.name}
-              </h2>
-              <p className="text-lg font-bold text-green-600">${product.price.toFixed(2)}</p>
-              <p className="text-sm text-gray-600">{product.distance} miles away</p>
-              <p className="text-xs text-gray-500 capitalize">{product.category}</p>
-              {product.promoted && (
-                <span className="text-sm text-blue-500 font-bold">Promoted</span>
-              )}
-            </div>
-          </Link>
+              <ShoppingCart className="h-4 w-4" />
+            </Button>
+          </div>
         ))}
       </div>
 

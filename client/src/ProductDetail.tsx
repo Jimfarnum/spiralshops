@@ -1,7 +1,9 @@
 import React from 'react';
 import { useParams, Link } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Star, MapPin, Tag } from 'lucide-react';
+import { ArrowLeft, Star, MapPin, Tag, ShoppingCart } from 'lucide-react';
+import { useCartStore } from '@/lib/cartStore';
+import { useToast } from '@/hooks/use-toast';
 
 const mockProducts = [
   {
@@ -129,6 +131,25 @@ const mockProducts = [
 const ProductDetail = () => {
   const { id } = useParams();
   const product = mockProducts.find(p => p.id === parseInt(id || '0'));
+  const addItem = useCartStore(state => state.addItem);
+  const { toast } = useToast();
+
+  const handleAddToCart = () => {
+    if (!product) return;
+    
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: product.category
+    });
+    
+    toast({
+      title: "Added to cart!",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
 
   if (!product) {
     return (
@@ -244,11 +265,21 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              <div className="border-t pt-6">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3">
+              <div className="border-t pt-6 space-y-3">
+                <Button 
+                  onClick={handleAddToCart}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3"
+                >
+                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  Add to Cart
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full font-semibold py-3"
+                >
                   Contact Store
                 </Button>
-                <p className="text-sm text-gray-500 text-center mt-2">
+                <p className="text-sm text-gray-500 text-center">
                   Connect with {product.store} to purchase or learn more
                 </p>
               </div>
