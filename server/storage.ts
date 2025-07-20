@@ -1,4 +1,6 @@
-import { stores, retailers, type Store, type Retailer, type InsertStore, type InsertRetailer } from "@shared/schema";
+import { stores, retailers, users, spiralTransactions, orders, type Store, type Retailer, type InsertStore, type InsertRetailer, type User, type InsertUser, type SpiralTransaction, type InsertSpiralTransaction, type Order, type InsertOrder } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // Store operations
@@ -15,6 +17,160 @@ export interface IStorage {
   createRetailer(retailer: InsertRetailer): Promise<Retailer>;
   updateRetailer(id: number, retailer: Partial<InsertRetailer>): Promise<Retailer | undefined>;
   deleteRetailer(id: number): Promise<boolean>;
+
+  // User operations
+  getUser(id: number): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, updates: Partial<User>): Promise<User | undefined>;
+
+  // SPIRAL loyalty operations
+  getUserSpiralBalance(userId: number): Promise<number>;
+  addSpiralTransaction(transaction: InsertSpiralTransaction): Promise<SpiralTransaction>;
+  getSpiralTransactions(userId: number, limit?: number): Promise<SpiralTransaction[]>;
+  calculateSpiralsEarned(amount: number, source: 'online_purchase' | 'in_person_purchase'): number;
+
+  // Order operations
+  createOrder(order: InsertOrder): Promise<Order>;
+  getOrder(orderNumber: string): Promise<Order | undefined>;
+  getUserOrders(userId: number): Promise<Order[]>;
+}
+
+export class DatabaseStorage implements IStorage {
+  async getStores(): Promise<Store[]> {
+    return await db.select().from(stores);
+  }
+
+  async getStoresByZipCode(zipCode: string): Promise<Store[]> {
+    return await db.select().from(stores).where(eq(stores.zipCode, zipCode));
+  }
+
+  async getStore(id: number): Promise<Store | undefined> {
+    const [store] = await db.select().from(stores).where(eq(stores.id, id));
+    return store || undefined;
+  }
+
+  async createStore(insertStore: InsertStore): Promise<Store> {
+    const [store] = await db.insert(stores).values(insertStore).returning();
+    return store;
+  }
+
+  async updateStore(id: number, updateData: Partial<InsertStore>): Promise<Store | undefined> {
+    const [store] = await db.update(stores).set(updateData).where(eq(stores.id, id)).returning();
+    return store || undefined;
+  }
+
+  async deleteStore(id: number): Promise<boolean> {
+    const result = await db.delete(stores).where(eq(stores.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async getRetailers(): Promise<Retailer[]> {
+    return await db.select().from(retailers);
+  }
+
+  async getRetailer(id: number): Promise<Retailer | undefined> {
+    const [retailer] = await db.select().from(retailers).where(eq(retailers.id, id));
+    return retailer || undefined;
+  }
+
+  async createRetailer(insertRetailer: InsertRetailer): Promise<Retailer> {
+    const [retailer] = await db.insert(retailers).values(insertRetailer).returning();
+    return retailer;
+  }
+
+  async updateRetailer(id: number, updateData: Partial<InsertRetailer>): Promise<Retailer | undefined> {
+    const [retailer] = await db.update(retailers).set(updateData).where(eq(retailers.id, id)).returning();
+    return retailer || undefined;
+  }
+
+  async deleteRetailer(id: number): Promise<boolean> {
+    const result = await db.delete(retailers).where(eq(retailers.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  // User operations
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
+    const [user] = await db.update(users).set(updates).where(eq(users.id, id)).returning();
+    return user || undefined;
+  }
+
+  // SPIRAL loyalty operations
+  async getUserSpiralBalance(userId: number): Promise<number> {
+    const [user] = await db.select({ balance: users.spiralBalance }).from(users).where(eq(users.id, userId));
+    return user?.balance || 0;
+  }
+
+  async addSpiralTransaction(transaction: InsertSpiralTransaction): Promise<SpiralTransaction> {
+    const [spiralTransaction] = await db.insert(spiralTransactions).values(transaction).returning();
+    
+    // Update user's SPIRAL balance
+    if (transaction.type === 'earned') {
+      await db.update(users)
+        .set({ 
+          spiralBalance: sql`spiral_balance + ${transaction.amount}`,
+          totalEarned: sql`total_earned + ${transaction.amount}`
+        })
+        .where(eq(users.id, transaction.userId));
+    } else if (transaction.type === 'redeemed') {
+      await db.update(users)
+        .set({ 
+          spiralBalance: sql`spiral_balance - ${transaction.amount}`,
+          totalRedeemed: sql`total_redeemed + ${transaction.amount}`
+        })
+        .where(eq(users.id, transaction.userId));
+    }
+    
+    return spiralTransaction;
+  }
+
+  async getSpiralTransactions(userId: number, limit: number = 50): Promise<SpiralTransaction[]> {
+    return await db.select()
+      .from(spiralTransactions)
+      .where(eq(spiralTransactions.userId, userId))
+      .orderBy(desc(spiralTransactions.createdAt))
+      .limit(limit);
+  }
+
+  calculateSpiralsEarned(amount: number, source: 'online_purchase' | 'in_person_purchase'): number {
+    // 5 SPIRALS for every $100 spent online
+    // 10 SPIRALS for every $100 spent in person
+    const rate = source === 'online_purchase' ? 5 : 10;
+    return Math.floor((amount / 100) * rate);
+  }
+
+  // Order operations
+  async createOrder(insertOrder: InsertOrder): Promise<Order> {
+    const [order] = await db.insert(orders).values(insertOrder).returning();
+    return order;
+  }
+
+  async getOrder(orderNumber: string): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(eq(orders.orderNumber, orderNumber));
+    return order || undefined;
+  }
+
+  async getUserOrders(userId: number): Promise<Order[]> {
+    return await db.select()
+      .from(orders)
+      .where(eq(orders.userId, userId))
+      .orderBy(desc(orders.createdAt));
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -212,6 +368,57 @@ export class MemStorage implements IStorage {
   async deleteRetailer(id: number): Promise<boolean> {
     return this.retailers.delete(id);
   }
+
+  // User operations (mock implementations for MemStorage)
+  async getUser(id: number): Promise<User | undefined> {
+    // Mock implementation - in production this would use the database
+    return undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    // Mock implementation - in production this would use the database
+    return undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    // Mock implementation - in production this would use the database
+    throw new Error("User creation not implemented in MemStorage");
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
+    // Mock implementation
+    return undefined;
+  }
+
+  async getUserSpiralBalance(userId: number): Promise<number> {
+    return 0;
+  }
+
+  async addSpiralTransaction(transaction: InsertSpiralTransaction): Promise<SpiralTransaction> {
+    throw new Error("SPIRAL transactions not implemented in MemStorage");
+  }
+
+  async getSpiralTransactions(userId: number, limit?: number): Promise<SpiralTransaction[]> {
+    return [];
+  }
+
+  calculateSpiralsEarned(amount: number, source: 'online_purchase' | 'in_person_purchase'): number {
+    const rate = source === 'online_purchase' ? 5 : 10;
+    return Math.floor((amount / 100) * rate);
+  }
+
+  async createOrder(insertOrder: InsertOrder): Promise<Order> {
+    throw new Error("Order creation not implemented in MemStorage");
+  }
+
+  async getOrder(orderNumber: string): Promise<Order | undefined> {
+    return undefined;
+  }
+
+  async getUserOrders(userId: number): Promise<Order[]> {
+    return [];
+  }
 }
 
-export const storage = new MemStorage();
+// Use DatabaseStorage for production with PostgreSQL
+export const storage = process.env.DATABASE_URL ? new DatabaseStorage() : new MemStorage();

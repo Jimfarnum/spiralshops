@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCartStore } from '@/lib/cartStore';
 import { useAuthStore } from '@/lib/authStore';
+import { useLoyaltyStore } from '@/lib/loyaltyStore';
 import { ArrowLeft, CreditCard, Shield, CheckCircle, Package } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/header';
@@ -14,6 +15,7 @@ import Footer from '@/components/footer';
 const Checkout = () => {
   const { items, getTotalPrice, getTotalItems, clearCart } = useCartStore();
   const { isAuthenticated } = useAuthStore();
+  const { calculateSpiralsEarned, addTransaction } = useLoyaltyStore();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -44,6 +46,10 @@ const Checkout = () => {
   const tax = subtotal * 0.08;
   const shipping = subtotal > 50 ? 0 : 8.99;
   const total = subtotal + tax + shipping;
+  
+  // Calculate SPIRALs earned based on fulfillment method
+  const spiralsSource = formData.fulfillmentMethod === 'in-store-pickup' ? 'in_person_purchase' : 'online_purchase';
+  const spiralsEarned = calculateSpiralsEarned(total, spiralsSource);
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
@@ -159,13 +165,24 @@ const Checkout = () => {
       const newOrderNumber = 'SPR-' + Math.random().toString(36).substr(2, 9).toUpperCase();
       setOrderNumber(newOrderNumber);
 
+      // Add SPIRALs earned to user's account
+      if (spiralsEarned > 0) {
+        addTransaction({
+          type: 'earned',
+          amount: spiralsEarned,
+          source: spiralsSource,
+          description: `Earned from order ${newOrderNumber}`,
+          orderId: newOrderNumber,
+        });
+      }
+
       // Clear cart and show success
       clearCart();
       setOrderComplete(true);
 
       toast({
         title: "Order placed successfully!",
-        description: `Your order #${newOrderNumber} has been confirmed.`,
+        description: `Your order #${newOrderNumber} has been confirmed. You earned ${spiralsEarned} SPIRALs!`,
       });
     } catch (error) {
       toast({
@@ -187,7 +204,27 @@ const Checkout = () => {
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
             <h1 className="text-4xl font-bold text-[var(--spiral-navy)] mb-4 font-['Poppins']">Order Confirmed!</h1>
             <p className="text-xl text-gray-600 mb-2 font-['Inter']">Thank you for your purchase</p>
-            <p className="text-lg text-[var(--spiral-coral)] font-semibold mb-8 font-['Inter']">Order #{orderNumber}</p>
+            <p className="text-lg text-[var(--spiral-coral)] font-semibold mb-4 font-['Inter']">Order #{orderNumber}</p>
+            
+            {/* SPIRALs Earned Display */}
+            <div className="bg-gradient-to-r from-[var(--spiral-sage)]/20 to-[var(--spiral-coral)]/20 rounded-xl p-6 mb-8 max-w-md mx-auto border border-[var(--spiral-sage)]/30">
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-3 font-['Poppins']">
+                  🎉 SPIRALs Earned!
+                </h3>
+                <div className="bg-white rounded-lg p-4 mb-3">
+                  <span className="text-3xl font-bold text-[var(--spiral-coral)] font-['Poppins']">
+                    {spiralsEarned} SPIRALs
+                  </span>
+                </div>
+                <p className="text-sm text-[var(--spiral-navy)] font-['Inter'] mb-2">
+                  Added to your loyalty account
+                </p>
+                <p className="text-xs text-gray-600 font-['Inter']">
+                  Use them at any SPIRAL network store for exclusive discounts and rewards
+                </p>
+              </div>
+            </div>
             
             <div className="bg-white rounded-xl p-8 shadow-lg max-w-md mx-auto mb-8">
               <h3 className="text-lg font-semibold text-[var(--spiral-navy)] mb-4 font-['Poppins']">What's Next?</h3>
@@ -523,6 +560,33 @@ const Checkout = () => {
                       <span>${total.toFixed(2)}</span>
                     </div>
                   </div>
+
+                  {/* SPIRAL Earnings */}
+                  {spiralsEarned > 0 && (
+                    <div className="bg-gradient-to-r from-[var(--spiral-sage)]/20 to-[var(--spiral-coral)]/20 rounded-xl p-4 mb-6 border border-[var(--spiral-sage)]/30">
+                      <div className="text-center">
+                        <h3 className="text-lg font-bold text-[var(--spiral-navy)] mb-2 font-['Poppins']">
+                          🎉 You'll Earn SPIRALs!
+                        </h3>
+                        <div className="bg-white rounded-lg p-3 mb-3">
+                          <span className="text-2xl font-bold text-[var(--spiral-coral)] font-['Poppins']">
+                            {spiralsEarned} SPIRALs
+                          </span>
+                        </div>
+                        <p className="text-sm text-[var(--spiral-navy)] font-['Inter']">
+                          {formData.fulfillmentMethod === 'in-store-pickup' 
+                            ? "Extra SPIRALs for shopping in-person!"
+                            : "Redeem for double value in local stores!"
+                          }
+                        </p>
+                        {formData.fulfillmentMethod !== 'in-store-pickup' && (
+                          <p className="text-xs text-gray-600 mt-1 font-['Inter']">
+                            Worth ${(spiralsEarned * 2 * 0.20).toFixed(2)} when redeemed in-store
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   <Button 
                     type="submit"

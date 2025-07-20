@@ -23,9 +23,17 @@ const Spirals = () => {
             SPIRAL Loyalty Rewards
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-12 font-['Inter'] leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-8 font-['Inter'] leading-relaxed">
             Earn SPIRALs every time you shop. Redeem them for perks, exclusive products, or shared experiences with your local community.
           </p>
+          
+          <div className="bg-[var(--spiral-navy)]/10 rounded-2xl p-6 max-w-4xl mx-auto mb-12">
+            <p className="text-lg text-[var(--spiral-navy)] font-['Inter'] text-center leading-relaxed">
+              <strong>SPIRAL is powered by real stores and real people.</strong><br />
+              You can shop local retailers across the U.S. and earn SPIRALs that are redeemable at your favorite hometown stores.<br />
+              Together, we're helping keep local retailers, malls, and communities open and thriving.
+            </p>
+          </div>
         </div>
 
         {/* How It Works Section */}
@@ -44,12 +52,28 @@ const Spirals = () => {
                 Earn SPIRALs
               </h3>
               <div className="bg-[var(--spiral-sage)]/20 rounded-xl p-6 mb-4">
-                <p className="text-3xl font-bold text-[var(--spiral-navy)] mb-2 font-['Poppins']">
-                  1 SPIRAL per $10 spent
-                </p>
-                <p className="text-gray-600 font-['Inter']">
-                  Every purchase earns you SPIRALs automatically
-                </p>
+                <div className="space-y-3 mb-4">
+                  <div className="bg-[var(--spiral-sage)]/30 rounded-lg p-3">
+                    <p className="text-xl font-bold text-[var(--spiral-navy)] font-['Poppins']">
+                      5 SPIRALs per $100 online
+                    </p>
+                  </div>
+                  <div className="bg-[var(--spiral-coral)]/30 rounded-lg p-3">
+                    <p className="text-xl font-bold text-[var(--spiral-navy)] font-['Poppins']">
+                      10 SPIRALs per $100 in-person
+                    </p>
+                  </div>
+                  <div className="bg-[var(--spiral-gold)]/30 rounded-lg p-3">
+                    <p className="text-lg font-bold text-[var(--spiral-navy)] font-['Poppins']">
+                      +5 SPIRALs for sharing experiences
+                    </p>
+                  </div>
+                  <div className="bg-[var(--spiral-gold)]/30 rounded-lg p-3">
+                    <p className="text-lg font-bold text-[var(--spiral-navy)] font-['Poppins']">
+                      +5 SPIRALs for bringing friends
+                    </p>
+                  </div>
+                </div>
               </div>
               <p className="text-gray-600 font-['Inter'] leading-relaxed">
                 Shop at any participating local business and watch your SPIRALs add up with every purchase.
@@ -65,38 +89,90 @@ const Spirals = () => {
                 Redeem Rewards
               </h3>
               <div className="bg-[var(--spiral-coral)]/20 rounded-xl p-6 mb-4">
-                <p className="text-3xl font-bold text-[var(--spiral-navy)] mb-2 font-['Poppins']">
-                  25 SPIRALs = $5 reward
-                </p>
-                <p className="text-gray-600 font-['Inter']">
-                  Or unlock exclusive partner benefits
-                </p>
+                <div className="space-y-3">
+                  <div className="bg-white rounded-lg p-4 border border-[var(--spiral-coral)]/30">
+                    <p className="text-xl font-bold text-[var(--spiral-navy)] mb-2 font-['Poppins']">
+                      Redeemable at any SPIRAL network store
+                    </p>
+                    <p className="text-sm text-gray-600 font-['Inter']">
+                      Local brick-and-mortar businesses nationwide
+                    </p>
+                  </div>
+                  <div className="bg-[var(--spiral-gold)]/20 rounded-lg p-4 border border-[var(--spiral-gold)]/30">
+                    <p className="text-lg font-bold text-[var(--spiral-navy)] mb-1 font-['Poppins']">
+                      💰 Double Value In-Person
+                    </p>
+                    <p className="text-sm text-gray-600 font-['Inter']">
+                      SPIRALs earned online are worth 2x when redeemed in-store
+                    </p>
+                  </div>
+                  <div className="bg-[var(--spiral-sage)]/20 rounded-lg p-4 border border-[var(--spiral-sage)]/30">
+                    <p className="text-lg font-bold text-[var(--spiral-navy)] mb-1 font-['Poppins']">
+                      🏪 Exclusive Mall Discounts
+                    </p>
+                    <p className="text-sm text-gray-600 font-['Inter']">
+                      Special rates at participating mall retailers
+                    </p>
+                  </div>
+                </div>
               </div>
               <p className="text-gray-600 font-['Inter'] leading-relaxed">
-                Use your SPIRALs for discounts, exclusive products, or special community experiences.
+                Support local businesses while saving money. Your SPIRALs help keep communities thriving.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Reward Types */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 text-center">
-            <Trophy className="h-12 w-12 text-[var(--spiral-gold)] mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-3 font-['Poppins']">Store Discounts</h3>
-            <p className="text-gray-600 font-['Inter']">Get money off your next purchase at participating stores</p>
-          </div>
+        {/* Key Benefits */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 md:p-12 mb-12">
+          <h2 className="text-3xl font-bold text-[var(--spiral-navy)] text-center mb-12 font-['Poppins']">
+            Why SPIRAL Loyalty?
+          </h2>
           
-          <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 text-center">
-            <Star className="h-12 w-12 text-[var(--spiral-coral)] mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-3 font-['Poppins']">Exclusive Products</h3>
-            <p className="text-gray-600 font-['Inter']">Access limited-edition items only available to SPIRAL members</p>
-          </div>
-          
-          <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 text-center">
-            <Gift className="h-12 w-12 text-[var(--spiral-sage)] mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-3 font-['Poppins']">Community Events</h3>
-            <p className="text-gray-600 font-['Inter']">Join special events and experiences with fellow local shoppers</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-[var(--spiral-coral)] rounded-full flex items-center justify-center flex-shrink-0">
+                  <Trophy className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[var(--spiral-navy)] mb-2 font-['Poppins']">Higher In-Person Rewards</h3>
+                  <p className="text-gray-600 font-['Inter']">Earn 2x SPIRALs when you shop in local stores vs. online</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-[var(--spiral-sage)] rounded-full flex items-center justify-center flex-shrink-0">
+                  <Star className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[var(--spiral-navy)] mb-2 font-['Poppins']">Double Value Redemption</h3>
+                  <p className="text-gray-600 font-['Inter']">Online SPIRALs are worth 2x when redeemed in physical stores</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-[var(--spiral-gold)] rounded-full flex items-center justify-center flex-shrink-0">
+                  <Gift className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[var(--spiral-navy)] mb-2 font-['Poppins']">Community Building</h3>
+                  <p className="text-gray-600 font-['Inter']">Earn bonus SPIRALs for sharing experiences and bringing friends</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-[var(--spiral-navy)] rounded-full flex items-center justify-center flex-shrink-0">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[var(--spiral-navy)] mb-2 font-['Poppins']">Supporting Local</h3>
+                  <p className="text-gray-600 font-['Inter']">Every SPIRAL spent helps keep local retailers and communities thriving</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

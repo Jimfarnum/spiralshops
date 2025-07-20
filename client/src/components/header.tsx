@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Menu, ShoppingCart, User, LogOut } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
 import { useAuthStore } from "@/lib/authStore";
+import SpiralBalance from "./spiral-balance";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Header() {
@@ -56,6 +57,7 @@ export default function Header() {
           </div>
           
           <div className="flex items-center space-x-4">
+            <SpiralBalance />
             <Link href="/cart">
               <Button variant="outline" className="relative border-[hsl(183,100%,23%)] text-[hsl(183,100%,23%)] hover:bg-[hsl(183,100%,96%)]">
                 <ShoppingCart className="h-5 w-5" />
