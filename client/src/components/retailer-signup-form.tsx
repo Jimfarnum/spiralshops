@@ -208,7 +208,8 @@ export default function RetailerSignupForm() {
                           <Textarea 
                             placeholder="Tell customers about your business..." 
                             rows={4} 
-                            {...field} 
+                            {...field}
+                            value={field.value || ""}
                           />
                         </FormControl>
                         <FormMessage />
