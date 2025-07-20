@@ -9,6 +9,7 @@ import NotFound from "@/pages/not-found";
 import ProductSearch from "./ProductSearch";
 import ProductDetail from "./ProductDetail";
 import Cart from "@/pages/cart";
+import CartRestoreNotification from "@/components/cart-restore-notification";
 
 function Router() {
   return (
@@ -27,6 +28,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <CartRestoreNotification />
         <Toaster />
         <Router />
       </TooltipProvider>

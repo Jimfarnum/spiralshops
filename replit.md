@@ -39,7 +39,7 @@ Preferred communication style: Simple, everyday language.
 - **Layout**: Header with navigation and cart icon with item count, Footer with links and branding
 - **Form Handling**: React Hook Form with Zod validation
 - **Product Features**: Search by name, category filtering, sorting by price/distance, clickable product links
-- **E-commerce Features**: Global cart state management, add to cart buttons, quantity controls, checkout simulation
+- **E-commerce Features**: Global cart state management with localStorage persistence, add to cart buttons, quantity controls, checkout simulation, cart restoration notifications
 
 ### Server-Side Components
 - **Storage Layer**: Abstracted storage interface with in-memory implementation
