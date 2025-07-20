@@ -10,6 +10,9 @@ import ProductSearch from "./ProductSearch";
 import ProductDetail from "./ProductDetail";
 import Cart from "@/pages/cart";
 import Login from "@/pages/login";
+import SignUp from "@/pages/signup";
+import Checkout from "@/pages/checkout";
+import Mall from "@/pages/mall";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 
 function Router() {
@@ -21,6 +24,9 @@ function Router() {
       <Route path="/products/:id" component={ProductDetail} />
       <Route path="/cart" component={Cart} />
       <Route path="/login" component={Login} />
+      <Route path="/signup" component={SignUp} />
+      <Route path="/checkout" component={Checkout} />
+      <Route path="/mall/:mallName" component={Mall} />
       <Route component={NotFound} />
     </Switch>
   );

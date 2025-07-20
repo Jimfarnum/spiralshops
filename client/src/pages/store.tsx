@@ -214,6 +214,12 @@ export default function Store() {
                       <Share2 className="h-4 w-4 mr-2" />
                       Share Store
                     </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full bg-blue-50 text-blue-600 hover:bg-blue-100"
+                    >
+                      Follow Store
+                    </Button>
                   </div>
                 </div>
 

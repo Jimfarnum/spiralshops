@@ -34,13 +34,14 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Client-Side Components
-- **Pages**: Home (store discovery), Store (individual store profiles), ProductSearch (product filtering/sorting), ProductDetail (individual product pages), Cart (shopping cart management), Login (authentication), NotFound
-- **UI Components**: Store cards, retailer signup forms, store profiles, product cards with filtering
+- **Pages**: Home (store discovery with mall access), Store (individual store profiles with follow functionality), ProductSearch (product filtering/sorting with mall integration), ProductDetail (individual product pages), Cart (shopping cart management), Login (authentication), SignUp (user registration), Checkout (order processing), Mall (shopping mall directory), NotFound
+- **UI Components**: Store cards, retailer signup forms, store profiles, product cards with filtering, mall tenant directories, store follower placeholders
 - **Layout**: Header with navigation and cart icon with item count, Footer with links and branding
 - **Form Handling**: React Hook Form with Zod validation
-- **Product Features**: Search by name, category filtering, sorting by price/distance, clickable product links
-- **E-commerce Features**: Global cart state management with localStorage persistence, add to cart buttons, quantity controls, checkout simulation, cart restoration notifications
-- **Authentication Features**: Local login system with mock credentials, persistent user sessions, login/logout functionality with toast notifications
+- **Product Features**: Search by name, category filtering, sorting by price/distance, mall-based filtering, clickable product links
+- **E-commerce Features**: Global cart state management with localStorage persistence, add to cart buttons, quantity controls, one-cart checkout system, order processing simulation, cart restoration notifications
+- **Authentication Features**: User registration with form validation, auto-login functionality, local login system with mock credentials, persistent user sessions, login/logout functionality with toast notifications
+- **Mall Features**: Dynamic mall routes, tenant store listings, category-based filtering, map-style directory layout, store follower system placeholders
 
 ### Server-Side Components
 - **Storage Layer**: Abstracted storage interface with in-memory implementation
@@ -55,11 +56,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Data Flow
 
-1. **Store Discovery**: Users search by ZIP code or browse all stores
-2. **Store Display**: Stores are fetched from the database and displayed as cards
-3. **Store Details**: Individual store pages show comprehensive business information
-4. **Retailer Registration**: Business owners can submit applications through forms
-5. **Data Persistence**: All data is stored in PostgreSQL with Drizzle ORM
+1. **Store Discovery**: Users search by ZIP code, browse all stores, or explore shopping malls
+2. **Store Display**: Stores are fetched from the database and displayed as cards with follow functionality
+3. **Store Details**: Individual store pages show comprehensive business information with retailer-focused features
+4. **Mall Integration**: Shopping mall format with tenant listings, category filters, and directory maps
+5. **User Registration**: New users can create accounts with auto-login and persistent authentication
+6. **Shopping Experience**: Complete cart-to-checkout flow with quantity management and order processing
+7. **Retailer Registration**: Business owners can submit applications through forms
+8. **Data Persistence**: All data is stored in PostgreSQL with Drizzle ORM
 
 ## External Dependencies
 

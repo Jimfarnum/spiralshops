@@ -24,20 +24,7 @@ const Cart = () => {
     });
   };
 
-  const handleCheckout = async () => {
-    setIsCheckingOut(true);
-    
-    // Simulate checkout process
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    clearCart();
-    setIsCheckingOut(false);
-    
-    toast({
-      title: "Order placed successfully!",
-      description: "Thank you for your purchase. You will receive a confirmation email shortly.",
-    });
-  };
+
 
   if (items.length === 0) {
     return (
@@ -140,13 +127,14 @@ const Cart = () => {
                 </span>
               </div>
 
-              <Button
-                onClick={handleCheckout}
-                disabled={isCheckingOut}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3"
-              >
-                {isCheckingOut ? "Processing..." : "Proceed to Checkout"}
-              </Button>
+              <Link href="/checkout">
+                <Button
+                  disabled={isCheckingOut}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3"
+                >
+                  Proceed to Checkout
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

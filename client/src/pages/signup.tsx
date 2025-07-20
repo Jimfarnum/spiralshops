@@ -9,26 +9,29 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/lib/authStore';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 
-const Login = () => {
+const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { login } = useAuthStore();
 
-  // Mock credentials for MVP
-  const MOCK_EMAIL = 'test@spiral.com';
-  const MOCK_PASSWORD = 'spiral123';
-
   const validateForm = () => {
+    if (!name.trim()) {
+      setError('Name is required');
+      return false;
+    }
     if (!email.trim()) {
       setError('Email is required');
       return false;
     }
-    if (!email.includes('@')) {
+    if (!email.includes('@') || !email.includes('.')) {
       setError('Please enter a valid email address');
       return false;
     }
@@ -38,6 +41,10 @@ const Login = () => {
     }
     if (password.length < 6) {
       setError('Password must be at least 6 characters');
+      return false;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       return false;
     }
     return true;
@@ -54,27 +61,30 @@ const Login = () => {
     setIsLoading(true);
 
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // Mock authentication logic
-    if (email === MOCK_EMAIL && password === MOCK_PASSWORD) {
-      // Success - use auth store
-      login({
+    try {
+      // Mock registration logic - in real app this would call backend
+      // For MVP, we'll simulate successful registration
+      const userData = {
         email: email,
-        name: 'Test User',
+        name: name,
         loginTime: new Date().toISOString()
-      });
+      };
+
+      // Auto-login user after successful signup
+      login(userData);
 
       toast({
         title: "Welcome to SPIRAL!",
-        description: "You have successfully logged in.",
-        duration: 3000,
+        description: `Account created successfully. Welcome, ${name}!`,
+        duration: 4000,
       });
 
       // Navigate to home page
       setLocation('/');
-    } else {
-      setError('Invalid email or password. Try test@spiral.com with password spiral123');
+    } catch (error) {
+      setError('Registration failed. Please try again.');
     }
 
     setIsLoading(false);
@@ -91,9 +101,9 @@ const Login = () => {
         </Link>
         
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Welcome to SPIRAL</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Join SPIRAL</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to your account to continue
+            Create your account to start shopping locally
           </p>
         </div>
       </div>
@@ -101,9 +111,9 @@ const Login = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <Card>
           <CardHeader>
-            <CardTitle>Sign In</CardTitle>
+            <CardTitle>Create Account</CardTitle>
             <CardDescription>
-              Enter your credentials to access your account
+              Sign up to discover amazing local businesses
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -113,6 +123,19 @@ const Login = () => {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
+
+              <div>
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your full name"
+                  className="mt-1"
+                  disabled={isLoading}
+                />
+              </div>
 
               <div>
                 <Label htmlFor="email">Email address</Label>
@@ -135,7 +158,7 @@ const Login = () => {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
+                    placeholder="Create a password"
                     className="pr-10"
                     disabled={isLoading}
                   />
@@ -152,6 +175,36 @@ const Login = () => {
                     )}
                   </button>
                 </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Must be at least 6 characters
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="relative mt-1">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm your password"
+                    className="pr-10"
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    disabled={isLoading}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-400" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <Button
@@ -159,7 +212,7 @@ const Login = () => {
                 className="w-full bg-blue-600 hover:bg-blue-700"
                 disabled={isLoading}
               >
-                {isLoading ? 'Signing in...' : 'Sign In'}
+                {isLoading ? 'Creating Account...' : 'Create Account'}
               </Button>
             </form>
 
@@ -169,25 +222,16 @@ const Login = () => {
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">MVP Demo</span>
+                  <span className="px-2 bg-white text-gray-500">Already have an account?</span>
                 </div>
               </div>
 
-              <div className="mt-4 p-3 bg-blue-50 rounded-md">
-                <p className="text-sm text-blue-700 font-medium">Demo Credentials:</p>
-                <p className="text-sm text-blue-600">Email: test@spiral.com</p>
-                <p className="text-sm text-blue-600">Password: spiral123</p>
-              </div>
-
               <div className="mt-4 text-center">
-                <p className="text-sm text-gray-600">
-                  Don't have an account?{' '}
-                  <Link href="/signup">
-                    <span className="font-medium text-blue-600 hover:text-blue-500">
-                      Sign up
-                    </span>
-                  </Link>
-                </p>
+                <Link href="/login">
+                  <Button variant="ghost" className="text-blue-600 hover:text-blue-700">
+                    Sign in instead
+                  </Button>
+                </Link>
               </div>
             </div>
           </CardContent>
@@ -197,4 +241,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

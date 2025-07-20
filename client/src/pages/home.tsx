@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search } from "lucide-react";
+import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -69,11 +70,20 @@ export default function Home() {
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Shop Local,<br />
-              <span className="text-spiral-blue-light">Think Global</span>
+              <span className="text-spiral-blue-light">Everything for You is Local Now.</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-              Discover amazing local stores in your area and support your community with SPIRAL's modern shopping platform.
+              Connect with your community's best local businesses and discover what makes your neighborhood special.
             </p>
+            
+            {/* Quick Mall Access */}
+            <div className="mb-8">
+              <Link href="/mall/downtown-plaza">
+                <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20">
+                  Explore Downtown Plaza Mall
+                </Button>
+              </Link>
+            </div>
             
             <div className="max-w-md mx-auto">
               <div className="flex">

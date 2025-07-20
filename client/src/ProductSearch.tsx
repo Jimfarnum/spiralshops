@@ -84,6 +84,7 @@ const ProductSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState('');
   const [category, setCategory] = useState('');
+  const [selectedMall, setSelectedMall] = useState('');
   const addItem = useCartStore(state => state.addItem);
   const { toast } = useToast();
 
@@ -93,6 +94,10 @@ const ProductSearch = () => {
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
+  };
+
+  const handleMallChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedMall(e.target.value);
   };
 
   const handleAddToCart = (e: React.MouseEvent, product: typeof mockProducts[0]) => {
@@ -116,7 +121,8 @@ const ProductSearch = () => {
   const filteredProducts = mockProducts
     .filter(product => 
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (category === '' || product.category === category)
+      (category === '' || product.category === category) &&
+      (selectedMall === '' || product.store.toLowerCase().includes(selectedMall.toLowerCase()))
     )
     .sort((a, b) => {
       if (sortOption === 'price-low-high') return a.price - b.price;
@@ -158,6 +164,17 @@ const ProductSearch = () => {
           <option value="clothing">Clothing</option>
           <option value="home">Home</option>
           <option value="electronics">Electronics</option>
+        </select>
+
+        <select 
+          onChange={handleMallChange}
+          value={selectedMall}
+          className="p-2 border rounded"
+        >
+          <option value="">All Locations</option>
+          <option value="downtown">Downtown Plaza</option>
+          <option value="vintage">Vintage Threads</option>
+          <option value="tech">TechHub</option>
         </select>
       </div>
 
