@@ -1,11 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { Menu, ShoppingCart } from "lucide-react";
+import { Menu, ShoppingCart, User, LogOut } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
+import { useAuthStore } from "@/lib/authStore";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Header() {
   const getTotalItems = useCartStore(state => state.getTotalItems);
   const cartItemCount = getTotalItems();
+  const { user, isAuthenticated, logout } = useAuthStore();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+      duration: 2000,
+    });
+  };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -49,9 +62,26 @@ export default function Header() {
                 )}
               </Button>
             </Link>
-            <Button className="bg-spiral-blue text-white hover:bg-spiral-blue-dark">
-              Sign In
-            </Button>
+            
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-2">
+                <div className="hidden md:flex items-center space-x-2 px-3 py-2 bg-gray-100 rounded-lg">
+                  <User className="h-4 w-4 text-gray-600" />
+                  <span className="text-sm text-gray-700">{user?.name}</span>
+                </div>
+                <Button variant="ghost" onClick={handleLogout} className="text-gray-600 hover:text-gray-800">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  <span className="hidden md:inline">Log Out</span>
+                </Button>
+              </div>
+            ) : (
+              <Link href="/login">
+                <Button className="bg-blue-600 text-white hover:bg-blue-700">
+                  Sign In
+                </Button>
+              </Link>
+            )}
+            
             <Button variant="ghost" className="md:hidden">
               <Menu className="h-6 w-6" />
             </Button>

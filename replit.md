@@ -14,7 +14,7 @@ Preferred communication style: Simple, everyday language.
 - **Framework**: React 18 with TypeScript
 - **Routing**: Wouter (lightweight client-side routing)
 - **Styling**: Tailwind CSS with shadcn/ui components
-- **State Management**: TanStack Query for server state, Zustand for global cart state
+- **State Management**: TanStack Query for server state, Zustand for global cart state and authentication
 - **Build Tool**: Vite for development and production builds
 - **UI Components**: Radix UI primitives with custom styling
 
@@ -34,12 +34,13 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Client-Side Components
-- **Pages**: Home (store discovery), Store (individual store profiles), ProductSearch (product filtering/sorting), ProductDetail (individual product pages), Cart (shopping cart management), NotFound
+- **Pages**: Home (store discovery), Store (individual store profiles), ProductSearch (product filtering/sorting), ProductDetail (individual product pages), Cart (shopping cart management), Login (authentication), NotFound
 - **UI Components**: Store cards, retailer signup forms, store profiles, product cards with filtering
 - **Layout**: Header with navigation and cart icon with item count, Footer with links and branding
 - **Form Handling**: React Hook Form with Zod validation
 - **Product Features**: Search by name, category filtering, sorting by price/distance, clickable product links
 - **E-commerce Features**: Global cart state management with localStorage persistence, add to cart buttons, quantity controls, checkout simulation, cart restoration notifications
+- **Authentication Features**: Local login system with mock credentials, persistent user sessions, login/logout functionality with toast notifications
 
 ### Server-Side Components
 - **Storage Layer**: Abstracted storage interface with in-memory implementation

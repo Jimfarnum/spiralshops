@@ -9,6 +9,7 @@ import NotFound from "@/pages/not-found";
 import ProductSearch from "./ProductSearch";
 import ProductDetail from "./ProductDetail";
 import Cart from "@/pages/cart";
+import Login from "@/pages/login";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/products" component={ProductSearch} />
       <Route path="/products/:id" component={ProductDetail} />
       <Route path="/cart" component={Cart} />
+      <Route path="/login" component={Login} />
       <Route component={NotFound} />
     </Switch>
   );
