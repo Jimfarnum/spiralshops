@@ -34,10 +34,11 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Client-Side Components
-- **Pages**: Home (store discovery), Store (individual store profiles), NotFound
-- **UI Components**: Store cards, retailer signup forms, store profiles
+- **Pages**: Home (store discovery), Store (individual store profiles), ProductSearch (product filtering/sorting), ProductDetail (individual product pages), NotFound
+- **UI Components**: Store cards, retailer signup forms, store profiles, product cards with filtering
 - **Layout**: Header with navigation, Footer with links and branding
 - **Form Handling**: React Hook Form with Zod validation
+- **Product Features**: Search by name, category filtering, sorting by price/distance, clickable product links
 
 ### Server-Side Components
 - **Storage Layer**: Abstracted storage interface with in-memory implementation

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'wouter';
 
 const mockProducts = [
   {
@@ -8,7 +9,7 @@ const mockProducts = [
     distance: 2.1,
     promoted: true,
     category: 'clothing',
-    image: 'https://via.placeholder.com/200',
+    image: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
   },
   {
     id: 2,
@@ -17,7 +18,7 @@ const mockProducts = [
     distance: 5.4,
     promoted: false,
     category: 'clothing',
-    image: 'https://via.placeholder.com/200',
+    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
   },
   {
     id: 3,
@@ -26,7 +27,7 @@ const mockProducts = [
     distance: 3.7,
     promoted: false,
     category: 'clothing',
-    image: 'https://via.placeholder.com/200',
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
   },
   {
     id: 4,
@@ -35,7 +36,7 @@ const mockProducts = [
     distance: 1.2,
     promoted: true,
     category: 'electronics',
-    image: 'https://via.placeholder.com/200',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
   },
   {
     id: 5,
@@ -44,7 +45,7 @@ const mockProducts = [
     distance: 4.1,
     promoted: false,
     category: 'electronics',
-    image: 'https://via.placeholder.com/200',
+    image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
   },
   {
     id: 6,
@@ -53,7 +54,7 @@ const mockProducts = [
     distance: 2.8,
     promoted: false,
     category: 'home',
-    image: 'https://via.placeholder.com/200',
+    image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
   },
   {
     id: 7,
@@ -62,7 +63,7 @@ const mockProducts = [
     distance: 1.5,
     promoted: false,
     category: 'home',
-    image: 'https://via.placeholder.com/200',
+    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
   },
   {
     id: 8,
@@ -71,7 +72,7 @@ const mockProducts = [
     distance: 6.2,
     promoted: true,
     category: 'electronics',
-    image: 'https://via.placeholder.com/200',
+    image: 'https://images.unsplash.com/photo-1541140532154-b024d705b90a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
   },
 ];
 
@@ -138,21 +139,28 @@ const ProductSearch = () => {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {filteredProducts.map((product) => (
-          <div
-            key={product.id}
-            className={`border p-2 rounded shadow ${
-              product.promoted ? 'border-blue-500' : ''
-            }`}
-          >
-            <img src={product.image} alt={product.name} className="w-full mb-2" />
-            <h2 className="font-semibold">{product.name}</h2>
-            <p className="text-lg font-bold text-green-600">${product.price.toFixed(2)}</p>
-            <p className="text-sm text-gray-600">{product.distance} miles away</p>
-            <p className="text-xs text-gray-500 capitalize">{product.category}</p>
-            {product.promoted && (
-              <span className="text-sm text-blue-500 font-bold">Promoted</span>
-            )}
-          </div>
+          <Link key={product.id} href={`/products/${product.id}`}>
+            <div
+              className={`border p-2 rounded shadow cursor-pointer hover:shadow-lg transition-shadow ${
+                product.promoted ? 'border-blue-500' : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <img 
+                src={product.image} 
+                alt={product.name} 
+                className="w-full h-40 object-cover rounded mb-2" 
+              />
+              <h2 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                {product.name}
+              </h2>
+              <p className="text-lg font-bold text-green-600">${product.price.toFixed(2)}</p>
+              <p className="text-sm text-gray-600">{product.distance} miles away</p>
+              <p className="text-xs text-gray-500 capitalize">{product.category}</p>
+              {product.promoted && (
+                <span className="text-sm text-blue-500 font-bold">Promoted</span>
+              )}
+            </div>
+          </Link>
         ))}
       </div>
 
