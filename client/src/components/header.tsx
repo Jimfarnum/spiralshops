@@ -26,9 +26,8 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <div className="w-8 h-8 bg-spiral-blue rounded-full flex items-center justify-center mr-2">
-                <div className="w-6 h-6 border-2 border-white rounded-full animate-spin" 
-                     style={{ borderTopColor: 'transparent' }} />
+              <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center mr-2">
+                <span className="text-white font-bold text-sm">S</span>
               </div>
               <span className="text-xl font-bold text-gray-900">SPIRAL</span>
             </Link>
@@ -53,13 +52,14 @@ export default function Header() {
           
           <div className="flex items-center space-x-4">
             <Link href="/cart">
-              <Button variant="ghost" className="relative">
-                <ShoppingCart className="h-6 w-6" />
+              <Button variant="outline" className="relative border-teal-600 text-teal-600 hover:bg-teal-50">
+                <ShoppingCart className="h-5 w-5" />
                 {cartItemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                  <span className="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                     {cartItemCount}
                   </span>
                 )}
+                <span className="ml-2 hidden md:inline">Cart</span>
               </Button>
             </Link>
             
@@ -75,11 +75,18 @@ export default function Header() {
                 </Button>
               </div>
             ) : (
-              <Link href="/login">
-                <Button className="bg-blue-600 text-white hover:bg-blue-700">
-                  Sign In
-                </Button>
-              </Link>
+              <div className="flex items-center space-x-2">
+                <Link href="/login">
+                  <Button variant="ghost" className="hover:bg-gray-100">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-full font-medium">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
             )}
             
             <Button variant="ghost" className="md:hidden">
