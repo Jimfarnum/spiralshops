@@ -42,7 +42,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-200 hover:border-teal-300">
+    <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-200 hover:border-[hsl(183,100%,23%)]">
       <div className="relative overflow-hidden">
         <img
           src={product.image}
@@ -67,7 +67,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </h3>
           <p className="text-xs text-gray-500 mb-2">{product.store}</p>
           <div className="flex items-center justify-between">
-            <span className="text-lg font-bold text-teal-600">
+            <span className="text-lg font-bold text-[hsl(183,100%,23%)]">
               ${product.price.toFixed(2)}
             </span>
             <span className="text-xs text-gray-400 line-through">
@@ -78,7 +78,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         
         <Button
           onClick={handleAddToCart}
-          className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 text-sm"
+          className="w-full bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white font-medium py-2 text-sm"
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
           Add to Cart

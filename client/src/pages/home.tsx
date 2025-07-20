@@ -78,7 +78,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'hsl(35, 25%, 96%)' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'hsl(0, 0%, 99.6%)' }}>
       <Header />
       
       {/* Prominent Search Bar */}
@@ -96,7 +96,7 @@ export default function Home() {
               />
               <Button 
                 onClick={handleProductSearch}
-                className="h-14 px-8 bg-teal-600 hover:bg-teal-700 text-white border-0 rounded-none"
+                className="h-14 px-8 bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white border-0 rounded-none"
               >
                 <Search className="h-5 w-5 mr-2" />
                 <span className="hidden md:inline">Search</span>
@@ -107,7 +107,7 @@ export default function Home() {
       </section>
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-500 to-teal-600 text-white py-24 lg:py-32">
+      <section className="bg-gradient-to-br from-[hsl(183,100%,23%)] to-[hsl(183,60%,40%)] text-white py-28 lg:py-36">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="text-center">
             <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight font-['Poppins']">
@@ -123,7 +123,7 @@ export default function Home() {
             {/* Quick Mall Access */}
             <div className="mb-10">
               <Link href="/mall/downtown-plaza">
-                <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
+                <Button size="lg" className="bg-[hsl(32,98%,56%)] hover:bg-[hsl(32,98%,70%)] text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
                   Explore Downtown Plaza Mall
                 </Button>
               </Link>
@@ -141,7 +141,7 @@ export default function Home() {
                 />
                 <Button 
                   onClick={handleZipSearch}
-                  className="bg-orange-500 text-white hover:bg-orange-600 rounded-l-none px-6 py-3 font-semibold"
+                  className="bg-[hsl(32,98%,56%)] text-white hover:bg-[hsl(32,98%,70%)] rounded-l-none px-6 py-3 font-semibold"
                 >
                   <Search className="h-5 w-5 mr-2" />
                   Find Stores
@@ -153,7 +153,7 @@ export default function Home() {
       </section>
 
       {/* Featured Products Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-['Poppins']">
@@ -184,7 +184,7 @@ export default function Home() {
       </section>
 
       {/* Store Discovery Section */}
-      <section className="py-20 bg-white border-t border-gray-200">
+      <section className="py-24 bg-white border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 font-['Poppins']">
@@ -240,7 +240,7 @@ export default function Home() {
                 <div className="text-center mt-16">
                   <Button 
                     onClick={handleLoadMore}
-                    className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold shadow-lg transition-all duration-300"
+                    className="bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white px-8 py-4 rounded-full font-semibold shadow-lg transition-all duration-300"
                   >
                     Load More Stores
                   </Button>

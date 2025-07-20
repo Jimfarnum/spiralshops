@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 100%);
+  --background: hsl(0, 0%, 99.6%);
   --foreground: hsl(20, 14.3%, 4.1%);
   --muted: hsl(60, 4.8%, 95.9%);
   --muted-foreground: hsl(25, 5.3%, 44.7%);
@@ -15,7 +15,7 @@
   --card-foreground: hsl(20, 14.3%, 4.1%);
   --border: hsl(20, 5.9%, 90%);
   --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(178, 70%, 45%);
+  --primary: hsl(183, 100%, 23%);
   --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(60, 4.8%, 95.9%);
   --secondary-foreground: hsl(24, 9.8%, 10%);
@@ -26,12 +26,12 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
   
-  /* SPIRAL modern colors */
-  --spiral-teal: hsl(178, 70%, 45%);
-  --spiral-teal-dark: hsl(178, 70%, 35%);
-  --spiral-teal-light: hsl(178, 55%, 65%);
-  --spiral-coral: hsl(16, 85%, 60%);
-  --spiral-beige: hsl(35, 25%, 96%);
+  /* SPIRAL updated warm colors */
+  --spiral-teal: hsl(183, 100%, 23%);
+  --spiral-teal-light: hsl(183, 60%, 40%);
+  --spiral-orange: hsl(32, 98%, 56%);
+  --spiral-orange-light: hsl(32, 98%, 70%);
+  --spiral-background: hsl(0, 0%, 99.6%);
   --spiral-warm-gray: hsl(35, 15%, 88%);
 }
 
@@ -46,7 +46,7 @@
   --card-foreground: hsl(0, 0%, 98%);
   --border: hsl(240, 3.7%, 15.9%);
   --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(178, 70%, 45%);
+  --primary: hsl(183, 100%, 23%);
   --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(240, 3.7%, 15.9%);
   --secondary-foreground: hsl(0, 0%, 98%);

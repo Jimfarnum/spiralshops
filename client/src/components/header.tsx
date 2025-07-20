@@ -26,10 +26,12 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center mr-2">
-                <span className="text-white font-bold text-sm">S</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">SPIRAL</span>
+              <img 
+                src="/5f2ddb9c-bed6-466a-a305-c06542e7cf4b.png (1).PNG" 
+                alt="SPIRAL Logo" 
+                className="w-10 h-10 mr-3"
+              />
+              <span className="text-xl font-bold text-gray-900 font-['Poppins']">SPIRAL</span>
             </Link>
           </div>
           
@@ -52,10 +54,10 @@ export default function Header() {
           
           <div className="flex items-center space-x-4">
             <Link href="/cart">
-              <Button variant="outline" className="relative border-teal-600 text-teal-600 hover:bg-teal-50">
+              <Button variant="outline" className="relative border-[hsl(183,100%,23%)] text-[hsl(183,100%,23%)] hover:bg-[hsl(183,100%,96%)]">
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                  <span className="absolute -top-2 -right-2 bg-[hsl(32,98%,56%)] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                     {cartItemCount}
                   </span>
                 )}
@@ -82,7 +84,7 @@ export default function Header() {
                   </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-full font-medium">
+                  <Button className="bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white px-4 py-2 rounded-full font-medium">
                     Sign Up
                   </Button>
                 </Link>
