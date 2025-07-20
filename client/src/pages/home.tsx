@@ -61,25 +61,27 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: 'hsl(35, 25%, 96%)' }}>
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-spiral-blue-light to-spiral-blue text-white py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-gradient-to-br from-teal-500 to-teal-600 text-white py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight font-['Poppins']">
               Shop Local,<br />
-              <span className="text-spiral-blue-light">Everything for You is Local Now.</span>
+              <span className="text-teal-100 bg-gradient-to-r from-teal-100 to-white bg-clip-text text-transparent">
+                Everything Local. Just for You.
+              </span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl mb-10 text-teal-50 max-w-4xl mx-auto leading-relaxed font-['Inter']">
               Connect with your community's best local businesses and discover what makes your neighborhood special.
             </p>
             
             {/* Quick Mall Access */}
-            <div className="mb-8">
+            <div className="mb-10">
               <Link href="/mall/downtown-plaza">
-                <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20">
+                <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
                   Explore Downtown Plaza Mall
                 </Button>
               </Link>
@@ -97,9 +99,9 @@ export default function Home() {
                 />
                 <Button 
                   onClick={handleZipSearch}
-                  className="bg-white text-spiral-blue hover:bg-gray-50 rounded-l-none"
+                  className="bg-orange-500 text-white hover:bg-orange-600 rounded-l-none px-6 py-3 font-semibold"
                 >
-                  <Search className="h-4 w-4 mr-2" />
+                  <Search className="h-5 w-5 mr-2" />
                   Find Stores
                 </Button>
               </div>
@@ -109,13 +111,13 @@ export default function Home() {
       </section>
 
       {/* Store Discovery Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 font-['Poppins']">
               {activeZip ? `Stores in ${activeZip}` : "Featured Local Stores"}
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-['Inter']">
               {activeZip 
                 ? `Discover unique businesses in ZIP code ${activeZip}` 
                 : "Discover unique businesses in your neighborhood and support local entrepreneurs."
@@ -124,10 +126,10 @@ export default function Home() {
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="space-y-4">
-                  <Skeleton className="h-48 w-full rounded-lg" />
+                  <Skeleton className="h-52 w-full rounded-xl" />
                   <Skeleton className="h-4 w-3/4" />
                   <Skeleton className="h-4 w-1/2" />
                   <Skeleton className="h-10 w-full" />
@@ -155,17 +157,17 @@ export default function Home() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {stores.map((store) => (
                   <StoreCard key={store.id} store={store} />
                 ))}
               </div>
 
               {stores.length >= 6 && (
-                <div className="text-center mt-12">
+                <div className="text-center mt-16">
                   <Button 
                     onClick={handleLoadMore}
-                    className="bg-spiral-blue text-white hover:bg-spiral-blue-dark"
+                    className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold shadow-lg transition-all duration-300"
                   >
                     Load More Stores
                   </Button>

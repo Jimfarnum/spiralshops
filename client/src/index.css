@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,8 +15,8 @@
   --card-foreground: hsl(20, 14.3%, 4.1%);
   --border: hsl(20, 5.9%, 90%);
   --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(214, 90%, 54%);
-  --primary-foreground: hsl(211, 100%, 99%);
+  --primary: hsl(178, 70%, 45%);
+  --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(60, 4.8%, 95.9%);
   --secondary-foreground: hsl(24, 9.8%, 10%);
   --accent: hsl(60, 4.8%, 95.9%);
@@ -24,10 +26,13 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
   
-  /* SPIRAL custom colors */
-  --spiral-blue: hsl(214, 90%, 54%);
-  --spiral-blue-dark: hsl(214, 84%, 40%);
-  --spiral-blue-light: hsl(214, 90%, 70%);
+  /* SPIRAL modern colors */
+  --spiral-teal: hsl(178, 70%, 45%);
+  --spiral-teal-dark: hsl(178, 70%, 35%);
+  --spiral-teal-light: hsl(178, 55%, 65%);
+  --spiral-coral: hsl(16, 85%, 60%);
+  --spiral-beige: hsl(35, 25%, 96%);
+  --spiral-warm-gray: hsl(35, 15%, 88%);
 }
 
 .dark {
@@ -41,8 +46,8 @@
   --card-foreground: hsl(0, 0%, 98%);
   --border: hsl(240, 3.7%, 15.9%);
   --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(214, 90%, 54%);
-  --primary-foreground: hsl(211, 100%, 99%);
+  --primary: hsl(178, 70%, 45%);
+  --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(240, 3.7%, 15.9%);
   --secondary-foreground: hsl(0, 0%, 98%);
   --accent: hsl(240, 3.7%, 15.9%);
@@ -60,6 +65,7 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', 'Poppins', system-ui, sans-serif;
   }
 }
 
