@@ -24,7 +24,7 @@
   --destructive: hsl(0, 84.2%, 60.2%);
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
   --ring: hsl(20, 14.3%, 4.1%);
-  --radius: 0.5rem;
+  --radius: 1rem;
   
   /* SPIRAL updated warm colors */
   --spiral-teal: hsl(183, 100%, 23%);
@@ -33,6 +33,20 @@
   --spiral-orange-light: hsl(32, 98%, 70%);
   --spiral-background: hsl(0, 0%, 99.6%);
   --spiral-warm-gray: hsl(35, 15%, 88%);
+}
+
+/* Enhanced styling for modern, polished look */
+.btn-rounded {
+  border-radius: 1rem;
+}
+
+.card-rounded {
+  border-radius: 1rem;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: all 0.2s ease-in-out;
 }
 
 .dark {

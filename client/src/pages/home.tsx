@@ -110,43 +110,186 @@ export default function Home() {
       <section className="bg-gradient-to-br from-[hsl(183,100%,23%)] to-[hsl(183,60%,40%)] text-white py-28 lg:py-36">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="text-center">
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight font-['Poppins']">
-              Shop Local,<br />
-              <span className="text-teal-100 bg-gradient-to-r from-teal-100 to-white bg-clip-text text-transparent">
-                Everything Local. Just for You.
-              </span>
+            <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight font-['Poppins']">
+              SPIRAL
             </h1>
-            <p className="text-xl md:text-2xl mb-10 text-teal-50 max-w-4xl mx-auto leading-relaxed font-['Inter']">
-              Connect with your community's best local businesses and discover what makes your neighborhood special.
+            <p className="text-2xl md:text-3xl mb-12 leading-relaxed font-['Inter'] max-w-4xl mx-auto text-white/90">
+              Everything Local. Just for you.
             </p>
             
-            {/* Quick Mall Access */}
-            <div className="mb-10">
-              <Link href="/mall/downtown-plaza">
-                <Button size="lg" className="bg-[hsl(32,98%,56%)] hover:bg-[hsl(32,98%,70%)] text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
-                  Explore Downtown Plaza Mall
-                </Button>
-              </Link>
-            </div>
-            
-            <div className="max-w-md mx-auto">
-              <div className="flex">
+            <div className="max-w-lg mx-auto">
+              <div className="flex rounded-full overflow-hidden shadow-lg">
                 <Input
                   type="text"
-                  placeholder="Enter your ZIP code"
+                  placeholder="Enter your ZIP code to get started"
                   value={searchZip}
                   onChange={(e) => setSearchZip(e.target.value)}
-                  className="flex-1 text-gray-900 rounded-r-none"
+                  className="flex-1 text-gray-900 border-0 rounded-none h-14 text-lg"
                   onKeyPress={(e) => e.key === 'Enter' && handleZipSearch()}
                 />
                 <Button 
                   onClick={handleZipSearch}
-                  className="bg-[hsl(32,98%,56%)] text-white hover:bg-[hsl(32,98%,70%)] rounded-l-none px-6 py-3 font-semibold"
+                  className="bg-[hsl(32,98%,56%)] text-white hover:bg-[hsl(32,98%,70%)] border-0 rounded-none px-8 h-14 font-semibold"
                 >
                   <Search className="h-5 w-5 mr-2" />
-                  Find Stores
+                  Explore
                 </Button>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Tiles Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-['Poppins']">
+              Your Local Shopping Hub
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-['Inter']">
+              Everything you need to discover, shop, and connect with your local community
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Shop Local Stores */}
+            <Link href="/stores" className="group">
+              <div className="bg-gradient-to-br from-[hsl(183,100%,23%)] to-[hsl(183,60%,40%)] p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="text-5xl mb-4">🛍️</div>
+                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Shop Local Stores</h3>
+                <p className="text-white/90 font-['Inter']">Browse amazing products from neighborhood businesses</p>
+              </div>
+            </Link>
+
+            {/* Explore Malls */}
+            <Link href="/mall" className="group">
+              <div className="bg-gradient-to-br from-[hsl(32,98%,56%)] to-[hsl(32,98%,70%)] p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="text-5xl mb-4">🏬</div>
+                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Explore Malls Near You</h3>
+                <p className="text-white/90 font-['Inter']">Discover shopping centers and their featured stores</p>
+              </div>
+            </Link>
+
+            {/* Retailer Sign-Up */}
+            <Link href="/signup" className="group">
+              <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="text-5xl mb-4">🧑‍💼</div>
+                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Retailer Sign-Up</h3>
+                <p className="text-white/90 font-['Inter']">Join SPIRAL and showcase your business to locals</p>
+              </div>
+            </Link>
+
+            {/* Discover New Finds */}
+            <Link href="/discover" className="group">
+              <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="text-5xl mb-4">🧭</div>
+                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Discover New Local Finds</h3>
+                <p className="text-white/90 font-['Inter']">Explore trending products and hidden gems nearby</p>
+              </div>
+            </Link>
+
+            {/* Loyalty Program */}
+            <div className="bg-gradient-to-br from-rose-500 to-rose-600 p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+              <div className="text-5xl mb-4">💳</div>
+              <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Earn Spirals: Loyalty Program</h3>
+              <p className="text-white/90 font-['Inter']">Collect points and unlock exclusive rewards</p>
+            </div>
+
+            {/* Delivery Options */}
+            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-8 rounded-2xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+              <div className="text-5xl mb-4">🚚</div>
+              <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Delivery & Pickup Options</h3>
+              <p className="text-white/90 font-['Inter']">Flexible fulfillment options for every lifestyle</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SPIRAL Loyalty Program Preview */}
+      <section className="py-20 bg-gradient-to-r from-rose-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center">
+            <div className="text-6xl mb-6">💫</div>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8 font-['Poppins']">
+              Introducing SPIRAL Rewards
+            </h2>
+            <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-['Inter'] mb-12">
+              Earn Spirals when you shop in-store or online with SPIRAL. Redeem Spirals for exclusive perks, discounts, and mall rewards.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🛒</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2 font-['Poppins']">Shop & Earn</h3>
+                <p className="text-gray-600 font-['Inter']">Collect Spirals with every purchase</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🎁</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2 font-['Poppins']">Unlock Rewards</h3>
+                <p className="text-gray-600 font-['Inter']">Redeem for discounts and exclusive offers</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">⭐</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2 font-['Poppins']">VIP Perks</h3>
+                <p className="text-gray-600 font-['Inter']">Early access to sales and special events</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Logistics Options Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-['Poppins']">
+              Flexible Fulfillment Options
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-['Inter']">
+              Choose the delivery method that works best for your lifestyle
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-[hsl(183,100%,23%)] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <span className="text-3xl text-white">🏪</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 font-['Poppins']">In-Store Pickup</h3>
+              <p className="text-gray-600 font-['Inter']">Order online, collect in-store at your convenience</p>
+            </div>
+            
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-[hsl(32,98%,56%)] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <span className="text-3xl text-white">📦</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 font-['Poppins']">Standard Shipping</h3>
+              <p className="text-gray-600 font-['Inter']">Reliable delivery to your doorstep in 3-5 days</p>
+            </div>
+            
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <span className="text-3xl text-white">🏬</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 font-['Poppins']">Ship-to-Store</h3>
+              <p className="text-gray-600 font-['Inter']">Free shipping to your nearest participating location</p>
+            </div>
+            
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <span className="text-3xl text-white">⚡</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 font-['Poppins']">Same-Day Delivery</h3>
+              <p className="text-gray-600 font-['Inter']">Local express delivery when available in your area</p>
             </div>
           </div>
         </div>
@@ -155,17 +298,17 @@ export default function Home() {
       {/* Featured Products Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-['Poppins']">
-              Featured Products
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-['Poppins']">
+              Featured Local Finds
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto font-['Inter']">
-              Discover amazing products from local businesses in your area
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-['Inter']">
+              Discover amazing products from your neighborhood businesses
             </p>
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-16">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 mb-16">
             {/* Mock Product Cards */}
             {[
               { id: 1, name: "Artisan Coffee Blend", price: 24.99, image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Local Roasters", category: "coffee" },
@@ -179,6 +322,18 @@ export default function Home() {
             ].map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
+          </div>
+          
+          <div className="text-center">
+            <Link href="/products">
+              <Button 
+                size="lg" 
+                className="bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white px-10 py-4 text-lg font-semibold rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105"
+              >
+                View All Local Finds
+                <span className="ml-2">→</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
