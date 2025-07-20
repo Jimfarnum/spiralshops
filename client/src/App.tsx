@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import Store from "@/pages/store";
 import NotFound from "@/pages/not-found";
-
+import ProductSearch from "@/components/ProductSearch";
 function Router() {
   return (
     <Switch>
