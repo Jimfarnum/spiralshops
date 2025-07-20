@@ -13,6 +13,8 @@ import Login from "@/pages/login";
 import SignUp from "@/pages/signup";
 import Checkout from "@/pages/checkout";
 import Mall from "@/pages/mall";
+import { ProductsPage } from "@/pages/products";
+import { ProductDetailPage } from "@/pages/product-detail";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 
 function Router() {
@@ -20,8 +22,10 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/store/:id" component={Store} />
-      <Route path="/products" component={ProductSearch} />
-      <Route path="/products/:id" component={ProductDetail} />
+      <Route path="/products" component={ProductsPage} />
+      <Route path="/product/:id" component={ProductDetailPage} />
+      <Route path="/search" component={ProductSearch} />
+      <Route path="/search/:id" component={ProductDetail} />
       <Route path="/cart" component={Cart} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={SignUp} />
