@@ -18,18 +18,18 @@ export function ComingSoonPage({
   buttonLink = "/" 
 }: ComingSoonPageProps) {
   return (
-    <div className="min-h-screen bg-[#F5F3EF]">
+    <div className="min-h-screen bg-[var(--spiral-cream)]">
       <Header />
       
       <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
         <div className="bg-white rounded-3xl shadow-lg p-12 max-w-md w-full">
           <div className="mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#2C3E50] to-[#E27D60] rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] rounded-full flex items-center justify-center mx-auto mb-4">
               <Sparkles className="h-8 w-8 text-white" />
             </div>
           </div>
           
-          <h1 className="text-3xl font-bold text-[#2C3E50] mb-4 font-['Poppins']">
+          <h1 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4 font-['Poppins']">
             {title}
           </h1>
           
@@ -41,7 +41,7 @@ export function ComingSoonPage({
             <Link href={buttonLink}>
               <Button 
                 size="lg" 
-                className="w-full bg-[#2C3E50] hover:bg-[#A8BFAA] text-white h-12 text-lg font-semibold rounded-2xl transition-all duration-300"
+                className="w-full bg-[var(--spiral-navy)] hover:bg-[var(--spiral-sage)] text-white h-12 text-lg font-semibold rounded-2xl transition-all duration-300"
               >
                 <ArrowLeft className="h-5 w-5 mr-2" />
                 {buttonText}
@@ -52,7 +52,7 @@ export function ComingSoonPage({
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="w-full border-[#2C3E50] text-[#2C3E50] hover:bg-[#2C3E50] hover:text-white h-12 text-lg rounded-2xl transition-all duration-300"
+                className="w-full border-[var(--spiral-navy)] text-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)] hover:text-white h-12 text-lg rounded-2xl transition-all duration-300"
               >
                 Explore Products
               </Button>

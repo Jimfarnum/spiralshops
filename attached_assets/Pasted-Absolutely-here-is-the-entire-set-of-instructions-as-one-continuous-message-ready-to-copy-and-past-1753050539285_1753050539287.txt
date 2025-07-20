@@ -1,0 +1,73 @@
+Absolutely — here is the entire set of instructions as one continuous message ready to copy and paste into the Replit Agent:
+
+
+---
+
+📋 Copy and send the following message to your Replit Agent:
+
+Hi Replit Agent,
+
+Great work so far — everything looks fantastic. Here's the next unified task set to continue our SPIRAL MVP build:
+
+✅ 1. ENABLE /mall PAGE (Mall Mode)
+- Create a new route: /mall
+- This will serve as a placeholder page for our future mall-based shopping experience
+- Page content should include:
+  - Title: “SPIRAL Mall Mode”
+  - Subtitle: “Easily shop multiple stores in one place”
+  - Description: “Browse, earn SPIRALs, and combine carts from participating mall stores.”
+  - A centered CTA button labeled “Return to Homepage” that links back to /
+
+✅ 2. LOYALTY SYSTEM LANDING PAGE (/spirals)
+- Create a new route: /spirals
+- This is our intro to the SPIRAL loyalty program
+- Design a branded page with the following content:
+  - Headline: “SPIRAL Loyalty Rewards”
+  - Subheading or paragraph: “Earn SPIRALs every time you shop. Redeem them for perks, exclusive products, or shared experiences.”
+  - Include a visual breakdown:
+    - “Earn 1 SPIRAL per $10 spent”
+    - “Redeem 25 SPIRALs for a $5 reward or partner benefit”
+  - Include a CTA button labeled “Start Shopping” that links to /
+
+✅ 3. ADD LOGISTICS OPTIONS TO CHECKOUT
+- On the existing /checkout page, add a dropdown labeled “Fulfillment Method” with 3 options:
+  - In-store Pickup
+  - Ship to Me
+  - Ship to Mall for Pickup
+- Based on the user's selection, display only the relevant fields:
+  - “Ship to Me” shows shipping address form
+  - “Ship to Mall” can show a mall dropdown or placeholder
+  - “In-store Pickup” skips shipping details
+
+✅ 4. COMPLETE COMING SOON PAGES & PAGE ROUTES
+- Ensure all these routes are live with “Coming Soon” pages styled to match current design:
+  - /explore-spirals
+  - /redeem-spirals
+  - /mall
+  - /spirals
+- Each page should:
+  - Show a message: “This feature is coming soon”
+  - Include the SPIRAL logo, styled heading, and soft CTA to go back to /
+
+✅ 5. FRONTEND VISUAL COHESION
+- Confirm all pages use the new color palette:
+  - Navy (#2C3E50)
+  - Cream (#F5F3EF)
+  - Coral (#E27D60)
+  - Sage (#A8BFAA)
+  - Gold (#F4B860)
+- Font system:
+  - Use Inter for all body text
+  - Use Poppins for headings and buttons
+- Maintain rounded corners, shadows, and smooth transitions throughout
+- Footer or Header: Add tagline — “Everything Local. Just for You.”
+
+✅ Let us know when all of this is complete — we’ll then move on to search filtering, store profiles, retailer dashboard, and SPIRAL account management.
+
+Thanks again!
+
+
+---
+
+Let me know once it’s complete, and we’ll move forward with the next set of platform-building features.
+

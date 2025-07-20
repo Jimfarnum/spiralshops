@@ -13,7 +13,10 @@ export default function Footer() {
               </div>
               <span className="text-2xl font-bold">SPIRAL</span>
             </div>
-            <p className="text-gray-400 mb-6 max-w-md">
+            <p className="text-lg text-gray-300 mb-2 font-['Inter'] font-medium">
+              Everything Local. Just for You.
+            </p>
+            <p className="text-gray-400 mb-6 max-w-md font-['Inter']">
               Connecting local shoppers with amazing businesses in their community. 
               Support local, shop modern, think global.
             </p>

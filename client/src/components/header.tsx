@@ -31,7 +31,10 @@ export default function Header() {
                 alt="SPIRAL Logo" 
                 className="w-10 h-10 mr-3"
               />
-              <span className="text-xl font-bold text-gray-900 font-['Poppins']">SPIRAL</span>
+              <div>
+                <span className="text-xl font-bold text-gray-900 font-['Poppins']">SPIRAL</span>
+                <p className="text-xs text-gray-500 font-['Inter'] -mt-1">Everything Local. Just for You.</p>
+              </div>
             </Link>
           </div>
           

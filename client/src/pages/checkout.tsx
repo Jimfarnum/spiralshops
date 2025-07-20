@@ -3,6 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCartStore } from '@/lib/cartStore';
 import { useAuthStore } from '@/lib/authStore';
 import { ArrowLeft, CreditCard, Shield, CheckCircle, Package } from 'lucide-react';
@@ -25,10 +26,12 @@ const Checkout = () => {
     lastName: '',
     email: '',
     phone: '',
+    fulfillmentMethod: 'ship-to-me',
     address: '',
     city: '',
     state: '',
     zipCode: '',
+    selectedMall: '',
     cardNumber: '',
     expiryDate: '',
     cvv: '',
@@ -92,10 +95,17 @@ const Checkout = () => {
     if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
-    if (!formData.address.trim()) newErrors.address = 'Address is required';
-    if (!formData.city.trim()) newErrors.city = 'City is required';
-    if (!formData.state.trim()) newErrors.state = 'State is required';
-    if (!formData.zipCode.trim()) newErrors.zipCode = 'ZIP code is required';
+    
+    // Conditional validation based on fulfillment method
+    if (formData.fulfillmentMethod === 'ship-to-me') {
+      if (!formData.address.trim()) newErrors.address = 'Address is required';
+      if (!formData.city.trim()) newErrors.city = 'City is required';
+      if (!formData.state.trim()) newErrors.state = 'State is required';
+      if (!formData.zipCode.trim()) newErrors.zipCode = 'ZIP code is required';
+    } else if (formData.fulfillmentMethod === 'ship-to-mall') {
+      if (!formData.selectedMall.trim()) newErrors.selectedMall = 'Please select a mall';
+    }
+    
     if (!formData.cardNumber.trim()) newErrors.cardNumber = 'Card number is required';
     if (!formData.expiryDate.trim()) newErrors.expiryDate = 'Expiry date is required';
     if (!formData.cvv.trim()) newErrors.cvv = 'CVV is required';
@@ -298,57 +308,117 @@ const Checkout = () => {
                 </div>
               </div>
 
-              {/* Shipping Address */}
+              {/* Fulfillment Method */}
               <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
-                <h2 className="text-2xl font-bold text-[var(--spiral-navy)] mb-6 font-['Poppins']">Shipping Address</h2>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="address" className="text-sm font-medium text-gray-700 font-['Inter']">Street Address *</Label>
-                    <Input
-                      id="address"
-                      value={formData.address}
-                      onChange={(e) => handleInputChange('address', e.target.value)}
-                      className={`mt-1 rounded-lg ${errors.address ? 'border-red-500' : ''}`}
-                      placeholder="Enter your street address"
-                    />
-                    {errors.address && <p className="text-red-500 text-sm mt-1 font-['Inter']">{errors.address}</p>}
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label htmlFor="city" className="text-sm font-medium text-gray-700 font-['Inter']">City *</Label>
-                      <Input
-                        id="city"
-                        value={formData.city}
-                        onChange={(e) => handleInputChange('city', e.target.value)}
-                        className={`mt-1 rounded-lg ${errors.city ? 'border-red-500' : ''}`}
-                        placeholder="City"
-                      />
-                      {errors.city && <p className="text-red-500 text-sm mt-1 font-['Inter']">{errors.city}</p>}
-                    </div>
-                    <div>
-                      <Label htmlFor="state" className="text-sm font-medium text-gray-700 font-['Inter']">State *</Label>
-                      <Input
-                        id="state"
-                        value={formData.state}
-                        onChange={(e) => handleInputChange('state', e.target.value)}
-                        className={`mt-1 rounded-lg ${errors.state ? 'border-red-500' : ''}`}
-                        placeholder="State"
-                      />
-                      {errors.state && <p className="text-red-500 text-sm mt-1 font-['Inter']">{errors.state}</p>}
-                    </div>
-                    <div>
-                      <Label htmlFor="zipCode" className="text-sm font-medium text-gray-700 font-['Inter']">ZIP Code *</Label>
-                      <Input
-                        id="zipCode"
-                        value={formData.zipCode}
-                        onChange={(e) => handleInputChange('zipCode', e.target.value)}
-                        className={`mt-1 rounded-lg ${errors.zipCode ? 'border-red-500' : ''}`}
-                        placeholder="ZIP"
-                      />
-                      {errors.zipCode && <p className="text-red-500 text-sm mt-1 font-['Inter']">{errors.zipCode}</p>}
-                    </div>
-                  </div>
+                <h2 className="text-2xl font-bold text-[var(--spiral-navy)] mb-6 font-['Poppins']">Fulfillment Method</h2>
+                <div className="mb-6">
+                  <Label htmlFor="fulfillmentMethod" className="text-sm font-medium text-gray-700 font-['Inter']">How would you like to receive your order? *</Label>
+                  <Select value={formData.fulfillmentMethod} onValueChange={(value) => handleInputChange('fulfillmentMethod', value)}>
+                    <SelectTrigger className="mt-1 rounded-lg">
+                      <SelectValue placeholder="Choose fulfillment method" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ship-to-me">Ship to Me</SelectItem>
+                      <SelectItem value="in-store-pickup">In-Store Pickup</SelectItem>
+                      <SelectItem value="ship-to-mall">Ship to Mall for Pickup</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
+
+                {/* Conditional fields based on fulfillment method */}
+                {formData.fulfillmentMethod === 'ship-to-me' && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-[var(--spiral-navy)] font-['Poppins']">Shipping Address</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="address" className="text-sm font-medium text-gray-700 font-['Inter']">Street Address *</Label>
+                        <Input
+                          id="address"
+                          value={formData.address}
+                          onChange={(e) => handleInputChange('address', e.target.value)}
+                          className={`mt-1 rounded-lg ${errors.address ? 'border-red-500' : ''}`}
+                          placeholder="Enter your street address"
+                        />
+                        {errors.address && <p className="text-red-500 text-sm mt-1 font-['Inter']">{errors.address}</p>}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label htmlFor="city" className="text-sm font-medium text-gray-700 font-['Inter']">City *</Label>
+                          <Input
+                            id="city"
+                            value={formData.city}
+                            onChange={(e) => handleInputChange('city', e.target.value)}
+                            className={`mt-1 rounded-lg ${errors.city ? 'border-red-500' : ''}`}
+                            placeholder="City"
+                          />
+                          {errors.city && <p className="text-red-500 text-sm mt-1 font-['Inter']">{errors.city}</p>}
+                        </div>
+                        <div>
+                          <Label htmlFor="state" className="text-sm font-medium text-gray-700 font-['Inter']">State *</Label>
+                          <Input
+                            id="state"
+                            value={formData.state}
+                            onChange={(e) => handleInputChange('state', e.target.value)}
+                            className={`mt-1 rounded-lg ${errors.state ? 'border-red-500' : ''}`}
+                            placeholder="State"
+                          />
+                          {errors.state && <p className="text-red-500 text-sm mt-1 font-['Inter']">{errors.state}</p>}
+                        </div>
+                        <div>
+                          <Label htmlFor="zipCode" className="text-sm font-medium text-gray-700 font-['Inter']">ZIP Code *</Label>
+                          <Input
+                            id="zipCode"
+                            value={formData.zipCode}
+                            onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                            className={`mt-1 rounded-lg ${errors.zipCode ? 'border-red-500' : ''}`}
+                            placeholder="ZIP"
+                          />
+                          {errors.zipCode && <p className="text-red-500 text-sm mt-1 font-['Inter']">{errors.zipCode}</p>}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {formData.fulfillmentMethod === 'ship-to-mall' && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-[var(--spiral-navy)] font-['Poppins']">Select Mall Location</h3>
+                    <div>
+                      <Label htmlFor="selectedMall" className="text-sm font-medium text-gray-700 font-['Inter']">Mall Location *</Label>
+                      <Select value={formData.selectedMall} onValueChange={(value) => handleInputChange('selectedMall', value)}>
+                        <SelectTrigger className={`mt-1 rounded-lg ${errors.selectedMall ? 'border-red-500' : ''}`}>
+                          <SelectValue placeholder="Choose a mall" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="westfield-valley">Westfield Valley Fair</SelectItem>
+                          <SelectItem value="santana-row">Santana Row</SelectItem>
+                          <SelectItem value="hillsdale-mall">Hillsdale Mall</SelectItem>
+                          <SelectItem value="stanford-shopping">Stanford Shopping Center</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {errors.selectedMall && <p className="text-red-500 text-sm mt-1 font-['Inter']">{errors.selectedMall}</p>}
+                    </div>
+                    <div className="bg-[var(--spiral-sage)]/20 rounded-lg p-4 border border-[var(--spiral-sage)]/30">
+                      <p className="text-sm text-[var(--spiral-navy)] font-['Inter']">
+                        <strong>Ship to Mall Benefits:</strong> Free shipping, secure pickup, earn extra SPIRALs, and combine with other mall purchases!
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {formData.fulfillmentMethod === 'in-store-pickup' && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-[var(--spiral-navy)] font-['Poppins']">In-Store Pickup</h3>
+                    <div className="bg-[var(--spiral-coral)]/20 rounded-lg p-4 border border-[var(--spiral-coral)]/30">
+                      <p className="text-sm text-[var(--spiral-navy)] font-['Inter'] mb-2">
+                        <strong>Ready for pickup in 2-4 hours!</strong>
+                      </p>
+                      <p className="text-sm text-gray-600 font-['Inter']">
+                        We'll send you a notification when your order is ready. Show your order confirmation at the store to collect your items.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Payment Information */}
