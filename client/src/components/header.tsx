@@ -22,6 +22,9 @@ export default function Header() {
               <Link href="/" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
                 Discover
               </Link>
+              <Link href="/products" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                Products
+              </Link>
               <a href="#retailer-signup" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
                 For Retailers
               </a>
