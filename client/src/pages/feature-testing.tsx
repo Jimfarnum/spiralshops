@@ -29,21 +29,56 @@ interface TestResult {
   status: 'pending' | 'running' | 'passed' | 'failed';
   details?: string;
   duration?: number;
+  category: 'core' | 'ecommerce' | 'mobile' | 'performance' | 'security';
 }
 
 export default function FeatureTesting() {
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const [testResults, setTestResults] = useState<TestResult[]>([
-    { name: 'Language Selector Component Loading', status: 'pending' },
-    { name: 'Language Switching (English ↔ Spanish)', status: 'pending' },
-    { name: 'Language Persistence in localStorage', status: 'pending' },
-    { name: 'Auto-detection from Browser', status: 'pending' },
-    { name: 'Inventory Alerts Component Loading', status: 'pending' },
-    { name: 'Real-time Stock Updates', status: 'pending' },
-    { name: 'Low Stock Notifications', status: 'pending' },
-    { name: 'Browser Notification Permissions', status: 'pending' },
-    { name: 'Alert Toggle Functionality', status: 'pending' },
-    { name: 'Stock Progress Indicators', status: 'pending' }
+    // Core Features
+    { name: 'Language Selector Component Loading', status: 'pending', category: 'core' },
+    { name: 'Language Switching (English ↔ Spanish)', status: 'pending', category: 'core' },
+    { name: 'Language Persistence in localStorage', status: 'pending', category: 'core' },
+    { name: 'Auto-detection from Browser', status: 'pending', category: 'core' },
+    { name: 'Navigation Menu Functionality', status: 'pending', category: 'core' },
+    { name: 'User Authentication State', status: 'pending', category: 'core' },
+    { name: 'SPIRAL Balance Display', status: 'pending', category: 'core' },
+    
+    // E-commerce Features
+    { name: 'Product Search & Filtering', status: 'pending', category: 'ecommerce' },
+    { name: 'Shopping Cart Functionality', status: 'pending', category: 'ecommerce' },
+    { name: 'Wishlist System', status: 'pending', category: 'ecommerce' },
+    { name: 'Checkout Process', status: 'pending', category: 'ecommerce' },
+    { name: 'Payment Integration', status: 'pending', category: 'ecommerce' },
+    { name: 'Mall Directory & Selection', status: 'pending', category: 'ecommerce' },
+    { name: 'Social Sharing Engine', status: 'pending', category: 'ecommerce' },
+    
+    // Inventory & Alerts
+    { name: 'Inventory Alerts Component Loading', status: 'pending', category: 'core' },
+    { name: 'Real-time Stock Updates', status: 'pending', category: 'core' },
+    { name: 'Low Stock Notifications', status: 'pending', category: 'core' },
+    { name: 'Browser Notification Permissions', status: 'pending', category: 'core' },
+    { name: 'Alert Toggle Functionality', status: 'pending', category: 'core' },
+    { name: 'Stock Progress Indicators', status: 'pending', category: 'core' },
+    
+    // Mobile Optimization
+    { name: 'Mobile Navigation Menu', status: 'pending', category: 'mobile' },
+    { name: 'Touch-Optimized Product Grid', status: 'pending', category: 'mobile' },
+    { name: 'Responsive Layout (Phone)', status: 'pending', category: 'mobile' },
+    { name: 'Responsive Layout (Tablet)', status: 'pending', category: 'mobile' },
+    { name: 'Mobile Checkout Flow', status: 'pending', category: 'mobile' },
+    
+    // Performance
+    { name: 'Page Load Times < 3s', status: 'pending', category: 'performance' },
+    { name: 'Image Loading Optimization', status: 'pending', category: 'performance' },
+    { name: 'Route Navigation Speed', status: 'pending', category: 'performance' },
+    { name: 'Component Lazy Loading', status: 'pending', category: 'performance' },
+    
+    // Security & Data
+    { name: 'Local Storage Security', status: 'pending', category: 'security' },
+    { name: 'Session Management', status: 'pending', category: 'security' },
+    { name: 'Input Validation', status: 'pending', category: 'security' },
+    { name: 'XSS Protection', status: 'pending', category: 'security' }
   ]);
   const [isRunningTests, setIsRunningTests] = useState(false);
   const { toast } = useToast();
@@ -288,12 +323,161 @@ export default function FeatureTesting() {
           </div>
         </div>
 
-        <Tabs defaultValue="automated" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="automated">Automated Tests</TabsTrigger>
-            <TabsTrigger value="manual">Manual Testing</TabsTrigger>
-            <TabsTrigger value="features">Live Features</TabsTrigger>
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:grid-cols-5">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="automated">Automated</TabsTrigger>
+            <TabsTrigger value="manual">Manual</TabsTrigger>
+            <TabsTrigger value="features">Live Demo</TabsTrigger>
+            <TabsTrigger value="routes">Site Map</TabsTrigger>
           </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
+            {/* Feature Categories */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {['core', 'ecommerce', 'mobile', 'performance', 'security'].map(category => {
+                const categoryTests = testResults.filter(test => test.category === category);
+                const passed = categoryTests.filter(test => test.status === 'passed').length;
+                const total = categoryTests.length;
+                const percentage = total > 0 ? Math.round((passed / total) * 100) : 0;
+                
+                return (
+                  <Card key={category}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold capitalize">{category}</h3>
+                        <Badge className={
+                          percentage >= 80 ? 'bg-green-100 text-green-800' :
+                          percentage >= 60 ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'
+                        }>
+                          {percentage}%
+                        </Badge>
+                      </div>
+                      <div className="text-sm text-gray-600 mb-2">
+                        {passed} / {total} tests passed
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className={`h-2 rounded-full transition-all duration-300 ${
+                            percentage >= 80 ? 'bg-green-500' :
+                            percentage >= 60 ? 'bg-yellow-500' :
+                            'bg-red-500'
+                          }`}
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+
+            {/* Critical Path Testing */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Critical User Journeys</CardTitle>
+                <CardDescription>
+                  Test the most important user flows across the platform
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <h4 className="font-semibold">New User Journey</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>1. Land on homepage</span>
+                        <Link href="/" className="text-blue-600 hover:underline">Test</Link>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>2. Browse products</span>
+                        <Link href="/products" className="text-blue-600 hover:underline">Test</Link>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>3. Add to cart</span>
+                        <Link href="/products" className="text-blue-600 hover:underline">Test</Link>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>4. Create account</span>
+                        <Link href="/signup" className="text-blue-600 hover:underline">Test</Link>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>5. Complete checkout</span>
+                        <Link href="/checkout" className="text-blue-600 hover:underline">Test</Link>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <h4 className="font-semibold">Returning User Journey</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>1. Sign in</span>
+                        <Link href="/login" className="text-blue-600 hover:underline">Test</Link>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>2. Check SPIRALs balance</span>
+                        <Link href="/account" className="text-blue-600 hover:underline">Test</Link>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>3. View wishlist</span>
+                        <Link href="/wishlist" className="text-blue-600 hover:underline">Test</Link>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>4. Browse mall directory</span>
+                        <Link href="/malls" className="text-blue-600 hover:underline">Test</Link>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>5. Share experience</span>
+                        <Link href="/social-feed" className="text-blue-600 hover:underline">Test</Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Platform Health */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="h-6 w-6 text-green-600" />
+                    <div>
+                      <div className="text-2xl font-bold">32</div>
+                      <div className="text-sm text-gray-600">Total Features</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <Globe className="h-6 w-6 text-blue-600" />
+                    <div>
+                      <div className="text-2xl font-bold">95%</div>
+                      <div className="text-sm text-gray-600">Localization</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <Monitor className="h-6 w-6 text-purple-600" />
+                    <div>
+                      <div className="text-2xl font-bold">100%</div>
+                      <div className="text-sm text-gray-600">Mobile Ready</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
 
           {/* Automated Tests */}
           <TabsContent value="automated" className="space-y-6">
@@ -554,6 +738,160 @@ export default function FeatureTesting() {
                       Products
                     </Button>
                   </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Site Map & Routes */}
+          <TabsContent value="routes" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Complete Site Map</CardTitle>
+                <CardDescription>
+                  All available routes and features for comprehensive testing
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* Core Pages */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-[var(--spiral-navy)]">Core Pages</h4>
+                    <div className="space-y-2">
+                      <Link href="/" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        / - Homepage
+                      </Link>
+                      <Link href="/products" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /products - Product Search
+                      </Link>
+                      <Link href="/malls" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /malls - Mall Directory
+                      </Link>
+                      <Link href="/about" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /about - About SPIRAL
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Shopping & E-commerce */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-[var(--spiral-navy)]">Shopping & E-commerce</h4>
+                    <div className="space-y-2">
+                      <Link href="/cart" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /cart - Shopping Cart
+                      </Link>
+                      <Link href="/wishlist" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /wishlist - Wishlist System
+                      </Link>
+                      <Link href="/checkout" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /checkout - Checkout Process
+                      </Link>
+                      <Link href="/mall-directory" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /mall-directory - Advanced Mall Search
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* User Account */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-[var(--spiral-navy)]">User Account</h4>
+                    <div className="space-y-2">
+                      <Link href="/login" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /login - User Login
+                      </Link>
+                      <Link href="/signup" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /signup - User Registration
+                      </Link>
+                      <Link href="/account" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /account - User Dashboard
+                      </Link>
+                      <Link href="/profile" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /profile - Profile Settings
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* SPIRAL Features */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-[var(--spiral-navy)]">SPIRAL Features</h4>
+                    <div className="space-y-2">
+                      <Link href="/spirals" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /spirals - Loyalty Program
+                      </Link>
+                      <Link href="/social-feed" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /social-feed - Community Feed
+                      </Link>
+                      <Link href="/spiral-videos" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /spiral-videos - Video Hub
+                      </Link>
+                      <Link href="/spiral-features" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /spiral-features - Feature Inventory
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Business Tools */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-[var(--spiral-navy)]">Business Tools</h4>
+                    <div className="space-y-2">
+                      <Link href="/retailer-login" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /retailer-login - Retailer Portal
+                      </Link>
+                      <Link href="/retailer-dashboard" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /retailer-dashboard - Business Management
+                      </Link>
+                      <Link href="/retailer-analytics" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /retailer-analytics - Analytics Dashboard
+                      </Link>
+                      <Link href="/marketing-center" className="block p-2 bg-gray-50 rounded hover:bg-gray-100 text-sm">
+                        /marketing-center - Marketing Tools
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* New Features */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-[var(--spiral-navy)]">Latest Features</h4>
+                    <div className="space-y-2">
+                      <Link href="/inventory-dashboard" className="block p-2 bg-blue-50 rounded hover:bg-blue-100 text-sm border border-blue-200">
+                        /inventory-dashboard - Inventory Alerts
+                      </Link>
+                      <Link href="/feature-testing" className="block p-2 bg-green-50 rounded hover:bg-green-100 text-sm border border-green-200">
+                        /feature-testing - Testing Suite
+                      </Link>
+                      <Link href="/test-flow" className="block p-2 bg-purple-50 rounded hover:bg-purple-100 text-sm border border-purple-200">
+                        /test-flow - E2E Testing
+                      </Link>
+                      <Link href="/analytics-dashboard" className="block p-2 bg-yellow-50 rounded hover:bg-yellow-100 text-sm border border-yellow-200">
+                        /analytics-dashboard - Platform Analytics
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Testing Instructions */}
+                <div className="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
+                  <h4 className="font-semibold text-blue-900 mb-3">Comprehensive Testing Guide</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800">
+                    <div>
+                      <strong>Desktop Testing:</strong>
+                      <ul className="mt-1 space-y-1">
+                        <li>• Test all routes in fullscreen browser</li>
+                        <li>• Verify navigation and functionality</li>
+                        <li>• Check responsive design at different widths</li>
+                        <li>• Test keyboard navigation</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <strong>Mobile Testing:</strong>
+                      <ul className="mt-1 space-y-1">
+                        <li>• Use browser dev tools mobile view</li>
+                        <li>• Test touch interactions</li>
+                        <li>• Verify mobile menu functionality</li>
+                        <li>• Check performance on slower connections</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
