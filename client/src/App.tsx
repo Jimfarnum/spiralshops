@@ -103,6 +103,8 @@ function Router() {
       <Route path="/split-fulfillment" component={SplitFulfillment} />
       <Route path="/feature-audit" component={() => import('@/components/feature-parity-audit').then(m => m.default)} />
       <Route path="/competitive-analysis" component={() => import('@/components/competitive-analysis').then(m => m.default)} />
+      <Route path="/gift-card-system" component={() => import('@/components/gift-card-system').then(m => m.default)} />
+      <Route path="/retailer-demo" component={() => import('@/components/retailer-demo-dashboard').then(m => m.default)} />
       <Route component={NotFound} />
     </Switch>
   );

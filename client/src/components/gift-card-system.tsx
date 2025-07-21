@@ -1,274 +1,288 @@
 import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Gift, CreditCard, Mail, ShoppingBag, Calendar, Check, Copy } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import { 
+  Gift, 
+  CreditCard, 
+  Mail, 
+  Copy,
+  Check,
+  ShoppingBag,
+  Store,
+  MapPin,
+  Calendar,
+  DollarSign
+} from 'lucide-react';
 
 interface GiftCard {
-  id: string;
+  id: number;
   code: string;
-  originalAmount: number;
-  currentBalance: number;
+  purchasedByUserId?: number;
   recipientEmail?: string;
   recipientName?: string;
-  mallName?: string;
-  storeName?: string;
+  originalAmount: string;
+  currentBalance: string;
+  mallId?: number;
+  storeId?: number;
   personalMessage?: string;
+  isActive: boolean;
   expiresAt?: string;
   purchasedAt: string;
-  isActive: boolean;
+  redeemedAt?: string;
 }
-
-interface Mall {
-  id: string;
-  name: string;
-  storeCount: number;
-}
-
-interface Store {
-  id: string;
-  name: string;
-  mallId: string;
-  category: string;
-}
-
-const mockMalls: Mall[] = [
-  { id: '1', name: 'Westfield Valley Fair', storeCount: 240 },
-  { id: '2', name: 'Stanford Shopping Center', storeCount: 140 },
-  { id: '3', name: 'Santana Row', storeCount: 70 },
-];
-
-const mockStores: Store[] = [
-  { id: '1', name: 'Apple Store', mallId: '1', category: 'Electronics' },
-  { id: '2', name: 'Nordstrom', mallId: '1', category: 'Department Store' },
-  { id: '3', name: 'Zara', mallId: '2', category: 'Fashion' },
-  { id: '4', name: 'Cheesecake Factory', mallId: '3', category: 'Restaurant' },
-];
 
 export default function GiftCardSystem() {
   const [activeTab, setActiveTab] = useState('purchase');
-  const [selectedMall, setSelectedMall] = useState<string>('');
-  const [selectedStore, setSelectedStore] = useState<string>('');
-  const [giftCardForm, setGiftCardForm] = useState({
+  const [purchaseForm, setPurchaseForm] = useState({
     amount: '',
     recipientName: '',
     recipientEmail: '',
     personalMessage: '',
-    deliveryDate: '',
+    giftCardType: 'all-stores', // 'all-stores', 'mall-specific', 'store-specific'
+    mallId: '',
+    storeId: ''
   });
   const [redeemCode, setRedeemCode] = useState('');
-  const [purchasedGiftCard, setPurchasedGiftCard] = useState<GiftCard | null>(null);
+  const [copiedCode, setCopiedCode] = useState('');
+  
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const mockUserGiftCards: GiftCard[] = [
-    {
-      id: '1',
-      code: 'SPIRAL-GIFT-ABC123',
-      originalAmount: 50.00,
-      currentBalance: 35.50,
-      mallName: 'Westfield Valley Fair',
-      personalMessage: 'Happy Birthday!',
-      expiresAt: '2025-12-31',
-      purchasedAt: '2025-01-15',
-      isActive: true,
+  // Fetch user's gift cards
+  const { data: myGiftCards = [], isLoading: loadingMyCards } = useQuery({
+    queryKey: ['/api/gift-cards/my-cards'],
+  });
+
+  // Fetch available stores and malls for gift card selection
+  const { data: stores = [] } = useQuery({
+    queryKey: ['/api/stores'],
+  });
+
+  const { data: malls = [] } = useQuery({
+    queryKey: ['/api/malls'],
+  });
+
+  // Purchase gift card mutation
+  const purchaseGiftCardMutation = useMutation({
+    mutationFn: async (giftCardData: any) => {
+      return apiRequest('/api/gift-cards/purchase', {
+        method: 'POST',
+        body: JSON.stringify(giftCardData),
+      });
     },
-    {
-      id: '2',
-      code: 'SPIRAL-GIFT-XYZ789',
-      originalAmount: 100.00,
-      currentBalance: 100.00,
-      storeName: 'Apple Store',
-      personalMessage: 'Congratulations on your new job!',
-      expiresAt: '2025-08-31',
-      purchasedAt: '2025-01-10',
-      isActive: true,
-    }
-  ];
-
-  const handlePurchaseGiftCard = () => {
-    if (!giftCardForm.amount || !giftCardForm.recipientName || !giftCardForm.recipientEmail) {
+    onSuccess: (data) => {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
+        title: "Gift Card Purchased!",
+        description: `Gift card code: ${data.code}. Email sent to ${purchaseForm.recipientEmail}`,
+      });
+      setPurchaseForm({
+        amount: '',
+        recipientName: '',
+        recipientEmail: '',
+        personalMessage: '',
+        giftCardType: 'all-stores',
+        mallId: '',
+        storeId: ''
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/gift-cards/my-cards'] });
+    },
+    onError: () => {
+      toast({
+        title: "Purchase failed",
+        description: "Please check your payment information and try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Redeem gift card mutation
+  const redeemGiftCardMutation = useMutation({
+    mutationFn: async (code: string) => {
+      return apiRequest(`/api/gift-cards/redeem/${code}`, {
+        method: 'POST',
+      });
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Gift Card Redeemed!",
+        description: `$${data.amount} added to your account balance.`,
+      });
+      setRedeemCode('');
+      queryClient.invalidateQueries({ queryKey: ['/api/gift-cards/my-cards'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Redemption failed",
+        description: error.message || "Invalid or expired gift card code.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handlePurchaseGiftCard = async () => {
+    if (!purchaseForm.amount || !purchaseForm.recipientName || !purchaseForm.recipientEmail) {
+      toast({
+        title: "Please fill in all required fields",
+        description: "Amount, recipient name, and email are required.",
         variant: "destructive",
       });
       return;
     }
 
-    const amount = parseFloat(giftCardForm.amount);
-    if (amount < 5 || amount > 500) {
+    const amount = parseFloat(purchaseForm.amount);
+    if (amount < 5 || amount > 1000) {
       toast({
-        title: "Invalid Amount",
-        description: "Gift card amount must be between $5 and $500.",
+        title: "Invalid amount",
+        description: "Gift card amount must be between $5 and $1,000.",
         variant: "destructive",
       });
       return;
     }
 
-    // Generate gift card
-    const newGiftCard: GiftCard = {
-      id: Date.now().toString(),
-      code: `SPIRAL-GIFT-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+    const giftCardData = {
       originalAmount: amount,
       currentBalance: amount,
-      recipientName: giftCardForm.recipientName,
-      recipientEmail: giftCardForm.recipientEmail,
-      personalMessage: giftCardForm.personalMessage,
-      mallName: selectedMall ? mockMalls.find(m => m.id === selectedMall)?.name : undefined,
-      storeName: selectedStore ? mockStores.find(s => s.id === selectedStore)?.name : undefined,
-      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 year from now
-      purchasedAt: new Date().toISOString().split('T')[0],
-      isActive: true,
+      recipientName: purchaseForm.recipientName,
+      recipientEmail: purchaseForm.recipientEmail,
+      personalMessage: purchaseForm.personalMessage,
+      mallId: purchaseForm.giftCardType === 'mall-specific' ? parseInt(purchaseForm.mallId) : null,
+      storeId: purchaseForm.giftCardType === 'store-specific' ? parseInt(purchaseForm.storeId) : null,
+      purchasedByUserId: 1, // Mock user ID - would come from auth
     };
 
-    setPurchasedGiftCard(newGiftCard);
-    
-    // Reset form
-    setGiftCardForm({
-      amount: '',
-      recipientName: '',
-      recipientEmail: '',
-      personalMessage: '',
-      deliveryDate: '',
-    });
-    setSelectedMall('');
-    setSelectedStore('');
-
-    toast({
-      title: "Gift Card Purchased!",
-      description: `$${amount} gift card created and sent to ${giftCardForm.recipientEmail}`,
-    });
+    purchaseGiftCardMutation.mutate(giftCardData);
   };
 
   const handleRedeemGiftCard = () => {
     if (!redeemCode.trim()) {
       toast({
-        title: "Enter Gift Card Code",
-        description: "Please enter a valid gift card code to redeem.",
+        title: "Please enter a gift card code",
         variant: "destructive",
       });
       return;
     }
+    redeemGiftCardMutation.mutate(redeemCode.trim().toUpperCase());
+  };
 
-    // Simulate redemption validation
-    const validCodes = ['SPIRAL-GIFT-ABC123', 'SPIRAL-GIFT-XYZ789', 'SPIRAL-GIFT-DEMO123'];
-    
-    if (validCodes.includes(redeemCode.toUpperCase())) {
+  const copyToClipboard = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopiedCode(code);
       toast({
-        title: "Gift Card Redeemed!",
-        description: "Gift card balance has been applied to your account.",
+        title: "Code copied to clipboard!",
       });
-      setRedeemCode('');
-    } else {
+      setTimeout(() => setCopiedCode(''), 2000);
+    } catch (err) {
       toast({
-        title: "Invalid Gift Card",
-        description: "This gift card code is not valid or has already been used.",
+        title: "Failed to copy code",
         variant: "destructive",
       });
     }
   };
 
-  const copyGiftCardCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    toast({
-      title: "Code Copied",
-      description: "Gift card code copied to clipboard.",
-    });
+  const getGiftCardTypeDisplay = (giftCard: GiftCard) => {
+    if (giftCard.storeId) return "Store-Specific";
+    if (giftCard.mallId) return "Mall-Specific";
+    return "All SPIRAL Stores";
   };
 
-  const filteredStores = selectedMall ? mockStores.filter(store => store.mallId === selectedMall) : [];
-
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-[var(--spiral-navy)] mb-3">SPIRAL Gift Cards</h1>
-        <p className="text-lg text-gray-600">Give the gift of local shopping with SPIRAL gift cards</p>
-      </div>
+    <div className="min-h-screen bg-[var(--spiral-cream)] py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4 flex items-center gap-3">
+            <Gift className="h-8 w-8 text-[var(--spiral-coral)]" />
+            SPIRAL Gift Cards
+          </h1>
+          <p className="text-gray-600 text-lg">
+            Give the gift of local shopping with SPIRAL gift cards
+          </p>
+        </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="purchase">Purchase Gift Card</TabsTrigger>
-          <TabsTrigger value="redeem">Redeem Gift Card</TabsTrigger>
-          <TabsTrigger value="manage">My Gift Cards</TabsTrigger>
-        </TabsList>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="purchase">Purchase Gift Cards</TabsTrigger>
+            <TabsTrigger value="redeem">Redeem Gift Cards</TabsTrigger>
+            <TabsTrigger value="my-cards">My Gift Cards</TabsTrigger>
+          </TabsList>
 
-        {/* Purchase Gift Card Tab */}
-        <TabsContent value="purchase" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Gift className="h-5 w-5 text-[var(--spiral-coral)]" />
-                Purchase Gift Card
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Gift Card Type Selection */}
-              <div className="space-y-4">
-                <Label className="text-base font-medium">Gift Card Type</Label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card className={`cursor-pointer border-2 transition-all ${!selectedMall && !selectedStore ? 'border-[var(--spiral-coral)] bg-[var(--spiral-coral)]/5' : 'border-gray-200 hover:border-gray-300'}`} 
-                        onClick={() => { setSelectedMall(''); setSelectedStore(''); }}>
-                    <CardContent className="p-4 text-center">
-                      <ShoppingBag className="h-8 w-8 mx-auto mb-2 text-[var(--spiral-coral)]" />
-                      <h3 className="font-medium mb-1">All SPIRAL Stores</h3>
-                      <p className="text-sm text-gray-600">Use at any SPIRAL partner store</p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className={`cursor-pointer border-2 transition-all ${selectedMall && !selectedStore ? 'border-[var(--spiral-coral)] bg-[var(--spiral-coral)]/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <CardContent className="p-4 text-center">
-                      <Gift className="h-8 w-8 mx-auto mb-2 text-[var(--spiral-sage)]" />
-                      <h3 className="font-medium mb-1">Specific Mall</h3>
-                      <p className="text-sm text-gray-600">Use at stores in one mall</p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className={`cursor-pointer border-2 transition-all ${selectedStore ? 'border-[var(--spiral-coral)] bg-[var(--spiral-coral)]/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <CardContent className="p-4 text-center">
-                      <CreditCard className="h-8 w-8 mx-auto mb-2 text-[var(--spiral-gold)]" />
-                      <h3 className="font-medium mb-1">Specific Store</h3>
-                      <p className="text-sm text-gray-600">Use at one specific store</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-
-              {/* Mall Selection */}
-              {(selectedMall || selectedStore) && (
-                <div className="space-y-4">
+          {/* Purchase Gift Cards */}
+          <TabsContent value="purchase" className="mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Purchase Form */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Purchase a Gift Card</CardTitle>
+                  <CardDescription>
+                    Perfect for birthdays, holidays, or any special occasion
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Gift Card Type */}
                   <div>
-                    <Label htmlFor="mall-select">Select Mall</Label>
-                    <Select value={selectedMall} onValueChange={setSelectedMall}>
+                    <Label htmlFor="giftCardType">Gift Card Type</Label>
+                    <Select 
+                      value={purchaseForm.giftCardType} 
+                      onValueChange={(value) => setPurchaseForm(prev => ({ ...prev, giftCardType: value }))}
+                    >
                       <SelectTrigger>
-                        <SelectValue placeholder="Choose a mall" />
+                        <SelectValue placeholder="Select gift card type" />
                       </SelectTrigger>
                       <SelectContent>
-                        {mockMalls.map((mall) => (
-                          <SelectItem key={mall.id} value={mall.id}>
-                            {mall.name} ({mall.storeCount} stores)
-                          </SelectItem>
-                        ))}
+                        <SelectItem value="all-stores">All SPIRAL Stores</SelectItem>
+                        <SelectItem value="mall-specific">Specific Mall</SelectItem>
+                        <SelectItem value="store-specific">Specific Store</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Store Selection */}
-                  {selectedStore && selectedMall && (
+                  {/* Mall Selection */}
+                  {purchaseForm.giftCardType === 'mall-specific' && (
                     <div>
-                      <Label htmlFor="store-select">Select Store</Label>
-                      <Select value={selectedStore} onValueChange={setSelectedStore}>
+                      <Label htmlFor="mallId">Select Mall</Label>
+                      <Select 
+                        value={purchaseForm.mallId} 
+                        onValueChange={(value) => setPurchaseForm(prev => ({ ...prev, mallId: value }))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose a mall" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {malls.map((mall: any) => (
+                            <SelectItem key={mall.id} value={mall.id.toString()}>
+                              {mall.name} - {mall.city}, {mall.state}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {/* Store Selection */}
+                  {purchaseForm.giftCardType === 'store-specific' && (
+                    <div>
+                      <Label htmlFor="storeId">Select Store</Label>
+                      <Select 
+                        value={purchaseForm.storeId} 
+                        onValueChange={(value) => setPurchaseForm(prev => ({ ...prev, storeId: value }))}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Choose a store" />
                         </SelectTrigger>
                         <SelectContent>
-                          {filteredStores.map((store) => (
-                            <SelectItem key={store.id} value={store.id}>
+                          {stores.map((store: any) => (
+                            <SelectItem key={store.id} value={store.id.toString()}>
                               {store.name} - {store.category}
                             </SelectItem>
                           ))}
@@ -276,234 +290,280 @@ export default function GiftCardSystem() {
                       </Select>
                     </div>
                   )}
-                </div>
-              )}
 
-              {/* Gift Card Details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="amount">Gift Card Amount ($)</Label>
-                  <Input
-                    id="amount"
-                    type="number"
-                    min="5"
-                    max="500"
-                    placeholder="Enter amount (5-500)"
-                    value={giftCardForm.amount}
-                    onChange={(e) => setGiftCardForm({...giftCardForm, amount: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="delivery-date">Delivery Date (Optional)</Label>
-                  <Input
-                    id="delivery-date"
-                    type="date"
-                    value={giftCardForm.deliveryDate}
-                    onChange={(e) => setGiftCardForm({...giftCardForm, deliveryDate: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              {/* Recipient Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="recipient-name">Recipient Name *</Label>
-                  <Input
-                    id="recipient-name"
-                    placeholder="Enter recipient's name"
-                    value={giftCardForm.recipientName}
-                    onChange={(e) => setGiftCardForm({...giftCardForm, recipientName: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="recipient-email">Recipient Email *</Label>
-                  <Input
-                    id="recipient-email"
-                    type="email"
-                    placeholder="Enter recipient's email"
-                    value={giftCardForm.recipientEmail}
-                    onChange={(e) => setGiftCardForm({...giftCardForm, recipientEmail: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              {/* Personal Message */}
-              <div>
-                <Label htmlFor="personal-message">Personal Message (Optional)</Label>
-                <Textarea
-                  id="personal-message"
-                  placeholder="Add a personal message to your gift card..."
-                  rows={3}
-                  value={giftCardForm.personalMessage}
-                  onChange={(e) => setGiftCardForm({...giftCardForm, personalMessage: e.target.value})}
-                />
-              </div>
-
-              <Button 
-                onClick={handlePurchaseGiftCard}
-                className="w-full button-primary"
-                size="lg"
-              >
-                <Gift className="h-4 w-4 mr-2" />
-                Purchase Gift Card
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Purchase Confirmation */}
-          {purchasedGiftCard && (
-            <Card className="border-green-200 bg-green-50">
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <Check className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-green-800 mb-2">Gift Card Created!</h3>
-                  <p className="text-green-700 mb-4">
-                    Your ${purchasedGiftCard.originalAmount} gift card has been sent to {purchasedGiftCard.recipientEmail}
-                  </p>
-                  
-                  <div className="bg-white rounded-lg p-4 border border-green-200 max-w-md mx-auto">
-                    <div className="text-sm text-gray-600 mb-2">Gift Card Code:</div>
-                    <div className="flex items-center justify-center gap-2">
-                      <code className="font-mono text-lg font-bold">{purchasedGiftCard.code}</code>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => copyGiftCardCode(purchasedGiftCard.code)}
-                      >
-                        <Copy className="h-3 w-3" />
-                      </Button>
+                  {/* Amount */}
+                  <div>
+                    <Label htmlFor="amount">Amount ($5 - $1,000) *</Label>
+                    <div className="relative">
+                      <DollarSign className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="amount"
+                        type="number"
+                        min="5"
+                        max="1000"
+                        value={purchaseForm.amount}
+                        onChange={(e) => setPurchaseForm(prev => ({ ...prev, amount: e.target.value }))}
+                        placeholder="25.00"
+                        className="pl-10"
+                      />
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
 
-        {/* Redeem Gift Card Tab */}
-        <TabsContent value="redeem" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-[var(--spiral-coral)]" />
-                Redeem Gift Card
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="redeem-code">Gift Card Code</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="redeem-code"
-                    placeholder="Enter gift card code (e.g., SPIRAL-GIFT-ABC123)"
-                    value={redeemCode}
-                    onChange={(e) => setRedeemCode(e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button onClick={handleRedeemGiftCard}>
-                    Redeem
+                  {/* Recipient Details */}
+                  <div>
+                    <Label htmlFor="recipientName">Recipient Name *</Label>
+                    <Input
+                      id="recipientName"
+                      value={purchaseForm.recipientName}
+                      onChange={(e) => setPurchaseForm(prev => ({ ...prev, recipientName: e.target.value }))}
+                      placeholder="John Doe"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="recipientEmail">Recipient Email *</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="recipientEmail"
+                        type="email"
+                        value={purchaseForm.recipientEmail}
+                        onChange={(e) => setPurchaseForm(prev => ({ ...prev, recipientEmail: e.target.value }))}
+                        placeholder="john@example.com"
+                        className="pl-10"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Personal Message */}
+                  <div>
+                    <Label htmlFor="personalMessage">Personal Message (Optional)</Label>
+                    <Textarea
+                      id="personalMessage"
+                      value={purchaseForm.personalMessage}
+                      onChange={(e) => setPurchaseForm(prev => ({ ...prev, personalMessage: e.target.value }))}
+                      placeholder="Happy Birthday! Enjoy shopping local..."
+                      rows={3}
+                    />
+                  </div>
+
+                  <Button 
+                    onClick={handlePurchaseGiftCard}
+                    disabled={purchaseGiftCardMutation.isPending}
+                    className="w-full bg-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/90"
+                  >
+                    {purchaseGiftCardMutation.isPending ? 'Processing...' : `Purchase Gift Card`}
                   </Button>
-                </div>
-              </div>
-              
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-medium text-blue-900 mb-2">How to Redeem:</h4>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>• Enter your gift card code above</li>
-                  <li>• Balance will be applied to your SPIRAL account</li>
-                  <li>• Use during checkout at any participating store</li>
-                  <li>• Check remaining balance in "My Gift Cards" tab</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* My Gift Cards Tab */}
-        <TabsContent value="manage" className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-[var(--spiral-navy)]">My Gift Cards</h2>
-            <Badge variant="outline">
-              {mockUserGiftCards.length} Active Cards
-            </Badge>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {mockUserGiftCards.map((giftCard) => (
-              <Card key={giftCard.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="font-semibold text-lg">
-                        ${giftCard.currentBalance.toFixed(2)} / ${giftCard.originalAmount.toFixed(2)}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {giftCard.mallName || giftCard.storeName || 'All SPIRAL Stores'}
-                      </p>
-                    </div>
-                    <Badge className={giftCard.currentBalance > 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
-                      {giftCard.currentBalance > 0 ? 'Active' : 'Used'}
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Code:</span>
-                      <div className="flex items-center gap-2">
-                        <code className="font-mono">{giftCard.code}</code>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => copyGiftCardCode(giftCard.code)}
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    {giftCard.personalMessage && (
-                      <div className="flex items-start justify-between">
-                        <span className="text-gray-600">Message:</span>
-                        <span className="text-right max-w-xs">{giftCard.personalMessage}</span>
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Expires:</span>
-                      <span>{giftCard.expiresAt ? new Date(giftCard.expiresAt).toLocaleDateString() : 'No expiration'}</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Purchased:</span>
-                      <span>{new Date(giftCard.purchasedAt).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  
-                  {giftCard.currentBalance > 0 && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      <Button variant="outline" size="sm" className="w-full">
-                        <ShoppingBag className="h-3 w-3 mr-2" />
-                        Use This Gift Card
-                      </Button>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
-            ))}
-          </div>
-          
-          {mockUserGiftCards.length === 0 && (
-            <div className="text-center py-12">
-              <Gift className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Gift Cards Yet</h3>
-              <p className="text-gray-600 mb-4">Purchase your first gift card to get started!</p>
-              <Button onClick={() => setActiveTab('purchase')}>
-                Purchase Gift Card
-              </Button>
+
+              {/* Gift Card Preview */}
+              <div className="space-y-6">
+                <Card className="bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-navy)] text-white">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="text-xl font-bold">SPIRAL Gift Card</h3>
+                        <p className="text-white/80">
+                          {getGiftCardTypeDisplay({
+                            storeId: purchaseForm.giftCardType === 'store-specific' ? 1 : undefined,
+                            mallId: purchaseForm.giftCardType === 'mall-specific' ? 1 : undefined,
+                          } as GiftCard)}
+                        </p>
+                      </div>
+                      <Gift className="h-12 w-12 text-white/80" />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="text-3xl font-bold">
+                        ${purchaseForm.amount || '25.00'}
+                      </div>
+                      <div className="text-sm text-white/80">
+                        Valid at participating SPIRAL locations
+                      </div>
+                    </div>
+                    
+                    {purchaseForm.recipientName && (
+                      <div className="mt-4 pt-4 border-t border-white/20">
+                        <p className="text-sm">For: {purchaseForm.recipientName}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Gift Card Types Info */}
+                <Card>
+                  <CardContent className="p-6">
+                    <h4 className="font-semibold mb-3">Gift Card Options</h4>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-start gap-3">
+                        <ShoppingBag className="h-4 w-4 mt-0.5 text-[var(--spiral-coral)]" />
+                        <div>
+                          <div className="font-medium">All SPIRAL Stores</div>
+                          <div className="text-gray-600">Use at any participating store nationwide</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <MapPin className="h-4 w-4 mt-0.5 text-[var(--spiral-coral)]" />
+                        <div>
+                          <div className="font-medium">Mall-Specific</div>
+                          <div className="text-gray-600">Use at any store within a specific mall</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Store className="h-4 w-4 mt-0.5 text-[var(--spiral-coral)]" />
+                        <div>
+                          <div className="font-medium">Store-Specific</div>
+                          <div className="text-gray-600">Use at one particular store location</div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
-          )}
-        </TabsContent>
-      </Tabs>
+          </TabsContent>
+
+          {/* Redeem Gift Cards */}
+          <TabsContent value="redeem" className="mt-6">
+            <Card className="max-w-md mx-auto">
+              <CardHeader>
+                <CardTitle>Redeem Gift Card</CardTitle>
+                <CardDescription>
+                  Enter your gift card code to add funds to your account
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="redeemCode">Gift Card Code</Label>
+                  <Input
+                    id="redeemCode"
+                    value={redeemCode}
+                    onChange={(e) => setRedeemCode(e.target.value.toUpperCase())}
+                    placeholder="SPIRAL-XXXX-XXXX"
+                    className="font-mono text-center"
+                  />
+                </div>
+                
+                <Button 
+                  onClick={handleRedeemGiftCard}
+                  disabled={redeemGiftCardMutation.isPending}
+                  className="w-full bg-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/90"
+                >
+                  {redeemGiftCardMutation.isPending ? 'Redeeming...' : 'Redeem Gift Card'}
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* My Gift Cards */}
+          <TabsContent value="my-cards" className="mt-6">
+            {loadingMyCards ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[1, 2].map((i) => (
+                  <Card key={i}>
+                    <CardContent className="p-6">
+                      <div className="animate-pulse space-y-4">
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : myGiftCards.length === 0 ? (
+              <Card>
+                <CardContent className="p-12 text-center">
+                  <Gift className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No Gift Cards Yet</h3>
+                  <p className="text-gray-600 mb-6">
+                    You haven't purchased any gift cards yet. Get started by purchasing your first gift card!
+                  </p>
+                  <Button 
+                    onClick={() => setActiveTab('purchase')}
+                    className="bg-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/90"
+                  >
+                    Purchase Gift Card
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {myGiftCards.map((giftCard: GiftCard) => (
+                  <Card key={giftCard.id} className={`${giftCard.currentBalance === '0.00' ? 'opacity-60' : ''}`}>
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h3 className="font-semibold text-[var(--spiral-navy)]">
+                            SPIRAL Gift Card
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            {getGiftCardTypeDisplay(giftCard)}
+                          </p>
+                        </div>
+                        <Badge variant={giftCard.isActive ? 'default' : 'secondary'}>
+                          {giftCard.currentBalance === '0.00' ? 'Used' : 'Active'}
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Balance:</span>
+                          <span className="font-semibold text-xl">
+                            ${parseFloat(giftCard.currentBalance).toFixed(2)}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Code:</span>
+                          <div className="flex items-center gap-2">
+                            <code className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
+                              {giftCard.code}
+                            </code>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => copyToClipboard(giftCard.code)}
+                              className="p-1 h-8 w-8"
+                            >
+                              {copiedCode === giftCard.code ? (
+                                <Check className="h-4 w-4 text-green-600" />
+                              ) : (
+                                <Copy className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between text-sm text-gray-600">
+                          <span>Purchased:</span>
+                          <span>{new Date(giftCard.purchasedAt).toLocaleDateString()}</span>
+                        </div>
+                        
+                        {giftCard.expiresAt && (
+                          <div className="flex items-center justify-between text-sm text-gray-600">
+                            <span>Expires:</span>
+                            <span>{new Date(giftCard.expiresAt).toLocaleDateString()}</span>
+                          </div>
+                        )}
+                        
+                        {giftCard.recipientName && (
+                          <div className="pt-2 border-t">
+                            <p className="text-sm text-gray-600">
+                              Gift for: <span className="font-medium">{giftCard.recipientName}</span>
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }

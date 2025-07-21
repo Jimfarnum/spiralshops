@@ -1,7 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema } from "@shared/schema";
+import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema, insertGiftCardSchema } from "@shared/schema";
+import { reviewsStorage } from "./reviewsStorage";
+import { giftCardsStorage } from "./giftCardsStorage";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -322,6 +324,129 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(orders);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch user orders" });
+    }
+  });
+
+  // Review routes
+  app.get("/api/reviews/:reviewType/:targetId", async (req, res) => {
+    try {
+      const { reviewType, targetId } = req.params;
+      if (!['product', 'store'].includes(reviewType)) {
+        return res.status(400).json({ message: "Invalid review type" });
+      }
+      
+      const reviews = await reviewsStorage.getReviewsByTarget(reviewType, targetId);
+      res.json(reviews);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch reviews" });
+    }
+  });
+
+  app.post("/api/reviews", async (req, res) => {
+    try {
+      const validatedData = insertReviewSchema.parse(req.body);
+      const review = await reviewsStorage.createReview(validatedData);
+      res.status(201).json(review);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid review data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create review" });
+    }
+  });
+
+  app.post("/api/reviews/:reviewId/helpful", async (req, res) => {
+    try {
+      const reviewId = parseInt(req.params.reviewId);
+      if (isNaN(reviewId)) {
+        return res.status(400).json({ message: "Invalid review ID" });
+      }
+      
+      const review = await reviewsStorage.updateReviewHelpfulVotes(reviewId);
+      res.json(review);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update helpful votes" });
+    }
+  });
+
+  // Gift card routes
+  app.post("/api/gift-cards/purchase", async (req, res) => {
+    try {
+      const validatedData = insertGiftCardSchema.parse(req.body);
+      const giftCard = await giftCardsStorage.createGiftCard(validatedData);
+      res.status(201).json(giftCard);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid gift card data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to purchase gift card" });
+    }
+  });
+
+  app.get("/api/gift-cards/my-cards", async (req, res) => {
+    try {
+      // Mock user ID for demo - would come from auth
+      const userId = 1;
+      const giftCards = await giftCardsStorage.getUserGiftCards(userId);
+      res.json(giftCards);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch gift cards" });
+    }
+  });
+
+  app.post("/api/gift-cards/redeem/:code", async (req, res) => {
+    try {
+      const { code } = req.params;
+      const giftCard = await giftCardsStorage.getGiftCardByCode(code);
+      
+      if (!giftCard) {
+        return res.status(404).json({ message: "Gift card not found" });
+      }
+
+      if (!giftCard.isActive || parseFloat(giftCard.currentBalance) <= 0) {
+        return res.status(400).json({ message: "Gift card is invalid or has been fully used" });
+      }
+
+      // For demo, redeem full amount - in real app, would redeem specific amount
+      const amount = parseFloat(giftCard.currentBalance);
+      const updatedGiftCard = await giftCardsStorage.redeemGiftCard(code, amount);
+      
+      res.json({ message: "Gift card redeemed successfully", amount });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to redeem gift card" });
+    }
+  });
+
+  // Mock mall data endpoint
+  app.get("/api/malls", async (req, res) => {
+    try {
+      // Mock mall data for demo
+      const malls = [
+        {
+          id: 1,
+          name: "Downtown Shopping Center",
+          city: "New York",
+          state: "NY",
+          storeCount: 45
+        },
+        {
+          id: 2,
+          name: "Westfield Valley Fair",
+          city: "San Francisco",
+          state: "CA",
+          storeCount: 78
+        },
+        {
+          id: 3,
+          name: "Mall of America",
+          city: "Minneapolis",
+          state: "MN",
+          storeCount: 120
+        }
+      ];
+      res.json(malls);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch malls" });
     }
   });
 
