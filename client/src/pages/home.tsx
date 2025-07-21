@@ -106,11 +106,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* SPIRAL Logo */}
           <div className="flex justify-center mb-8">
-            <img 
-              src="@assets/mqy7md_1753112885975.jpg" 
-              alt="SPIRAL Logo" 
-              className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain"
-            />
+            <div className="relative">
+              <img 
+                src="@assets/mqy7md_1753112885975.jpg" 
+                alt="SPIRAL - Everything Local. Just for You." 
+                className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           </div>
           
           <h1 className="text-4xl lg:text-5xl font-bold text-[var(--spiral-navy)] mb-6">
