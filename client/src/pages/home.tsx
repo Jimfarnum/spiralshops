@@ -308,6 +308,166 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Featured Malls Section */}
+      <section className="section-modern bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">Featured Malls</h2>
+            <p className="text-xl text-gray-600">Discover local shopping destinations with the best stores and experiences</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {[
+              {
+                name: "Downtown Plaza",
+                location: "Downtown District",
+                stores: 45,
+                image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=300",
+                featured: "Fashion & Electronics",
+                href: "/mall/downtown-plaza"
+              },
+              {
+                name: "Riverside Shopping Center",
+                location: "Riverside Area",
+                stores: 32,
+                image: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=300",
+                featured: "Home & Lifestyle",
+                href: "/mall/riverside-center"
+              },
+              {
+                name: "Heritage Square Mall",
+                location: "Historic Quarter",
+                stores: 28,
+                image: "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=300",
+                featured: "Local Artisans & Food",
+                href: "/mall/heritage-square"
+              }
+            ].map((mall, index) => (
+              <Link key={index} href={mall.href} className="group">
+                <div className="card-modern overflow-hidden">
+                  <div className="aspect-video overflow-hidden">
+                    <img 
+                      src={mall.image} 
+                      alt={mall.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-2 group-hover:text-[var(--spiral-coral)] transition-colors">
+                      {mall.name}
+                    </h3>
+                    <p className="text-gray-600 mb-2">{mall.location}</p>
+                    <p className="text-sm text-[var(--spiral-coral)] font-medium mb-3">{mall.stores} stores • {mall.featured}</p>
+                    <Button className="w-full button-secondary">
+                      Explore Mall
+                    </Button>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+          
+          <div className="text-center">
+            <Link href="/mall-directory">
+              <Button className="button-secondary px-8 py-4 text-lg">
+                View All Malls
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Local Picks Section */}
+      <section className="section-modern bg-[var(--spiral-cream)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">Local Picks</h2>
+            <p className="text-xl text-gray-600">Handpicked favorites from your neighborhood stores</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {[
+              {
+                name: "Artisan Coffee Roast",
+                price: 28.99,
+                image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300",
+                store: "Local Roasters Co.",
+                category: "Featured",
+                spiralsEarned: 15,
+                badge: "Staff Pick"
+              },
+              {
+                name: "Handwoven Scarf",
+                price: 42.50,
+                image: "https://images.unsplash.com/photo-1519810409259-73e5a5c00adf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300",
+                store: "Artisan Threads",
+                category: "Featured",
+                spiralsEarned: 20,
+                badge: "Local Favorite"
+              },
+              {
+                name: "Organic Honey Set",
+                price: 18.99,
+                image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300",
+                store: "Valley Bee Farm",
+                category: "Featured",
+                spiralsEarned: 10,
+                badge: "Best Value"
+              },
+              {
+                name: "Ceramic Plant Pot",
+                price: 24.99,
+                image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300",
+                store: "Garden Studio",
+                category: "Featured",
+                spiralsEarned: 12,
+                badge: "Trending"
+              }
+            ].map((product, index) => (
+              <div key={index} className="card-product group">
+                <div className="aspect-square overflow-hidden relative">
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="text-xs px-3 py-1 bg-[var(--spiral-gold)] text-white rounded-full font-medium">
+                      {product.badge}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-lg font-semibold text-[var(--spiral-navy)] mb-2 group-hover:text-[var(--spiral-coral)] transition-colors line-clamp-2">
+                    {product.name}
+                  </h3>
+                  <p className="text-sm font-medium text-gray-700 mb-4">{product.store}</p>
+                  
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-2xl font-bold text-[var(--spiral-navy)]">${product.price}</span>
+                    <div className="flex items-center text-[var(--spiral-coral)] bg-[var(--spiral-coral)]/10 px-2 py-1 rounded-full">
+                      <span className="text-xs font-semibold">+{product.spiralsEarned} SPIRALs</span>
+                    </div>
+                  </div>
+                  
+                  <Button className="w-full button-primary">
+                    Add to Cart
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center">
+            <Link href="/products?category=featured">
+              <Button className="button-secondary px-8 py-4 text-lg">
+                View All Local Picks
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Three-Column Value Props */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

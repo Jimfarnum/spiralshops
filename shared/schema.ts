@@ -139,3 +139,57 @@ export type InsertSpiralTransaction = z.infer<typeof insertSpiralTransactionSche
 export type SpiralTransaction = typeof spiralTransactions.$inferSelect;
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type Order = typeof orders.$inferSelect;
+
+// Invite codes table for friend referral system
+export const inviteCodes = pgTable("invite_codes", {
+  id: serial("id").primaryKey(),
+  code: text("code").unique().notNull(),
+  creatorUserId: integer("creator_user_id").notNull().references(() => users.id),
+  usedByUserId: integer("used_by_user_id").references(() => users.id),
+  spiralsAwarded: integer("spirals_awarded").default(20),
+  maxUses: integer("max_uses").default(1),
+  currentUses: integer("current_uses").default(0),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  usedAt: timestamp("used_at"),
+});
+
+// Leaderboard tracking table
+export const leaderboardEntries = pgTable("leaderboard_entries", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  category: text("category").notNull(), // 'total_spirals', 'monthly_spirals', 'referrals', 'purchases'
+  score: integer("score").notNull(),
+  rank: integer("rank"),
+  period: text("period").notNull(), // 'all_time', '2025-01', etc.
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Relations for new tables
+export const inviteCodesRelations = relations(inviteCodes, ({ one }) => ({
+  creator: one(users, {
+    fields: [inviteCodes.creatorUserId],
+    references: [users.id],
+  }),
+  usedBy: one(users, {
+    fields: [inviteCodes.usedByUserId],
+    references: [users.id],
+  }),
+}));
+
+export const leaderboardEntriesRelations = relations(leaderboardEntries, ({ one }) => ({
+  user: one(users, {
+    fields: [leaderboardEntries.userId],
+    references: [users.id],
+  }),
+}));
+
+// Insert schemas for new tables
+export const insertInviteCodeSchema = createInsertSchema(inviteCodes);
+export const insertLeaderboardEntrySchema = createInsertSchema(leaderboardEntries);
+
+// Additional type exports
+export type InviteCode = typeof inviteCodes.$inferSelect;
+export type InsertInviteCode = z.infer<typeof insertInviteCodeSchema>;
+export type LeaderboardEntry = typeof leaderboardEntries.$inferSelect;
+export type InsertLeaderboardEntry = z.infer<typeof insertLeaderboardEntrySchema>;
