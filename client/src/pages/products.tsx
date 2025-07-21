@@ -11,7 +11,9 @@ import { Badge } from '@/components/ui/badge';
 import ProductCard from '@/components/product-card';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-import { Search, Filter, X, MapPin } from 'lucide-react';
+import LocationFilter from '@/components/location-filter';
+import { useLocationStore } from '@/lib/locationStore';
+import { Search, Filter, X, MapPin, Building2, Navigation } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -23,22 +25,26 @@ interface Product {
   description?: string;
   distance?: number;
   zipCode?: string;
+  mallId?: string;
+  mallName?: string;
+  city?: string;
+  state?: string;
 }
 
-// Extended product data for filtering
+// Extended product data for filtering with mall information
 const allProducts: Product[] = [
-  { id: 1, name: "Artisan Coffee Blend", price: 24.99, image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Local Roasters", category: "food", description: "Premium single-origin coffee blend", distance: 0.8, zipCode: "10001" },
-  { id: 2, name: "Handmade Ceramic Mug", price: 18.50, image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Pottery Studio", category: "home", description: "Beautiful handcrafted ceramic mug", distance: 1.2, zipCode: "10001" },
-  { id: 3, name: "Organic Honey", price: 12.99, image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Bee Farm Co.", category: "food", description: "Pure organic wildflower honey", distance: 2.1, zipCode: "10002" },
-  { id: 4, name: "Vintage Leather Jacket", price: 89.99, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Vintage Threads", category: "clothing", description: "Classic leather jacket in excellent condition", distance: 0.5, zipCode: "10001" },
-  { id: 5, name: "Plant-Based Soap", price: 8.75, image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Natural Goods", category: "beauty", description: "Eco-friendly soap with natural ingredients", distance: 1.8, zipCode: "10002" },
-  { id: 6, name: "Wood Phone Stand", price: 15.99, image: "https://images.unsplash.com/photo-1586953209889-097d0faf7982?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Craft Corner", category: "tech", description: "Sustainable bamboo phone stand", distance: 1.0, zipCode: "10001" },
-  { id: 7, name: "Local Fruit Basket", price: 22.50, image: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Fresh Farm", category: "food", description: "Seasonal local fruit selection", distance: 3.2, zipCode: "10003" },
-  { id: 8, name: "Knitted Scarf", price: 34.99, image: "https://images.unsplash.com/photo-1519810409259-73e5a5c00adf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Yarn Works", category: "clothing", description: "Hand-knitted wool scarf", distance: 1.5, zipCode: "10002" },
-  { id: 9, name: "Herbal Tea Set", price: 28.99, image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Tea Garden", category: "food", description: "Collection of organic herbal teas", distance: 2.0, zipCode: "10002" },
-  { id: 10, name: "Handwoven Basket", price: 45.00, image: "https://images.unsplash.com/photo-1586953209889-097d0faf7982?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Artisan Market", category: "home", description: "Traditional handwoven storage basket", distance: 2.8, zipCode: "10003" },
-  { id: 11, name: "Organic Face Cream", price: 32.50, image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Pure Beauty", category: "beauty", description: "Anti-aging cream with natural ingredients", distance: 1.1, zipCode: "10001" },
-  { id: 12, name: "Canvas Tote Bag", price: 19.99, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Eco Shop", category: "clothing", description: "Sustainable cotton canvas bag", distance: 1.7, zipCode: "10002" }
+  { id: 1, name: "Artisan Coffee Blend", price: 24.99, image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Local Roasters", category: "food", description: "Premium single-origin coffee blend", distance: 0.8, zipCode: "55401", city: "Minneapolis", state: "MN", mallId: "mall-1", mallName: "Ridgedale Mall" },
+  { id: 2, name: "Handmade Ceramic Mug", price: 18.50, image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Pottery Studio", category: "home", description: "Beautiful handcrafted ceramic mug", distance: 1.2, zipCode: "55424", city: "Bloomington", state: "MN", mallId: "mall-2", mallName: "Mall of America" },
+  { id: 3, name: "Organic Honey", price: 12.99, image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Bee Farm Co.", category: "food", description: "Pure organic wildflower honey", distance: 2.1, zipCode: "55344", city: "Minnetonka", state: "MN" },
+  { id: 4, name: "Vintage Leather Jacket", price: 89.99, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Vintage Threads", category: "clothing", description: "Classic leather jacket in excellent condition", distance: 0.5, zipCode: "55424", city: "Bloomington", state: "MN", mallId: "mall-2", mallName: "Mall of America" },
+  { id: 5, name: "Plant-Based Soap", price: 8.75, image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Natural Goods", category: "beauty", description: "Eco-friendly soap with natural ingredients", distance: 1.8, zipCode: "55425", city: "Edina", state: "MN", mallId: "mall-3", mallName: "Southdale Center" },
+  { id: 6, name: "Wood Phone Stand", price: 15.99, image: "https://images.unsplash.com/photo-1586953209889-097d0faf7982?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Craft Corner", category: "tech", description: "Sustainable bamboo phone stand", distance: 1.0, zipCode: "55401", city: "Minneapolis", state: "MN" },
+  { id: 7, name: "Local Fruit Basket", price: 22.50, image: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Fresh Farm", category: "food", description: "Seasonal local fruit selection", distance: 3.2, zipCode: "55113", city: "Roseville", state: "MN", mallId: "mall-4", mallName: "Rosedale Center" },
+  { id: 8, name: "Knitted Scarf", price: 34.99, image: "https://images.unsplash.com/photo-1519810409259-73e5a5c00adf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Yarn Works", category: "clothing", description: "Hand-knitted wool scarf", distance: 1.5, zipCode: "55425", city: "Edina", state: "MN", mallId: "mall-3", mallName: "Southdale Center" },
+  { id: 9, name: "Herbal Tea Set", price: 28.99, image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Tea Garden", category: "food", description: "Collection of organic herbal teas", distance: 2.0, zipCode: "55337", city: "Burnsville", state: "MN", mallId: "mall-5", mallName: "Burnsville Center" },
+  { id: 10, name: "Handwoven Basket", price: 45.00, image: "https://images.unsplash.com/photo-1586953209889-097d0faf7982?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Artisan Market", category: "home", description: "Traditional handwoven storage basket", distance: 2.8, zipCode: "55429", city: "Brooklyn Center", state: "MN", mallId: "mall-6", mallName: "Brookdale Shopping Center" },
+  { id: 11, name: "Organic Face Cream", price: 32.50, image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Pure Beauty", category: "beauty", description: "Anti-aging cream with natural ingredients", distance: 1.1, zipCode: "55344", city: "Minnetonka", state: "MN", mallId: "mall-1", mallName: "Ridgedale Mall" },
+  { id: 12, name: "Canvas Tote Bag", price: 19.99, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Eco Shop", category: "clothing", description: "Sustainable cotton canvas bag", distance: 1.7, zipCode: "55112", city: "Plymouth", state: "MN" }
 ];
 
 const categories = ['All', 'food', 'clothing', 'home', 'beauty', 'tech'];
@@ -59,9 +65,39 @@ export function ProductsPage() {
   const [maxDistance, setMaxDistance] = useState(10);
   const [sortBy, setSortBy] = useState('relevance');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isLocationFilterOpen, setIsLocationFilterOpen] = useState(false);
+  
+  const { currentLocation, mallContext } = useLocationStore();
 
   const filteredProducts = useMemo(() => {
     let filtered = allProducts.filter(product => {
+      // Location-based filtering
+      if (currentLocation.type !== 'all') {
+        switch (currentLocation.type) {
+          case 'mall':
+            // Mall mode - only show products from selected mall
+            if (!product.mallId || product.mallName !== currentLocation.value) {
+              return false;
+            }
+            break;
+          case 'city':
+            if (!product.city || product.city !== currentLocation.value) {
+              return false;
+            }
+            break;
+          case 'state':
+            if (!product.state || product.state !== currentLocation.value) {
+              return false;
+            }
+            break;
+          case 'zip':
+            if (!product.zipCode || product.zipCode !== currentLocation.value) {
+              return false;
+            }
+            break;
+        }
+      }
+
       // Search query filter
       if (searchQuery && !product.name.toLowerCase().includes(searchQuery.toLowerCase()) && 
           !product.store.toLowerCase().includes(searchQuery.toLowerCase())) {
@@ -108,7 +144,7 @@ export function ProductsPage() {
     }
 
     return filtered;
-  }, [searchQuery, selectedCategory, selectedStores, priceRange, maxDistance, sortBy]);
+  }, [searchQuery, selectedCategory, selectedStores, priceRange, maxDistance, sortBy, currentLocation, mallContext]);
 
   const handleStoreToggle = (store: string) => {
     setSelectedStores(prev => 
@@ -224,12 +260,54 @@ export function ProductsPage() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-['Poppins']">
-            Local Products
-          </h1>
-          <p className="text-xl text-gray-600 font-['Inter']">
-            Discover amazing products from neighborhood businesses
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 font-['Poppins']">
+              {mallContext.isActive ? `Shopping at ${mallContext.mallName}` : 'Local Products'}
+            </h1>
+            
+            {/* Location Filter Button */}
+            <Button 
+              variant="outline" 
+              onClick={() => setIsLocationFilterOpen(true)}
+              className="flex items-center gap-2 bg-white"
+            >
+              <Navigation className="h-4 w-4" />
+              {currentLocation.type === 'all' ? 'Choose Location' : currentLocation.displayName}
+              {mallContext.isActive && <Badge variant="secondary" className="ml-1">Mall Mode</Badge>}
+            </Button>
+          </div>
+          
+          <p className="text-xl text-gray-600 font-['Inter'] mb-6">
+            {mallContext.isActive 
+              ? `Exclusively browsing products available at ${mallContext.mallName}`
+              : 'Discover amazing products from neighborhood businesses'
+            }
           </p>
+          
+          {/* Mall Mode Alert */}
+          {mallContext.isActive && (
+            <div className="mb-6 p-4 bg-[var(--spiral-coral)]/10 border border-[var(--spiral-coral)]/20 rounded-lg">
+              <div className="flex items-center gap-3">
+                <Building2 className="h-5 w-5 text-[var(--spiral-coral)]" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-[var(--spiral-navy)]">
+                    Mall Shopping Mode Active
+                  </h3>
+                  <p className="text-xs text-gray-600">
+                    You're exclusively shopping at {mallContext.mallName}. All products, cart, and checkout are limited to this mall.
+                  </p>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setIsLocationFilterOpen(true)}
+                  className="text-[var(--spiral-coral)] hover:text-[var(--spiral-navy)]"
+                >
+                  Change Mall
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Search and Sort Bar */}
@@ -347,6 +425,12 @@ export function ProductsPage() {
       </div>
 
       <Footer />
+      
+      {/* Location Filter Modal */}
+      <LocationFilter 
+        isOpen={isLocationFilterOpen} 
+        onClose={() => setIsLocationFilterOpen(false)} 
+      />
     </div>
   );
 }

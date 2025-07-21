@@ -37,6 +37,7 @@ import About from "@/pages/about";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
+import MallContextSync from "@/components/mall-context-sync";
 
 function Router() {
   return (
@@ -85,6 +86,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <MallContextSync />
         <CartRestoreNotification />
         <ShareReminder />
         <Toaster />
