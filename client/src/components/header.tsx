@@ -28,9 +28,9 @@ export default function Header() {
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
               <img 
-                src="/5f2ddb9c-bed6-466a-a305-c06542e7cf4b.png (1).PNG" 
+                src="@assets/5f2ddb9c-bed6-466a-a305-c06542e7cf4b.png (1)_1752624555680.PNG" 
                 alt="SPIRAL Logo" 
-                className="w-10 h-10 mr-3"
+                className="w-10 h-10 mr-3 static"
               />
               <div>
                 <span className="text-xl font-bold text-gray-900 font-['Poppins']">SPIRAL</span>
