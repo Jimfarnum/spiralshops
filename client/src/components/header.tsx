@@ -53,6 +53,9 @@ export default function Header() {
               <Link href="/social-feed" className="text-gray-600 hover:text-[var(--spiral-coral)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 Community
               </Link>
+              <Link href="/about" className="text-gray-600 hover:text-[var(--spiral-coral)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                About
+              </Link>
               <Link href="/retailer-login" className="text-gray-600 hover:text-[var(--spiral-coral)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 For Retailers
               </Link>

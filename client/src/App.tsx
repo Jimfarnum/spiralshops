@@ -27,6 +27,7 @@ import SocialFeed from "@/pages/social-feed";
 import OrderConfirmation from "@/pages/order-confirmation";
 import SpiralVideos from "@/pages/spiral-videos";
 import SpiralFeatures from "@/pages/spiral-features";
+import About from "@/pages/about";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
@@ -58,6 +59,7 @@ function Router() {
       <Route path="/order-confirmation/:orderId?" component={OrderConfirmation} />
       <Route path="/spiral-videos" component={SpiralVideos} />
       <Route path="/spiral-features" component={SpiralFeatures} />
+      <Route path="/about" component={About} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
       <Route path="/loyalty-program" component={LoyaltyProgramPage} />

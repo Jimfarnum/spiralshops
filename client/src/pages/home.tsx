@@ -108,14 +108,13 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
-              className="bg-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)]/90 text-white px-8 py-4 text-lg rounded-lg"
+              className="button-primary px-8 py-4 text-lg"
               onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
             >
               Start Shopping Local
             </Button>
             <Button 
-              variant="outline" 
-              className="border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)] hover:text-white px-8 py-4 text-lg rounded-lg"
+              className="button-secondary px-8 py-4 text-lg"
             >
               Explore Stores
             </Button>
@@ -134,7 +133,7 @@ export default function Home() {
               />
               <Button 
                 onClick={handleProductSearch}
-                className="h-12 px-6 bg-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/90 text-white border-0 rounded-none"
+                className="h-12 px-6 button-primary rounded-none"
               >
                 <Search className="h-5 w-5" />
               </Button>
@@ -214,11 +213,11 @@ export default function Home() {
       </section>
 
       {/* Category Navigation */}
-      <section className="py-16 bg-white">
+      <section className="section-modern bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4">Shop by Category</h2>
-            <p className="text-lg text-gray-600">Discover local products across all categories</p>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">Shop by Category</h2>
+            <p className="text-xl text-gray-600">Discover local products across all categories</p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
@@ -243,16 +242,16 @@ export default function Home() {
       </section>
 
       {/* Featured Products */}
-      <section className="py-20 bg-[var(--spiral-cream)]">
+      <section className="section-modern bg-[var(--spiral-cream)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4">Featured Local Finds</h2>
-            <p className="text-lg text-gray-600">Discover amazing products from local businesses near you</p>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">Featured Local Finds</h2>
+            <p className="text-xl text-gray-600">Discover amazing products from local businesses near you</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
             {mockProducts.slice(0, 8).map((product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
+              <div key={product.id} className="card-product group">
                 <div className="aspect-square overflow-hidden">
                   <img 
                     src={product.image} 
@@ -260,9 +259,9 @@ export default function Home() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <div className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs px-2 py-1 bg-[var(--spiral-coral)]/10 text-[var(--spiral-coral)] rounded-full font-medium">
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs px-3 py-1 bg-[var(--spiral-coral)]/10 text-[var(--spiral-coral)] rounded-full font-medium">
                       {product.category}
                     </span>
                     <div className="flex items-center text-yellow-400">
@@ -270,28 +269,28 @@ export default function Home() {
                       <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
                     </div>
                   </div>
-                  <h3 className="font-semibold text-[var(--spiral-navy)] mb-1 group-hover:text-[var(--spiral-coral)] transition-colors">
+                  <h3 className="text-lg font-semibold text-[var(--spiral-navy)] mb-2 group-hover:text-[var(--spiral-coral)] transition-colors line-clamp-2">
                     {product.name}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-2">{product.store}</p>
-                  <p className="text-xs text-gray-500 mb-3">{product.location}</p>
+                  <p className="text-sm font-medium text-gray-700 mb-1">{product.store}</p>
+                  <p className="text-xs text-gray-500 mb-4">{product.location}</p>
                   
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xl font-bold text-[var(--spiral-navy)]">${product.price}</span>
-                    <div className="flex items-center text-[var(--spiral-coral)]">
-                      <span className="text-xs font-medium">+{product.spiralsEarned} SPIRALs</span>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-2xl font-bold text-[var(--spiral-navy)]">${product.price}</span>
+                    <div className="flex items-center text-[var(--spiral-coral)] bg-[var(--spiral-coral)]/10 px-2 py-1 rounded-full">
+                      <span className="text-xs font-semibold">+{product.spiralsEarned} SPIRALs</span>
                     </div>
                   </div>
                   
-                  <div className="flex flex-wrap gap-1 mb-3">
+                  <div className="flex flex-wrap gap-1 mb-4">
                     {product.fulfillment.map((method) => (
-                      <span key={method} className="text-xs px-2 py-1 bg-[var(--spiral-sage)]/20 text-[var(--spiral-sage)] rounded">
+                      <span key={method} className="text-xs px-2 py-1 bg-[var(--spiral-sage)]/15 text-[var(--spiral-sage)] rounded-md font-medium">
                         {method}
                       </span>
                     ))}
                   </div>
                   
-                  <Button className="w-full bg-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)]/90 text-white">
+                  <Button className="w-full button-primary">
                     Add to Cart
                   </Button>
                 </div>
@@ -301,7 +300,7 @@ export default function Home() {
           
           <div className="text-center">
             <Link href="/products">
-              <Button variant="outline" className="border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)] hover:text-white px-8 py-3">
+              <Button className="button-secondary px-8 py-4 text-lg">
                 View All Products
               </Button>
             </Link>

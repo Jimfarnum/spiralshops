@@ -51,7 +51,7 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4 text-[var(--spiral-navy)]">Support</h3>
             <ul className="space-y-2 text-gray-600">
               <li><a href="/retailer-login" className="hover:text-[var(--spiral-coral)] transition-colors">For Retailers</a></li>
-              <li><a href="/spiral-features" className="hover:text-[var(--spiral-coral)] transition-colors">About</a></li>
+              <li><a href="/about" className="hover:text-[var(--spiral-coral)] transition-colors">About</a></li>
               <li><a href="#" className="hover:text-[var(--spiral-coral)] transition-colors">Contact</a></li>
               <li><a href="#" className="hover:text-[var(--spiral-coral)] transition-colors">Help</a></li>
             </ul>
