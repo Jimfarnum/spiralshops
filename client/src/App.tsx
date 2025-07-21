@@ -37,6 +37,7 @@ import TestFlow from "@/pages/test-flow";
 import About from "@/pages/about";
 import Wishlist from "@/pages/wishlist";
 import InventoryDashboard from "@/pages/inventory-dashboard";
+import FeatureTesting from "@/pages/feature-testing";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
@@ -79,6 +80,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/inventory-dashboard" component={InventoryDashboard} />
+      <Route path="/feature-testing" component={FeatureTesting} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
       <Route path="/loyalty-program" component={LoyaltyProgramPage} />
