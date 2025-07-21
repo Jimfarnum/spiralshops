@@ -28,13 +28,13 @@ export default function Header() {
           <div className="flex items-center min-w-0 flex-1">
             <Link href="/" className="flex-shrink-0 flex items-center">
               <img 
-                src="@assets/5f2ddb9c-bed6-466a-a305-c06542e7cf4b.png (1).PNG" 
+                src="@assets/5f2ddb9c-bed6-466a-a305-c06542e7cf4b.png (1)_1752624555680.PNG" 
                 alt="SPIRAL Logo" 
-                className="w-8 h-8 mr-2"
+                className="w-12 h-12 mr-3 object-contain"
               />
               <div className="min-w-0">
-                <span className="text-lg font-bold text-[var(--spiral-navy)]">SPIRAL</span>
-                <p className="text-xs text-gray-500 -mt-0.5 whitespace-nowrap">Everything Local. Just for You.</p>
+                <span className="text-xl font-bold text-[var(--spiral-navy)]">SPIRAL</span>
+                <p className="text-xs text-gray-500 -mt-1 whitespace-nowrap">Everything Local. Just for You.</p>
               </div>
             </Link>
           </div>
