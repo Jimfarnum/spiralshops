@@ -284,6 +284,98 @@ export const testConfiguration: FeatureArea[] = [
         expectedResult: 'Dashboard renders with interactive charts and metrics'
       }
     ]
+  },
+  {
+    id: 'priority-features-phase12',
+    name: 'Priority Features Phase 12',
+    description: 'Mall Directory, Gift Cards, Events, Multi-Cart features',
+    routes: ['/gift-cards', '/events', '/multi-cart', '/mall/1'],
+    lastUpdated: '2025-01-21',
+    testCases: [
+      {
+        id: 'mall-directory-dropdown',
+        name: 'Mall Directory Dropdown Functionality',
+        category: 'ecommerce',
+        priority: 'critical',
+        automated: false,
+        route: '/',
+        description: 'Test ZIP code search, GPS location, and auto-suggest in mall directory dropdown',
+        expectedResult: 'Dropdown shows mall suggestions, ZIP search works, location detection functions',
+        testSteps: [
+          'Find Mall Directory section on homepage',
+          'Test ZIP code input with valid codes',
+          'Test GPS location button',
+          'Verify mall suggestions appear',
+          'Test mall selection functionality'
+        ]
+      },
+      {
+        id: 'mall-page-template',
+        name: 'Mall Page Template Rendering',
+        category: 'ecommerce',
+        priority: 'high',
+        automated: false,
+        route: '/mall/1',
+        description: 'Verify mall page shows comprehensive information, events, and SPIRAL Center details',
+        expectedResult: 'Mall page displays store directory, events, amenities, and SPIRAL Center info',
+        testSteps: [
+          'Navigate to mall template page',
+          'Verify mall header information loads',
+          'Check store directory display',
+          'Test events section functionality',
+          'Verify SPIRAL Center details'
+        ]
+      },
+      {
+        id: 'gift-card-system',
+        name: 'Gift Card Purchase & Redeem Flow',
+        category: 'ecommerce',
+        priority: 'high',
+        automated: false,
+        route: '/gift-cards',
+        description: 'Test complete gift card system with purchase, redeem, and balance management',
+        expectedResult: 'Users can purchase gift cards, redeem codes, and check balances successfully',
+        testSteps: [
+          'Test gift card type selection (all-store, mall-specific, store-specific)',
+          'Test purchase flow with amount selection',
+          'Test redeem code functionality',
+          'Verify balance display and management'
+        ]
+      },
+      {
+        id: 'mall-events-calendar',
+        name: 'Mall Events Calendar & RSVP',
+        category: 'social',
+        priority: 'high',
+        automated: false,
+        route: '/events',
+        description: 'Test events calendar, RSVP functionality, and SPIRAL bonus system',
+        expectedResult: 'Events display correctly, RSVP works, social sharing functions, SPIRAL bonuses apply',
+        testSteps: [
+          'Test event filtering by category and mall',
+          'Test RSVP functionality for featured events',
+          'Verify SPIRAL bonus display',
+          'Test social sharing integration'
+        ]
+      },
+      {
+        id: 'multi-retailer-cart',
+        name: 'Multi-Retailer Cart Functionality',
+        category: 'ecommerce',
+        priority: 'critical',
+        automated: false,
+        route: '/multi-cart',
+        description: 'Test unified cart supporting multiple stores with different fulfillment methods',
+        expectedResult: 'Cart displays items from multiple stores, fulfillment method selection works per item',
+        testSteps: [
+          'Verify items grouped by store',
+          'Test fulfillment method selection per item',
+          'Check price calculations with shipping',
+          'Verify SPIRAL earning calculations',
+          'Test quantity controls and item removal'
+        ]
+      }
+    ]
   }
 ];
 
