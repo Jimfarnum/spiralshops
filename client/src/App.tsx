@@ -35,6 +35,7 @@ import RetailerAnalytics from "@/pages/retailer-analytics";
 import RetailerInsights from "@/pages/retailer-insights";
 import TestFlow from "@/pages/test-flow";
 import About from "@/pages/about";
+import Wishlist from "@/pages/wishlist";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
@@ -75,6 +76,7 @@ function Router() {
       <Route path="/retailer-insights" component={RetailerInsights} />
       <Route path="/test-flow" component={TestFlow} />
       <Route path="/about" component={About} />
+      <Route path="/wishlist" component={Wishlist} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
       <Route path="/loyalty-program" component={LoyaltyProgramPage} />

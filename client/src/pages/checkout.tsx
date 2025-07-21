@@ -14,6 +14,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import SplitShipping from '@/components/split-shipping';
 import SocialShare from '@/components/social-share';
+import PaymentForm from '@/components/payment-form';
 
 const Checkout = () => {
   const { items, getTotalPrice, getTotalItems, clearCart } = useCartStore();
@@ -147,6 +148,20 @@ const Checkout = () => {
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+  };
+
+  const handlePaymentSuccess = (paymentIntent: any) => {
+    console.log('Payment successful:', paymentIntent);
+    processOrder();
+  };
+
+  const handlePaymentError = (error: any) => {
+    console.error('Payment failed:', error);
+    toast({
+      title: "Payment Failed",
+      description: "There was an issue processing your payment. Please try again.",
+      variant: "destructive"
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
