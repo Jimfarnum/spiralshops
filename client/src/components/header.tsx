@@ -27,26 +27,11 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo Section */}
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] rounded-full">
-              <svg 
-                viewBox="0 0 100 100" 
-                className="w-5 h-5 text-white"
-                fill="currentColor"
-              >
-                <path d="M50 15 C 62 15, 70 27, 70 40 C 70 53, 62 63, 50 63 C 38 63, 30 53, 30 40 C 30 36, 31 32, 33 29" 
-                      stroke="currentColor" 
-                      strokeWidth="6" 
-                      fill="none" 
-                      strokeLinecap="round"/>
-                <path d="M50 30 C 56 30, 60 34, 60 40 C 60 46, 56 50, 50 50 C 44 50, 40 46, 40 40 C 40 38, 40.5 36.5, 42 35" 
-                      stroke="currentColor" 
-                      strokeWidth="6" 
-                      fill="none" 
-                      strokeLinecap="round"/>
-                <circle cx="50" cy="70" r="3" fill="currentColor"/>
-                <circle cx="50" cy="80" r="1.5" fill="currentColor"/>
-              </svg>
-            </div>
+            <img 
+              src="@assets/mqy7md_1753116245618.jpg" 
+              alt="SPIRAL Logo" 
+              className="w-8 h-8 object-contain"
+            />
             <span className="text-xl font-bold text-[var(--spiral-navy)]">SPIRAL</span>
           </Link>
 
