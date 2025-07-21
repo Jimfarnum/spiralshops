@@ -13,12 +13,28 @@ import ProductCard from "@/components/product-card";
 import RetailerSignupForm from "@/components/retailer-signup-form";
 import StoreProfile from "@/components/store-profile";
 import type { Store } from "@shared/schema";
+import { mockProducts, categories } from "@/data/mockProducts";
+import OnboardingModal from "@/components/onboarding-modal";
 
 export default function Home() {
   const [searchZip, setSearchZip] = useState("");
   const [activeZip, setActiveZip] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const { toast } = useToast();
+
+  // Show onboarding for new users
+  useState(() => {
+    const hasSeenOnboarding = localStorage.getItem('spiral-onboarding-seen');
+    if (!hasSeenOnboarding) {
+      setTimeout(() => setShowOnboarding(true), 2000);
+    }
+  });
+
+  const handleOnboardingClose = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('spiral-onboarding-seen', 'true');
+  };
 
   const { data: stores, isLoading, error } = useQuery<Store[]>({
     queryKey: activeZip ? ["/api/stores/search", activeZip] : ["/api/stores"],
@@ -197,137 +213,184 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SPIRAL Loyalty Program Preview */}
-      <section className="py-20 bg-gradient-to-r from-rose-50 to-purple-50">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center">
-            <div className="text-6xl mb-6">💫</div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8 font-['Poppins']">
-              Introducing SPIRAL Rewards
-            </h2>
-            <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-['Inter'] mb-12">
-              Earn Spirals when you shop in-store or online with SPIRAL. Redeem Spirals for exclusive perks, discounts, and mall rewards.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🛒</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2 font-['Poppins']">Shop & Earn</h3>
-                <p className="text-gray-600 font-['Inter']">Collect Spirals with every purchase</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🎁</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2 font-['Poppins']">Unlock Rewards</h3>
-                <p className="text-gray-600 font-['Inter']">Redeem for discounts and exclusive offers</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">⭐</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2 font-['Poppins']">VIP Perks</h3>
-                <p className="text-gray-600 font-['Inter']">Early access to sales and special events</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Logistics Options Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-['Poppins']">
-              Flexible Fulfillment Options
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-['Inter']">
-              Choose the delivery method that works best for your lifestyle
-            </p>
+      {/* Category Navigation */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4">Shop by Category</h2>
+            <p className="text-lg text-gray-600">Discover local products across all categories</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center group">
-              <div className="w-20 h-20 bg-[hsl(183,100%,23%)] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-3xl text-white">🏪</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 font-['Poppins']">In-Store Pickup</h3>
-              <p className="text-gray-600 font-['Inter']">Order online, collect in-store at your convenience</p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="w-20 h-20 bg-[hsl(32,98%,56%)] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-3xl text-white">📦</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 font-['Poppins']">Standard Shipping</h3>
-              <p className="text-gray-600 font-['Inter']">Reliable delivery to your doorstep in 3-5 days</p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="w-20 h-20 bg-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-3xl text-white">🏬</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 font-['Poppins']">Ship-to-Store</h3>
-              <p className="text-gray-600 font-['Inter']">Free shipping to your nearest participating location</p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="w-20 h-20 bg-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-3xl text-white">⚡</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 font-['Poppins']">Same-Day Delivery</h3>
-              <p className="text-gray-600 font-['Inter']">Local express delivery when available in your area</p>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
+            {categories.map((category) => (
+              <Link 
+                key={category.name} 
+                href={`/products?category=${category.name.toLowerCase().replace(' ', '-')}`}
+                className="group"
+              >
+                <div className="flex flex-col items-center p-6 rounded-full bg-gradient-to-br hover:scale-105 transition-all duration-300 cursor-pointer shadow-md hover:shadow-lg">
+                  <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${category.color} flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform`}>
+                    <span>{category.icon}</span>
+                  </div>
+                  <span className="text-sm font-medium text-[var(--spiral-navy)] text-center group-hover:text-[var(--spiral-coral)] transition-colors">
+                    {category.name}
+                  </span>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Products Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-['Poppins']">
-              Featured Local Finds
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-['Inter']">
-              Discover amazing products from your neighborhood businesses
-            </p>
+      {/* Featured Products */}
+      <section className="py-20 bg-[var(--spiral-cream)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4">Featured Local Finds</h2>
+            <p className="text-lg text-gray-600">Discover amazing products from local businesses near you</p>
           </div>
-
-          {/* Product Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 mb-16">
-            {/* Mock Product Cards */}
-            {[
-              { id: 1, name: "Artisan Coffee Blend", price: 24.99, image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Local Roasters", category: "coffee" },
-              { id: 2, name: "Handmade Ceramic Mug", price: 18.50, image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Pottery Studio", category: "home" },
-              { id: 3, name: "Organic Honey", price: 12.99, image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Bee Farm Co.", category: "food" },
-              { id: 4, name: "Vintage Leather Jacket", price: 89.99, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Vintage Threads", category: "clothing" },
-              { id: 5, name: "Plant-Based Soap", price: 8.75, image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Natural Goods", category: "beauty" },
-              { id: 6, name: "Wood Phone Stand", price: 15.99, image: "https://images.unsplash.com/photo-1586953209889-097d0faf7982?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Craft Corner", category: "tech" },
-              { id: 7, name: "Local Fruit Basket", price: 22.50, image: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Fresh Farm", category: "food" },
-              { id: 8, name: "Knitted Scarf", price: 34.99, image: "https://images.unsplash.com/photo-1519810409259-73e5a5c00adf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Yarn Works", category: "clothing" }
-            ].map((product) => (
-              <ProductCard key={product.id} product={product} />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            {mockProducts.slice(0, 8).map((product) => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                <div className="aspect-square overflow-hidden">
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs px-2 py-1 bg-[var(--spiral-coral)]/10 text-[var(--spiral-coral)] rounded-full font-medium">
+                      {product.category}
+                    </span>
+                    <div className="flex items-center text-yellow-400">
+                      {"★".repeat(Math.floor(product.rating))}
+                      <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
+                    </div>
+                  </div>
+                  <h3 className="font-semibold text-[var(--spiral-navy)] mb-1 group-hover:text-[var(--spiral-coral)] transition-colors">
+                    {product.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-2">{product.store}</p>
+                  <p className="text-xs text-gray-500 mb-3">{product.location}</p>
+                  
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xl font-bold text-[var(--spiral-navy)]">${product.price}</span>
+                    <div className="flex items-center text-[var(--spiral-coral)]">
+                      <span className="text-xs font-medium">+{product.spiralsEarned} SPIRALs</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {product.fulfillment.map((method) => (
+                      <span key={method} className="text-xs px-2 py-1 bg-[var(--spiral-sage)]/20 text-[var(--spiral-sage)] rounded">
+                        {method}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  <Button className="w-full bg-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)]/90 text-white">
+                    Add to Cart
+                  </Button>
+                </div>
+              </div>
             ))}
           </div>
           
           <div className="text-center">
             <Link href="/products">
-              <Button 
-                size="lg" 
-                className="bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white px-10 py-4 text-lg font-semibold rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105"
-              >
-                View All Local Finds
-                <span className="ml-2">→</span>
+              <Button variant="outline" className="border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)] hover:text-white px-8 py-3">
+                View All Products
               </Button>
             </Link>
           </div>
         </div>
       </section>
+
+      {/* Three-Column Value Props */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {/* Earn SPIRALs */}
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-gold)] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                <span className="text-3xl">⭐</span>
+              </div>
+              <h3 className="text-2xl font-bold text-[var(--spiral-navy)] mb-4">Earn SPIRALs</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Collect reward points with every purchase from local businesses. The more you shop local, the more you earn.
+              </p>
+            </div>
+
+            {/* Find Stores */}
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                <span className="text-3xl">🏪</span>
+              </div>
+              <h3 className="text-2xl font-bold text-[var(--spiral-navy)] mb-4">Find Stores</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Discover amazing local businesses in your neighborhood. From cafes to boutiques, find everything nearby.
+              </p>
+            </div>
+
+            {/* Local Perks */}
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                <span className="text-3xl">🎁</span>
+              </div>
+              <h3 className="text-2xl font-bold text-[var(--spiral-navy)] mb-4">Local Perks</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Unlock exclusive deals, early access to sales, and special experiences available only to SPIRAL members.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SPIRAL Loyalty Program Preview */}
+      <section className="py-20 bg-[var(--spiral-cream)]">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center">
+            <div className="text-6xl mb-6">💫</div>
+            <h2 className="text-4xl md:text-5xl font-bold text-[var(--spiral-navy)] mb-8">
+              Introducing SPIRAL Rewards
+            </h2>
+            <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed mb-12">
+              Earn SPIRALs when you shop in-store or online with SPIRAL. Redeem SPIRALs for exclusive perks, discounts, and mall rewards.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-[var(--spiral-coral)]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🛒</span>
+                </div>
+                <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-2">Shop & Earn</h3>
+                <p className="text-gray-600">Collect SPIRALs with every purchase</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-[var(--spiral-gold)]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🎁</span>
+                </div>
+                <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-2">Unlock Rewards</h3>
+                <p className="text-gray-600">Redeem for discounts and exclusive offers</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-[var(--spiral-sage)]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">⭐</span>
+                </div>
+                <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-2">VIP Perks</h3>
+                <p className="text-gray-600">Early access to sales and special events</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
 
       {/* Store Discovery Section */}
       <section className="py-24 bg-white border-t border-gray-200">
@@ -400,6 +463,11 @@ export default function Home() {
       <RetailerSignupForm />
       <StoreProfile />
       <Footer />
+      
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={handleOnboardingClose} 
+      />
     </div>
   );
 }

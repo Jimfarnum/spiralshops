@@ -59,7 +59,8 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-300 mt-12 pt-8 text-center text-gray-500">
-          <p>&copy; 2025 SPIRAL. All rights reserved.</p>
+          <p className="mb-2">&copy; 2025 SPIRAL. All rights reserved.</p>
+          <p className="text-sm">Powered by SPIRAL. Supporting Local Stores Nationwide.</p>
         </div>
       </div>
     </footer>

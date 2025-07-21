@@ -1,0 +1,106 @@
+Please implement the following full visual and functional upgrades to the SPIRAL MVP for a more professional, modern look:
+
+---
+
+🌈 1. BRANDING & COLOR PALETTE
+- Replace current colors with a refined, professional palette:
+  - Primary: #2C3E50 (deep navy blue)
+  - Accent 1: #E27D60 (coral)
+  - Accent 2: #F4B860 (warm beige)
+  - Secondary: #A8BFAA (sage green)
+  - Background: #F5F3EF (off-white)
+  - Button Hover: #1C2A38
+
+- Apply consistent theming across all pages (homepage, mall directory, checkout, login, loyalty, etc.)
+
+---
+
+🖋 2. TYPOGRAPHY & FONTS
+- Use:
+  - `Poppins` (Headings)
+  - `Inter` (Body Text)
+  - `DM Sans` or `Work Sans` (Buttons and Callouts)
+- Font sizes:
+  - H1: 32px
+  - H2: 24px
+  - Body: 16px
+  - Buttons: 14–16px bold
+- Apply generous line spacing (1.5–1.8) for clean readability
+
+---
+
+📦 3. MOCKUP PRODUCTS
+- Add 8–12 professional placeholder product cards with:
+  - Product name
+  - Image
+  - Price
+  - Store location tag (city/state)
+  - SPIRALs earned per item
+  - Fulfillment badges (e.g., "Ship to Me", "In-Store Pickup")
+
+Use sample categories:
+- Apparel
+- Electronics
+- Gifts
+- Home Decor
+- Toys
+- Beauty
+- Local Exclusive
+
+---
+
+🧭 4. HOMEPAGE & UI ENHANCEMENTS
+- Hero section with:
+  - Static logo (attached earlier)
+  - New tagline: “Everything Local. Just for You.”
+  - CTA: “Start Shopping Local”
+  - Remove spinning animation from logo
+
+- Create a 3-column layout below hero:
+  - “Earn SPIRALS” – With icon
+  - “Find Stores” – With icon
+  - “Local Perks” – With icon
+  - Hover effects: scale 1.05x and soft shadow
+
+---
+
+🛍 5. CATEGORY NAVIGATION (like Target)
+- Circular icon-based buttons:
+  - Apparel
+  - Home
+  - Local Deals
+  - Gifts
+  - Events
+- Add hover effect and active states
+
+---
+
+🔧 6. ONBOARDING UI & SITE CLEANUP
+- Add new user onboarding modal:
+  - Explains how to earn SPIRALS
+  - Rewards for referring and sharing
+  - Local pickup options explained
+- Apply consistent padding and grid structure to all pages
+- Clean up box outlines and shadows (soft, modern)
+- Update all button styles to match new palette
+
+---
+
+🌐 7. DOMAIN & FOOTER
+- Site must no longer display “jimfarnum” — switch to final public URL: **www.spiralshops.com**
+- Footer:
+  - Soft off-white background
+  - Include nav links: About, Contact, Help, Terms
+  - “Powered by SPIRAL. Supporting Local Stores Nationwide.”
+
+---
+
+🧪 8. QA & DIAGNOSTICS
+- Run a complete diagnostic test:
+  - Ensure all routes are active
+  - New styles apply everywhere
+  - Pages: `/`, `/mall`, `/spirals`, `/account`, `/retailer-dashboard`, `/retailer-login`, `/checkout`, etc.
+
+---
+
+✅ Please confirm when implemented so we can finalize the user experience testing and begin community marketing!
