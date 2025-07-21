@@ -1,15 +1,11 @@
-import Header from '@/components/header';
-import Footer from '@/components/footer';
-import GiftCardSystem from '@/components/gift-card-system';
+import Header from "@/components/header";
+import GiftCardSystem from "@/components/gift-card-system";
 
 export default function GiftCards() {
   return (
-    <div className="min-h-screen bg-[var(--spiral-cream)]">
+    <div>
       <Header />
-      <div className="py-8">
-        <GiftCardSystem />
-      </div>
-      <Footer />
+      <GiftCardSystem />
     </div>
   );
 }

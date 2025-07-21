@@ -105,6 +105,9 @@ function Router() {
       <Route path="/competitive-analysis" component={() => import('@/components/competitive-analysis').then(m => m.default)} />
       <Route path="/gift-card-system" component={() => import('@/components/gift-card-system').then(m => m.default)} />
       <Route path="/retailer-demo" component={() => import('@/components/retailer-demo-dashboard').then(m => m.default)} />
+      <Route path="/store/:storeId/reviews" component={() => import('@/pages/store-reviews').then(m => m.default)} />
+      <Route path="/gift-cards" component={() => import('@/pages/gift-cards').then(m => m.default)} />
+      <Route path="/p0-features-demo" component={() => import('@/pages/p0-features-demo').then(m => m.default)} />
       <Route component={NotFound} />
     </Switch>
   );

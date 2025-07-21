@@ -9,7 +9,7 @@ import { ShoppingCart, Heart, Share2, Star, MapPin, Truck, Store, ArrowLeft, Plu
 import { useCartStore } from "@/lib/cartStore";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
-import ReviewsSection from "@/components/reviews-section";
+import ProductReviews from "@/components/product-reviews";
 
 interface Product {
   id: string;
@@ -397,12 +397,11 @@ export function ProductDetailPage() {
         </div>
 
         {/* Reviews Section */}
-        <ReviewsSection
-          targetType="product"
-          targetId={product.id}
+        <ProductReviews
+          productId={product.id}
+          reviewType="product"
           targetName={product.name}
-          overallRating={product.rating}
-          totalReviews={product.reviewCount}
+          storeName={product.store.name}
         />
       </div>
     </div>
