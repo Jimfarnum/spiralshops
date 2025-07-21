@@ -172,7 +172,7 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
             {/* Shop Local Stores */}
             <Link href="/products" className="group">
               <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">

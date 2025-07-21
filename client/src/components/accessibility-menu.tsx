@@ -217,22 +217,24 @@ export default function AccessibilityMenu() {
       </Sheet>
 
       {/* Add accessibility CSS */}
-      <style jsx global>{`
-        .high-contrast {
-          filter: contrast(150%) saturate(150%);
-        }
-        
-        .reduced-motion * {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
-        
-        .focus-visible *:focus {
-          outline: 2px solid var(--spiral-coral) !important;
-          outline-offset: 2px !important;
-        }
-      `}</style>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .high-contrast {
+            filter: contrast(150%) saturate(150%);
+          }
+          
+          .reduced-motion * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+          
+          .focus-visible *:focus {
+            outline: 2px solid var(--spiral-coral) !important;
+            outline-offset: 2px !important;
+          }
+        `
+      }} />
     </>
   );
 }

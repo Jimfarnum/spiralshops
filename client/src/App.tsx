@@ -72,6 +72,7 @@ function Router() {
       <Route path="/account" component={Account} />
       <Route path="/retailer-login" component={RetailerLogin} />
       <Route path="/retailer-dashboard" component={RetailerDashboard} />
+      <Route path="/retailer-portal" component={() => import('@/components/retailer-portal').then(m => m.default)} />
       <Route path="/marketing-center" component={MarketingCenter} />
       <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
       <Route path="/social-feed" component={SocialFeed} />
@@ -100,6 +101,7 @@ function Router() {
       <Route path="/events" component={Events} />
       <Route path="/multi-cart" component={MultiCart} />
       <Route path="/split-fulfillment" component={SplitFulfillment} />
+      <Route path="/feature-audit" component={() => import('@/components/feature-parity-audit').then(m => m.default)} />
       <Route component={NotFound} />
     </Switch>
   );

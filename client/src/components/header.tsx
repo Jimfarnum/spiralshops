@@ -27,13 +27,16 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo Section */}
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
             <img 
-              src="@assets/mqy7md_1753122664873.jpg" 
+              src="/assets/spiral-blue.svg" 
               alt="SPIRAL Logo" 
-              className="w-8 h-8 object-contain rounded-md"
+              className="w-10 h-10 object-contain"
             />
-            <span className="text-xl font-bold text-[var(--spiral-navy)]">SPIRAL</span>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold text-[var(--spiral-navy)] leading-none">SPIRAL</span>
+              <span className="text-xs text-gray-500 leading-none hidden sm:block">Everything Local. Just for You.</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation - Hidden on mobile */}
@@ -53,7 +56,7 @@ export default function Header() {
           </nav>
           
           {/* Right Side Actions */}
-          <div className="flex items-center gap-4 flex-shrink-0">
+          <div className="flex items-center gap-3 flex-shrink-0">
             {/* SPIRAL Balance - Hidden on small screens */}
             <div className="hidden sm:block">
               <SpiralBalance />

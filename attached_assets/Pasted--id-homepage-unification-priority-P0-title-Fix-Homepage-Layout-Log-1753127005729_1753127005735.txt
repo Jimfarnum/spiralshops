@@ -1,0 +1,20 @@
+[
+  {
+    "id": "homepage-unification",
+    "priority": "P0",
+    "title": "Fix Homepage Layout, Logos, Boxes, and Ensure Search/Directory UI Works",
+    "desc": "Resolve visual issues and improve homepage professionalism based on screenshots:\n\n1. **Fix SPIRAL Logo Issue**:\n- Replace broken/missing logo with correct blue spiral logo asset: `/assets/spiral-blue.svg`\n- Ensure it displays properly in header on all screen sizes and does not overlap with the cart icon\n\n2. **Fix Box Styling on Homepage**:\n- Resize 'Combined Carts', 'Unified Rewards', and 'Mall Directory' boxes for cleaner layout\n- Use Tailwind: `max-w-[300px]`, `rounded-xl`, `shadow-md`, `py-4`, `text-left`, `text-sm`\n- Place inside a responsive grid: `grid grid-cols-1 md:grid-cols-3 gap-4 px-4`\n\n3. **Ensure Search & Directory Components Work**:\n- The ZIP code search bar (e.g., 55444), category filter, and distance dropdown must all filter malls in real time\n- Enable query debounce and show filtered mall cards below the form\n- Fix styling on “Featured SPIRAL Plaza” so image loads and ‘Featured’ badge aligns with name\n\n4. **Enable Explore Malls Button**:\n- Ensure ‘Explore Malls’ button navigates to the `/malls` route and that the route is active\n\nDeliverable: Professional, fully working homepage with correct branding, search/directory functionality, responsive layout, and CTA navigation."
+  },
+  {
+    "id": "feature-parity-audit",
+    "priority": "P0",
+    "title": "Audit and Complete Feature Parity with Amazon, Target, Walmart",
+    "desc": "Ensure SPIRAL has all essential digital commerce features found in major platforms:\n\n**Must-Have Features to Verify or Build**:\n- ✅ Working multi-retailer cart with grouped fulfillment types (pickup, ship, SPIRAL Center)\n- ✅ Unified checkout page with taxes, shipping options, saved payment method, and SPIRALS redemption\n- ✅ Real-time search bar with autocomplete, category filters, and smart suggestions\n- ✅ Functional store directory, mall directory, and filters (distance, category, popularity)\n- ✅ Loyalty engine with SPIRALS earning across stores\n- ✅ Return-to-SPIRAL-Center workflow (label-free returns and refund engine)\n- ✅ Product reviews + ratings (verified local purchases optional)\n- ✅ Fully responsive mobile layout\n- ✅ Working installable PWA with offline alerting\n\nTest each item manually or with test scripts and fix any broken visual or logic issues found in the screenshots."
+  },
+  {
+    "id": "retail-dashboard-interface",
+    "priority": "P0",
+    "title": "Build Retail-Facing Dashboard and Store Interface",
+    "desc": "Create the interface and dashboard for brick-and-mortar retailers participating in SPIRAL:\n\n**Retailer Portal Must Include**:\n- Retailer onboarding (basic form + API + image/logo upload)\n- Store detail page editor (location, hours, map, offers)\n- Product catalog uploader (CSV + manual entry)\n- Order dashboard (pickup, ship, SPIRAL center routing)\n- SPIRALS analytics (earned, redeemed, customer base growth)\n- Featured placement request (submit for promoted slot)\n- Event creator (mall events, in-store promotions)\n\nBuild with Tailwind and React, structure the route as `/dashboard/retailer` and add auth protection.\nEnsure retailers can only see their own store data and add API keys for secure submission."
+  }
+]
