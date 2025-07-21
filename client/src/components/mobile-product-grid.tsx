@@ -50,7 +50,8 @@ export default function MobileProductGrid({
       name: product.name,
       price: product.price,
       image: product.image,
-      store: product.store
+      store: product.store,
+      category: product.category
     });
 
     toast({

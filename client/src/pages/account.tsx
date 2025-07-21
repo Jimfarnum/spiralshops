@@ -256,6 +256,12 @@ const Account = () => {
                           <span className="text-sm">Shop</span>
                         </Button>
                       </Link>
+                      <Link href="/inventory-dashboard">
+                        <Button variant="outline" className="h-20 flex flex-col items-center gap-2 border-[var(--spiral-sage)] hover:bg-[var(--spiral-sage)]/10">
+                          <Bell className="h-6 w-6" />
+                          <span className="text-sm">Inventory</span>
+                        </Button>
+                      </Link>
                       <Link href="/mall-directory">
                         <Button variant="outline" className="h-20 flex flex-col items-center gap-2 border-[var(--spiral-sage)] hover:bg-[var(--spiral-sage)]/10">
                           <Store className="h-6 w-6" />

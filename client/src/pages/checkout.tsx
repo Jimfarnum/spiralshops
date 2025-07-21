@@ -152,7 +152,7 @@ const Checkout = () => {
 
   const handlePaymentSuccess = (paymentIntent: any) => {
     console.log('Payment successful:', paymentIntent);
-    processOrder();
+    handleOrderProcessing();
   };
 
   const handlePaymentError = (error: any) => {
