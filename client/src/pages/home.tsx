@@ -108,9 +108,9 @@ export default function Home() {
           <div className="flex justify-center mb-8">
             <div className="relative">
               <img 
-                src="/spiral-blue.svg" 
+                src="@assets/mqy7md_1753122664873.jpg" 
                 alt="SPIRAL Logo" 
-                className="w-16 h-16 mx-auto md:mx-0 drop-shadow-lg hover:scale-105 transition-transform duration-300"
+                className="w-16 h-16 mx-auto md:mx-0 object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
               />
             </div>
           </div>

@@ -28,9 +28,9 @@ export default function Header() {
           {/* Logo Section */}
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
             <img 
-              src="@assets/mqy7md_1753116245618.jpg" 
+              src="@assets/mqy7md_1753122664873.jpg" 
               alt="SPIRAL Logo" 
-              className="w-8 h-8 object-contain"
+              className="w-8 h-8 object-contain rounded-md"
             />
             <span className="text-xl font-bold text-[var(--spiral-navy)]">SPIRAL</span>
           </Link>

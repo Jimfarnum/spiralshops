@@ -240,6 +240,8 @@ Preferred communication style: Simple, everyday language.
   - Converted vertical cards to horizontal layout with icons and compact text for better mobile experience
   - Enhanced mobile responsiveness with proper spacing and consistent visual hierarchy
   - Updated all feature cards to use shortened descriptions while maintaining key information
+  - Replaced SVG logo with actual SPIRAL logo image throughout homepage and header components
+  - Added spiral logo to public assets folder for consistent branding across the platform
 
 ## System Architecture
 
