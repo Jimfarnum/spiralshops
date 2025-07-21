@@ -67,10 +67,13 @@ export const spiralTransactions = pgTable("spiral_transactions", {
   userId: integer("user_id").notNull().references(() => users.id),
   type: text("type").notNull(), // 'earned' or 'redeemed'
   amount: integer("amount").notNull(),
-  source: text("source").notNull(), // 'online_purchase', 'in_person_purchase', 'sharing', 'referral'
+  source: text("source").notNull(), // 'online_purchase', 'in_person_purchase', 'sharing', 'referral', 'event', 'bonus'
   description: text("description").notNull(),
   orderId: text("order_id"), // optional reference to order
   storeId: integer("store_id").references(() => stores.id),
+  mallId: text("mall_id"), // for mall-specific bonuses
+  eventId: integer("event_id"), // for event-based bonuses
+  multiplier: decimal("multiplier", { precision: 3, scale: 2 }).default("1.00"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -483,5 +486,127 @@ export type CartItem = typeof cartItems.$inferSelect;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
 export type Review = typeof reviews.$inferSelect;
 export type InsertReview = z.infer<typeof insertReviewSchema>;
+
+// P1 Feature Tables
+export const mallPerks = pgTable("mall_perks", {
+  id: serial("id").primaryKey(),
+  mallId: integer("mall_id").notNull().references(() => malls.id),
+  perkType: text("perk_type").notNull(), // 'spiral_multiplier', 'free_pickup', 'discount'
+  title: text("title").notNull(),
+  description: text("description"),
+  multiplier: decimal("multiplier", { precision: 3, scale: 2 }),
+  discountPercent: integer("discount_percent"),
+  dayOfWeek: integer("day_of_week"), // 0-6 for Sunday-Saturday
+  startTime: text("start_time"), // HH:MM:SS
+  endTime: text("end_time"), // HH:MM:SS
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const retailerApplications = pgTable("retailer_applications", {
+  id: serial("id").primaryKey(),
+  businessName: text("business_name").notNull(),
+  contactName: text("contact_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  businessType: text("business_type"),
+  address: text("address"),
+  description: text("description"),
+  logoUrl: text("logo_url"),
+  website: text("website"),
+  status: text("status").default("pending"), // 'pending', 'approved', 'rejected'
+  approvedBy: integer("approved_by").references(() => users.id),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const wishlistNotifications = pgTable("wishlist_notifications", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  productId: text("product_id").notNull(),
+  notificationType: text("notification_type").notNull(), // 'back_in_stock', 'price_drop'
+  isEnabled: boolean("is_enabled").default(true),
+  originalPrice: decimal("original_price", { precision: 10, scale: 2 }),
+  targetPrice: decimal("target_price", { precision: 10, scale: 2 }),
+  lastNotifiedAt: timestamp("last_notified_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const userNotifications = pgTable("user_notifications", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  type: text("type").notNull(), // 'wishlist_alert', 'spiral_bonus', 'event_reminder'
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  isRead: boolean("is_read").default(false),
+  actionUrl: text("action_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// P1 Relations
+export const mallPerksRelations = relations(mallPerks, ({ one }) => ({
+  mall: one(malls, {
+    fields: [mallPerks.mallId],
+    references: [malls.id],
+  }),
+}));
+
+export const retailerApplicationsRelations = relations(retailerApplications, ({ one }) => ({
+  approvedBy: one(users, {
+    fields: [retailerApplications.approvedBy],
+    references: [users.id],
+  }),
+}));
+
+export const wishlistNotificationsRelations = relations(wishlistNotifications, ({ one }) => ({
+  user: one(users, {
+    fields: [wishlistNotifications.userId],
+    references: [users.id],
+  }),
+}));
+
+export const userNotificationsRelations = relations(userNotifications, ({ one }) => ({
+  user: one(users, {
+    fields: [userNotifications.userId],
+    references: [users.id],
+  }),
+}));
+
+// P1 Insert schemas
+export const insertMallPerkSchema = createInsertSchema(mallPerks).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertRetailerApplicationSchema = createInsertSchema(retailerApplications).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertWishlistNotificationSchema = createInsertSchema(wishlistNotifications).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertUserNotificationSchema = createInsertSchema(userNotifications).omit({
+  id: true,
+  createdAt: true,
+});
+
+// P1 Type exports
+export type MallPerk = typeof mallPerks.$inferSelect;
+export type InsertMallPerk = z.infer<typeof insertMallPerkSchema>;
+export type RetailerApplication = typeof retailerApplications.$inferSelect;
+export type InsertRetailerApplication = z.infer<typeof insertRetailerApplicationSchema>;
+export type WishlistNotification = typeof wishlistNotifications.$inferSelect;
+export type InsertWishlistNotification = z.infer<typeof insertWishlistNotificationSchema>;
+export type UserNotification = typeof userNotifications.$inferSelect;
+export type InsertUserNotification = z.infer<typeof insertUserNotificationSchema>;
 
 

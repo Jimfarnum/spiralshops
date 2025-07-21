@@ -49,6 +49,12 @@ import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOpti
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
 import MallContextSync from "@/components/mall-context-sync";
+import MallEventsDemo from "@/pages/mall-events-demo";
+import P1FeaturesDemo from "@/pages/p1-features-demo";
+import P1TestSuite from "@/pages/p1-test-suite";
+import LoyaltyDashboard from "@/components/loyalty-dashboard";
+import RetailerOnboarding from "@/components/retailer-onboarding";
+import WishlistNotifications from "@/components/wishlist-notifications";
 
 function Router() {
   return (
@@ -108,6 +114,12 @@ function Router() {
       <Route path="/store/:storeId/reviews" component={() => import('@/pages/store-reviews').then(m => m.default)} />
       <Route path="/gift-cards" component={() => import('@/pages/gift-cards').then(m => m.default)} />
       <Route path="/p0-features-demo" component={() => import('@/pages/p0-features-demo').then(m => m.default)} />
+      <Route path="/p1-features-demo" component={P1FeaturesDemo} />
+      <Route path="/p1-test-suite" component={P1TestSuite} />
+      <Route path="/loyalty-dashboard" component={LoyaltyDashboard} />
+      <Route path="/mall-events-demo" component={MallEventsDemo} />
+      <Route path="/retailer-onboarding" component={RetailerOnboarding} />
+      <Route path="/wishlist-notifications" component={WishlistNotifications} />
       <Route component={NotFound} />
     </Switch>
   );

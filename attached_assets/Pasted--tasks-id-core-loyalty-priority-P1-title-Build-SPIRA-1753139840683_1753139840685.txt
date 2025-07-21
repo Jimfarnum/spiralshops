@@ -1,0 +1,46 @@
+{
+  "tasks": [
+    {
+      "id": "core-loyalty",
+      "priority": "P1",
+      "title": "Build SPIRALS Loyalty Engine",
+      "desc": "Implement a loyalty points system named 'SPIRALS'. Add to every verified order based on spend. Key tasks:\n- Add `spiralsEarned` to order model\n- Create user dashboard section for SPIRALS balance\n- Admin panel to configure point rules and bonus tiers (default: 1 SPIRAL per $1)\n- Support bonus multipliers (events, malls, affiliates)\n- Redemption at checkout\n- Store total SPIRALS history in user profile"
+    },
+    {
+      "id": "mall-events",
+      "priority": "P1",
+      "title": "Enable SPIRAL Events Integration per Mall",
+      "desc": "Allow each mall to have its own list of events (sales, live music, holiday perks).\n- Create `events` table tied to mall ID\n- Add admin UI to create/manage events\n- Add `/events` route for each mall page\n- Show active events on mall directory cards\n- Add RSVP and bonus SPIRALS for attendance"
+    },
+    {
+      "id": "mall-perks",
+      "priority": "P1",
+      "title": "Add Mall-Specific SPIRALS Perks",
+      "desc": "Enable mall-specific bonus logic and perks:\n- Bonus SPIRALS (e.g. 'Double SPIRALS Saturdays')\n- Free pickup days\n- Time-based or event-based triggers\n- Admin toggles via dashboard\n- Display on mall homepage and store listings"
+    },
+    {
+      "id": "retailer-onboard",
+      "priority": "P1",
+      "title": "Create Retailer Onboarding Portal",
+      "desc": "Add public-facing onboarding system for new retailers:\n- Landing page: Benefits of joining SPIRAL\n- Sign-up form for stores (basic info, logo, product feed upload)\n- Approval queue in admin dashboard\n- Upon approval: auto-create retailer dashboard & store page"
+    },
+    {
+      "id": "wishlist-alerts",
+      "priority": "P1",
+      "title": "Add Inventory Alert + Wishlist Notification System",
+      "desc": "Allow shoppers to get notified:\n- When a wishlisted item comes back in stock\n- When its price drops\n- Add toggle to wishlist UI for notifications\n- Create notifications table\n- Push alert to user profile when triggered"
+    },
+    {
+      "id": "cloudant-hook",
+      "priority": "P1",
+      "title": "Prep Loyalty & Event Data Hooks for IBM Cloudant",
+      "desc": "Add modular data logic in `cloudantAdapter.js` to support future switch from local DB to Cloudant:\n- `saveLoyaltyPoints(userId, points)`\n- `fetchMallEvents(mallId)`\n- `fetchPerksForMall(mallId)`\nThese will currently mock data, but should follow production-ready structure."
+    },
+    {
+      "id": "test-suite",
+      "priority": "P1",
+      "title": "Run and Validate Feature Testing After Each Addition",
+      "desc": "After completing each feature above, run UI/UX test:\n- Loyalty balance displayed and updated?\n- Mall events display and RSVP work?\n- Perks shown in correct malls?\n- Retailer signup creates account and notifies admin?\n- Wishlist alerts fire properly?\nReport errors to console and mark all success states visually in UI."
+    }
+  ]
+}
