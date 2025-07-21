@@ -142,10 +142,17 @@ export default function RetailerAnalytics() {
                   <SelectItem value="1y">Last year</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" className="flex items-center gap-2">
-                <Download className="h-4 w-4" />
-                Export
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  Export
+                </Button>
+                <Button variant="default" className="bg-[var(--spiral-coral)] hover:bg-[var(--spiral-navy)]">
+                  <a href="/retailer-insights" className="flex items-center gap-2 text-white">
+                    AI Insights
+                  </a>
+                </Button>
+              </div>
             </div>
           </div>
 
