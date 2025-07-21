@@ -28,7 +28,7 @@ export default function Header() {
           <div className="flex items-center min-w-0">
             <Link href="/" className="flex-shrink-0 flex items-center mr-8">
               <img 
-                src="@assets/5f2ddb9c-bed6-466a-a305-c06542e7cf4b.png (1)_1752624555680.PNG" 
+                src="@assets/mqy7md_1753112885975.jpg" 
                 alt="SPIRAL Logo" 
                 className="w-10 h-10 mr-2 object-contain"
               />

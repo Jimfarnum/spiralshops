@@ -103,6 +103,15 @@ export default function Home() {
       {/* Hero Section */}
       <section className="bg-white py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* SPIRAL Logo */}
+          <div className="flex justify-center mb-8">
+            <img 
+              src="@assets/mqy7md_1753112885975.jpg" 
+              alt="SPIRAL Logo" 
+              className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain"
+            />
+          </div>
+          
           <h1 className="text-4xl lg:text-5xl font-bold text-[var(--spiral-navy)] mb-6">
             Everything Local. Just for You.
           </h1>
