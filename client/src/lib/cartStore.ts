@@ -1,6 +1,18 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
+export interface FulfillmentGroupSummary {
+  fulfillmentMethod: 'ship-to-me' | 'in-store-pickup' | 'ship-to-mall';
+  storeId?: number;
+  storeName?: string;
+  mallId?: string;
+  mallName?: string;
+  items: CartItem[];
+  subtotal: number;
+  shippingCost: number;
+  estimatedDelivery: string;
+}
+
 export interface CartItem {
   id: number;
   name: string;
@@ -9,8 +21,12 @@ export interface CartItem {
   category: string;
   quantity: number;
   store?: string;
+  storeId?: number;
   mallId?: string;
   mallName?: string;
+  fulfillmentMethod?: 'ship-to-me' | 'in-store-pickup' | 'ship-to-mall';
+  estimatedDelivery?: string;
+  shippingCost?: number;
 }
 
 interface CartStore {
@@ -22,13 +38,17 @@ interface CartStore {
   addItem: (product: Omit<CartItem, 'quantity'>, quantity?: number) => void;
   removeItem: (id: number) => void;
   updateQuantity: (id: number, quantity: number) => void;
+  updateFulfillmentMethod: (id: number, method: 'ship-to-me' | 'in-store-pickup' | 'ship-to-mall') => void;
   clearCart: () => void;
   clearMallCart: () => void;
   setMallContext: (mallId: string | null, mallName: string | null) => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  getTotalShippingCost: () => number;
   getMallItems: () => CartItem[];
   getActiveItems: () => CartItem[];
+  getFulfillmentGroups: () => FulfillmentGroupSummary[];
+  getItemsByStore: () => { [storeId: string]: CartItem[] };
 }
 
 export const useCartStore = create<CartStore>()(
@@ -117,6 +137,73 @@ export const useCartStore = create<CartStore>()(
       
       getTotalPrice: () => {
         return get().getActiveItems().reduce((total, item) => total + (item.price * item.quantity), 0);
+      },
+
+      updateFulfillmentMethod: (id: number, method: 'ship-to-me' | 'in-store-pickup' | 'ship-to-mall') => {
+        const estimatedDelivery = method === 'in-store-pickup' 
+          ? 'Ready today for pickup'
+          : method === 'ship-to-mall' 
+          ? 'Ships to SPIRAL Center in 2-3 days'
+          : 'Ships in 2-5 business days';
+          
+        const shippingCost = method === 'ship-to-me' ? 4.99 : 0;
+
+        set({
+          items: get().items.map(item =>
+            item.id === id
+              ? { ...item, fulfillmentMethod: method, estimatedDelivery, shippingCost }
+              : item
+          )
+        });
+      },
+
+      getTotalShippingCost: () => {
+        return get().getActiveItems().reduce((total, item) => total + (item.shippingCost || 0), 0);
+      },
+
+      getFulfillmentGroups: (): FulfillmentGroupSummary[] => {
+        const items = get().getActiveItems();
+        const groups: { [key: string]: FulfillmentGroupSummary } = {};
+
+        items.forEach(item => {
+          const fulfillmentMethod = item.fulfillmentMethod || 'ship-to-me';
+          const key = `${fulfillmentMethod}-${item.storeId || 'unknown'}-${item.mallId || 'none'}`;
+          
+          if (!groups[key]) {
+            groups[key] = {
+              fulfillmentMethod,
+              storeId: item.storeId,
+              storeName: item.store,
+              mallId: item.mallId,
+              mallName: item.mallName,
+              items: [],
+              subtotal: 0,
+              shippingCost: 0,
+              estimatedDelivery: item.estimatedDelivery || 'Ships in 2-5 business days'
+            };
+          }
+          
+          groups[key].items.push(item);
+          groups[key].subtotal += item.price * item.quantity;
+          groups[key].shippingCost += item.shippingCost || 0;
+        });
+
+        return Object.values(groups);
+      },
+
+      getItemsByStore: () => {
+        const items = get().getActiveItems();
+        const storeGroups: { [storeId: string]: CartItem[] } = {};
+
+        items.forEach(item => {
+          const storeId = item.storeId?.toString() || 'unknown';
+          if (!storeGroups[storeId]) {
+            storeGroups[storeId] = [];
+          }
+          storeGroups[storeId].push(item);
+        });
+
+        return storeGroups;
       }
     }),
     {

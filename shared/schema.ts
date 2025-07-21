@@ -74,15 +74,48 @@ export const spiralTransactions = pgTable("spiral_transactions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Orders table for purchase tracking
+// Orders table for purchase tracking with split fulfillment support
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   orderNumber: text("order_number").notNull().unique(),
   userId: integer("user_id").references(() => users.id),
   total: decimal("total", { precision: 10, scale: 2 }).notNull(),
-  fulfillmentMethod: text("fulfillment_method").notNull(), // 'ship-to-me', 'in-store-pickup', 'ship-to-mall'
   status: text("status").default('pending'), // 'pending', 'confirmed', 'shipped', 'delivered', 'completed'
   spiralsEarned: integer("spirals_earned").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Order items table for individual products in orders with separate fulfillment
+export const orderItems = pgTable("order_items", {
+  id: serial("id").primaryKey(),
+  orderId: integer("order_id").notNull().references(() => orders.id),
+  productId: text("product_id").notNull(),
+  productName: text("product_name").notNull(),
+  productPrice: decimal("product_price", { precision: 10, scale: 2 }).notNull(),
+  quantity: integer("quantity").notNull(),
+  storeId: integer("store_id").references(() => stores.id),
+  storeName: text("store_name").notNull(),
+  fulfillmentMethod: text("fulfillment_method").notNull(), // 'ship-to-me', 'in-store-pickup', 'ship-to-mall'
+  fulfillmentStatus: text("fulfillment_status").default('processing'), // 'processing', 'ready', 'shipped', 'delivered', 'picked-up'
+  estimatedDelivery: text("estimated_delivery"), // e.g., "Ready today for pickup", "Ships in 2 days"
+  trackingNumber: text("tracking_number"),
+  mallId: integer("mall_id"),
+  mallName: text("mall_name"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Fulfillment groups table for optimized shipping logic
+export const fulfillmentGroups = pgTable("fulfillment_groups", {
+  id: serial("id").primaryKey(),
+  orderId: integer("order_id").notNull().references(() => orders.id),
+  fulfillmentMethod: text("fulfillment_method").notNull(),
+  storeId: integer("store_id").references(() => stores.id),
+  mallId: integer("mall_id"),
+  groupTotal: decimal("group_total", { precision: 10, scale: 2 }).notNull(),
+  shippingCost: decimal("shipping_cost", { precision: 10, scale: 2 }).default("0.00"),
+  estimatedDelivery: text("estimated_delivery").notNull(),
+  status: text("status").default('processing'),
+  trackingNumber: text("tracking_number"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -103,10 +136,34 @@ export const spiralTransactionsRelations = relations(spiralTransactions, ({ one 
   }),
 }));
 
-export const ordersRelations = relations(orders, ({ one }) => ({
+export const ordersRelations = relations(orders, ({ one, many }) => ({
   user: one(users, {
     fields: [orders.userId],
     references: [users.id],
+  }),
+  orderItems: many(orderItems),
+  fulfillmentGroups: many(fulfillmentGroups),
+}));
+
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+  store: one(stores, {
+    fields: [orderItems.storeId],
+    references: [stores.id],
+  }),
+}));
+
+export const fulfillmentGroupsRelations = relations(fulfillmentGroups, ({ one }) => ({
+  order: one(orders, {
+    fields: [fulfillmentGroups.orderId],
+    references: [orders.id],
+  }),
+  store: one(stores, {
+    fields: [fulfillmentGroups.storeId],
+    references: [stores.id],
   }),
 }));
 
@@ -129,6 +186,16 @@ export const insertOrderSchema = createInsertSchema(orders).omit({
   createdAt: true,
 });
 
+export const insertOrderItemSchema = createInsertSchema(orderItems).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertFulfillmentGroupSchema = createInsertSchema(fulfillmentGroups).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertStore = z.infer<typeof insertStoreSchema>;
 export type Store = typeof stores.$inferSelect;
 export type InsertRetailer = z.infer<typeof insertRetailerSchema>;
@@ -139,6 +206,10 @@ export type InsertSpiralTransaction = z.infer<typeof insertSpiralTransactionSche
 export type SpiralTransaction = typeof spiralTransactions.$inferSelect;
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type Order = typeof orders.$inferSelect;
+export type OrderItem = typeof orderItems.$inferSelect;
+export type FulfillmentGroup = typeof fulfillmentGroups.$inferSelect;
+export type InsertOrderItem = typeof orderItems.$inferInsert;
+export type InsertFulfillmentGroup = typeof fulfillmentGroups.$inferInsert;
 
 // Invite codes table for friend referral system
 export const inviteCodes = pgTable("invite_codes", {

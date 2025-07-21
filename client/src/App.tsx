@@ -44,6 +44,7 @@ import ProductDetailNew from "@/pages/product-detail";
 import GiftCards from "@/pages/gift-cards";
 import Events from "@/pages/events";
 import MultiCart from "@/pages/multi-cart";
+import SplitFulfillment from "@/pages/split-fulfillment";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
@@ -98,6 +99,7 @@ function Router() {
       <Route path="/gift-cards" component={GiftCards} />
       <Route path="/events" component={Events} />
       <Route path="/multi-cart" component={MultiCart} />
+      <Route path="/split-fulfillment" component={SplitFulfillment} />
       <Route component={NotFound} />
     </Switch>
   );

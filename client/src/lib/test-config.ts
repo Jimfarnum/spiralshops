@@ -432,6 +432,62 @@ export const testConfiguration: FeatureArea[] = [
         expectedResult: 'Helpful count increments and provides user feedback'
       }
     ]
+  },
+  {
+    id: 'split-fulfillment',
+    name: 'Split Fulfillment Service',
+    description: 'Advanced order splitting by retailer and fulfillment method with optimized shipping logic',
+    routes: ['/split-fulfillment', '/cart'],
+    lastUpdated: '2025-01-21',
+    testCases: [
+      {
+        id: 'fulfillment-method-selection',
+        name: 'Fulfillment Method Selection',
+        category: 'ecommerce',
+        priority: 'high',
+        automated: true,
+        route: '/split-fulfillment',
+        description: 'Test individual item fulfillment method selection and updates',
+        expectedResult: 'Users can select ship-to-me, in-store-pickup, or ship-to-mall for each item'
+      },
+      {
+        id: 'fulfillment-groups-display',
+        name: 'Fulfillment Groups Display',
+        category: 'ecommerce',
+        priority: 'high',
+        automated: true,
+        route: '/split-fulfillment',
+        description: 'Verify items are grouped by store and fulfillment method with correct totals',
+        expectedResult: 'Items grouped correctly with subtotals, shipping costs, and delivery estimates'
+      },
+      {
+        id: 'split-order-processing',
+        name: 'Split Order Processing',
+        category: 'ecommerce',
+        priority: 'critical',
+        automated: false,
+        description: 'Test complete split fulfillment order placement and confirmation',
+        expectedResult: 'Order splits correctly, generates fulfillment groups, and shows confirmation'
+      },
+      {
+        id: 'shipping-cost-calculation',
+        name: 'Shipping Cost Calculation',
+        category: 'ecommerce',
+        priority: 'high',
+        automated: false,
+        description: 'Verify shipping costs calculated per fulfillment method and group',
+        expectedResult: 'Ship-to-me charges $4.99, pickup methods are free'
+      },
+      {
+        id: 'delivery-time-estimation',
+        name: 'Delivery Time Estimation',
+        category: 'ecommerce',
+        priority: 'medium',
+        automated: false,
+        description: 'Test delivery time estimates for different fulfillment methods',
+        expectedResult: 'Pickup shows "Ready today", shipping shows "2-5 business days"'
+      }
+    ]
   }
 ];
 

@@ -192,6 +192,16 @@ const Cart = () => {
                     </Button>
                   </Link>
                   
+                  <Link href="/split-fulfillment" className="block">
+                    <Button 
+                      variant="outline" 
+                      size="lg" 
+                      className="w-full border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)] hover:text-white h-12 rounded-xl transition-all duration-300"
+                    >
+                      Split Fulfillment Options
+                    </Button>
+                  </Link>
+                  
                   <Link href="/products" className="block">
                     <Button 
                       variant="outline" 
