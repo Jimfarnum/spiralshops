@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   MapPin, 
   Building2, 
@@ -11,7 +12,10 @@ import {
   Search,
   Store,
   ShoppingBag,
-  Navigation
+  Navigation,
+  Target,
+  Globe,
+  Locate
 } from 'lucide-react';
 import { useLocationStore, locationSuggestions } from '@/lib/locationStore';
 
@@ -23,14 +27,18 @@ interface LocationFilterProps {
 export default function LocationFilter({ isOpen, onClose }: LocationFilterProps) {
   const { 
     currentLocation, 
-    mallContext, 
+    mallContext,
+    searchPreferences,
     setLocationFilter, 
     clearMallContext, 
-    resetFilters 
+    resetFilters,
+    setSearchPreferences,
+    getNearbyLocations
   } = useLocationStore();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
+  const [zipCodeInput, setZipCodeInput] = useState(searchPreferences.currentZipCode || '');
 
   // Filter suggestions based on search term
   const filteredSuggestions = useMemo(() => {
@@ -84,9 +92,9 @@ export default function LocationFilter({ isOpen, onClose }: LocationFilterProps)
         <div className="p-6 border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Navigation className="h-5 w-5 text-[var(--spiral-coral)]" />
+              <Globe className="h-5 w-5 text-[var(--spiral-coral)]" />
               <h2 className="text-xl font-semibold text-[var(--spiral-navy)]">
-                Choose Shopping Location
+                Smart Location Search
               </h2>
             </div>
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -121,21 +129,80 @@ export default function LocationFilter({ isOpen, onClose }: LocationFilterProps)
           )}
         </div>
 
-        <CardContent className="p-6 overflow-y-auto max-h-[60vh]">
-          {/* Search Input */}
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search by zip code, city, state, or mall name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+        <CardContent className="p-6 overflow-y-auto max-h-[70vh]">
+          {/* Advanced Search Controls */}
+          <div className="space-y-4 mb-6">
+            {/* Primary Search Input */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search by zip code, city, state, or mall name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
+            {/* Location Preferences */}
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <label className="text-xs font-medium text-gray-600 mb-1 block">Your Zip Code (for distance)</label>
+                <div className="relative">
+                  <Locate className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
+                  <Input
+                    placeholder="Enter zip"
+                    value={zipCodeInput}
+                    onChange={(e) => setZipCodeInput(e.target.value)}
+                    onBlur={() => setSearchPreferences({ currentZipCode: zipCodeInput })}
+                    className="pl-8 text-sm h-8"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex-1">
+                <label className="text-xs font-medium text-gray-600 mb-1 block">Max Distance</label>
+                <Select 
+                  value={searchPreferences.maxDistance.toString()} 
+                  onValueChange={(value) => setSearchPreferences({ maxDistance: parseInt(value) })}
+                >
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {locationSuggestions.maxDistanceOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value.toString()}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex-1">
+                <label className="text-xs font-medium text-gray-600 mb-1 block">Sort By</label>
+                <Select 
+                  value={searchPreferences.sortBy} 
+                  onValueChange={(value: 'distance' | 'relevance' | 'alphabetical') => 
+                    setSearchPreferences({ sortBy: value })
+                  }
+                >
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="distance">Nearest First</SelectItem>
+                    <SelectItem value="alphabetical">A-Z</SelectItem>
+                    <SelectItem value="relevance">Relevance</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="nearby">Nearby</TabsTrigger>
               <TabsTrigger value="malls">Malls</TabsTrigger>
               <TabsTrigger value="cities">Cities</TabsTrigger>
               <TabsTrigger value="zip">Zip Codes</TabsTrigger>
@@ -152,47 +219,113 @@ export default function LocationFilter({ isOpen, onClose }: LocationFilterProps)
                 Shop All Locations
               </Button>
               
-              {/* Quick Mall Access */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Popular Malls</h3>
-                <div className="grid grid-cols-1 gap-2">
-                  {filteredSuggestions.malls.slice(0, 3).map((mall) => (
-                    <Button
-                      key={mall.id}
-                      variant="outline"
-                      className="justify-start h-auto p-3"
-                      onClick={() => handleLocationSelect('mall', mall.name)}
-                    >
-                      <Building2 className="h-4 w-4 mr-2 flex-shrink-0" />
-                      <div className="text-left">
-                        <div className="font-medium">{mall.name}</div>
-                        <div className="text-xs text-gray-500">{mall.city}, {mall.state}</div>
-                      </div>
-                    </Button>
-                  ))}
+              {/* Quick Access */}
+              <div className="grid grid-cols-1 gap-3">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    Nationwide Coverage
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia'].map((city) => (
+                      <Button
+                        key={city}
+                        variant="outline"
+                        size="sm"
+                        className="justify-start text-xs"
+                        onClick={() => handleLocationSelect('city', city)}
+                      >
+                        <MapPin className="h-3 w-3 mr-1" />
+                        {city}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">Major Shopping Malls</h3>
+                  <div className="grid grid-cols-1 gap-2">
+                    {filteredSuggestions.malls.slice(0, 4).map((mall) => (
+                      <Button
+                        key={mall.id}
+                        variant="outline"
+                        className="justify-start h-auto p-3"
+                        onClick={() => handleLocationSelect('mall', mall.name)}
+                      >
+                        <Building2 className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <div className="text-left">
+                          <div className="font-medium text-sm">{mall.name}</div>
+                          <div className="text-xs text-gray-500">{mall.city}, {mall.state}</div>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </TabsContent>
 
+            {/* Nearby Tab */}
+            <TabsContent value="nearby" className="space-y-2">
+              <div className="text-xs text-gray-500 mb-3 p-2 bg-blue-50 rounded">
+                {searchPreferences.currentZipCode 
+                  ? `Showing locations within ${searchPreferences.maxDistance} miles of ${searchPreferences.currentZipCode}`
+                  : 'Enter your zip code above to see nearby locations'
+                }
+              </div>
+              {searchPreferences.currentZipCode ? (
+                <div className="space-y-2">
+                  {getNearbyLocations().map((mall) => (
+                    <Button
+                      key={mall.id}
+                      variant="outline"
+                      className="w-full justify-start h-auto p-3"
+                      onClick={() => handleLocationSelect('mall', mall.name)}
+                    >
+                      <Building2 className="h-4 w-4 mr-3 flex-shrink-0 text-[var(--spiral-coral)]" />
+                      <div className="text-left flex-1">
+                        <div className="font-medium">{mall.name}</div>
+                        <div className="text-xs text-gray-500">
+                          {mall.city}, {mall.state} • {mall.distance?.toFixed(1) || '?'} miles
+                        </div>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center text-gray-500 py-8">
+                  Enter your zip code above to find nearby malls and stores
+                </div>
+              )}
+            </TabsContent>
+
             {/* Malls Tab */}
             <TabsContent value="malls" className="space-y-2">
-              <div className="text-xs text-gray-500 mb-2">
-                Select a mall for exclusive shopping within that location
+              <div className="text-xs text-gray-500 mb-2 p-2 bg-amber-50 rounded">
+                <strong>Mall Mode:</strong> Select a mall for exclusive shopping within that location nationwide
               </div>
-              {filteredSuggestions.malls.map((mall) => (
-                <Button
-                  key={mall.id}
-                  variant="outline"
-                  className="w-full justify-start h-auto p-3"
-                  onClick={() => handleLocationSelect('mall', mall.name)}
-                >
-                  <Building2 className="h-4 w-4 mr-3 flex-shrink-0 text-[var(--spiral-coral)]" />
-                  <div className="text-left">
-                    <div className="font-medium">{mall.name}</div>
-                    <div className="text-xs text-gray-500">{mall.city}, {mall.state}</div>
-                  </div>
-                </Button>
-              ))}
+              <div className="max-h-64 overflow-y-auto space-y-2">
+                {filteredSuggestions.malls.map((mall) => (
+                  <Button
+                    key={mall.id}
+                    variant="outline"
+                    className="w-full justify-start h-auto p-3"
+                    onClick={() => handleLocationSelect('mall', mall.name)}
+                  >
+                    <Building2 className="h-4 w-4 mr-3 flex-shrink-0 text-[var(--spiral-coral)]" />
+                    <div className="text-left flex-1">
+                      <div className="font-medium">{mall.name}</div>
+                      <div className="text-xs text-gray-500">
+                        {mall.city}, {mall.state} • {mall.zipCode}
+                        {searchPreferences.currentZipCode && mall.zipCode && (
+                          <span className="ml-2 text-blue-600">
+                            ~{Math.abs(parseInt(searchPreferences.currentZipCode) - parseInt(mall.zipCode)) / 1000}mi
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </Button>
+                ))}
+              </div>
               {filteredSuggestions.malls.length === 0 && (
                 <div className="text-center text-gray-500 py-8">
                   No malls found matching "{searchTerm}"

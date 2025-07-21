@@ -13,7 +13,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import LocationFilter from '@/components/location-filter';
 import { useLocationStore } from '@/lib/locationStore';
-import { Search, Filter, X, MapPin, Building2, Navigation } from 'lucide-react';
+import { Search, Filter, X, MapPin, Building2, Navigation, Target } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -31,23 +31,52 @@ interface Product {
   state?: string;
 }
 
-// Extended product data for filtering with mall information
+// Comprehensive nationwide product data with smart categorization and product use cases
 const allProducts: Product[] = [
-  { id: 1, name: "Artisan Coffee Blend", price: 24.99, image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Local Roasters", category: "food", description: "Premium single-origin coffee blend", distance: 0.8, zipCode: "55401", city: "Minneapolis", state: "MN", mallId: "mall-1", mallName: "Ridgedale Mall" },
-  { id: 2, name: "Handmade Ceramic Mug", price: 18.50, image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Pottery Studio", category: "home", description: "Beautiful handcrafted ceramic mug", distance: 1.2, zipCode: "55424", city: "Bloomington", state: "MN", mallId: "mall-2", mallName: "Mall of America" },
-  { id: 3, name: "Organic Honey", price: 12.99, image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Bee Farm Co.", category: "food", description: "Pure organic wildflower honey", distance: 2.1, zipCode: "55344", city: "Minnetonka", state: "MN" },
-  { id: 4, name: "Vintage Leather Jacket", price: 89.99, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Vintage Threads", category: "clothing", description: "Classic leather jacket in excellent condition", distance: 0.5, zipCode: "55424", city: "Bloomington", state: "MN", mallId: "mall-2", mallName: "Mall of America" },
-  { id: 5, name: "Plant-Based Soap", price: 8.75, image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Natural Goods", category: "beauty", description: "Eco-friendly soap with natural ingredients", distance: 1.8, zipCode: "55425", city: "Edina", state: "MN", mallId: "mall-3", mallName: "Southdale Center" },
-  { id: 6, name: "Wood Phone Stand", price: 15.99, image: "https://images.unsplash.com/photo-1586953209889-097d0faf7982?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Craft Corner", category: "tech", description: "Sustainable bamboo phone stand", distance: 1.0, zipCode: "55401", city: "Minneapolis", state: "MN" },
-  { id: 7, name: "Local Fruit Basket", price: 22.50, image: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Fresh Farm", category: "food", description: "Seasonal local fruit selection", distance: 3.2, zipCode: "55113", city: "Roseville", state: "MN", mallId: "mall-4", mallName: "Rosedale Center" },
-  { id: 8, name: "Knitted Scarf", price: 34.99, image: "https://images.unsplash.com/photo-1519810409259-73e5a5c00adf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Yarn Works", category: "clothing", description: "Hand-knitted wool scarf", distance: 1.5, zipCode: "55425", city: "Edina", state: "MN", mallId: "mall-3", mallName: "Southdale Center" },
-  { id: 9, name: "Herbal Tea Set", price: 28.99, image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Tea Garden", category: "food", description: "Collection of organic herbal teas", distance: 2.0, zipCode: "55337", city: "Burnsville", state: "MN", mallId: "mall-5", mallName: "Burnsville Center" },
-  { id: 10, name: "Handwoven Basket", price: 45.00, image: "https://images.unsplash.com/photo-1586953209889-097d0faf7982?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Artisan Market", category: "home", description: "Traditional handwoven storage basket", distance: 2.8, zipCode: "55429", city: "Brooklyn Center", state: "MN", mallId: "mall-6", mallName: "Brookdale Shopping Center" },
-  { id: 11, name: "Organic Face Cream", price: 32.50, image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Pure Beauty", category: "beauty", description: "Anti-aging cream with natural ingredients", distance: 1.1, zipCode: "55344", city: "Minnetonka", state: "MN", mallId: "mall-1", mallName: "Ridgedale Mall" },
-  { id: 12, name: "Canvas Tote Bag", price: 19.99, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Eco Shop", category: "clothing", description: "Sustainable cotton canvas bag", distance: 1.7, zipCode: "55112", city: "Plymouth", state: "MN" }
+  // Minnesota Products
+  { id: 1, name: "Artisan Coffee Blend", price: 24.99, image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Local Roasters", category: "food", description: "Premium single-origin coffee blend • Perfect for morning energy", distance: 0.8, zipCode: "55305", city: "Minnetonka", state: "MN", mallId: "mall-2", mallName: "Ridgedale Mall" },
+  { id: 2, name: "Handmade Ceramic Mug", price: 18.50, image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Pottery Studio", category: "home", description: "Beautiful handcrafted ceramic mug • Office-ready, gift-worthy", distance: 1.2, zipCode: "55425", city: "Bloomington", state: "MN", mallId: "mall-1", mallName: "Mall of America" },
+  { id: 3, name: "Organic Honey", price: 12.99, image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Bee Farm Co.", category: "food", description: "Pure organic wildflower honey • Healthy cooking, natural wellness", distance: 2.1, zipCode: "55344", city: "Minnetonka", state: "MN" },
+  { id: 4, name: "Vintage Leather Jacket", price: 89.99, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Vintage Threads", category: "clothing", description: "Classic leather jacket • Office-ready, weekend casual", distance: 0.5, zipCode: "55425", city: "Bloomington", state: "MN", mallId: "mall-1", mallName: "Mall of America" },
+  
+  // California Products
+  { id: 5, name: "Surf Board Wax", price: 12.50, image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Wave Riders", category: "sports", description: "Premium surf wax • For beach days, water sports", distance: 1.2, zipCode: "90048", city: "Los Angeles", state: "CA", mallId: "mall-5", mallName: "Beverly Center" },
+  { id: 6, name: "Organic Avocado Oil", price: 19.99, image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Farm Fresh CA", category: "food", description: "Cold-pressed avocado oil • Healthy cooking, skincare", distance: 2.3, zipCode: "94304", city: "Palo Alto", state: "CA", mallId: "mall-6", mallName: "Stanford Shopping Center" },
+  { id: 7, name: "Tech Startup Hoodie", price: 65.00, image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Silicon Style", category: "clothing", description: "Premium comfort hoodie • Office-ready, casual Friday", distance: 0.8, zipCode: "95050", city: "Santa Clara", state: "CA", mallId: "mall-7", mallName: "Westfield Valley Fair" },
+  
+  // New York Products
+  { id: 8, name: "NYC Skyline Print", price: 45.00, image: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Metro Art Gallery", category: "home", description: "Limited edition NYC print • Home decor, office wall art", distance: 0.3, zipCode: "10007", city: "New York", state: "NY", mallId: "mall-8", mallName: "Westfield World Trade Center" },
+  { id: 9, name: "Artisan Bagels", price: 8.99, image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Brooklyn Bakery", category: "food", description: "Hand-rolled authentic bagels • Morning breakfast, office treats", distance: 2.1, zipCode: "11530", city: "Garden City", state: "NY", mallId: "mall-9", mallName: "Roosevelt Field" },
+  { id: 10, name: "Broadway Show Tote", price: 22.99, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Theater District Gifts", category: "clothing", description: "Official Broadway merchandise • Show memorabilia, gift-worthy", distance: 1.5, zipCode: "11373", city: "Elmhurst", state: "NY", mallId: "mall-10", mallName: "Queens Center" },
+  
+  // Texas Products
+  { id: 11, name: "BBQ Spice Rub", price: 14.99, image: "https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Texas Flavors", category: "food", description: "Authentic Texas BBQ blend • For grilling, outdoor cooking", distance: 1.8, zipCode: "75240", city: "Dallas", state: "TX", mallId: "mall-11", mallName: "Galleria Dallas" },
+  { id: 12, name: "Cowboy Boots", price: 129.99, image: "https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Lone Star Leather", category: "clothing", description: "Authentic handcrafted boots • Western style, durable wear", distance: 3.2, zipCode: "78752", city: "Austin", state: "TX", mallId: "mall-12", mallName: "Highland Mall" },
+  { id: 13, name: "Oil Rig Model", price: 35.50, image: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Energy Collectibles", category: "home", description: "Detailed oil rig replica • Office decor, collector's item", distance: 2.5, zipCode: "77056", city: "Houston", state: "TX", mallId: "mall-13", mallName: "The Galleria" },
+  
+  // Florida Products
+  { id: 14, name: "Tropical Plant Kit", price: 28.99, image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Miami Green", category: "home", description: "Indoor tropical plants • Home decor, office greenery", distance: 1.3, zipCode: "33180", city: "Aventura", state: "FL", mallId: "mall-14", mallName: "Aventura Mall" },
+  { id: 15, name: "Key Lime Pie Mix", price: 11.99, image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Keys Kitchen", category: "food", description: "Authentic Florida dessert mix • For entertaining, special occasions", distance: 2.8, zipCode: "33431", city: "Boca Raton", state: "FL", mallId: "mall-15", mallName: "Town Center at Boca Raton" },
+  { id: 16, name: "Hurricane Candle", price: 16.50, image: "https://images.unsplash.com/photo-1602874801265-3c2ba0dc90d6?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Storm Prep Co.", category: "home", description: "Emergency hurricane candle • For power outages, emergency prep", distance: 3.5, zipCode: "33607", city: "Tampa", state: "FL", mallId: "mall-16", mallName: "International Plaza" },
+  
+  // Illinois Products
+  { id: 17, name: "Deep Dish Pizza Kit", price: 24.99, image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Chicago Classics", category: "food", description: "Authentic Chicago pizza kit • For family dinner, entertaining", distance: 0.9, zipCode: "60611", city: "Chicago", state: "IL", mallId: "mall-17", mallName: "Water Tower Place" },
+  { id: 18, name: "Wind City Scarf", price: 32.00, image: "https://images.unsplash.com/photo-1519810409259-73e5a5c00adf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Midwest Warmth", category: "clothing", description: "Chicago-themed winter scarf • Cold weather, office style", distance: 2.4, zipCode: "60173", city: "Schaumburg", state: "IL", mallId: "mall-18", mallName: "Woodfield Mall" },
+  
+  // Pennsylvania Products
+  { id: 19, name: "Liberty Bell Replica", price: 55.00, image: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "Philadelphia History", category: "home", description: "Historical replica bell • Patriotic decor, educational gift", distance: 1.6, zipCode: "19406", city: "King of Prussia", state: "PA", mallId: "mall-19", mallName: "King of Prussia Mall" },
+  { id: 20, name: "Philly Cheese Steak Seasoning", price: 9.99, image: "https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300", store: "East Coast Flavors", category: "food", description: "Authentic Philly seasoning • For home cooking, grilling", distance: 1.6, zipCode: "19406", city: "King of Prussia", state: "PA", mallId: "mall-19", mallName: "King of Prussia Mall" }
 ];
 
-const categories = ['All', 'food', 'clothing', 'home', 'beauty', 'tech'];
+const categories = ['All', 'food', 'clothing', 'home', 'beauty', 'tech', 'sports'];
+
+// Product use categories for smart search
+const productUses = [
+  'office-ready', 'for camping', 'for baby shower', 'gift-worthy', 'emergency prep',
+  'entertaining', 'home decor', 'healthy cooking', 'outdoor cooking', 'cold weather',
+  'beach days', 'morning energy', 'special occasions', 'weekend casual', 'water sports',
+  'educational gift', 'collector\'s item', 'patriotic decor'
+];
 const stores = Array.from(new Set(allProducts.map(p => p.store)));
 const sortOptions = [
   { value: 'relevance', label: 'Relevance' },
@@ -59,6 +88,7 @@ const sortOptions = [
 export function ProductsPage() {
   const [, navigate] = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
+  const [useSearchTerm, setUseSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStores, setSelectedStores] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState([0, 100]);
@@ -98,10 +128,23 @@ export function ProductsPage() {
         }
       }
 
-      // Search query filter
-      if (searchQuery && !product.name.toLowerCase().includes(searchQuery.toLowerCase()) && 
-          !product.store.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false;
+      // Search query filter (name, store, description)
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const matchesName = product.name.toLowerCase().includes(query);
+        const matchesStore = product.store.toLowerCase().includes(query);
+        const matchesDescription = product.description.toLowerCase().includes(query);
+        if (!matchesName && !matchesStore && !matchesDescription) {
+          return false;
+        }
+      }
+      
+      // Use case search filtering (smart search for product purposes)
+      if (useSearchTerm) {
+        const useQuery = useSearchTerm.toLowerCase();
+        if (!product.description.toLowerCase().includes(useQuery)) {
+          return false;
+        }
       }
 
       // Category filter
@@ -144,7 +187,7 @@ export function ProductsPage() {
     }
 
     return filtered;
-  }, [searchQuery, selectedCategory, selectedStores, priceRange, maxDistance, sortBy, currentLocation, mallContext]);
+  }, [searchQuery, useSearchTerm, selectedCategory, selectedStores, priceRange, maxDistance, sortBy, currentLocation, mallContext]);
 
   const handleStoreToggle = (store: string) => {
     setSelectedStores(prev => 
@@ -156,6 +199,7 @@ export function ProductsPage() {
 
   const clearFilters = () => {
     setSearchQuery('');
+    setUseSearchTerm('');
     setSelectedCategory('All');
     setSelectedStores([]);
     setPriceRange([0, 100]);
@@ -310,25 +354,59 @@ export function ProductsPage() {
           )}
         </div>
 
-        {/* Search and Sort Bar */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <Input
-              type="text"
-              placeholder="Search products and stores..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 text-lg rounded-2xl"
-            />
+        {/* Enhanced Search and Sort Bar */}
+        <div className="space-y-4 mb-6">
+          {/* Main Search Inputs */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Input
+                type="text"
+                placeholder="Search products, stores, descriptions..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-12 text-lg rounded-2xl"
+              />
+            </div>
+            <div className="relative">
+              <Target className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 h-5 w-5" />
+              <Input
+                type="text"
+                placeholder="Search by use: office-ready, for camping, gift-worthy..."
+                value={useSearchTerm}
+                onChange={(e) => setUseSearchTerm(e.target.value)}
+                className="pl-10 h-12 text-lg rounded-2xl border-blue-200 focus:border-blue-400"
+              />
+            </div>
           </div>
           
-          <div className="flex gap-2">
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48 h-12 rounded-2xl">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
+          {/* Smart Use Case Quick Tags */}
+          {useSearchTerm === '' && (
+            <div className="flex flex-wrap gap-2 items-center">
+              <span className="text-sm text-gray-600 font-medium">Popular searches:</span>
+              {['office-ready', 'for camping', 'gift-worthy', 'entertaining', 'emergency prep'].map((tag) => (
+                <Button
+                  key={tag}
+                  variant="outline"
+                  size="sm"
+                  className="h-7 text-xs px-3 py-1 bg-blue-50 border-blue-200 hover:bg-blue-100 text-blue-700"
+                  onClick={() => setUseSearchTerm(tag)}
+                >
+                  {tag}
+                </Button>
+              ))}
+            </div>
+          )}
+          
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1"></div>
+            
+            <div className="flex gap-2">
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-48 h-12 rounded-2xl">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
                 {sortOptions.map(option => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -354,11 +432,12 @@ export function ProductsPage() {
                 </div>
               </SheetContent>
             </Sheet>
+            </div>
           </div>
         </div>
 
         {/* Active Filters */}
-        {(selectedCategory !== 'All' || selectedStores.length > 0 || searchQuery) && (
+        {(selectedCategory !== 'All' || selectedStores.length > 0 || searchQuery || useSearchTerm) && (
           <div className="flex flex-wrap gap-2 mb-6">
             {searchQuery && (
               <Badge variant="secondary" className="px-3 py-1">
@@ -372,6 +451,14 @@ export function ProductsPage() {
               <Badge variant="secondary" className="px-3 py-1 capitalize">
                 {selectedCategory}
                 <button onClick={() => setSelectedCategory('All')} className="ml-2">
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            )}
+            {useSearchTerm && (
+              <Badge variant="secondary" className="px-3 py-1 bg-blue-100 text-blue-700 border-blue-200">
+                Use: "{useSearchTerm}"
+                <button onClick={() => setUseSearchTerm('')} className="ml-2">
                   <X className="h-3 w-3" />
                 </button>
               </Badge>
