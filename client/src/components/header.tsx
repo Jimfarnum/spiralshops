@@ -22,7 +22,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -33,28 +33,28 @@ export default function Header() {
                 className="w-10 h-10 mr-3 static"
               />
               <div>
-                <span className="text-xl font-bold text-gray-900 font-['Poppins']">SPIRAL</span>
-                <p className="text-xs text-gray-500 font-['Inter'] -mt-1">Everything Local. Just for You.</p>
+                <span className="text-xl font-bold text-[var(--spiral-navy)]">SPIRAL</span>
+                <p className="text-xs text-gray-500 -mt-1">Everything Local. Just for You.</p>
               </div>
             </Link>
           </div>
           
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              <Link href="/" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+            <div className="ml-10 flex items-baseline space-x-6">
+              <Link href="/" className="text-gray-600 hover:text-[var(--spiral-coral)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 Discover
               </Link>
-              <Link href="/products" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+              <Link href="/products" className="text-gray-600 hover:text-[var(--spiral-coral)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 Products
               </Link>
-              <a href="#retailer-signup" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                For Retailers
-              </a>
-              <Link href="/social-feed" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+              <Link href="/mall-directory" className="text-gray-600 hover:text-[var(--spiral-coral)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                Malls
+              </Link>
+              <Link href="/social-feed" className="text-gray-600 hover:text-[var(--spiral-coral)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 Community
               </Link>
-              <Link href="/spiral-videos" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                Videos
+              <Link href="/retailer-login" className="text-gray-600 hover:text-[var(--spiral-coral)] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                For Retailers
               </Link>
             </div>
           </div>
@@ -62,7 +62,7 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             <SpiralBalance />
             <Link href="/cart">
-              <Button variant="outline" className="relative border-[hsl(183,100%,23%)] text-[hsl(183,100%,23%)] hover:bg-[hsl(183,100%,96%)]">
+              <Button variant="outline" className="relative border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/10">
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-[hsl(32,98%,56%)] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">

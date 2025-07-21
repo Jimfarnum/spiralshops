@@ -78,76 +78,63 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'hsl(0, 0%, 99.6%)' }}>
+    <div className="min-h-screen bg-[var(--spiral-cream)]">
       <Header />
       
-      {/* Prominent Search Bar */}
-      <section className="bg-white border-b border-gray-200 py-6 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="relative max-w-4xl mx-auto">
-            <div className="flex items-center shadow-lg rounded-lg overflow-hidden">
+      {/* Hero Section */}
+      <section className="bg-white py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl lg:text-5xl font-bold text-[var(--spiral-navy)] mb-6">
+            Everything Local. Just for You.
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Discover amazing local businesses, earn rewards, and build your community with SPIRAL.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Button 
+              className="bg-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)]/90 text-white px-8 py-4 text-lg rounded-lg"
+              onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+            >
+              Start Shopping Local
+            </Button>
+            <Button 
+              variant="outline" 
+              className="border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)] hover:text-white px-8 py-4 text-lg rounded-lg"
+            >
+              Explore Stores
+            </Button>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-center shadow-lg rounded-lg overflow-hidden bg-white border border-gray-200">
               <Input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for products, stores, or deals near you…"
-                className="flex-1 h-14 pl-6 pr-4 text-lg border-0 focus:ring-0 focus:outline-none bg-white"
+                className="flex-1 h-12 pl-6 pr-4 text-base border-0 focus:ring-0 focus:outline-none bg-white"
                 onKeyPress={(e) => e.key === 'Enter' && handleProductSearch()}
               />
               <Button 
                 onClick={handleProductSearch}
-                className="h-14 px-8 bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white border-0 rounded-none"
+                className="h-12 px-6 bg-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/90 text-white border-0 rounded-none"
               >
-                <Search className="h-5 w-5 mr-2" />
-                <span className="hidden md:inline">Search</span>
+                <Search className="h-5 w-5" />
               </Button>
             </div>
           </div>
         </div>
       </section>
-      
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[hsl(183,100%,23%)] to-[hsl(183,60%,40%)] text-white py-28 lg:py-36">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center">
-            <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight font-['Poppins']">
-              SPIRAL
-            </h1>
-            <p className="text-2xl md:text-3xl mb-12 leading-relaxed font-['Inter'] max-w-4xl mx-auto text-white/90">
-              Everything Local. Just for you.
-            </p>
-            
-            <div className="max-w-lg mx-auto">
-              <div className="flex rounded-full overflow-hidden shadow-lg">
-                <Input
-                  type="text"
-                  placeholder="Enter your ZIP code to get started"
-                  value={searchZip}
-                  onChange={(e) => setSearchZip(e.target.value)}
-                  className="flex-1 text-gray-900 border-0 rounded-none h-14 text-lg"
-                  onKeyPress={(e) => e.key === 'Enter' && handleZipSearch()}
-                />
-                <Button 
-                  onClick={handleZipSearch}
-                  className="bg-[hsl(32,98%,56%)] text-white hover:bg-[hsl(32,98%,70%)] border-0 rounded-none px-8 h-14 font-semibold"
-                >
-                  <Search className="h-5 w-5 mr-2" />
-                  Explore
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* CTA Tiles Section */}
-      <section className="py-20 bg-white">
+      {/* Feature Tiles Section */}
+      <section className="py-20 bg-[var(--spiral-cream)]">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-['Poppins']">
+            <h2 className="text-4xl md:text-5xl font-bold text-[var(--spiral-navy)] mb-4">
               Your Local Shopping Hub
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-['Inter']">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Everything you need to discover, shop, and connect with your local community
             </p>
           </div>

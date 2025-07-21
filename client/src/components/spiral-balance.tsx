@@ -12,9 +12,9 @@ const SpiralBalance = () => {
   }
 
   return (
-    <div className="flex items-center gap-2 bg-gradient-to-r from-[var(--spiral-sage)]/20 to-[var(--spiral-coral)]/20 rounded-full px-4 py-2 border border-[var(--spiral-sage)]/30">
+    <div className="flex items-center gap-2 bg-gradient-to-r from-[var(--spiral-sage)]/10 to-[var(--spiral-coral)]/10 rounded-lg px-4 py-2 border border-[var(--spiral-coral)]/20">
       <Star className="h-4 w-4 text-[var(--spiral-coral)]" />
-      <span className="text-sm font-bold text-[var(--spiral-navy)] font-['Poppins']">
+      <span className="text-sm font-semibold text-[var(--spiral-navy)]">
         {spiralBalance} SPIRALs
       </span>
     </div>
