@@ -27,11 +27,26 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center min-w-0 flex-1">
             <Link href="/" className="flex-shrink-0 flex items-center mr-8">
-              <img 
-                src="@assets/mqy7md_1753112885975.jpg" 
-                alt="SPIRAL Logo" 
-                className="w-10 h-10 mr-2 object-contain"
-              />
+              <div className="w-10 h-10 mr-2 flex items-center justify-center bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] rounded-full flex-shrink-0">
+                <svg 
+                  viewBox="0 0 100 100" 
+                  className="w-6 h-6 text-white"
+                  fill="currentColor"
+                >
+                  <path d="M50 15 C 62 15, 70 27, 70 40 C 70 53, 62 63, 50 63 C 38 63, 30 53, 30 40 C 30 36, 31 32, 33 29" 
+                        stroke="currentColor" 
+                        strokeWidth="6" 
+                        fill="none" 
+                        strokeLinecap="round"/>
+                  <path d="M50 30 C 56 30, 60 34, 60 40 C 60 46, 56 50, 50 50 C 44 50, 40 46, 40 40 C 40 38, 40.5 36.5, 42 35" 
+                        stroke="currentColor" 
+                        strokeWidth="6" 
+                        fill="none" 
+                        strokeLinecap="round"/>
+                  <circle cx="50" cy="70" r="3" fill="currentColor"/>
+                  <circle cx="50" cy="80" r="1.5" fill="currentColor"/>
+                </svg>
+              </div>
               <div className="min-w-0">
                 <span className="text-lg font-bold text-[var(--spiral-navy)]">SPIRAL</span>
                 <p className="text-xs text-gray-500 -mt-0.5 whitespace-nowrap hidden lg:block">Everything Local. Just for You.</p>

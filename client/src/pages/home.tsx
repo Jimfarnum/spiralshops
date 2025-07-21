@@ -107,11 +107,34 @@ export default function Home() {
           {/* SPIRAL Logo */}
           <div className="flex justify-center mb-8">
             <div className="relative">
-              <img 
-                src="@assets/mqy7md_1753112885975.jpg" 
-                alt="SPIRAL - Everything Local. Just for You." 
-                className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
-              />
+              <div className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 flex items-center justify-center bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] rounded-full drop-shadow-xl hover:scale-105 transition-transform duration-300">
+                <svg 
+                  viewBox="0 0 100 100" 
+                  className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 text-white"
+                  fill="currentColor"
+                >
+                  <path d="M50 10 C 65 10, 75 25, 75 40 C 75 55, 65 65, 50 65 C 35 65, 25 55, 25 40 C 25 35, 27 30, 30 26" 
+                        stroke="currentColor" 
+                        strokeWidth="4" 
+                        fill="none" 
+                        strokeLinecap="round"/>
+                  <path d="M50 25 C 58 25, 65 32, 65 40 C 65 48, 58 55, 50 55 C 42 55, 35 48, 35 40 C 35 37, 36 35, 38 33" 
+                        stroke="currentColor" 
+                        strokeWidth="4" 
+                        fill="none" 
+                        strokeLinecap="round"/>
+                  <path d="M50 40 C 52 40, 54 42, 54 44 C 54 46, 52 48, 50 48 C 48 48, 46 46, 46 44 C 46 43, 46.5 42.5, 47 42" 
+                        stroke="currentColor" 
+                        strokeWidth="4" 
+                        fill="none" 
+                        strokeLinecap="round"/>
+                  <circle cx="50" cy="77" r="4" fill="currentColor"/>
+                  <circle cx="50" cy="87" r="2" fill="currentColor"/>
+                </svg>
+              </div>
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 text-xs md:text-sm font-bold text-[var(--spiral-navy)] whitespace-nowrap">
+                SPIRAL
+              </div>
             </div>
           </div>
           
