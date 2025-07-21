@@ -32,7 +32,7 @@ const ShareReminder: React.FC = () => {
   if (!showReminder) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 max-w-sm">
+    <div className="fixed bottom-4 right-4 z-40 max-w-sm">
       <Card className="shadow-2xl border-0 bg-gradient-to-r from-[#1DA1F2]/10 to-[var(--spiral-coral)]/10 backdrop-blur-sm">
         <CardContent className="p-6 relative">
           <Button
