@@ -25,6 +25,8 @@ import MarketingCenter from "@/pages/marketing-center";
 import AnalyticsDashboard from "@/pages/analytics-dashboard";
 import SocialFeed from "@/pages/social-feed";
 import OrderConfirmation from "@/pages/order-confirmation";
+import SpiralVideos from "@/pages/spiral-videos";
+import SpiralFeatures from "@/pages/spiral-features";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
@@ -54,6 +56,8 @@ function Router() {
       <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
       <Route path="/social-feed" component={SocialFeed} />
       <Route path="/order-confirmation/:orderId?" component={OrderConfirmation} />
+      <Route path="/spiral-videos" component={SpiralVideos} />
+      <Route path="/spiral-features" component={SpiralFeatures} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
       <Route path="/loyalty-program" component={LoyaltyProgramPage} />

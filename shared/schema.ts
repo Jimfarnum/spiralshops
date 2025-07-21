@@ -54,6 +54,10 @@ export const users = pgTable("users", {
   spiralBalance: integer("spiral_balance").default(0),
   totalEarned: integer("total_earned").default(0),
   totalRedeemed: integer("total_redeemed").default(0),
+  inviteCode: text("invite_code").unique(),
+  referredBy: text("referred_by"),
+  totalReferrals: integer("total_referrals").default(0),
+  referralEarnings: integer("referral_earnings").default(0),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
