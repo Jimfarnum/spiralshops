@@ -82,7 +82,18 @@ const sortOptions = [
   { value: 'relevance', label: 'Relevance' },
   { value: 'price-low', label: 'Price: Low to High' },
   { value: 'price-high', label: 'Price: High to Low' },
-  { value: 'distance', label: 'Distance: Closest First' }
+  { value: 'distance', label: 'Distance: Closest First' },
+  { value: 'newest', label: 'Newest First' },
+  { value: 'popular', label: 'Most Popular' }
+];
+
+const distanceOptions = [
+  { value: 5, label: '5 miles' },
+  { value: 10, label: '10 miles' },
+  { value: 25, label: '25 miles' },
+  { value: 50, label: '50 miles' },
+  { value: 100, label: '100 miles' },
+  { value: 999, label: 'Nationwide' }
 ];
 
 export function ProductsPage() {
@@ -92,7 +103,8 @@ export function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStores, setSelectedStores] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState([0, 100]);
-  const [maxDistance, setMaxDistance] = useState(10);
+  const [maxDistance, setMaxDistance] = useState(25);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [sortBy, setSortBy] = useState('relevance');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isLocationFilterOpen, setIsLocationFilterOpen] = useState(false);
@@ -133,7 +145,7 @@ export function ProductsPage() {
         const query = searchQuery.toLowerCase();
         const matchesName = product.name.toLowerCase().includes(query);
         const matchesStore = product.store.toLowerCase().includes(query);
-        const matchesDescription = product.description.toLowerCase().includes(query);
+        const matchesDescription = product.description?.toLowerCase().includes(query) || false;
         if (!matchesName && !matchesStore && !matchesDescription) {
           return false;
         }
@@ -142,7 +154,7 @@ export function ProductsPage() {
       // Use case search filtering (smart search for product purposes)
       if (useSearchTerm) {
         const useQuery = useSearchTerm.toLowerCase();
-        if (!product.description.toLowerCase().includes(useQuery)) {
+        if (!product.description?.toLowerCase().includes(useQuery)) {
           return false;
         }
       }
@@ -203,7 +215,7 @@ export function ProductsPage() {
     setSelectedCategory('All');
     setSelectedStores([]);
     setPriceRange([0, 100]);
-    setMaxDistance(10);
+    setMaxDistance(25);
     setSortBy('relevance');
   };
 
@@ -262,20 +274,81 @@ export function ProductsPage() {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-3 font-['Poppins']">Distance</h3>
-        <div className="space-y-3">
-          <Slider
-            value={[maxDistance]}
-            onValueChange={(value) => setMaxDistance(value[0])}
-            max={20}
-            min={1}
-            step={1}
-            className="w-full"
-          />
-          <div className="text-sm text-gray-600 font-['Inter']">
-            Within {maxDistance} miles
-          </div>
+        <Label className="text-sm font-semibold mb-3 block font-['Poppins']">
+          Distance Filter
+        </Label>
+        <div className="grid grid-cols-2 gap-2">
+          {distanceOptions.map((option) => (
+            <Button
+              key={option.value}
+              variant={maxDistance === option.value ? "default" : "outline"}
+              size="sm"
+              className={`text-xs ${
+                maxDistance === option.value 
+                  ? 'bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)]' 
+                  : ''
+              }`}
+              onClick={() => setMaxDistance(option.value)}
+            >
+              {option.label}
+            </Button>
+          ))}
         </div>
+        <div className="mt-2 text-xs text-gray-600 font-['Inter']">
+          {maxDistance === 999 ? 'Searching nationwide' : `Within ${maxDistance} miles`}
+        </div>
+      </div>
+
+      <div>
+        <Label className="text-sm font-semibold mb-3 block font-['Poppins']">
+          Use Case Filters
+        </Label>
+        <div className="flex flex-wrap gap-2">
+          {productUses.slice(0, 6).map((useCase) => (
+            <Button
+              key={useCase}
+              variant={useSearchTerm === useCase ? "default" : "outline"}
+              size="sm"
+              className={`text-xs ${
+                useSearchTerm === useCase 
+                  ? 'bg-blue-600 hover:bg-blue-700' 
+                  : 'bg-blue-50 border-blue-200 hover:bg-blue-100 text-blue-700'
+              }`}
+              onClick={() => setUseSearchTerm(useSearchTerm === useCase ? '' : useCase)}
+            >
+              {useCase}
+            </Button>
+          ))}
+        </div>
+        {productUses.length > 6 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-2 text-xs text-blue-600"
+            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+          >
+            {showAdvancedFilters ? 'Show Less' : `Show ${productUses.length - 6} More`}
+          </Button>
+        )}
+        {showAdvancedFilters && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {productUses.slice(6).map((useCase) => (
+              <Button
+                key={useCase}
+                variant={useSearchTerm === useCase ? "default" : "outline"}
+                size="sm"
+                className={`text-xs ${
+                  useSearchTerm === useCase 
+                    ? 'bg-blue-600 hover:bg-blue-700' 
+                    : 'bg-blue-50 border-blue-200 hover:bg-blue-100 text-blue-700'
+                }`}
+                onClick={() => setUseSearchTerm(useSearchTerm === useCase ? '' : useCase)}
+              >
+                {useCase}
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
 
       <Button 
@@ -384,7 +457,7 @@ export function ProductsPage() {
           {useSearchTerm === '' && (
             <div className="flex flex-wrap gap-2 items-center">
               <span className="text-sm text-gray-600 font-medium">Popular searches:</span>
-              {['office-ready', 'for camping', 'gift-worthy', 'entertaining', 'emergency prep'].map((tag) => (
+              {['office-ready', 'for camping', 'gift-worthy', 'entertaining', 'emergency prep', 'healthy cooking', 'weekend casual', 'water sports'].map((tag) => (
                 <Button
                   key={tag}
                   variant="outline"
@@ -397,6 +470,28 @@ export function ProductsPage() {
               ))}
             </div>
           )}
+          
+          {/* Advanced Distance Filter */}
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-600 font-medium">Distance:</span>
+            <div className="flex flex-wrap gap-2">
+              {distanceOptions.map((option) => (
+                <Button
+                  key={option.value}
+                  variant={maxDistance === option.value ? "default" : "outline"}
+                  size="sm"
+                  className={`h-8 text-xs px-3 py-1 ${
+                    maxDistance === option.value 
+                      ? 'bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white' 
+                      : 'bg-gray-50 border-gray-200 hover:bg-gray-100 text-gray-700'
+                  }`}
+                  onClick={() => setMaxDistance(option.value)}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+          </div>
           
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1"></div>

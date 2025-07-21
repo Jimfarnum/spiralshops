@@ -18,6 +18,7 @@ import ProfileSettings from "@/pages/profile-settings";
 import { ProductsPage } from "@/pages/products";
 import { ProductDetailPage } from "@/pages/product-detail";
 import MallDirectory from "@/pages/mall-directory";
+import MallsPage from "@/pages/malls";
 import Account from "@/pages/account";
 import RetailerLogin from "@/pages/retailer-login";
 import RetailerDashboard from "@/pages/retailer-dashboard";
@@ -57,6 +58,7 @@ function Router() {
       <Route path="/spirals" component={Spirals} />
       <Route path="/profile" component={ProfileSettings} />
       <Route path="/mall-directory" component={MallDirectory} />
+      <Route path="/malls" component={MallsPage} />
       <Route path="/account" component={Account} />
       <Route path="/retailer-login" component={RetailerLogin} />
       <Route path="/retailer-dashboard" component={RetailerDashboard} />
