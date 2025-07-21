@@ -15,6 +15,14 @@ import StoreCard from "@/components/store-card";
 import ProductCard from "@/components/product-card";
 import RetailerSignupForm from "@/components/retailer-signup-form";
 import StoreProfile from "@/components/store-profile";
+import SearchWithSuggestions from "@/components/search-with-suggestions";
+import QuickActions from "@/components/quick-actions";
+import LoadingSkeleton from "@/components/loading-skeleton";
+import ErrorBoundary from "@/components/error-boundary";
+import PerformanceMonitor from "@/components/performance-monitor";
+import OfflineIndicator from "@/components/offline-indicator";
+import PWAInstallPrompt from "@/components/pwa-install-prompt";
+import AccessibilityMenu from "@/components/accessibility-menu";
 import type { Store } from "@shared/schema";
 import { mockProducts, categories } from "@/data/mockProducts";
 import OnboardingModal from "@/components/onboarding-modal";
@@ -98,8 +106,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--spiral-cream)]">
-      <Header />
+    <ErrorBoundary>
+      <div className="min-h-screen bg-[var(--spiral-cream)]">
+        <Header />
       
       {/* Hero Section */}
       <section className="bg-white py-16 lg:py-24">
@@ -135,25 +144,19 @@ export default function Home() {
             </Button>
           </div>
           
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto">
-            <div className="flex items-center shadow-lg rounded-lg overflow-hidden bg-white border border-gray-200">
-              <Input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for products, stores, or deals near you…"
-                className="flex-1 h-12 pl-6 pr-4 text-base border-0 focus:ring-0 focus:outline-none bg-white"
-                onKeyPress={(e) => e.key === 'Enter' && handleProductSearch()}
-              />
-              <Button 
-                onClick={handleProductSearch}
-                className="h-12 px-6 button-primary rounded-none"
-              >
-                <Search className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
+          {/* Enhanced Search Bar */}
+          <SearchWithSuggestions
+            placeholder="Search for products, stores, or deals near you…"
+            onSearch={(query) => {
+              toast({
+                title: "Searching...",
+                description: `Looking for "${query}"`,
+              });
+              // Navigate to products with search query
+              window.location.href = `/products?search=${encodeURIComponent(query)}`;
+            }}
+            className="mx-auto"
+          />
         </div>
       </section>
 
@@ -251,14 +254,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Mall Directory Section */}
+      {/* Quick Actions & Mall Directory Section */}
       <section className="section-modern bg-gradient-to-br from-[var(--spiral-cream)] to-white border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4">Find Your Local Mall</h2>
-            <p className="text-lg text-gray-600">Discover shopping centers and stores near you</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Quick Actions */}
+            <div className="lg:col-span-1">
+              <QuickActions />
+            </div>
+            
+            {/* Mall Directory */}
+            <div className="lg:col-span-2">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4">Find Your Local Mall</h2>
+                <p className="text-lg text-gray-600">Discover shopping centers and stores near you</p>
+              </div>
+              <MallDirectoryDropdown className="max-w-2xl mx-auto" />
+            </div>
           </div>
-          <MallDirectoryDropdown className="max-w-2xl mx-auto" />
         </div>
       </section>
 
@@ -816,8 +829,15 @@ export default function Home() {
         onClose={() => setSpiralStoryModalOpen(false)} 
       />
       
-      {/* Live Chat Widget */}
-      <LiveChatWidget />
-    </div>
+        {/* Live Chat Widget */}
+        <LiveChatWidget />
+        
+        {/* Performance & Offline Indicators */}
+        <PerformanceMonitor />
+        <OfflineIndicator />
+        <PWAInstallPrompt />
+        <AccessibilityMenu />
+      </div>
+    </ErrorBoundary>
   );
 }

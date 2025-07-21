@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { Menu, ShoppingCart, User, LogOut } from "lucide-react";
+import { ShoppingCart, User, LogOut } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
 import { useAuthStore } from "@/lib/authStore";
 import SpiralBalance from "./spiral-balance";
+import MobileNav from "./mobile-nav";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Header() {
@@ -58,8 +59,11 @@ export default function Header() {
               <SpiralBalance />
             </div>
             
-            {/* Cart */}
-            <Link href="/cart">
+            {/* Mobile Navigation */}
+            <MobileNav className="lg:hidden" />
+            
+            {/* Cart - Desktop */}
+            <Link href="/cart" className="hidden lg:block">
               <Button variant="outline" size="sm" className="relative border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/10">
                 <ShoppingCart className="h-4 w-4" />
                 {cartItemCount > 0 && (
@@ -71,7 +75,7 @@ export default function Header() {
             </Link>
             
             {isAuthenticated ? (
-              <div className="flex items-center space-x-1">
+              <div className="hidden lg:flex items-center space-x-1">
                 <Link href="/profile">
                   <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 text-gray-600 hover:text-gray-800">
                     <User className="h-4 w-4" />
@@ -98,9 +102,7 @@ export default function Header() {
               </div>
             )}
             
-            <Button variant="ghost" size="sm" className="lg:hidden">
-              <Menu className="h-5 w-5" />
-            </Button>
+            {/* Mobile menu button handled by MobileNav component */}
           </div>
         </div>
       </div>
