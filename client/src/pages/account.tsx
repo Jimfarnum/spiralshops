@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
+import SocialSharingEngine from '@/components/social-sharing-engine';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -262,12 +263,12 @@ const Account = () => {
                           <span className="text-sm">Use SPIRALs</span>
                         </Button>
                       </Link>
-                      <Link href="/profile">
-                        <Button variant="outline" className="h-20 flex flex-col items-center gap-2 border-[var(--spiral-sage)] hover:bg-[var(--spiral-sage)]/10">
-                          <User className="h-6 w-6" />
-                          <span className="text-sm">Profile</span>
-                        </Button>
-                      </Link>
+                      <SocialSharingEngine
+                        type="account"
+                        title="Join me on SPIRAL - discovering amazing local businesses!"
+                        description="I'm loving my SPIRAL experience! Earning rewards while supporting local businesses in my community."
+                        showEarningsPreview={true}
+                      />
                     </div>
                   </CardContent>
                 </Card>

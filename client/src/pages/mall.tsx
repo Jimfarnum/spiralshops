@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { ShoppingBag, Store, Users } from 'lucide-react';
+import SocialSharingEngine from '@/components/social-sharing-engine';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 
@@ -52,7 +53,22 @@ const Mall = () => {
             </div>
           </div>
 
-          {/* CTA Button */}
+          {/* CTA Button and Social Sharing */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+            <Link href="/mall-directory">
+              <Button size="lg" className="bg-[var(--spiral-navy)] hover:bg-[var(--spiral-coral)] text-white px-8 py-3 rounded-xl text-lg font-semibold font-['Poppins']">
+                Explore Malls
+              </Button>
+            </Link>
+            <SocialSharingEngine
+              type="mall"
+              title="Check out SPIRAL Mall Mode!"
+              description="Amazing way to shop multiple local stores in one place. Unified rewards and checkout!"
+              mallName="SPIRAL Mall Mode"
+              showEarningsPreview={true}
+            />
+          </div>
+
           <Link href="/">
             <Button className="bg-[var(--spiral-navy)] hover:bg-[var(--spiral-coral)] text-white px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
               Return to Homepage

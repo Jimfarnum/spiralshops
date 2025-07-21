@@ -23,6 +23,8 @@ import RetailerLogin from "@/pages/retailer-login";
 import RetailerDashboard from "@/pages/retailer-dashboard";
 import MarketingCenter from "@/pages/marketing-center";
 import AnalyticsDashboard from "@/pages/analytics-dashboard";
+import SocialFeed from "@/pages/social-feed";
+import OrderConfirmation from "@/pages/order-confirmation";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 
@@ -49,6 +51,8 @@ function Router() {
       <Route path="/retailer-dashboard" component={RetailerDashboard} />
       <Route path="/marketing-center" component={MarketingCenter} />
       <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
+      <Route path="/social-feed" component={SocialFeed} />
+      <Route path="/order-confirmation/:orderId?" component={OrderConfirmation} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
       <Route path="/loyalty-program" component={LoyaltyProgramPage} />

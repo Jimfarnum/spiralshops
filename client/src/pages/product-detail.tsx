@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import SocialShare from '@/components/social-share';
+import SocialSharingEngine from '@/components/social-sharing-engine';
 import { useCartStore } from '@/lib/cartStore';
 import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart, MapPin, ArrowLeft, Star, Heart, Share2, Gift, Package, Store, ShoppingBag } from 'lucide-react';
@@ -190,9 +191,13 @@ export function ProductDetailPage() {
                   >
                     <Heart className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} />
                   </Button>
-                  <SocialShare 
-                    context="product"
+                  <SocialSharingEngine
+                    type="product"
+                    title={`Check out ${product.name} from ${product.storeName}`}
+                    description={product.description}
+                    storeName={product.storeName}
                     productName={product.name}
+                    showEarningsPreview={true}
                   />
                 </div>
               </div>

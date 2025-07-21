@@ -9,6 +9,7 @@ import { useAuthStore } from '@/lib/authStore';
 import { useLoyaltyStore } from '@/lib/loyaltyStore';
 import { ArrowLeft, CreditCard, Shield, CheckCircle, Package } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import SocialSharingEngine from '@/components/social-sharing-engine';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import SplitShipping from '@/components/split-shipping';
@@ -626,7 +627,17 @@ const Checkout = () => {
                     )}
                   </Button>
 
-                  <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="mt-6 pt-6 border-t border-gray-200 space-y-4">
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600 mb-3 font-['Inter']">Share your SPIRAL purchase and earn 5 bonus points!</p>
+                      <SocialSharingEngine
+                        type="checkout"
+                        title="I just shopped local with SPIRAL!"
+                        description={`Just completed a purchase earning ${spiralsEarned} SPIRALs! Supporting local businesses feels amazing.`}
+                        spiralEarnings={spiralsEarned}
+                        showEarningsPreview={true}
+                      />
+                    </div>
                     <div className="flex items-center justify-center text-sm text-gray-500 font-['Inter']">
                       <Shield className="h-4 w-4 mr-2 text-green-500" />
                       Secure SSL encrypted checkout

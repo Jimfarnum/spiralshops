@@ -50,9 +50,9 @@ export default function Header() {
               <a href="#retailer-signup" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
                 For Retailers
               </a>
-              <a href="#about" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                About
-              </a>
+              <Link href="/social-feed" className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                Community
+              </Link>
             </div>
           </div>
           
