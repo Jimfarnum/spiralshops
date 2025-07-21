@@ -25,16 +25,16 @@ export default function Header() {
     <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <div className="flex items-center min-w-0 flex-1">
             <Link href="/" className="flex-shrink-0 flex items-center">
               <img 
-                src="@assets/5f2ddb9c-bed6-466a-a305-c06542e7cf4b.png (1)_1752624555680.PNG" 
+                src="@assets/5f2ddb9c-bed6-466a-a305-c06542e7cf4b.png (1).PNG" 
                 alt="SPIRAL Logo" 
-                className="w-10 h-10 mr-3 static"
+                className="w-8 h-8 mr-2"
               />
-              <div>
-                <span className="text-xl font-bold text-[var(--spiral-navy)]">SPIRAL</span>
-                <p className="text-xs text-gray-500 -mt-1">Everything Local. Just for You.</p>
+              <div className="min-w-0">
+                <span className="text-lg font-bold text-[var(--spiral-navy)]">SPIRAL</span>
+                <p className="text-xs text-gray-500 -mt-0.5 whitespace-nowrap">Everything Local. Just for You.</p>
               </div>
             </Link>
           </div>
@@ -62,17 +62,17 @@ export default function Header() {
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3 flex-shrink-0">
             <SpiralBalance />
             <Link href="/cart">
-              <Button variant="outline" className="relative border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/10">
-                <ShoppingCart className="h-5 w-5" />
+              <Button variant="outline" size="sm" className="relative border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/10">
+                <ShoppingCart className="h-4 w-4" />
                 {cartItemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-[hsl(32,98%,56%)] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                  <span className="absolute -top-2 -right-2 bg-[var(--spiral-coral)] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                     {cartItemCount}
                   </span>
                 )}
-                <span className="ml-2 hidden md:inline">Cart</span>
+                <span className="ml-1 hidden lg:inline text-sm">Cart</span>
               </Button>
             </Link>
             

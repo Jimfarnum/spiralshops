@@ -32,6 +32,7 @@ import Leaderboard from "@/pages/leaderboard";
 import RetailerTestimonials from "@/pages/retailer-testimonials";
 import RetailerAnalytics from "@/pages/retailer-analytics";
 import RetailerInsights from "@/pages/retailer-insights";
+import TestFlow from "@/pages/test-flow";
 import About from "@/pages/about";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
@@ -69,6 +70,7 @@ function Router() {
       <Route path="/retailer-testimonials" component={RetailerTestimonials} />
       <Route path="/retailer-analytics" component={RetailerAnalytics} />
       <Route path="/retailer-insights" component={RetailerInsights} />
+      <Route path="/test-flow" component={TestFlow} />
       <Route path="/about" component={About} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
