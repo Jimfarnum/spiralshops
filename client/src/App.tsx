@@ -38,6 +38,7 @@ import About from "@/pages/about";
 import Wishlist from "@/pages/wishlist";
 import InventoryDashboard from "@/pages/inventory-dashboard";
 import FeatureTesting from "@/pages/feature-testing";
+import DynamicFeatureTesting from "@/pages/dynamic-feature-testing";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
@@ -81,6 +82,7 @@ function Router() {
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/inventory-dashboard" component={InventoryDashboard} />
       <Route path="/feature-testing" component={FeatureTesting} />
+      <Route path="/dynamic-testing" component={DynamicFeatureTesting} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
       <Route path="/loyalty-program" component={LoyaltyProgramPage} />

@@ -11,6 +11,16 @@ import InventoryAlerts from '@/components/inventory-alerts';
 import LanguageSelector from '@/components/language-selector';
 import { useToast } from '@/hooks/use-toast';
 import { 
+  testConfiguration, 
+  getTestStatistics, 
+  getTestCasesByCategory, 
+  getAutomatedTests,
+  getManualTests,
+  getAllRoutes,
+  type TestCase
+} from '@/lib/test-config';
+
+import { 
   Play, 
   CheckCircle, 
   AlertTriangle, 
@@ -21,7 +31,10 @@ import {
   Eye,
   TestTube,
   Monitor,
-  Settings
+  Settings,
+  Plus,
+  Code,
+  Database
 } from 'lucide-react';
 
 interface TestResult {
@@ -29,59 +42,37 @@ interface TestResult {
   status: 'pending' | 'running' | 'passed' | 'failed';
   details?: string;
   duration?: number;
-  category: 'core' | 'ecommerce' | 'mobile' | 'performance' | 'security';
+  category: 'core' | 'ecommerce' | 'mobile' | 'performance' | 'security' | 'social' | 'analytics' | 'loyalty';
 }
 
 export default function FeatureTesting() {
   const [currentLanguage, setCurrentLanguage] = useState('en');
-  const [testResults, setTestResults] = useState<TestResult[]>([
-    // Core Features
-    { name: 'Language Selector Component Loading', status: 'pending', category: 'core' },
-    { name: 'Language Switching (English ↔ Spanish)', status: 'pending', category: 'core' },
-    { name: 'Language Persistence in localStorage', status: 'pending', category: 'core' },
-    { name: 'Auto-detection from Browser', status: 'pending', category: 'core' },
-    { name: 'Navigation Menu Functionality', status: 'pending', category: 'core' },
-    { name: 'User Authentication State', status: 'pending', category: 'core' },
-    { name: 'SPIRAL Balance Display', status: 'pending', category: 'core' },
-    
-    // E-commerce Features
-    { name: 'Product Search & Filtering', status: 'pending', category: 'ecommerce' },
-    { name: 'Shopping Cart Functionality', status: 'pending', category: 'ecommerce' },
-    { name: 'Wishlist System', status: 'pending', category: 'ecommerce' },
-    { name: 'Checkout Process', status: 'pending', category: 'ecommerce' },
-    { name: 'Payment Integration', status: 'pending', category: 'ecommerce' },
-    { name: 'Mall Directory & Selection', status: 'pending', category: 'ecommerce' },
-    { name: 'Social Sharing Engine', status: 'pending', category: 'ecommerce' },
-    
-    // Inventory & Alerts
-    { name: 'Inventory Alerts Component Loading', status: 'pending', category: 'core' },
-    { name: 'Real-time Stock Updates', status: 'pending', category: 'core' },
-    { name: 'Low Stock Notifications', status: 'pending', category: 'core' },
-    { name: 'Browser Notification Permissions', status: 'pending', category: 'core' },
-    { name: 'Alert Toggle Functionality', status: 'pending', category: 'core' },
-    { name: 'Stock Progress Indicators', status: 'pending', category: 'core' },
-    
-    // Mobile Optimization
-    { name: 'Mobile Navigation Menu', status: 'pending', category: 'mobile' },
-    { name: 'Touch-Optimized Product Grid', status: 'pending', category: 'mobile' },
-    { name: 'Responsive Layout (Phone)', status: 'pending', category: 'mobile' },
-    { name: 'Responsive Layout (Tablet)', status: 'pending', category: 'mobile' },
-    { name: 'Mobile Checkout Flow', status: 'pending', category: 'mobile' },
-    
-    // Performance
-    { name: 'Page Load Times < 3s', status: 'pending', category: 'performance' },
-    { name: 'Image Loading Optimization', status: 'pending', category: 'performance' },
-    { name: 'Route Navigation Speed', status: 'pending', category: 'performance' },
-    { name: 'Component Lazy Loading', status: 'pending', category: 'performance' },
-    
-    // Security & Data
-    { name: 'Local Storage Security', status: 'pending', category: 'security' },
-    { name: 'Session Management', status: 'pending', category: 'security' },
-    { name: 'Input Validation', status: 'pending', category: 'security' },
-    { name: 'XSS Protection', status: 'pending', category: 'security' }
-  ]);
   const [isRunningTests, setIsRunningTests] = useState(false);
+  
+  // Initialize test results from configuration
+  const [testResults, setTestResults] = useState<TestResult[]>(() => {
+    const allTests = testConfiguration.flatMap(area => area.testCases);
+    return allTests.map(test => ({
+      name: test.name,
+      status: 'pending' as const,
+      category: test.category as any
+    }));
+  });
+
+  const [newFeatureForm, setNewFeatureForm] = useState({
+    name: '',
+    route: '',
+    category: 'core' as TestCase['category'],
+    description: '',
+    testCriteria: ''
+  });
   const { toast } = useToast();
+  
+  // Initialize tests from feature registry
+  useEffect(() => {
+    const dynamicTests = generateTestsFromFeatures();
+    setTestResults(dynamicTests);
+  }, [features]);
 
   const updateTestResult = (testName: string, status: TestResult['status'], details?: string, duration?: number) => {
     setTestResults(prev => 
@@ -265,6 +256,45 @@ export default function FeatureTesting() {
 
   const passedTests = testResults.filter(test => test.status === 'passed').length;
   const failedTests = testResults.filter(test => test.status === 'failed').length;
+  const coverage = getTestingCoverage();
+
+  // Add new feature handler
+  const handleAddFeature = () => {
+    if (!newFeatureForm.name || !newFeatureForm.route) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide at least a name and route for the new feature.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newFeature = addNewFeature({
+      id: newFeatureForm.name.toLowerCase().replace(/\s+/g, '-'),
+      name: newFeatureForm.name,
+      route: newFeatureForm.route,
+      category: newFeatureForm.category,
+      status: 'live',
+      description: newFeatureForm.description,
+      testCriteria: newFeatureForm.testCriteria.split(',').map(c => c.trim()).filter(c => c),
+      version: '1.0.0'
+    });
+
+    setFeatures([...features, newFeature]);
+    setNewFeatureForm({
+      name: '',
+      route: '',
+      category: 'core',
+      description: '',
+      testCriteria: ''
+    });
+
+    toast({
+      title: "Feature Added",
+      description: `${newFeature.name} has been added to the testing suite.`,
+      duration: 3000
+    });
+  };
 
   return (
     <div className="min-h-screen bg-[hsl(0,0%,99.6%)]">
@@ -334,19 +364,19 @@ export default function FeatureTesting() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            {/* Feature Categories */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {['core', 'ecommerce', 'mobile', 'performance', 'security'].map(category => {
-                const categoryTests = testResults.filter(test => test.category === category);
+            {/* Dynamic Feature Categories */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {coverage.categoryBreakdown.map(category => {
+                const categoryTests = testResults.filter(test => test.category === category.name);
                 const passed = categoryTests.filter(test => test.status === 'passed').length;
                 const total = categoryTests.length;
                 const percentage = total > 0 ? Math.round((passed / total) * 100) : 0;
                 
                 return (
-                  <Card key={category}>
+                  <Card key={category.name}>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold capitalize">{category}</h3>
+                        <h3 className="font-semibold capitalize">{category.name}</h3>
                         <Badge className={
                           percentage >= 80 ? 'bg-green-100 text-green-800' :
                           percentage >= 60 ? 'bg-yellow-100 text-yellow-800' :
@@ -357,6 +387,9 @@ export default function FeatureTesting() {
                       </div>
                       <div className="text-sm text-gray-600 mb-2">
                         {passed} / {total} tests passed
+                      </div>
+                      <div className="text-xs text-gray-500 mb-2">
+                        {category.live} live features
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
@@ -373,6 +406,106 @@ export default function FeatureTesting() {
                 );
               })}
             </div>
+            
+            {/* Feature Development Pipeline */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Feature Development Pipeline</CardTitle>
+                <CardDescription>
+                  Automatic testing expansion as new features are added
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <div className="text-2xl font-bold text-green-700">{coverage.live}</div>
+                    <div className="text-sm text-green-600">Live Features</div>
+                  </div>
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-700">{coverage.comingSoon}</div>
+                    <div className="text-sm text-blue-600">Coming Soon</div>
+                  </div>
+                  <div className="text-center p-4 bg-purple-50 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-700">{testResults.length}</div>
+                    <div className="text-sm text-purple-600">Auto Tests</div>
+                  </div>
+                  <div className="text-center p-4 bg-orange-50 rounded-lg">
+                    <div className="text-2xl font-bold text-orange-700">{coverage.categories}</div>
+                    <div className="text-sm text-orange-600">Categories</div>
+                  </div>
+                </div>
+
+                {/* Add New Feature Form */}
+                <div className="border-t pt-6">
+                  <h4 className="font-semibold mb-4">Add New Feature to Testing Suite</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Feature Name</label>
+                      <input
+                        type="text"
+                        value={newFeatureForm.name}
+                        onChange={(e) => setNewFeatureForm({...newFeatureForm, name: e.target.value})}
+                        className="w-full p-2 border rounded-lg"
+                        placeholder="e.g., AI Product Recommendations"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Route</label>
+                      <input
+                        type="text"
+                        value={newFeatureForm.route}
+                        onChange={(e) => setNewFeatureForm({...newFeatureForm, route: e.target.value})}
+                        className="w-full p-2 border rounded-lg"
+                        placeholder="e.g., /ai-recommendations"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Category</label>
+                      <select
+                        value={newFeatureForm.category}
+                        onChange={(e) => setNewFeatureForm({...newFeatureForm, category: e.target.value as Feature['category']})}
+                        className="w-full p-2 border rounded-lg"
+                      >
+                        <option value="core">Core</option>
+                        <option value="ecommerce">E-commerce</option>
+                        <option value="mobile">Mobile</option>
+                        <option value="performance">Performance</option>
+                        <option value="security">Security</option>
+                        <option value="social">Social</option>
+                        <option value="analytics">Analytics</option>
+                        <option value="loyalty">Loyalty</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Test Criteria (comma-separated)</label>
+                      <input
+                        type="text"
+                        value={newFeatureForm.testCriteria}
+                        onChange={(e) => setNewFeatureForm({...newFeatureForm, testCriteria: e.target.value})}
+                        className="w-full p-2 border rounded-lg"
+                        placeholder="e.g., Loads correctly, Results accurate, Performance good"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium mb-1">Description</label>
+                      <textarea
+                        value={newFeatureForm.description}
+                        onChange={(e) => setNewFeatureForm({...newFeatureForm, description: e.target.value})}
+                        className="w-full p-2 border rounded-lg"
+                        rows={2}
+                        placeholder="Brief description of the feature"
+                      />
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={handleAddFeature}
+                    className="mt-4 bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)]"
+                  >
+                    Add Feature & Generate Tests
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Critical Path Testing */}
             <Card>
