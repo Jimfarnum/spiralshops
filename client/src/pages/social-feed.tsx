@@ -190,7 +190,7 @@ const SocialFeed = () => {
             SPIRAL Social Feed
           </h1>
           <p className="text-gray-600 mt-2 text-lg font-['Inter']">
-            See what your community is discovering and sharing
+            See what your community is discovering and sharing on X. Join the conversation!
           </p>
         </div>
 
@@ -387,7 +387,7 @@ const SocialFeed = () => {
                   Share Your Experience
                 </h3>
                 <p className="text-gray-600 text-sm mb-4 font-['Inter']">
-                  Earn 5 SPIRALs for every share and help others discover local gems!
+                  Share your local shopping experience on X! Earn 5 SPIRALs per post and inspire others to shop local.
                 </p>
                 <SocialSharingEngine
                   type="account"

@@ -206,7 +206,7 @@ const OrderConfirmation = () => {
                   Share Your Purchase
                 </h3>
                 <p className="text-sm text-gray-600 mb-4 font-['Inter']">
-                  Tell friends about your local finds and earn 5 bonus SPIRALs!
+                  Share your local shopping win on X! Tell your followers about supporting local businesses and earn 5 bonus SPIRALs.
                 </p>
                 <SocialSharingEngine
                   type="checkout"

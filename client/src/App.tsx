@@ -27,6 +27,7 @@ import SocialFeed from "@/pages/social-feed";
 import OrderConfirmation from "@/pages/order-confirmation";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
+import ShareReminder from "@/components/share-reminder";
 
 function Router() {
   return (
@@ -67,6 +68,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <CartRestoreNotification />
+        <ShareReminder />
         <Toaster />
         <Router />
       </TooltipProvider>

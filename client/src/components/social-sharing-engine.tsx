@@ -51,32 +51,32 @@ const SocialSharingEngine: React.FC<SocialSharingEngineProps> = ({
     switch (type) {
       case 'product':
         message = platform === 'twitter' 
-          ? `Just discovered ${productName} at ${storeName} on SPIRAL! 🛍️✨ Supporting local businesses has never been this rewarding. #SPIRALshops #ShopLocal #LocalBusiness`
+          ? `Just discovered ${productName} at ${storeName} on SPIRAL! 🛍️✨ Love how easy it is to support local while earning rewards. Share your local finds too! #SPIRALshops #ShopLocal #LocalBusiness`
           : `I just found an amazing product on SPIRAL! ${productName} from ${storeName} - supporting local businesses and earning rewards! 🛍️✨ Check it out:`;
         break;
       case 'store':
         message = platform === 'twitter'
-          ? `Amazing local finds at ${storeName}! 🏪✨ Shopping local with SPIRAL and earning rewards for supporting my community. #SPIRALshops #LocalBusiness #ShopLocal`
+          ? `Amazing shopping experience at ${storeName}! 🏪✨ SPIRAL makes supporting local businesses so rewarding. What local gems have you discovered? #SPIRALshops #LocalBusiness #ShopLocal`
           : `Check out this incredible local store I found on SPIRAL: ${storeName}! Supporting local businesses and earning rewards while I shop. 🏪✨`;
         break;
       case 'checkout':
         message = platform === 'twitter'
-          ? `Just completed a purchase on SPIRAL and earned ${spiralEarnings || 0} points! 🎉 Supporting local businesses feels so good. #SPIRALshops #ShopLocal #LocalRewards`
+          ? `Just completed my SPIRAL purchase and earned ${spiralEarnings || 0} points! 🎉 Every dollar supports local businesses in my community. Share your local shopping wins! #SPIRALshops #ShopLocal #LocalRewards`
           : `I just shopped local with SPIRAL and earned ${spiralEarnings || 0} reward points! 🎉 There's something special about supporting neighborhood businesses. Join me:`;
         break;
       case 'mall':
         message = platform === 'twitter'
-          ? `Exploring ${mallName} through SPIRAL! 🏬✨ So many local businesses to discover and support. #SPIRALshops #LocalMall #ShopLocal`
+          ? `Exploring ${mallName} through SPIRAL! 🏬✨ So many local businesses to discover and support. Tag friends who love shopping local! #SPIRALshops #LocalMall #ShopLocal`
           : `Having a great time exploring ${mallName} on SPIRAL! 🏬 So many amazing local businesses to discover and support. Check it out:`;
         break;
       case 'account':
         message = platform === 'twitter'
-          ? `Loving my SPIRAL experience! 🌟 Earning rewards while supporting local businesses in my community. Join me! #SPIRALshops #ShopLocal #LocalRewards`
+          ? `Loving my SPIRAL journey! 🌟 Earning rewards while supporting local businesses feels amazing. Join the movement and share your local shopping stories! #SPIRALshops #ShopLocal #LocalRewards`
           : `I'm loving my SPIRAL experience! 🌟 Earning rewards while supporting local businesses in my community. It feels great to shop with purpose!`;
         break;
       default:
         message = platform === 'twitter'
-          ? `Discovering amazing local businesses with SPIRAL! 🛍️✨ #SPIRALshops #ShopLocal #LocalBusiness`
+          ? `Discovering amazing local businesses with SPIRAL! 🛍️✨ Every purchase supports real people in our community. Share your local finds! #SPIRALshops #ShopLocal #LocalBusiness`
           : `Just discovered SPIRAL - an amazing way to find and support local businesses while earning rewards! 🛍️✨`;
     }
     
@@ -184,7 +184,7 @@ const SocialSharingEngine: React.FC<SocialSharingEngineProps> = ({
             Share Your SPIRAL Experience
           </DialogTitle>
           <DialogDescription className="font-['Inter']">
-            Share this {type} with your friends and earn 5 SPIRALs for each share!
+            Share your local shopping experience on X and earn 5 SPIRALs! Help others discover amazing local businesses.
           </DialogDescription>
         </DialogHeader>
         
@@ -223,13 +223,13 @@ const SocialSharingEngine: React.FC<SocialSharingEngineProps> = ({
               Share on Facebook
             </Button>
             
-            {/* Twitter Share */}
+            {/* Twitter Share - Featured */}
             <Button
               onClick={() => handleShare('twitter')}
-              className="w-full justify-start bg-[#1DA1F2] hover:bg-[#1A8CD8] text-white rounded-xl"
+              className="w-full justify-start bg-gradient-to-r from-[#1DA1F2] to-[#1A8CD8] hover:from-[#1A8CD8] hover:to-[#0D8BD9] text-white rounded-xl border-2 border-[#1DA1F2]/20 shadow-lg"
             >
               <Twitter className="h-5 w-5 mr-3" />
-              Share on X (Twitter)
+              Share on X (Recommended!) ⭐
             </Button>
             
             {/* Instagram Share */}
