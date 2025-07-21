@@ -380,26 +380,28 @@ export default function MallTemplate() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {mall.stores.map((store) => (
-                  <Card key={store.id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-semibold">{store.name}</h3>
-                        {store.spiralPartner && (
-                          <Badge className="bg-[var(--spiral-coral)] text-white">
-                            SPIRAL Partner
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-600 mb-2">{store.category}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1">
-                          <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                          <span className="text-sm">{store.rating}</span>
+                  <Link key={store.id} href={`/mall/${mall.id}/store/${store.id}`}>
+                    <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-semibold">{store.name}</h3>
+                          {store.spiralPartner && (
+                            <Badge className="bg-[var(--spiral-coral)] text-white">
+                              SPIRAL Partner
+                            </Badge>
+                          )}
                         </div>
-                        <span className="text-sm text-gray-500">{store.location}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        <p className="text-sm text-gray-600 mb-2">{store.category}</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1">
+                            <Star className="h-3 w-3 text-yellow-400 fill-current" />
+                            <span className="text-sm">{store.rating}</span>
+                          </div>
+                          <span className="text-sm text-gray-500">{store.location}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             </TabsContent>

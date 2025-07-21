@@ -40,6 +40,7 @@ import InventoryDashboard from "@/pages/inventory-dashboard";
 import FeatureTesting from "@/pages/feature-testing";
 import DynamicFeatureTesting from "@/pages/dynamic-feature-testing";
 import MallTemplate from "@/pages/mall-template";
+import MallStorePage from "@/pages/mall-store";
 import GiftCards from "@/pages/gift-cards";
 import Events from "@/pages/events";
 import MultiCart from "@/pages/multi-cart";
@@ -92,6 +93,7 @@ function Router() {
       <Route path="/loyalty-program" component={LoyaltyProgramPage} />
       <Route path="/delivery-options" component={DeliveryOptionsPage} />
       <Route path="/mall/:id" component={MallTemplate} />
+      <Route path="/mall/:mallId/store/:storeId" component={MallStorePage} />
       <Route path="/gift-cards" component={GiftCards} />
       <Route path="/events" component={Events} />
       <Route path="/multi-cart" component={MultiCart} />
