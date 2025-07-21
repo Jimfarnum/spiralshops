@@ -8,6 +8,7 @@ import { Clock, MapPin, Phone, Star, ShoppingCart, Heart, Share2 } from "lucide-
 import { useCartStore } from "@/lib/cartStore";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
+import ReviewsSection from "@/components/reviews-section";
 
 interface Store {
   id: string;
@@ -50,7 +51,7 @@ export default function MallStorePage() {
   const { mallId, storeId } = params || {};
   const [store, setStore] = useState<Store | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'products' | 'about' | 'offers'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'about' | 'offers' | 'reviews'>('products');
   const { addItem } = useCartStore();
   const { toast } = useToast();
 
@@ -229,11 +230,12 @@ export default function MallStorePage() {
               {[
                 { id: 'products', label: 'Products', count: store.products.length },
                 { id: 'about', label: 'About & Hours' },
-                { id: 'offers', label: 'Current Offers', count: store.offers.length }
+                { id: 'offers', label: 'Current Offers', count: store.offers.length },
+                { id: 'reviews', label: 'Reviews', count: 15 }
               ].map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id as 'products' | 'about' | 'offers' | 'reviews')}
                   className={`py-4 px-1 border-b-2 font-medium text-sm ${
                     activeTab === tab.id
                       ? 'border-[var(--spiral-coral)] text-[var(--spiral-coral)]'
@@ -346,6 +348,16 @@ export default function MallStorePage() {
               </Card>
             ))}
           </div>
+        )}
+
+        {activeTab === 'reviews' && (
+          <ReviewsSection
+            targetType="store"
+            targetId={store.id}
+            targetName={store.name}
+            overallRating={store.rating}
+            totalReviews={store.reviewCount}
+          />
         )}
       </div>
     </div>

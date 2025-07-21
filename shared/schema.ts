@@ -372,4 +372,36 @@ export type InsertEventRSVP = z.infer<typeof insertEventRSVPSchema>;
 export type CartItem = typeof cartItems.$inferSelect;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
 
+// Reviews table for products and stores
+export const reviews = pgTable("reviews", {
+  id: text("id").primaryKey().notNull(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  targetType: text("target_type").notNull(), // 'product' or 'store'
+  targetId: text("target_id").notNull(), // product_id or store_id
+  rating: integer("rating").notNull(), // 1-5 stars
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  isVerifiedPurchase: boolean("is_verified_purchase").default(false),
+  helpfulCount: integer("helpful_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertReviewSchema = createInsertSchema(reviews).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertReview = z.infer<typeof insertReviewSchema>;
+export type Review = typeof reviews.$inferSelect;
+
+// Relations for reviews
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  user: one(users, {
+    fields: [reviews.userId],
+    references: [users.id],
+  }),
+}));
+
 

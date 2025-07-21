@@ -7,7 +7,6 @@ import Home from "@/pages/home";
 import Store from "@/pages/store";
 import NotFound from "@/pages/not-found";
 import ProductSearch from "./ProductSearch";
-import ProductDetail from "./ProductDetail";
 import Cart from "@/pages/cart";
 import Login from "@/pages/login";
 import SignUp from "@/pages/signup";
@@ -16,7 +15,7 @@ import Mall from "@/pages/mall";
 import Spirals from "@/pages/spirals";
 import ProfileSettings from "@/pages/profile-settings";
 import { ProductsPage } from "@/pages/products";
-import { ProductDetailPage } from "@/pages/product-detail";
+import ProductDetailOld from "./ProductDetail";
 import MallDirectory from "@/pages/mall-directory";
 import MallsPage from "@/pages/malls";
 import Account from "@/pages/account";
@@ -41,6 +40,7 @@ import FeatureTesting from "@/pages/feature-testing";
 import DynamicFeatureTesting from "@/pages/dynamic-feature-testing";
 import MallTemplate from "@/pages/mall-template";
 import MallStorePage from "@/pages/mall-store";
+import ProductDetailNew from "@/pages/product-detail";
 import GiftCards from "@/pages/gift-cards";
 import Events from "@/pages/events";
 import MultiCart from "@/pages/multi-cart";
@@ -55,9 +55,9 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/store/:id" component={Store} />
       <Route path="/products" component={ProductsPage} />
-      <Route path="/product/:id" component={ProductDetailPage} />
+      <Route path="/product/:id" component={ProductDetailOld} />
       <Route path="/search" component={ProductSearch} />
-      <Route path="/search/:id" component={ProductDetail} />
+      <Route path="/search/:id" component={ProductDetailOld} />
       <Route path="/cart" component={Cart} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={SignUp} />
@@ -94,6 +94,7 @@ function Router() {
       <Route path="/delivery-options" component={DeliveryOptionsPage} />
       <Route path="/mall/:id" component={MallTemplate} />
       <Route path="/mall/:mallId/store/:storeId" component={MallStorePage} />
+      <Route path="/product-new/:productId" component={ProductDetailNew} />
       <Route path="/gift-cards" component={GiftCards} />
       <Route path="/events" component={Events} />
       <Route path="/multi-cart" component={MultiCart} />

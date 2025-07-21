@@ -1,410 +1,412 @@
-import { useState } from 'react';
-import { Link, useParams, useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import Header from '@/components/header';
-import Footer from '@/components/footer';
-import SocialShare from '@/components/social-share';
-import SocialSharingEngine from '@/components/social-sharing-engine';
-import { useCartStore } from '@/lib/cartStore';
-import { useToast } from '@/hooks/use-toast';
-import { ShoppingCart, MapPin, ArrowLeft, Star, Heart, Share2, Gift, Package, Store, ShoppingBag } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useRoute, Link } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ShoppingCart, Heart, Share2, Star, MapPin, Truck, Store, ArrowLeft, Plus, Minus } from "lucide-react";
+import { useCartStore } from "@/lib/cartStore";
+import { useToast } from "@/hooks/use-toast";
+import Header from "@/components/header";
+import ReviewsSection from "@/components/reviews-section";
 
 interface Product {
-  id: number;
+  id: string;
   name: string;
   price: number;
-  image: string;
-  store: string;
-  category: string;
+  originalPrice?: number;
+  images: string[];
   description: string;
-  distance?: number;
-  zipCode?: string;
-  rating?: number;
-  reviews?: number;
-  inStock?: boolean;
-  features?: string[];
+  category: string;
+  inStock: boolean;
+  stockLevel: number;
+  rating: number;
+  reviewCount: number;
+  store: {
+    id: string;
+    name: string;
+    location: string;
+  };
+  mall?: {
+    id: string;
+    name: string;
+  };
+  specifications: Array<{
+    name: string;
+    value: string;
+  }>;
+  shippingOptions: Array<{
+    type: string;
+    timeframe: string;
+    cost: number;
+  }>;
 }
 
-// Extended product data for detail page
-const productData: { [key: string]: Product } = {
-  '1': { 
-    id: 1, 
-    name: "Artisan Coffee Blend", 
-    price: 24.99, 
-    image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600", 
-    store: "Local Roasters", 
-    category: "food", 
-    description: "Our signature artisan coffee blend combines the finest single-origin beans from sustainable farms. This medium roast delivers rich, complex flavors with notes of chocolate and caramel, perfect for your morning routine or afternoon pick-me-up. Each bag is roasted fresh weekly in small batches to ensure optimal flavor and quality.",
-    distance: 0.8, 
-    zipCode: "10001",
-    rating: 4.8,
-    reviews: 127,
-    inStock: true,
-    features: ["Single-origin beans", "Small batch roasted", "Sustainable farming", "Medium roast", "12oz bag"]
-  },
-  '2': { 
-    id: 2, 
-    name: "Handmade Ceramic Mug", 
-    price: 18.50, 
-    image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600", 
-    store: "Pottery Studio", 
-    category: "home", 
-    description: "Beautiful handcrafted ceramic mug made by local artisans. Each piece is unique, featuring a smooth glaze finish and comfortable handle design. Perfect for your morning coffee, afternoon tea, or any hot beverage. The ceramic construction retains heat well and is both microwave and dishwasher safe.",
-    distance: 1.2, 
-    zipCode: "10001",
-    rating: 4.9,
-    reviews: 89,
-    inStock: true,
-    features: ["Handcrafted", "Unique design", "Microwave safe", "Dishwasher safe", "12oz capacity"]
-  },
-  '3': { 
-    id: 3, 
-    name: "Organic Honey", 
-    price: 12.99, 
-    image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600", 
-    store: "Bee Farm Co.", 
-    category: "food", 
-    description: "Pure organic wildflower honey sourced from our local beehives. This raw, unfiltered honey retains all its natural enzymes and nutrients. With a delicate floral taste and golden color, it's perfect for sweetening tea, spreading on toast, or adding to your favorite recipes. Supporting local beekeepers and sustainable practices.",
-    distance: 2.1, 
-    zipCode: "10002",
-    rating: 4.7,
-    reviews: 203,
-    inStock: true,
-    features: ["Raw & unfiltered", "Organic certified", "Local wildflower", "Glass jar", "16oz"]
-  },
-  '4': { 
-    id: 4, 
-    name: "Vintage Leather Jacket", 
-    price: 89.99, 
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600", 
-    store: "Vintage Threads", 
-    category: "clothing", 
-    description: "Classic vintage leather jacket in excellent condition. This timeless piece features genuine leather construction, full zip front, and multiple pockets. The jacket has been carefully restored and conditioned. Perfect for adding a touch of vintage style to any outfit. Available in various sizes.",
-    distance: 0.5, 
-    zipCode: "10001",
-    rating: 4.6,
-    reviews: 45,
-    inStock: true,
-    features: ["Genuine leather", "Full zip front", "Multiple pockets", "Restored condition", "Vintage style"]
-  }
-};
-
 export function ProductDetailPage() {
-  const { id } = useParams();
-  const [, navigate] = useLocation();
+  const [, params] = useRoute("/product/:productId");
+  const { productId } = params || {};
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [fulfillmentMethod, setFulfillmentMethod] = useState("ship-to-me");
   const { addItem } = useCartStore();
   const { toast } = useToast();
-  const [quantity, setQuantity] = useState(1);
-  const [isFavorite, setIsFavorite] = useState(false);
 
-  const product = productData[id || '1'];
+  useEffect(() => {
+    // Simulate API call
+    setTimeout(() => {
+      const mockProduct: Product = {
+        id: productId || "1",
+        name: "Premium Wireless Headphones",
+        price: 199.99,
+        originalPrice: 249.99,
+        images: [
+          "/api/placeholder/600/600",
+          "/api/placeholder/600/600",
+          "/api/placeholder/600/600"
+        ],
+        description: "Experience superior sound quality with these premium wireless headphones featuring active noise cancellation, 30-hour battery life, and premium comfort padding.",
+        category: "Electronics",
+        inStock: true,
+        stockLevel: 15,
+        rating: 4.5,
+        reviewCount: 127,
+        store: {
+          id: "1",
+          name: "TechWorld Electronics",
+          location: "Level 2, Suite 245"
+        },
+        mall: {
+          id: "westfield-valley",
+          name: "Westfield Valley Fair"
+        },
+        specifications: [
+          { name: "Battery Life", value: "30 hours" },
+          { name: "Noise Cancellation", value: "Active ANC" },
+          { name: "Connectivity", value: "Bluetooth 5.0" },
+          { name: "Weight", value: "250g" },
+          { name: "Warranty", value: "2 years" }
+        ],
+        shippingOptions: [
+          { type: "Standard Shipping", timeframe: "3-5 business days", cost: 0 },
+          { type: "Express Shipping", timeframe: "1-2 business days", cost: 12.99 },
+          { type: "In-Store Pickup", timeframe: "Ready today", cost: 0 },
+          { type: "Mall SPIRAL Center", timeframe: "Ready tomorrow", cost: 0 }
+        ]
+      };
+      setProduct(mockProduct);
+      setLoading(false);
+    }, 500);
+  }, [productId]);
 
-  if (!product) {
+  const handleAddToCart = () => {
+    if (!product) return;
+    
+    addItem({
+      id: parseInt(product.id),
+      name: product.name,
+      price: product.price,
+      image: product.images[0],
+      category: product.category,
+      store: product.store.name,
+      mallId: product.mall?.id || "",
+      mallName: product.mall?.name || ""
+    }, quantity);
+    
+    toast({
+      title: "Added to cart",
+      description: `${quantity}x ${product.name} added to your cart.`,
+    });
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast({
+      title: "Link copied",
+      description: "Product link copied to clipboard.",
+    });
+  };
+
+  const adjustQuantity = (delta: number) => {
+    const newQuantity = quantity + delta;
+    if (newQuantity >= 1 && newQuantity <= (product?.stockLevel || 1)) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-[hsl(0,0%,99.6%)]">
+      <div className="min-h-screen bg-[var(--spiral-cream)]">
         <Header />
-        <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
-          <p className="text-gray-600 mb-8">The product you're looking for doesn't exist.</p>
-          <Link href="/products">
-            <Button className="bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)]">
-              Back to Products
-            </Button>
-          </Link>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--spiral-navy)] mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading product details...</p>
+          </div>
         </div>
-        <Footer />
       </div>
     );
   }
 
-  const handleAddToCart = () => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      category: product.category
-    }, quantity);
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-[var(--spiral-cream)]">
+        <Header />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Product Not Found</h2>
+            <p className="text-gray-600">The requested product could not be found.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-    toast({
-      title: "Added to cart!",
-      description: `${quantity} x ${product.name} added to your cart.`,
-    });
-  };
-
-  // Social sharing now handled by SocialShare component
+  const spiralsEarned = Math.floor((product.price * quantity) / 20); // 5 SPIRALs per $100
 
   return (
-    <div className="min-h-screen bg-[hsl(0,0%,99.6%)]">
+    <div className="min-h-screen bg-[var(--spiral-cream)]">
       <Header />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <nav className="mb-6">
-          <ol className="flex items-center space-x-2 text-sm text-gray-600 font-['Inter']">
-            <li><Link href="/" className="hover:text-[hsl(183,100%,23%)]">Home</Link></li>
-            <li>/</li>
-            <li><Link href="/products" className="hover:text-[hsl(183,100%,23%)]">Products</Link></li>
-            <li>/</li>
-            <li className="text-gray-900 font-semibold capitalize">{product.category}</li>
-            <li>/</li>
-            <li className="text-gray-900 font-semibold truncate">{product.name}</li>
-          </ol>
-        </nav>
+        <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
+          <Link href="/" className="hover:text-[var(--spiral-coral)]">Home</Link>
+          <span>/</span>
+          <Link href="/products" className="hover:text-[var(--spiral-coral)]">Products</Link>
+          <span>/</span>
+          <span className="text-gray-800">{product.name}</span>
+        </div>
 
         {/* Back Button */}
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate('/products')}
-          className="mb-6 hover:bg-gray-100"
-        >
+        <Button variant="ghost" className="mb-6" onClick={() => window.history.back()}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Products
+          Back
         </Button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Product Image */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Product Images */}
           <div className="space-y-4">
-            <div className="aspect-square bg-white rounded-2xl overflow-hidden shadow-sm border">
+            <div className="aspect-square bg-white rounded-lg overflow-hidden">
               <img
-                src={product.image}
+                src={product.images[selectedImage]}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
+            </div>
+            <div className="flex gap-2">
+              {product.images.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImage(index)}
+                  className={`w-20 h-20 rounded-lg overflow-hidden border-2 ${
+                    selectedImage === index ? 'border-[var(--spiral-coral)]' : 'border-gray-200'
+                  }`}
+                >
+                  <img src={image} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
             </div>
           </div>
 
           {/* Product Info */}
           <div className="space-y-6">
             <div>
-              <div className="flex items-start justify-between mb-2">
-                <Badge variant="secondary" className="capitalize mb-2">
-                  {product.category}
-                </Badge>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsFavorite(!isFavorite)}
-                    className={isFavorite ? "text-red-500" : "text-gray-400"}
-                  >
-                    <Heart className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} />
-                  </Button>
-                  <SocialSharingEngine
-                    type="product"
-                    title={`Check out ${product.name} from ${product.storeName}`}
-                    description={product.description}
-                    storeName={product.storeName}
-                    productName={product.name}
-                    showEarningsPreview={true}
-                  />
-                </div>
+              <div className="flex items-center gap-2 mb-2">
+                <Badge variant="outline">{product.category}</Badge>
+                {product.inStock ? (
+                  <Badge className="bg-green-100 text-green-800">In Stock</Badge>
+                ) : (
+                  <Badge variant="destructive">Out of Stock</Badge>
+                )}
               </div>
               
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-['Poppins']">
+              <h1 className="text-3xl font-bold text-[var(--spiral-navy)] mb-2">
                 {product.name}
               </h1>
-
-              {/* Rating and Reviews */}
+              
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-5 w-5 ${
-                        i < Math.floor(product.rating || 0)
-                          ? "text-yellow-400 fill-current"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
+                <div className="flex items-center gap-1">
+                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <span className="font-medium">{product.rating}</span>
+                  <span className="text-gray-500">({product.reviewCount} reviews)</span>
                 </div>
-                <span className="text-sm text-gray-600 font-['Inter']">
-                  {product.rating} ({product.reviews} reviews)
+              </div>
+
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-3xl font-bold text-[var(--spiral-navy)]">
+                  ${product.price.toFixed(2)}
                 </span>
-              </div>
-
-              <div className="text-3xl font-bold text-[var(--spiral-navy)] mb-4 font-['Poppins']">
-                ${product.price.toFixed(2)}
-              </div>
-
-              {/* SPIRAL Earnings Info */}
-              <div className="bg-gradient-to-r from-[var(--spiral-sage)]/20 to-[var(--spiral-coral)]/20 rounded-xl p-4 mb-6 border border-[var(--spiral-sage)]/30">
-                <h4 className="font-semibold text-[var(--spiral-navy)] mb-2 font-['Poppins'] flex items-center">
-                  <Gift className="h-4 w-4 mr-2" />
-                  Earn SPIRALs with this purchase
-                </h4>
-                <div className="grid grid-cols-2 gap-3 text-sm font-['Inter']">
-                  <div className="bg-white rounded-lg p-3">
-                    <p className="font-semibold text-[var(--spiral-coral)]">+{Math.floor(product.price / 20)} SPIRALs</p>
-                    <p className="text-gray-600">Online Purchase</p>
-                  </div>
-                  <div className="bg-white rounded-lg p-3">
-                    <p className="font-semibold text-[var(--spiral-coral)]">+{Math.floor(product.price / 10)} SPIRALs</p>
-                    <p className="text-gray-600">In-Store Pickup</p>
-                  </div>
-                </div>
+                {product.originalPrice && (
+                  <span className="text-xl text-gray-500 line-through">
+                    ${product.originalPrice.toFixed(2)}
+                  </span>
+                )}
               </div>
             </div>
+
+            <p className="text-gray-700 leading-relaxed">{product.description}</p>
 
             {/* Store Info */}
-            <div className="bg-gray-50 rounded-2xl p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-gray-900 font-['Poppins']">
-                    Sold by {product.store}
-                  </h3>
-                  {product.distance && (
-                    <div className="flex items-center text-sm text-gray-600 mt-1 font-['Inter']">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      {product.distance} miles away
-                    </div>
-                  )}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Sold by {product.store.name}</h4>
+                    <p className="text-sm text-gray-600">{product.store.location}</p>
+                    {product.mall && (
+                      <p className="text-sm text-gray-600">at {product.mall.name}</p>
+                    )}
+                  </div>
+                  <Link href={`/mall/${product.mall?.id}/store/${product.store.id}`}>
+                    <Button variant="outline" size="sm">
+                      View Store
+                    </Button>
+                  </Link>
                 </div>
-                <Link href={`/store/${product.store.toLowerCase().replace(/\s+/g, '-')}`}>
-                  <Button variant="outline" size="sm" className="rounded-full">
-                    Visit Store
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Stock Status */}
-            <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${product.inStock ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className={`text-sm font-medium ${product.inStock ? 'text-green-700' : 'text-red-700'} font-['Inter']`}>
-                {product.inStock ? 'In Stock' : 'Out of Stock'}
-              </span>
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Fulfillment Options */}
-            <div className="space-y-4">
-              <h4 className="font-semibold text-[var(--spiral-navy)] font-['Poppins']">
-                Choose Your Fulfillment Method
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="border border-[var(--spiral-sage)] rounded-xl p-3 hover:bg-[var(--spiral-sage)]/5 cursor-pointer transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-[var(--spiral-navy)] font-['Inter']">Ship to Me</p>
-                      <p className="text-sm text-gray-600 font-['Inter']">Ships in 2-3 days</p>
-                    </div>
-                    <Package className="h-5 w-5 text-[var(--spiral-sage)]" />
-                  </div>
-                </div>
-                <div className="border border-[var(--spiral-coral)] rounded-xl p-3 hover:bg-[var(--spiral-coral)]/5 cursor-pointer transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-[var(--spiral-navy)] font-['Inter']">In-Store Pickup</p>
-                      <p className="text-sm text-gray-600 font-['Inter']">Ready today</p>
-                    </div>
-                    <Store className="h-5 w-5 text-[var(--spiral-coral)]" />
-                  </div>
-                </div>
-                <div className="border border-[var(--spiral-gold)] rounded-xl p-3 hover:bg-[var(--spiral-gold)]/5 cursor-pointer transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-[var(--spiral-navy)] font-['Inter']">Mall Center</p>
-                      <p className="text-sm text-gray-600 font-['Inter']">Ready tomorrow</p>
-                    </div>
-                    <ShoppingBag className="h-5 w-5 text-[var(--spiral-gold)]" />
-                  </div>
-                </div>
-              </div>
+            <div>
+              <h4 className="font-medium mb-3">Fulfillment Options</h4>
+              <Select value={fulfillmentMethod} onValueChange={setFulfillmentMethod}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {product.shippingOptions.map((option) => (
+                    <SelectItem key={option.type} value={option.type.toLowerCase().replace(/\s+/g, '-')}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>{option.type}</span>
+                        <span className="text-sm text-gray-500 ml-4">
+                          {option.cost > 0 ? `$${option.cost}` : 'Free'} • {option.timeframe}
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Quantity and Add to Cart */}
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <label htmlFor="quantity" className="text-sm font-medium text-gray-700 font-['Inter']">
-                  Quantity:
-                </label>
                 <div className="flex items-center border rounded-lg">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-3 py-2 hover:bg-gray-100"
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => adjustQuantity(-1)}
                     disabled={quantity <= 1}
                   >
-                    -
-                  </button>
-                  <span className="px-4 py-2 border-l border-r bg-white min-w-[60px] text-center">
-                    {quantity}
-                  </span>
-                  <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="px-3 py-2 hover:bg-gray-100"
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="px-4 py-2 font-medium">{quantity}</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => adjustQuantity(1)}
+                    disabled={quantity >= product.stockLevel}
                   >
-                    +
-                  </button>
+                    <Plus className="h-4 w-4" />
+                  </Button>
                 </div>
+                <span className="text-sm text-gray-600">
+                  {product.stockLevel} available
+                </span>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 <Button
-                  size="lg"
                   onClick={handleAddToCart}
                   disabled={!product.inStock}
-                  className="flex-1 bg-[var(--spiral-navy)] hover:bg-[var(--spiral-coral)] text-white h-12 text-lg font-semibold rounded-2xl"
+                  className="flex-1 bg-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/90"
                 >
-                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  <ShoppingCart className="h-4 w-4 mr-2" />
                   Add to Cart
                 </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="px-8 h-12 rounded-2xl border-[var(--spiral-navy)] text-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)] hover:text-white"
-                >
-                  <MapPin className="h-5 w-5 mr-2" />
-                  Find in Store
+                <Button variant="outline" onClick={handleShare}>
+                  <Share2 className="h-4 w-4" />
+                </Button>
+                <Button variant="outline">
+                  <Heart className="h-4 w-4" />
                 </Button>
               </div>
-            </div>
 
-            {/* Features */}
-            {product.features && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 font-['Poppins']">
-                  Key Features
-                </h3>
-                <ul className="space-y-2">
-                  {product.features.map((feature, index) => (
-                    <li key={index} className="flex items-center text-gray-600 font-['Inter']">
-                      <div className="w-1.5 h-1.5 bg-[hsl(183,100%,23%)] rounded-full mr-3" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+              {/* SPIRAL Earnings */}
+              <div className="bg-[var(--spiral-gold)]/10 border border-[var(--spiral-gold)]/20 rounded-lg p-3">
+                <p className="text-sm">
+                  <span className="font-medium">Earn {spiralsEarned} SPIRALs</span> with this purchase
+                  {fulfillmentMethod === 'in-store-pickup' && (
+                    <span className="text-[var(--spiral-coral)]"> (Double value when used in-store!)</span>
+                  )}
+                </p>
               </div>
-            )}
-
-            {/* Description */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 font-['Poppins']">
-                Description
-              </h3>
-              <p className="text-gray-600 leading-relaxed font-['Inter']">
-                {product.description}
-              </p>
             </div>
           </div>
         </div>
 
-        {/* Related Products Section - Placeholder */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 font-['Poppins']">
-            You Might Also Like
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Placeholder for related products */}
-            <div className="text-center text-gray-500 col-span-full py-8 font-['Inter']">
-              Related products coming soon...
-            </div>
-          </div>
+        {/* Product Specifications */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Specifications</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {product.specifications.map((spec, index) => (
+                  <div key={index} className="flex justify-between py-2 border-b border-gray-100 last:border-0">
+                    <span className="font-medium">{spec.name}</span>
+                    <span className="text-gray-600">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Shipping & Returns</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-start gap-3">
+                <Truck className="h-5 w-5 text-[var(--spiral-coral)] mt-0.5" />
+                <div>
+                  <h4 className="font-medium">Free Standard Shipping</h4>
+                  <p className="text-sm text-gray-600">On orders over $50</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Store className="h-5 w-5 text-[var(--spiral-coral)] mt-0.5" />
+                <div>
+                  <h4 className="font-medium">In-Store Pickup</h4>
+                  <p className="text-sm text-gray-600">Available at {product.store.name}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 text-[var(--spiral-coral)] mt-0.5" />
+                <div>
+                  <h4 className="font-medium">SPIRAL Center Pickup</h4>
+                  <p className="text-sm text-gray-600">Convenient mall pickup location</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Reviews Section */}
+        <ReviewsSection
+          targetType="product"
+          targetId={product.id}
+          targetName={product.name}
+          overallRating={product.rating}
+          totalReviews={product.reviewCount}
+        />
       </div>
-
-      <Footer />
     </div>
   );
 }
+
+export default ProductDetailPage;

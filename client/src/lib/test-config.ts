@@ -376,6 +376,62 @@ export const testConfiguration: FeatureArea[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'reviews-ratings',
+    name: 'Reviews & Ratings System',
+    description: 'Product and store review functionality with verified purchase badges',
+    routes: ['/product/1', '/mall/westfield-valley/store/1'],
+    lastUpdated: '2025-01-21',
+    testCases: [
+      {
+        id: 'product-reviews-display',
+        name: 'Product Reviews Display',
+        category: 'ecommerce',
+        priority: 'high',
+        automated: true,
+        route: '/product/1',
+        description: 'Verify product reviews section displays with ratings and filters',
+        expectedResult: 'Reviews section shows with star ratings, verified badges, and filter options'
+      },
+      {
+        id: 'write-review-form',
+        name: 'Write Review Form',
+        category: 'ecommerce',
+        priority: 'high',
+        automated: false,
+        description: 'Test review submission form with rating, title, and content',
+        expectedResult: 'Form validates input, submits successfully, and displays new review'
+      },
+      {
+        id: 'review-filtering',
+        name: 'Review Filtering Options',
+        category: 'ecommerce',
+        priority: 'medium',
+        automated: false,
+        description: 'Test filtering by verified purchases, star ratings, and all reviews',
+        expectedResult: 'Filters work correctly and update review list dynamically'
+      },
+      {
+        id: 'store-reviews-tab',
+        name: 'Store Reviews Tab',
+        category: 'ecommerce',
+        priority: 'medium',
+        automated: true,
+        route: '/mall/westfield-valley/store/1',
+        description: 'Verify store pages include reviews tab with store-specific reviews',
+        expectedResult: 'Reviews tab loads with store reviews and write review functionality'
+      },
+      {
+        id: 'helpful-votes',
+        name: 'Helpful Vote System',
+        category: 'ecommerce',
+        priority: 'low',
+        automated: false,
+        description: 'Test clicking helpful button on reviews',
+        expectedResult: 'Helpful count increments and provides user feedback'
+      }
+    ]
   }
 ];
 
