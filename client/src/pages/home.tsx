@@ -8,6 +8,7 @@ import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import MallDirectoryDropdown from "@/components/mall-directory-dropdown";
 import SpiralStoryModal from "@/components/spiral-story-modal";
 import LiveChatWidget from "@/components/live-chat-widget";
 import StoreCard from "@/components/store-card";
@@ -221,6 +222,17 @@ export default function Home() {
               </div>
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Mall Directory Section */}
+      <section className="section-modern bg-gradient-to-br from-[var(--spiral-cream)] to-white border-b border-gray-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4">Find Your Local Mall</h2>
+            <p className="text-lg text-gray-600">Discover shopping centers and stores near you</p>
+          </div>
+          <MallDirectoryDropdown className="max-w-2xl mx-auto" />
         </div>
       </section>
 

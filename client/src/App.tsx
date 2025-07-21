@@ -39,6 +39,10 @@ import Wishlist from "@/pages/wishlist";
 import InventoryDashboard from "@/pages/inventory-dashboard";
 import FeatureTesting from "@/pages/feature-testing";
 import DynamicFeatureTesting from "@/pages/dynamic-feature-testing";
+import MallTemplate from "@/pages/mall-template";
+import GiftCards from "@/pages/gift-cards";
+import Events from "@/pages/events";
+import MultiCart from "@/pages/multi-cart";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
@@ -87,6 +91,10 @@ function Router() {
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
       <Route path="/loyalty-program" component={LoyaltyProgramPage} />
       <Route path="/delivery-options" component={DeliveryOptionsPage} />
+      <Route path="/mall/:id" component={MallTemplate} />
+      <Route path="/gift-cards" component={GiftCards} />
+      <Route path="/events" component={Events} />
+      <Route path="/multi-cart" component={MultiCart} />
       <Route component={NotFound} />
     </Switch>
   );

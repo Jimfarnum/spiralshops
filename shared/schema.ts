@@ -188,8 +188,188 @@ export const leaderboardEntriesRelations = relations(leaderboardEntries, ({ one 
 export const insertInviteCodeSchema = createInsertSchema(inviteCodes);
 export const insertLeaderboardEntrySchema = createInsertSchema(leaderboardEntries);
 
+// Malls table for mall directory and pages
+export const malls = pgTable("malls", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  address: text("address").notNull(),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  zipCode: text("zip_code").notNull(),
+  phone: text("phone").notNull(),
+  website: text("website"),
+  hours: text("hours").notNull(),
+  storeCount: integer("store_count").default(0),
+  type: text("type").notNull(), // 'shopping_center', 'outlet', 'lifestyle', 'strip_mall'
+  rating: decimal("rating", { precision: 2, scale: 1 }).default("0.0"),
+  reviewCount: integer("review_count").default(0),
+  features: text("features").array(),
+  amenities: text("amenities").array(),
+  spiralCenterLocation: text("spiral_center_location"),
+  spiralCenterHours: text("spiral_center_hours"),
+  spiralCenterServices: text("spiral_center_services").array(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Gift cards table
+export const giftCards = pgTable("gift_cards", {
+  id: serial("id").primaryKey(),
+  code: text("code").unique().notNull(),
+  purchasedByUserId: integer("purchased_by_user_id").references(() => users.id),
+  recipientEmail: text("recipient_email"),
+  recipientName: text("recipient_name"),
+  originalAmount: decimal("original_amount", { precision: 10, scale: 2 }).notNull(),
+  currentBalance: decimal("current_balance", { precision: 10, scale: 2 }).notNull(),
+  mallId: integer("mall_id").references(() => malls.id), // null means all malls
+  storeId: integer("store_id").references(() => stores.id), // null means all stores in mall
+  personalMessage: text("personal_message"),
+  isActive: boolean("is_active").default(true),
+  expiresAt: timestamp("expires_at"),
+  purchasedAt: timestamp("purchased_at").defaultNow(),
+  redeemedAt: timestamp("redeemed_at"),
+});
+
+// Mall events table
+export const mallEvents = pgTable("mall_events", {
+  id: serial("id").primaryKey(),
+  mallId: integer("mall_id").notNull().references(() => malls.id),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  eventDate: timestamp("event_date").notNull(),
+  eventTime: text("event_time").notNull(),
+  location: text("location").notNull(),
+  category: text("category").notNull(), // 'Fashion', 'Family', 'Food', 'Entertainment', 'Shopping'
+  spiralBonus: integer("spiral_bonus").default(0),
+  maxAttendees: integer("max_attendees"),
+  currentAttendees: integer("current_attendees").default(0),
+  requiresRSVP: boolean("requires_rsvp").default(false),
+  imageUrl: text("image_url"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Event RSVPs table
+export const eventRSVPs = pgTable("event_rsvps", {
+  id: serial("id").primaryKey(),
+  eventId: integer("event_id").notNull().references(() => mallEvents.id),
+  userId: integer("user_id").notNull().references(() => users.id),
+  rsvpStatus: text("rsvp_status").default('attending'), // 'attending', 'maybe', 'not_attending'
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Cart items table for multi-retailer cart
+export const cartItems = pgTable("cart_items", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  productId: text("product_id").notNull(), // reference to product from store system
+  storeId: integer("store_id").notNull().references(() => stores.id),
+  mallId: integer("mall_id").references(() => malls.id),
+  productName: text("product_name").notNull(),
+  productPrice: decimal("product_price", { precision: 10, scale: 2 }).notNull(),
+  quantity: integer("quantity").notNull().default(1),
+  fulfillmentMethod: text("fulfillment_method").notNull(), // 'ship-to-me', 'in-store-pickup', 'ship-to-mall'
+  addedAt: timestamp("added_at").defaultNow(),
+});
+
+// Relations for new tables
+export const mallsRelations = relations(malls, ({ many }) => ({
+  events: many(mallEvents),
+  giftCards: many(giftCards),
+  cartItems: many(cartItems),
+}));
+
+export const giftCardsRelations = relations(giftCards, ({ one }) => ({
+  purchasedBy: one(users, {
+    fields: [giftCards.purchasedByUserId],
+    references: [users.id],
+  }),
+  mall: one(malls, {
+    fields: [giftCards.mallId],
+    references: [malls.id],
+  }),
+  store: one(stores, {
+    fields: [giftCards.storeId],
+    references: [stores.id],
+  }),
+}));
+
+export const mallEventsRelations = relations(mallEvents, ({ one, many }) => ({
+  mall: one(malls, {
+    fields: [mallEvents.mallId],
+    references: [malls.id],
+  }),
+  rsvps: many(eventRSVPs),
+}));
+
+export const eventRSVPsRelations = relations(eventRSVPs, ({ one }) => ({
+  event: one(mallEvents, {
+    fields: [eventRSVPs.eventId],
+    references: [mallEvents.id],
+  }),
+  user: one(users, {
+    fields: [eventRSVPs.userId],
+    references: [users.id],
+  }),
+}));
+
+export const cartItemsRelations = relations(cartItems, ({ one }) => ({
+  user: one(users, {
+    fields: [cartItems.userId],
+    references: [users.id],
+  }),
+  store: one(stores, {
+    fields: [cartItems.storeId],
+    references: [stores.id],
+  }),
+  mall: one(malls, {
+    fields: [cartItems.mallId],
+    references: [malls.id],
+  }),
+}));
+
+// Insert schemas for new tables
+export const insertMallSchema = createInsertSchema(malls).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertGiftCardSchema = createInsertSchema(giftCards).omit({
+  id: true,
+  purchasedAt: true,
+  redeemedAt: true,
+});
+
+export const insertMallEventSchema = createInsertSchema(mallEvents).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertEventRSVPSchema = createInsertSchema(eventRSVPs).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCartItemSchema = createInsertSchema(cartItems).omit({
+  id: true,
+  addedAt: true,
+});
+
 // Additional type exports
 export type InviteCode = typeof inviteCodes.$inferSelect;
 export type InsertInviteCode = z.infer<typeof insertInviteCodeSchema>;
 export type LeaderboardEntry = typeof leaderboardEntries.$inferSelect;
 export type InsertLeaderboardEntry = z.infer<typeof insertLeaderboardEntrySchema>;
+export type Mall = typeof malls.$inferSelect;
+export type InsertMall = z.infer<typeof insertMallSchema>;
+export type GiftCard = typeof giftCards.$inferSelect;
+export type InsertGiftCard = z.infer<typeof insertGiftCardSchema>;
+export type MallEvent = typeof mallEvents.$inferSelect;
+export type InsertMallEvent = z.infer<typeof insertMallEventSchema>;
+export type EventRSVP = typeof eventRSVPs.$inferSelect;
+export type InsertEventRSVP = z.infer<typeof insertEventRSVPSchema>;
+export type CartItem = typeof cartItems.$inferSelect;
+export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
+
+
