@@ -8,6 +8,8 @@ import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import SpiralStoryModal from "@/components/spiral-story-modal";
+import LiveChatWidget from "@/components/live-chat-widget";
 import StoreCard from "@/components/store-card";
 import ProductCard from "@/components/product-card";
 import RetailerSignupForm from "@/components/retailer-signup-form";
@@ -17,6 +19,7 @@ import { mockProducts, categories } from "@/data/mockProducts";
 import OnboardingModal from "@/components/onboarding-modal";
 
 export default function Home() {
+  const [spiralStoryModalOpen, setSpiralStoryModalOpen] = useState(false);
   const [searchZip, setSearchZip] = useState("");
   const [activeZip, setActiveZip] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -468,6 +471,138 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SPIRAL Stories Section */}
+      <section className="section-modern bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">SPIRAL Stories</h2>
+            <p className="text-xl text-gray-600">Real experiences from our community of local shoppers</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {[
+              {
+                name: "Sarah M.",
+                location: "Downtown",
+                story: "Found the most amazing handmade jewelry at Artisan Corner. The owner even customized a piece for my anniversary!",
+                image: "https://images.unsplash.com/photo-1494790108755-2616b612b1e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
+                badge: "SPIRAL Spotlight",
+                spiralsEarned: 45,
+                store: "Artisan Corner"
+              },
+              {
+                name: "Mike R.",
+                location: "Riverside",
+                story: "The coffee at Local Roasters is incredible! Plus I love earning SPIRALs while supporting my neighborhood cafe.",
+                image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
+                badge: "Trending Story",
+                spiralsEarned: 32,
+                store: "Local Roasters Co."
+              },
+              {
+                name: "Emma L.",
+                location: "Heritage Quarter",
+                story: "Heritage Market has the freshest produce! Shopping local has never felt so rewarding with SPIRAL points.",
+                image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
+                badge: "Community Favorite",
+                spiralsEarned: 28,
+                store: "Heritage Market"
+              }
+            ].map((story, index) => (
+              <div key={index} className="card-modern group">
+                <div className="p-6">
+                  <div className="flex items-center gap-4 mb-4">
+                    <img 
+                      src={story.image} 
+                      alt={story.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div>
+                      <h3 className="font-semibold text-[var(--spiral-navy)]">{story.name}</h3>
+                      <p className="text-sm text-gray-500">{story.location}</p>
+                    </div>
+                    <div className="ml-auto">
+                      <span className="text-xs px-2 py-1 bg-[var(--spiral-gold)] text-white rounded-full font-medium">
+                        {story.badge}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-gray-700 mb-4 italic">"{story.story}"</p>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-[var(--spiral-coral)]">{story.store}</span>
+                    <div className="flex items-center text-[var(--spiral-coral)] bg-[var(--spiral-coral)]/10 px-2 py-1 rounded-full">
+                      <span className="text-xs font-semibold">+{story.spiralsEarned} SPIRALs</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center">
+            <Button className="button-primary px-8 py-4 text-lg" onClick={() => setSpiralStoryModalOpen(true)}>
+              Share My SPIRAL Story
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Retailer Testimonials Section */}
+      <section className="section-modern bg-[var(--spiral-cream)]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">What Local Retailers Say</h2>
+            <p className="text-xl text-gray-600">Hear from business owners who've joined the SPIRAL community</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[
+              {
+                quote: "SPIRAL has brought so many new customers to our store. The community engagement is incredible, and we love seeing families discover our handmade products.",
+                name: "Maria Rodriguez",
+                title: "Owner",
+                business: "Artisan Corner",
+                location: "Downtown District",
+                logo: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100",
+                spiralsBusiness: "2,450 SPIRALs given to customers"
+              },
+              {
+                quote: "The SPIRAL loyalty program helps us compete with big chains while keeping our neighborhood charm. Our regular customers love earning points!",
+                name: "David Chen",
+                title: "Co-founder",
+                business: "Local Roasters Co.",
+                location: "Riverside Area",
+                logo: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100",
+                spiralsBusiness: "1,890 SPIRALs given to customers"
+              }
+            ].map((testimonial, index) => (
+              <div key={index} className="card-modern bg-white">
+                <div className="p-8">
+                  <div className="text-4xl text-[var(--spiral-coral)] mb-4">"</div>
+                  <p className="text-lg text-gray-700 mb-6 italic">{testimonial.quote}</p>
+                  
+                  <div className="flex items-center gap-4">
+                    <img 
+                      src={testimonial.logo} 
+                      alt={testimonial.business}
+                      className="w-16 h-16 rounded-lg object-cover"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-[var(--spiral-navy)]">{testimonial.name}</h4>
+                      <p className="text-sm text-gray-600">{testimonial.title}, {testimonial.business}</p>
+                      <p className="text-xs text-gray-500">{testimonial.location}</p>
+                      <p className="text-xs text-[var(--spiral-coral)] font-medium mt-1">{testimonial.spiralsBusiness}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Three-Column Value Props */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -627,6 +762,15 @@ export default function Home() {
         isOpen={showOnboarding} 
         onClose={handleOnboardingClose} 
       />
+      
+      {/* Modals */}
+      <SpiralStoryModal 
+        isOpen={spiralStoryModalOpen} 
+        onClose={() => setSpiralStoryModalOpen(false)} 
+      />
+      
+      {/* Live Chat Widget */}
+      <LiveChatWidget />
     </div>
   );
 }
