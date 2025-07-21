@@ -102,6 +102,7 @@ function Router() {
       <Route path="/multi-cart" component={MultiCart} />
       <Route path="/split-fulfillment" component={SplitFulfillment} />
       <Route path="/feature-audit" component={() => import('@/components/feature-parity-audit').then(m => m.default)} />
+      <Route path="/competitive-analysis" component={() => import('@/components/competitive-analysis').then(m => m.default)} />
       <Route component={NotFound} />
     </Switch>
   );
