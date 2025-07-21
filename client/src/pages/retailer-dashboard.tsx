@@ -277,7 +277,7 @@ const RetailerDashboard = () => {
             </Card>
           </Link>
 
-          <Link href="/analytics-dashboard">
+          <Link href="/retailer-analytics">
             <Card className="shadow-lg border-0 hover:shadow-xl transition-shadow cursor-pointer bg-gradient-to-r from-[var(--spiral-coral)]/10 to-[var(--spiral-gold)]/10">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
@@ -286,10 +286,10 @@ const RetailerDashboard = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-[var(--spiral-navy)] font-['Poppins']">
-                      Analytics Dashboard
+                      Advanced Analytics
                     </h3>
                     <p className="text-gray-600 text-sm font-['Inter']">
-                      View platform performance and insights
+                      Comprehensive business insights and performance metrics
                     </p>
                   </div>
                 </div>

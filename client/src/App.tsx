@@ -30,6 +30,7 @@ import SpiralFeatures from "@/pages/spiral-features";
 import InviteFriend from "@/pages/invite-friend";
 import Leaderboard from "@/pages/leaderboard";
 import RetailerTestimonials from "@/pages/retailer-testimonials";
+import RetailerAnalytics from "@/pages/retailer-analytics";
 import About from "@/pages/about";
 import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
 import CartRestoreNotification from "@/components/cart-restore-notification";
@@ -65,6 +66,7 @@ function Router() {
       <Route path="/invite-friend" component={InviteFriend} />
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/retailer-testimonials" component={RetailerTestimonials} />
+      <Route path="/retailer-analytics" component={RetailerAnalytics} />
       <Route path="/about" component={About} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
       <Route path="/redeem-spirals" component={RedeemSPIRALsPage} />
