@@ -108,9 +108,9 @@ export default function Home() {
           <div className="flex justify-center mb-8">
             <div className="relative">
               <img 
-                src="@assets/mqy7md_1753116245618.jpg" 
-                alt="SPIRAL - Everything Local. Just for You." 
-                className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
+                src="/spiral-blue.svg" 
+                alt="SPIRAL Logo" 
+                className="w-16 h-16 mx-auto md:mx-0 drop-shadow-lg hover:scale-105 transition-transform duration-300"
               />
             </div>
           </div>
@@ -159,7 +159,7 @@ export default function Home() {
 
       {/* Feature Tiles Section */}
       <section className="py-20 bg-[var(--spiral-cream)]">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-[var(--spiral-navy)] mb-4">
               Your Local Shopping Hub
@@ -169,58 +169,82 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
             {/* Shop Local Stores */}
             <Link href="/products" className="group">
-              <div className="bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-                <div className="text-5xl mb-4">🛍️</div>
-                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Shop Local</h3>
-                <p className="text-white/90 font-['Inter']">Browse products from neighborhood businesses and support your local community</p>
+              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="text-3xl">🛍️</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Shop Local</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Browse products from neighborhood businesses</p>
+                  </div>
+                </div>
               </div>
             </Link>
 
             {/* Explore SPIRALs */}
             <Link href="/explore-spirals" className="group">
-              <div className="bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-gold)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-                <div className="text-5xl mb-4">🌟</div>
-                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Explore SPIRALs</h3>
-                <p className="text-white/90 font-['Inter']">Discover unique local experiences and hidden gems in your neighborhood</p>
+              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-gold)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="text-3xl">🌟</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Explore SPIRALs</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Discover unique local experiences and gems</p>
+                  </div>
+                </div>
               </div>
             </Link>
 
             {/* Retailer Sign-Up */}
             <Link href="/retailer-login" className="group">
-              <div className="bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-                <div className="text-5xl mb-4">🏪</div>
-                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Join as Retailer</h3>
-                <p className="text-white/90 font-['Inter']">List your business and connect with local customers in your area</p>
+              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="text-3xl">🏪</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Join as Retailer</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">List your business and connect with customers</p>
+                  </div>
+                </div>
               </div>
             </Link>
 
             {/* Discover New Finds */}
             <Link href="/products?category=featured" className="group">
-              <div className="bg-gradient-to-br from-[var(--spiral-gold)] to-[var(--spiral-coral)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-                <div className="text-5xl mb-4">💎</div>
-                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Discover Finds</h3>
-                <p className="text-white/90 font-['Inter']">Explore curated collections and trending products from local stores</p>
+              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-gold)] to-[var(--spiral-coral)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="text-3xl">💎</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Discover Finds</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Explore curated collections and trends</p>
+                  </div>
+                </div>
               </div>
             </Link>
 
             {/* Loyalty Program */}
             <Link href="/redeem-spirals" className="group">
-              <div className="bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-sage)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-                <div className="text-5xl mb-4">🎁</div>
-                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Redeem SPIRALs</h3>
-                <p className="text-white/90 font-['Inter']">Use your SPIRAL points to unlock exclusive perks and local experiences</p>
+              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-sage)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="text-3xl">🎁</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Redeem SPIRALs</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Use points for exclusive perks and experiences</p>
+                  </div>
+                </div>
               </div>
             </Link>
 
             {/* Delivery Options */}
             <Link href="/delivery-options" className="group">
-              <div className="bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-gold)] p-8 rounded-xl text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
-                <div className="text-5xl mb-4">🚚</div>
-                <h3 className="text-2xl font-bold mb-3 font-['Poppins']">Delivery Options</h3>
-                <p className="text-white/90 font-['Inter']">Choose from same-day delivery, in-store pickup, and ship-to-store options</p>
+              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-gold)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="text-3xl">🚚</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Delivery Options</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Same-day delivery, pickup, and ship-to-store</p>
+                  </div>
+                </div>
               </div>
             </Link>
           </div>
