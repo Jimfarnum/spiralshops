@@ -530,6 +530,79 @@ export const orderTracking = pgTable("order_tracking", {
 
 export type OrderTracking = typeof orderTracking.$inferSelect;
 export type InsertOrderTracking = typeof orderTracking.$inferInsert;
+
+// Retailer loyalty settings table
+export const retailerLoyaltySettings = pgTable("retailer_loyalty_settings", {
+  id: serial("id").primaryKey(),
+  storeId: integer("store_id").notNull().references(() => stores.id),
+  pointsPerDollar: decimal("points_per_dollar", { precision: 4, scale: 2 }).default("0.10").notNull(), // e.g., 0.10 = 1 SPIRAL per $10
+  minimumPurchase: decimal("minimum_purchase", { precision: 8, scale: 2 }).default("0.00"),
+  bonusMultiplier: decimal("bonus_multiplier", { precision: 3, scale: 2 }).default("1.00"), // e.g., 1.50 for 50% bonus
+  tierThresholds: text("tier_thresholds"), // JSON: {"bronze": 0, "silver": 100, "gold": 500, "platinum": 1000}
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Retailer-specific loyalty history for each user
+export const retailerLoyaltyHistory = pgTable("retailer_loyalty_history", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  storeId: integer("store_id").notNull().references(() => stores.id),
+  orderId: integer("order_id").references(() => orders.id),
+  pointsEarned: integer("points_earned").default(0).notNull(),
+  pointsRedeemed: integer("points_redeemed").default(0).notNull(),
+  transactionType: text("transaction_type").notNull(), // 'earned', 'redeemed', 'bonus', 'expired'
+  description: text("description"),
+  currentTier: text("current_tier").default("bronze"), // 'bronze', 'silver', 'gold', 'platinum'
+  totalLifetimePoints: integer("total_lifetime_points").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Mall perk campaigns
+export const mallPerkCampaigns = pgTable("mall_perk_campaigns", {
+  id: serial("id").primaryKey(),
+  mallId: integer("mall_id").notNull().references(() => malls.id),
+  title: text("title").notNull(),
+  description: text("description"),
+  perkType: text("perk_type").notNull(), // 'bonus_points', 'discount', 'gift', 'access'
+  bonusPoints: integer("bonus_points").default(0), // Extra SPIRALs for completing perk
+  discountPercent: decimal("discount_percent", { precision: 5, scale: 2 }).default("0.00"),
+  requiredStores: integer("required_stores").default(2), // Number of different stores to shop at
+  minimumSpend: decimal("minimum_spend", { precision: 8, scale: 2 }).default("0.00"),
+  validFrom: timestamp("valid_from").notNull(),
+  validUntil: timestamp("valid_until").notNull(),
+  maxRedemptions: integer("max_redemptions").default(100),
+  currentRedemptions: integer("current_redemptions").default(0),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User progress on mall perks
+export const userMallPerks = pgTable("user_mall_perks", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  campaignId: integer("campaign_id").notNull().references(() => mallPerkCampaigns.id),
+  mallId: integer("mall_id").notNull().references(() => malls.id),
+  storesVisited: text("stores_visited"), // JSON array of store IDs visited
+  totalSpent: decimal("total_spent", { precision: 8, scale: 2 }).default("0.00"),
+  progress: integer("progress").default(0), // Number of stores shopped at
+  isCompleted: boolean("is_completed").default(false),
+  completedAt: timestamp("completed_at"),
+  rewardClaimed: boolean("reward_claimed").default(false),
+  claimedAt: timestamp("claimed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type RetailerLoyaltySettings = typeof retailerLoyaltySettings.$inferSelect;
+export type InsertRetailerLoyaltySettings = typeof retailerLoyaltySettings.$inferInsert;
+export type RetailerLoyaltyHistory = typeof retailerLoyaltyHistory.$inferSelect;
+export type InsertRetailerLoyaltyHistory = typeof retailerLoyaltyHistory.$inferInsert;
+export type MallPerkCampaign = typeof mallPerkCampaigns.$inferSelect;
+export type InsertMallPerkCampaign = typeof mallPerkCampaigns.$inferInsert;
+export type UserMallPerk = typeof userMallPerks.$inferSelect;
+export type InsertUserMallPerk = typeof userMallPerks.$inferInsert;
 export type Mall = typeof malls.$inferSelect;
 export type InsertMall = z.infer<typeof insertMallSchema>;
 export type GiftCard = typeof giftCards.$inferSelect;

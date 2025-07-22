@@ -74,6 +74,8 @@ import SystemAudit from "@/pages/system-audit";
 import LoyaltyDashboard from "@/pages/loyalty";
 import OrdersPage from "@/pages/orders";
 import OrderDetailPage from "@/pages/order-detail";
+import RetailerLoyaltyPage from "@/pages/loyalty-retailers";
+import MallPerksPage from "@/pages/loyalty-mall-perks";
 
 function Router() {
   return (
@@ -157,6 +159,8 @@ function Router() {
       <Route path="/loyalty" component={LoyaltyDashboard} />
       <Route path="/orders" component={OrdersPage} />
       <Route path="/order/:id" component={OrderDetailPage} />
+      <Route path="/loyalty/retailers" component={RetailerLoyaltyPage} />
+      <Route path="/loyalty/mall-perks" component={MallPerksPage} />
       <Route component={NotFound} />
     </Switch>
   );

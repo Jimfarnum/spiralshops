@@ -567,13 +567,21 @@ export default function LoyaltyDashboard() {
                   <CardTitle className="text-base">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
+                  <Link href="/loyalty/retailers" className="block">
+                    <Button className="w-full justify-start" variant="outline">
+                      <Store className="mr-2 h-4 w-4" />
+                      Retailer Loyalty Dashboard
+                    </Button>
+                  </Link>
+                  <Link href="/loyalty/mall-perks" className="block">
+                    <Button className="w-full justify-start" variant="outline">
+                      <Building2 className="mr-2 h-4 w-4" />
+                      Mall Bonus Perks
+                    </Button>
+                  </Link>
                   <Button className="w-full justify-start" variant="outline">
                     <Gift className="mr-2 h-4 w-4" />
                     Redeem SPIRALs
-                  </Button>
-                  <Button className="w-full justify-start" variant="outline">
-                    <TrendingUp className="mr-2 h-4 w-4" />
-                    Earning Opportunities
                   </Button>
                   <Button className="w-full justify-start" variant="outline">
                     <ExternalLink className="mr-2 h-4 w-4" />
