@@ -407,12 +407,13 @@ export function ProductDetailPage() {
         </div>
 
         {/* Reviews Section */}
-        <ProductReviews
-          productId={product.id}
-          reviewType="product"
-          targetName={product.name}
-          storeName={product.store.name}
-        />
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-[var(--spiral-navy)]">Customer Reviews</h2>
+          <ProductReviews
+            productId={product.id}
+            productName={product.name}
+          />
+        </div>
       </div>
     </div>
   );
