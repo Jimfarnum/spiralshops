@@ -5,6 +5,7 @@ import { useCartStore } from "@/lib/cartStore";
 import { useAuthStore } from "@/lib/authStore";
 import SpiralBalance from "./spiral-balance";
 import MobileNav from "./mobile-nav";
+import LanguageSelector from "./language-selector";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Header() {
@@ -60,6 +61,11 @@ export default function Header() {
             {/* SPIRAL Balance - Hidden on small screens */}
             <div className="hidden sm:block">
               <SpiralBalance />
+            </div>
+            
+            {/* Language Selector - Desktop */}
+            <div className="hidden lg:block">
+              <LanguageSelector compact={true} showProgress={false} />
             </div>
             
             {/* Mobile Navigation */}

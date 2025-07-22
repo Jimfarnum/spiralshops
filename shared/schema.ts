@@ -170,6 +170,8 @@ export const fulfillmentGroupsRelations = relations(fulfillmentGroups, ({ one })
   }),
 }));
 
+
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,

@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Globe, Check } from 'lucide-react';
 
@@ -11,359 +15,261 @@ interface Language {
   name: string;
   nativeName: string;
   flag: string;
-  enabled: boolean;
-  completeness: number; // Percentage of translations completed
+  progress: number; // translation completion percentage
 }
 
-interface LanguageSelectorProps {
-  onLanguageChange?: (language: string) => void;
-  currentLanguage?: string;
-  compact?: boolean;
-  className?: string;
-}
-
-const supportedLanguages: Language[] = [
+const languages: Language[] = [
   {
     code: 'en',
     name: 'English',
     nativeName: 'English',
     flag: '🇺🇸',
-    enabled: true,
-    completeness: 100
+    progress: 100
   },
   {
     code: 'es',
     name: 'Spanish',
     nativeName: 'Español',
     flag: '🇪🇸',
-    enabled: true,
-    completeness: 95
+    progress: 95
   },
   {
     code: 'fr',
     name: 'French',
     nativeName: 'Français',
     flag: '🇫🇷',
-    enabled: false,
-    completeness: 60
+    progress: 75
   },
   {
     code: 'de',
     name: 'German',
     nativeName: 'Deutsch',
     flag: '🇩🇪',
-    enabled: false,
-    completeness: 45
+    progress: 70
   },
   {
     code: 'pt',
     name: 'Portuguese',
     nativeName: 'Português',
     flag: '🇧🇷',
-    enabled: false,
-    completeness: 30
+    progress: 65
   }
 ];
 
-export default function LanguageSelector({ 
-  onLanguageChange, 
-  currentLanguage = 'en', 
-  compact = false, 
-  className = '' 
-}: LanguageSelectorProps) {
-  const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage);
+interface LanguageSelectorProps {
+  compact?: boolean;
+  showProgress?: boolean;
+}
+
+export default function LanguageSelector({ compact = false, showProgress = true }: LanguageSelectorProps) {
   const { toast } = useToast();
+  const [currentLanguage, setCurrentLanguage] = useState<string>('en');
+  const [isDetecting, setIsDetecting] = useState(false);
 
-  const enabledLanguages = supportedLanguages.filter(lang => lang.enabled);
-  const currentLang = supportedLanguages.find(lang => lang.code === selectedLanguage) || supportedLanguages[0];
-
-  const handleLanguageChange = (langCode: string) => {
-    const language = supportedLanguages.find(lang => lang.code === langCode);
-    
-    if (!language) return;
-    
-    if (!language.enabled) {
-      toast({
-        title: "Language Not Available",
-        description: `${language.name} support is coming soon! Currently ${language.completeness}% translated.`,
-        variant: "default",
-        duration: 3000
-      });
-      return;
-    }
-
-    setSelectedLanguage(langCode);
-    localStorage.setItem('spiral-language', langCode);
-    
-    if (onLanguageChange) {
-      onLanguageChange(langCode);
-    }
-
-    toast({
-      title: "Language Changed",
-      description: `Interface language changed to ${language.name}`,
-      duration: 2000
-    });
-  };
-
-  // Load saved language preference on mount
+  // Auto-detect browser language on first load
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('spiral-language');
-    if (savedLanguage && supportedLanguages.find(lang => lang.code === savedLanguage)) {
-      setSelectedLanguage(savedLanguage);
-      if (onLanguageChange) {
-        onLanguageChange(savedLanguage);
+    const saved = localStorage.getItem('spiral-language');
+    if (saved) {
+      setCurrentLanguage(saved);
+    } else {
+      // Auto-detect from browser
+      const browserLang = navigator.language.split('-')[0];
+      const supportedLang = languages.find(lang => lang.code === browserLang);
+      if (supportedLang) {
+        setCurrentLanguage(browserLang);
+        localStorage.setItem('spiral-language', browserLang);
       }
     }
-  }, [onLanguageChange]);
+  }, []);
+
+  const handleLanguageChange = (languageCode: string) => {
+    const language = languages.find(lang => lang.code === languageCode);
+    if (!language) return;
+
+    setCurrentLanguage(languageCode);
+    localStorage.setItem('spiral-language', languageCode);
+    
+    // Update HTML lang attribute
+    document.documentElement.lang = languageCode;
+
+    // Show confirmation toast
+    toast({
+      title: `Language changed to ${language.name}`,
+      description: language.progress < 100 
+        ? `Translation is ${language.progress}% complete. Some text may appear in English.`
+        : 'All text will now appear in your selected language.',
+      duration: 4000,
+    });
+
+    // In a real app, this would trigger a translation system
+    console.log('Language changed to:', languageCode);
+  };
+
+  const detectLanguage = async () => {
+    setIsDetecting(true);
+    
+    // Simulate language detection
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    const browserLang = navigator.language.split('-')[0];
+    const supportedLang = languages.find(lang => lang.code === browserLang);
+    
+    if (supportedLang && supportedLang.code !== currentLanguage) {
+      handleLanguageChange(supportedLang.code);
+      toast({
+        title: 'Language Auto-Detected',
+        description: `Switched to ${supportedLang.name} based on your browser settings`,
+        duration: 4000,
+      });
+    } else {
+      toast({
+        title: 'Language Detection Complete',
+        description: 'Your current language setting is already optimal',
+        duration: 3000,
+      });
+    }
+    
+    setIsDetecting(false);
+  };
+
+  const currentLang = languages.find(lang => lang.code === currentLanguage) || languages[0];
 
   if (compact) {
     return (
-      <Select value={selectedLanguage} onValueChange={handleLanguageChange}>
-        <SelectTrigger className={`w-auto min-w-[120px] ${className}`}>
-          <div className="flex items-center gap-2">
-            <span>{currentLang.flag}</span>
-            <SelectValue>
-              {currentLang.nativeName}
-            </SelectValue>
-          </div>
-        </SelectTrigger>
-        <SelectContent>
-          {supportedLanguages.map(language => (
-            <SelectItem 
-              key={language.code} 
-              value={language.code}
-              disabled={!language.enabled}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+            <span className="text-lg">{currentLang.flag}</span>
+            <span className="sr-only">Change language</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48">
+          {languages.map((language) => (
+            <DropdownMenuItem
+              key={language.code}
+              onClick={() => handleLanguageChange(language.code)}
+              className="flex items-center justify-between"
             >
-              <div className="flex items-center gap-3 w-full">
+              <div className="flex items-center gap-2">
                 <span>{language.flag}</span>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span>{language.nativeName}</span>
-                    {language.code === selectedLanguage && <Check className="h-4 w-4 text-green-600" />}
-                  </div>
-                  {!language.enabled && (
-                    <div className="text-xs text-gray-500">
-                      {language.completeness}% complete
-                    </div>
-                  )}
-                </div>
+                <span>{language.name}</span>
               </div>
-            </SelectItem>
+              {language.code === currentLanguage && (
+                <Check className="h-4 w-4 text-[var(--spiral-coral)]" />
+              )}
+            </DropdownMenuItem>
           ))}
-        </SelectContent>
-      </Select>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 
   return (
-    <Card className={`w-full max-w-md ${className}`}>
-      <CardHeader className="pb-4">
-        <CardTitle className="text-xl font-bold flex items-center gap-2 font-['Poppins']">
-          <Globe className="h-5 w-5" />
-          Language Settings
-        </CardTitle>
-        <CardDescription className="font-['Inter']">
-          Choose your preferred language for the SPIRAL interface
-        </CardDescription>
-      </CardHeader>
-      
-      <CardContent className="space-y-4">
-        {/* Current Language Display */}
-        <div className="p-4 bg-[var(--spiral-sage)]/10 rounded-lg border border-[var(--spiral-sage)]/20">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{currentLang.flag}</span>
-            <div>
-              <div className="font-semibold text-[var(--spiral-navy)]">{currentLang.nativeName}</div>
-              <div className="text-sm text-gray-600">{currentLang.name}</div>
-            </div>
-            <Badge className="ml-auto bg-green-100 text-green-800">
-              Current
-            </Badge>
-          </div>
-        </div>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-[var(--spiral-navy)]">
+          Language Preferences
+        </h3>
+        <Button
+          onClick={detectLanguage}
+          disabled={isDetecting}
+          variant="outline"
+          size="sm"
+        >
+          <Globe className={`h-4 w-4 mr-2 ${isDetecting ? 'animate-spin' : ''}`} />
+          {isDetecting ? 'Detecting...' : 'Auto-Detect'}
+        </Button>
+      </div>
 
-        {/* Language Options */}
-        <div className="space-y-2">
-          <h4 className="font-semibold text-gray-900 font-['Poppins']">Available Languages</h4>
-          <div className="space-y-2">
-            {supportedLanguages.map(language => (
-              <div 
-                key={language.code}
-                className={`flex items-center justify-between p-3 rounded-lg border transition-all duration-200 ${
-                  language.enabled 
-                    ? 'hover:bg-gray-50 cursor-pointer' 
-                    : 'bg-gray-50 cursor-not-allowed opacity-60'
-                } ${
-                  language.code === selectedLanguage 
-                    ? 'border-[var(--spiral-coral)] bg-[var(--spiral-coral)]/5' 
-                    : 'border-gray-200'
-                }`}
-                onClick={() => language.enabled && handleLanguageChange(language.code)}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">{language.flag}</span>
-                  <div>
-                    <div className="font-medium text-gray-900">{language.nativeName}</div>
-                    <div className="text-sm text-gray-600">{language.name}</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {languages.map((language) => (
+          <div
+            key={language.code}
+            onClick={() => handleLanguageChange(language.code)}
+            className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+              language.code === currentLanguage
+                ? 'border-[var(--spiral-coral)] bg-[var(--spiral-coral)]/5'
+                : 'border-gray-200 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{language.flag}</span>
+                <div>
+                  <div className="font-medium text-[var(--spiral-navy)]">
+                    {language.nativeName}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {language.name}
                   </div>
                 </div>
-                
-                <div className="flex items-center gap-2">
-                  {language.enabled ? (
-                    <Badge className="bg-green-100 text-green-800">
-                      Ready
-                    </Badge>
-                  ) : (
-                    <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                      {language.completeness}%
-                    </Badge>
-                  )}
-                  {language.code === selectedLanguage && (
-                    <Check className="h-4 w-4 text-[var(--spiral-coral)]" />
-                  )}
+              </div>
+              {language.code === currentLanguage && (
+                <Check className="h-5 w-5 text-[var(--spiral-coral)]" />
+              )}
+            </div>
+
+            {showProgress && (
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-500">Translation Progress</span>
+                  <span className={`font-medium ${
+                    language.progress === 100 ? 'text-green-600' : 
+                    language.progress >= 90 ? 'text-blue-600' : 'text-yellow-600'
+                  }`}>
+                    {language.progress}%
+                  </span>
                 </div>
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div 
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      language.progress === 100 ? 'bg-green-500' :
+                      language.progress >= 90 ? 'bg-blue-500' : 'bg-yellow-500'
+                    }`}
+                    style={{ width: `${language.progress}%` }}
+                  />
+                </div>
+                {language.progress < 100 && (
+                  <div className="text-xs text-gray-500">
+                    Some content may appear in English
+                  </div>
+                )}
               </div>
-            ))}
+            )}
           </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Coming Soon Notice */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <div className="flex items-start gap-3">
-            <Globe className="h-5 w-5 text-blue-600 mt-0.5" />
-            <div>
-              <div className="font-semibold text-blue-900 mb-1">More Languages Coming Soon</div>
-              <div className="text-sm text-blue-700">
-                We're working hard to bring SPIRAL to more communities. 
-                French, German, and Portuguese support are in development!
-              </div>
+      {/* Translation Status */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <Globe className="h-5 w-5 text-blue-600 mt-0.5" />
+          <div>
+            <h4 className="font-medium text-blue-900 mb-1">
+              Multi-Language Support
+            </h4>
+            <p className="text-sm text-blue-700 mb-3">
+              SPIRAL is available in multiple languages. We're continuously improving our translations 
+              to provide the best local shopping experience.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {languages.map((lang) => (
+                <Badge 
+                  key={lang.code}
+                  variant="outline"
+                  className={`text-xs ${
+                    lang.progress === 100 ? 'border-green-200 bg-green-50 text-green-700' :
+                    lang.progress >= 90 ? 'border-blue-200 bg-blue-50 text-blue-700' :
+                    'border-yellow-200 bg-yellow-50 text-yellow-700'
+                  }`}
+                >
+                  {lang.flag} {lang.code.toUpperCase()} - {lang.progress}%
+                </Badge>
+              ))}
             </div>
           </div>
         </div>
-
-        {/* Auto-detection Toggle */}
-        <div className="pt-4 border-t">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="font-medium text-gray-900">Auto-detect Language</div>
-              <div className="text-sm text-gray-600">Automatically set language based on browser</div>
-            </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => {
-                const browserLang = navigator.language.split('-')[0];
-                const matchedLang = supportedLanguages.find(lang => 
-                  lang.code === browserLang && lang.enabled
-                );
-                
-                if (matchedLang) {
-                  handleLanguageChange(matchedLang.code);
-                } else {
-                  toast({
-                    title: "Browser Language Not Supported",
-                    description: "Your browser language is not yet available. Using English.",
-                    duration: 3000
-                  });
-                }
-              }}
-            >
-              Auto-Detect
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
-
-// Translation helper functions
-export const translations = {
-  en: {
-    // Navigation
-    'nav.discover': 'Discover',
-    'nav.products': 'Products',
-    'nav.malls': 'Shopping Malls',
-    'nav.community': 'Community',
-    'nav.about': 'About',
-    'nav.retailers': 'For Retailers',
-    'nav.cart': 'Cart',
-    'nav.profile': 'Profile',
-    'nav.wishlist': 'Wishlist',
-    'nav.signIn': 'Sign In',
-    'nav.signUp': 'Sign Up',
-    
-    // Common actions
-    'action.addToCart': 'Add to Cart',
-    'action.buyNow': 'Buy Now',
-    'action.saveForLater': 'Save for Later',
-    'action.share': 'Share',
-    'action.viewDetails': 'View Details',
-    'action.search': 'Search',
-    'action.filter': 'Filter',
-    'action.sort': 'Sort',
-    
-    // Product status
-    'product.inStock': 'In Stock',
-    'product.lowStock': 'Low Stock',
-    'product.outOfStock': 'Out of Stock',
-    'product.freeShipping': 'Free Shipping',
-    
-    // Messages
-    'message.addedToCart': 'Added to cart successfully',
-    'message.addedToWishlist': 'Saved to wishlist',
-    'message.removedFromWishlist': 'Removed from wishlist',
-    'message.noResults': 'No results found',
-    'message.loading': 'Loading...',
-    
-    // Tagline
-    'tagline': 'Everything Local. Just for You.'
-  },
-  es: {
-    // Navigation
-    'nav.discover': 'Descubrir',
-    'nav.products': 'Productos',
-    'nav.malls': 'Centros Comerciales',
-    'nav.community': 'Comunidad',
-    'nav.about': 'Acerca de',
-    'nav.retailers': 'Para Minoristas',
-    'nav.cart': 'Carrito',
-    'nav.profile': 'Perfil',
-    'nav.wishlist': 'Lista de Deseos',
-    'nav.signIn': 'Iniciar Sesión',
-    'nav.signUp': 'Registrarse',
-    
-    // Common actions
-    'action.addToCart': 'Agregar al Carrito',
-    'action.buyNow': 'Comprar Ahora',
-    'action.saveForLater': 'Guardar para Después',
-    'action.share': 'Compartir',
-    'action.viewDetails': 'Ver Detalles',
-    'action.search': 'Buscar',
-    'action.filter': 'Filtrar',
-    'action.sort': 'Ordenar',
-    
-    // Product status
-    'product.inStock': 'En Stock',
-    'product.lowStock': 'Stock Bajo',
-    'product.outOfStock': 'Agotado',
-    'product.freeShipping': 'Envío Gratis',
-    
-    // Messages
-    'message.addedToCart': 'Agregado al carrito exitosamente',
-    'message.addedToWishlist': 'Guardado en lista de deseos',
-    'message.removedFromWishlist': 'Eliminado de lista de deseos',
-    'message.noResults': 'No se encontraron resultados',
-    'message.loading': 'Cargando...',
-    
-    // Tagline
-    'tagline': 'Todo Local. Solo para Ti.'
-  }
-};
-
-// Translation function
-export const t = (key: string, lang: string = 'en'): string => {
-  const langTranslations = translations[lang as keyof typeof translations] || translations.en;
-  return langTranslations[key as keyof typeof langTranslations] || key;
-};

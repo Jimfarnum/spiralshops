@@ -1,344 +1,496 @@
 import { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Bell, AlertTriangle, CheckCircle, Clock, Package, TrendingDown, TrendingUp } from 'lucide-react';
+import { 
+  AlertTriangle,
+  Package,
+  TrendingDown,
+  Bell,
+  Settings,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Smartphone,
+  Mail
+} from 'lucide-react';
 
-interface InventoryItem {
-  id: number;
-  productId: number;
-  name: string;
-  store: string;
+interface InventoryAlert {
+  id: string;
+  productId: string;
+  productName: string;
   currentStock: number;
   lowStockThreshold: number;
-  image: string;
-  price: number;
-  category: string;
-  lastUpdated: string;
-  trend: 'increasing' | 'decreasing' | 'stable';
-  alertsEnabled: boolean;
+  isOutOfStock: boolean;
+  alertEnabled: boolean;
+  alertMethods: ('browser' | 'email' | 'sms')[];
+  lastChecked: string;
+  imageUrl: string;
+  storeId: string;
+  storeName: string;
 }
 
-interface InventoryAlertsProps {
-  userId?: number;
-  className?: string;
+interface AlertPreferences {
+  browserEnabled: boolean;
+  emailEnabled: boolean;
+  smsEnabled: boolean;
+  checkFrequency: number; // minutes
 }
 
-// Mock inventory data - in production this would come from real-time API
-const mockInventoryItems: InventoryItem[] = [
-  {
-    id: 1,
-    productId: 1,
-    name: "Artisan Coffee Blend",
-    store: "Local Roasters",
-    currentStock: 3,
-    lowStockThreshold: 5,
-    image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300",
-    price: 24.99,
-    category: "food",
-    lastUpdated: "2025-01-21T08:30:00Z",
-    trend: 'decreasing',
-    alertsEnabled: true
-  },
-  {
-    id: 2,
-    productId: 4,
-    name: "Vintage Leather Jacket",
-    store: "Vintage Threads",
-    currentStock: 1,
-    lowStockThreshold: 3,
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300",
-    price: 89.99,
-    category: "clothing",
-    lastUpdated: "2025-01-21T09:15:00Z",
-    trend: 'decreasing',
-    alertsEnabled: true
-  },
-  {
-    id: 3,
-    productId: 7,
-    name: "Tech Startup Hoodie",
-    store: "Silicon Style",
-    currentStock: 0,
-    lowStockThreshold: 2,
-    image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300",
-    price: 65.00,
-    category: "clothing",
-    lastUpdated: "2025-01-21T07:45:00Z",
-    trend: 'stable',
-    alertsEnabled: false
-  },
-  {
-    id: 4,
-    productId: 12,
-    name: "Organic Honey",
-    store: "Nature's Best",
-    currentStock: 15,
-    lowStockThreshold: 10,
-    image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300",
-    price: 18.50,
-    category: "food",
-    lastUpdated: "2025-01-21T10:00:00Z",
-    trend: 'increasing',
-    alertsEnabled: true
-  }
-];
-
-export default function InventoryAlerts({ userId, className = '' }: InventoryAlertsProps) {
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(mockInventoryItems);
-  const [notifications, setNotifications] = useState<string[]>([]);
+export default function InventoryAlerts() {
   const { toast } = useToast();
+  const [alerts, setAlerts] = useState<InventoryAlert[]>([
+    {
+      id: '1',
+      productId: 'prod-123',
+      productName: 'Artisan Leather Wallet',
+      currentStock: 2,
+      lowStockThreshold: 5,
+      isOutOfStock: false,
+      alertEnabled: true,
+      alertMethods: ['browser', 'email'],
+      lastChecked: '2025-01-22T11:30:00Z',
+      imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=100&h=100&fit=crop',
+      storeId: 'store-1',
+      storeName: 'Local Artisan Goods'
+    },
+    {
+      id: '2',
+      productId: 'prod-456',
+      productName: 'Organic Coffee Blend',
+      currentStock: 0,
+      lowStockThreshold: 10,
+      isOutOfStock: true,
+      alertEnabled: true,
+      alertMethods: ['browser', 'email', 'sms'],
+      lastChecked: '2025-01-22T11:25:00Z',
+      imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=100&h=100&fit=crop',
+      storeId: 'store-2',
+      storeName: 'Heritage Roasters'
+    },
+    {
+      id: '3',
+      productId: 'prod-789',
+      productName: 'Hand-Painted Ceramic Mug',
+      currentStock: 8,
+      lowStockThreshold: 3,
+      isOutOfStock: false,
+      alertEnabled: false,
+      alertMethods: ['browser'],
+      lastChecked: '2025-01-22T11:32:00Z',
+      imageUrl: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=100&h=100&fit=crop',
+      storeId: 'store-3',
+      storeName: 'Clay & Co Pottery'
+    }
+  ]);
 
-  // Simulate real-time inventory updates
+  const [preferences, setPreferences] = useState<AlertPreferences>({
+    browserEnabled: true,
+    emailEnabled: true,
+    smsEnabled: false,
+    checkFrequency: 15
+  });
+
+  const [isMonitoring, setIsMonitoring] = useState(true);
+
+  // Simulate real-time inventory monitoring
   useEffect(() => {
+    if (!isMonitoring) return;
+
     const interval = setInterval(() => {
-      setInventoryItems(prevItems => 
-        prevItems.map(item => {
-          // Simulate stock changes
-          const changeChance = Math.random();
-          if (changeChance < 0.1) { // 10% chance of stock change
-            const stockChange = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
-            const newStock = Math.max(0, item.currentStock + stockChange);
-            
-            // Check if this triggers a low stock alert
-            if (item.alertsEnabled && newStock <= item.lowStockThreshold && item.currentStock > item.lowStockThreshold) {
-              const alertMessage = `Low stock alert: ${item.name} at ${item.store} now has only ${newStock} items left!`;
-              setNotifications(prev => [...prev, alertMessage]);
-              
-              toast({
-                title: "Low Stock Alert",
-                description: alertMessage,
-                variant: "destructive",
-                duration: 5000
-              });
-            }
-            
-            return {
-              ...item,
-              currentStock: newStock,
-              lastUpdated: new Date().toISOString(),
-              trend: stockChange > 0 ? 'increasing' as const : stockChange < 0 ? 'decreasing' as const : 'stable' as const
-            };
+      setAlerts(prev => prev.map(alert => {
+        // Simulate stock level changes
+        const stockChange = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+        const newStock = Math.max(0, alert.currentStock + stockChange);
+        const wasOutOfStock = alert.isOutOfStock;
+        const isNowOutOfStock = newStock === 0;
+        const isLowStock = newStock > 0 && newStock <= alert.lowStockThreshold;
+
+        // Trigger notifications for significant changes
+        if (alert.alertEnabled) {
+          if (!wasOutOfStock && isNowOutOfStock) {
+            triggerAlert(alert, 'out_of_stock');
+          } else if (wasOutOfStock && !isNowOutOfStock) {
+            triggerAlert(alert, 'back_in_stock');
+          } else if (!alert.isOutOfStock && !isNowOutOfStock && isLowStock && alert.currentStock > alert.lowStockThreshold) {
+            triggerAlert(alert, 'low_stock');
           }
-          return item;
-        })
-      );
-    }, 10000); // Update every 10 seconds for demo purposes
+        }
+
+        return {
+          ...alert,
+          currentStock: newStock,
+          isOutOfStock: isNowOutOfStock,
+          lastChecked: new Date().toISOString()
+        };
+      }));
+    }, 30000); // Check every 30 seconds for demo
 
     return () => clearInterval(interval);
-  }, [toast]);
+  }, [isMonitoring]);
 
-  const getStockStatus = (item: InventoryItem) => {
-    if (item.currentStock === 0) {
-      return { status: 'out-of-stock', label: 'Out of Stock', color: 'bg-red-100 text-red-800 border-red-200' };
-    } else if (item.currentStock <= item.lowStockThreshold) {
-      return { status: 'low-stock', label: 'Low Stock', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' };
-    } else {
-      return { status: 'in-stock', label: 'In Stock', color: 'bg-green-100 text-green-800 border-green-200' };
+  const triggerAlert = (alert: InventoryAlert, type: 'out_of_stock' | 'back_in_stock' | 'low_stock') => {
+    if (!alert.alertEnabled) return;
+
+    const messages = {
+      out_of_stock: `${alert.productName} is now out of stock at ${alert.storeName}`,
+      back_in_stock: `${alert.productName} is back in stock at ${alert.storeName}!`,
+      low_stock: `${alert.productName} is running low (${alert.currentStock} left) at ${alert.storeName}`
+    };
+
+    const variants = {
+      out_of_stock: 'destructive' as const,
+      back_in_stock: 'default' as const,
+      low_stock: 'default' as const
+    };
+
+    if (alert.alertMethods.includes('browser') && preferences.browserEnabled) {
+      toast({
+        title: type === 'back_in_stock' ? 'Back in Stock!' : type === 'low_stock' ? 'Low Stock Alert' : 'Out of Stock',
+        description: messages[type],
+        variant: variants[type],
+        duration: 5000,
+      });
+
+      // Browser notification if permission granted
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(`SPIRAL - ${type.replace('_', ' ').toUpperCase()}`, {
+          body: messages[type],
+          icon: alert.imageUrl
+        });
+      }
     }
   };
 
-  const getTrendIcon = (trend: InventoryItem['trend']) => {
-    switch (trend) {
-      case 'increasing':
-        return <TrendingUp className="h-4 w-4 text-green-600" />;
-      case 'decreasing':
-        return <TrendingDown className="h-4 w-4 text-red-600" />;
-      default:
-        return <Clock className="h-4 w-4 text-gray-400" />;
-    }
-  };
-
-  const toggleAlerts = (itemId: number) => {
-    setInventoryItems(prevItems =>
-      prevItems.map(item =>
-        item.id === itemId ? { ...item, alertsEnabled: !item.alertsEnabled } : item
-      )
-    );
+  const toggleAlert = (alertId: string, enabled: boolean) => {
+    setAlerts(prev => prev.map(alert => 
+      alert.id === alertId ? { ...alert, alertEnabled: enabled } : alert
+    ));
     
     toast({
-      title: "Alert Settings Updated",
-      description: "Your inventory alert preferences have been saved.",
-      duration: 2000
+      title: enabled ? 'Alert Enabled' : 'Alert Disabled',
+      description: `Inventory monitoring ${enabled ? 'enabled' : 'disabled'} for this item`,
+      duration: 3000,
     });
   };
 
-  const dismissNotification = (index: number) => {
-    setNotifications(prev => prev.filter((_, i) => i !== index));
+  const updateAlertMethods = (alertId: string, methods: ('browser' | 'email' | 'sms')[]) => {
+    setAlerts(prev => prev.map(alert => 
+      alert.id === alertId ? { ...alert, alertMethods: methods } : alert
+    ));
   };
 
-  const criticalItems = inventoryItems.filter(item => 
-    item.currentStock === 0 || (item.currentStock <= item.lowStockThreshold && item.alertsEnabled)
-  );
+  const updateThreshold = (alertId: string, threshold: number) => {
+    setAlerts(prev => prev.map(alert => 
+      alert.id === alertId ? { ...alert, lowStockThreshold: threshold } : alert
+    ));
+  };
 
-  const lowStockItems = inventoryItems.filter(item => 
-    item.currentStock > 0 && item.currentStock <= item.lowStockThreshold
-  );
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        toast({
+          title: 'Notifications Enabled',
+          description: 'You\'ll now receive browser notifications for inventory alerts',
+          duration: 3000,
+        });
+      }
+    }
+  };
 
-  const inStockItems = inventoryItems.filter(item => 
-    item.currentStock > item.lowStockThreshold
-  );
+  const getStockStatus = (alert: InventoryAlert) => {
+    if (alert.isOutOfStock) {
+      return { status: 'Out of Stock', color: 'bg-red-100 text-red-800', icon: <XCircle className="h-3 w-3" /> };
+    } else if (alert.currentStock <= alert.lowStockThreshold) {
+      return { status: 'Low Stock', color: 'bg-yellow-100 text-yellow-800', icon: <AlertTriangle className="h-3 w-3" /> };
+    } else {
+      return { status: 'In Stock', color: 'bg-green-100 text-green-800', icon: <CheckCircle className="h-3 w-3" /> };
+    }
+  };
+
+  const formatLastChecked = (timestamp: string): string => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffMinutes < 1) return 'Just now';
+    if (diffMinutes < 60) return `${diffMinutes}m ago`;
+    if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h ago`;
+    return date.toLocaleDateString();
+  };
+
+  const activeAlerts = alerts.filter(a => a.alertEnabled);
+  const criticalAlerts = alerts.filter(a => a.isOutOfStock && a.alertEnabled);
+  const lowStockAlerts = alerts.filter(a => !a.isOutOfStock && a.currentStock <= a.lowStockThreshold && a.alertEnabled);
 
   return (
-    <div className={`space-y-6 ${className}`}>
-      {/* Alert Notifications */}
-      {notifications.length > 0 && (
-        <div className="space-y-2">
-          {notifications.map((notification, index) => (
-            <Alert key={index} className="border-red-200 bg-red-50">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="flex items-center justify-between">
-                <span className="text-red-800">{notification}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => dismissNotification(index)}
-                  className="text-red-600 hover:text-red-800 h-6 w-6 p-0"
-                >
-                  ×
-                </Button>
-              </AlertDescription>
-            </Alert>
-          ))}
+    <div className="max-w-6xl mx-auto space-y-6">
+      {/* Header & Stats */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-[var(--spiral-navy)]">Inventory Alerts</h1>
+          <p className="text-gray-600">Real-time monitoring of your watched products</p>
         </div>
-      )}
+        
+        <div className="flex items-center gap-2">
+          <Badge className={isMonitoring ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
+            {isMonitoring ? 'Monitoring Active' : 'Monitoring Paused'}
+          </Badge>
+          <Button
+            onClick={() => setIsMonitoring(!isMonitoring)}
+            variant={isMonitoring ? 'outline' : 'default'}
+            size="sm"
+          >
+            {isMonitoring ? 'Pause' : 'Resume'}
+          </Button>
+        </div>
+      </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border-red-200">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2 text-red-700">
-              <AlertTriangle className="h-5 w-5" />
-              Critical Items
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-700">{criticalItems.length}</div>
-            <p className="text-sm text-gray-600">Require immediate attention</p>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-[var(--spiral-navy)]">{alerts.length}</div>
+            <div className="text-sm text-gray-600">Watched Items</div>
           </CardContent>
         </Card>
-
-        <Card className="border-yellow-200">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2 text-yellow-700">
-              <Clock className="h-5 w-5" />
-              Low Stock
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-700">{lowStockItems.length}</div>
-            <p className="text-sm text-gray-600">Below threshold levels</p>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-green-600">{activeAlerts.length}</div>
+            <div className="text-sm text-gray-600">Active Alerts</div>
           </CardContent>
         </Card>
-
-        <Card className="border-green-200">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2 text-green-700">
-              <CheckCircle className="h-5 w-5" />
-              Well Stocked
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-700">{inStockItems.length}</div>
-            <p className="text-sm text-gray-600">Above threshold levels</p>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-red-600">{criticalAlerts.length}</div>
+            <div className="text-sm text-gray-600">Out of Stock</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-yellow-600">{lowStockAlerts.length}</div>
+            <div className="text-sm text-gray-600">Low Stock</div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Inventory Items */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-bold text-gray-900 font-['Poppins'] flex items-center gap-2">
-          <Package className="h-5 w-5" />
-          Inventory Status
-        </h3>
+      {/* Alert Preferences */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5 text-[var(--spiral-coral)]" />
+            Alert Preferences
+          </CardTitle>
+          <CardDescription>Configure how you receive inventory notifications</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-4">
+              <h4 className="font-semibold text-[var(--spiral-navy)]">Notification Methods</h4>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Bell className="h-4 w-4" />
+                    <span className="text-sm">Browser Notifications</span>
+                  </div>
+                  <Switch
+                    checked={preferences.browserEnabled}
+                    onCheckedChange={(checked) => {
+                      setPreferences(prev => ({ ...prev, browserEnabled: checked }));
+                      if (checked) requestNotificationPermission();
+                    }}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    <span className="text-sm">Email Alerts</span>
+                  </div>
+                  <Switch
+                    checked={preferences.emailEnabled}
+                    onCheckedChange={(checked) => 
+                      setPreferences(prev => ({ ...prev, emailEnabled: checked }))
+                    }
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Smartphone className="h-4 w-4" />
+                    <span className="text-sm">SMS Alerts</span>
+                  </div>
+                  <Switch
+                    checked={preferences.smsEnabled}
+                    onCheckedChange={(checked) => 
+                      setPreferences(prev => ({ ...prev, smsEnabled: checked }))
+                    }
+                  />
+                </div>
+              </div>
+            </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {inventoryItems.map(item => {
-            const stockStatus = getStockStatus(item);
-            
-            return (
-              <Card key={item.id} className="overflow-hidden">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <img 
-                        src={item.image} 
-                        alt={item.name}
-                        className="w-12 h-12 object-cover rounded-lg"
-                      />
+            <div className="space-y-4">
+              <h4 className="font-semibold text-[var(--spiral-navy)]">Monitoring Frequency</h4>
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600">Check every (minutes)</label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="60"
+                  value={preferences.checkFrequency}
+                  onChange={(e) => 
+                    setPreferences(prev => ({ ...prev, checkFrequency: parseInt(e.target.value) || 15 }))
+                  }
+                  className="w-24"
+                />
+                <p className="text-xs text-gray-500">Real-time monitoring for critical alerts</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="font-semibold text-[var(--spiral-navy)]">Quick Actions</h4>
+              <div className="space-y-2">
+                <Button
+                  onClick={requestNotificationPermission}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  Enable Browser Notifications
+                </Button>
+                <Button
+                  onClick={() => setIsMonitoring(!isMonitoring)}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  {isMonitoring ? 'Pause All Monitoring' : 'Resume All Monitoring'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Alert Items */}
+      <div className="space-y-4">
+        {alerts.map(alert => {
+          const stockStatus = getStockStatus(alert);
+          
+          return (
+            <Card key={alert.id} className={alert.isOutOfStock ? 'border-red-200 bg-red-50' : alert.currentStock <= alert.lowStockThreshold ? 'border-yellow-200 bg-yellow-50' : ''}>
+              <CardContent className="p-6">
+                <div className="flex gap-4">
+                  <img 
+                    src={alert.imageUrl} 
+                    alt={alert.productName}
+                    className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                  />
+                  
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between mb-3">
                       <div>
-                        <CardTitle className="text-lg font-semibold font-['Poppins']">
-                          {item.name}
-                        </CardTitle>
-                        <CardDescription className="font-['Inter']">
-                          {item.store} • ${item.price}
-                        </CardDescription>
+                        <h3 className="font-semibold text-[var(--spiral-navy)] mb-1">
+                          {alert.productName}
+                        </h3>
+                        <p className="text-sm text-gray-600">{alert.storeName}</p>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <Badge className={stockStatus.color}>
+                          {stockStatus.icon}
+                          <span className="ml-1">{stockStatus.status}</span>
+                        </Badge>
+                        <Switch
+                          checked={alert.alertEnabled}
+                          onCheckedChange={(checked) => toggleAlert(alert.id, checked)}
+                        />
                       </div>
                     </div>
-                    
-                    <Badge className={stockStatus.color}>
-                      {stockStatus.label}
-                    </Badge>
-                  </div>
-                </CardHeader>
 
-                <CardContent className="space-y-3">
-                  {/* Stock Information */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-600">Current Stock:</span>
-                      <span className="font-bold text-lg">
-                        {item.currentStock}
-                      </span>
-                      {getTrendIcon(item.trend)}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <div className="text-sm font-medium text-gray-700 mb-1">Current Stock</div>
+                        <div className="text-2xl font-bold text-[var(--spiral-navy)]">
+                          {alert.currentStock}
+                          <span className="text-sm font-normal text-gray-500 ml-1">units</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="text-sm font-medium text-gray-700 mb-1">Low Stock Threshold</div>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="number"
+                            min="0"
+                            value={alert.lowStockThreshold}
+                            onChange={(e) => updateThreshold(alert.id, parseInt(e.target.value) || 0)}
+                            className="w-20 h-8 text-sm"
+                            disabled={!alert.alertEnabled}
+                          />
+                          <span className="text-sm text-gray-500">units</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="text-sm font-medium text-gray-700 mb-1">Alert Methods</div>
+                        <div className="flex gap-2">
+                          {['browser', 'email', 'sms'].map(method => (
+                            <Button
+                              key={method}
+                              onClick={() => {
+                                const methods = alert.alertMethods.includes(method as any)
+                                  ? alert.alertMethods.filter(m => m !== method)
+                                  : [...alert.alertMethods, method as any];
+                                updateAlertMethods(alert.id, methods);
+                              }}
+                              variant={alert.alertMethods.includes(method as any) ? 'default' : 'outline'}
+                              size="sm"
+                              className="h-8 px-2 text-xs"
+                              disabled={!alert.alertEnabled}
+                            >
+                              {method === 'browser' && <Bell className="h-3 w-3" />}
+                              {method === 'email' && <Mail className="h-3 w-3" />}
+                              {method === 'sms' && <Smartphone className="h-3 w-3" />}
+                              <span className="ml-1 capitalize">{method}</span>
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-500">
-                      Threshold: {item.lowStockThreshold}
+
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex items-center gap-1 text-sm text-gray-500">
+                        <Clock className="h-4 w-4" />
+                        <span>Last checked {formatLastChecked(alert.lastChecked)}</span>
+                      </div>
+                      
+                      {alert.isOutOfStock && (
+                        <Badge className="bg-red-100 text-red-800">
+                          <AlertTriangle className="h-3 w-3 mr-1" />
+                          Action Required
+                        </Badge>
+                      )}
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
 
-                  {/* Stock Progress Bar */}
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        item.currentStock === 0 ? 'bg-red-500' :
-                        item.currentStock <= item.lowStockThreshold ? 'bg-yellow-500' :
-                        'bg-green-500'
-                      }`}
-                      style={{ 
-                        width: `${Math.min(100, (item.currentStock / (item.lowStockThreshold * 2)) * 100)}%` 
-                      }}
-                    />
-                  </div>
-
-                  {/* Alert Toggle */}
-                  <div className="flex items-center justify-between pt-2 border-t">
-                    <div className="flex items-center gap-2">
-                      <Bell className="h-4 w-4 text-gray-600" />
-                      <Label htmlFor={`alerts-${item.id}`} className="text-sm font-['Inter']">
-                        Low stock alerts
-                      </Label>
-                    </div>
-                    <Switch
-                      id={`alerts-${item.id}`}
-                      checked={item.alertsEnabled}
-                      onCheckedChange={() => toggleAlerts(item.id)}
-                    />
-                  </div>
-
-                  {/* Last Updated */}
-                  <div className="text-xs text-gray-500 font-['Inter']">
-                    Last updated: {new Date(item.lastUpdated).toLocaleString()}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+        {alerts.length === 0 && (
+          <Card>
+            <CardContent className="text-center py-12">
+              <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-600 mb-2">No Items Being Monitored</h3>
+              <p className="text-gray-500">Add items to your wishlist to start monitoring their inventory levels!</p>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

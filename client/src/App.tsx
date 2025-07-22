@@ -55,6 +55,8 @@ import P1TestSuite from "@/pages/p1-test-suite";
 import LoyaltyDashboard from "@/components/loyalty-dashboard";
 import RetailerOnboarding from "@/components/retailer-onboarding";
 import WishlistNotifications from "@/components/wishlist-notifications";
+import InventoryAlertsDemo from "@/pages/inventory-alerts-demo";
+import LanguageDemo from "@/pages/language-demo";
 
 function Router() {
   return (
@@ -120,6 +122,8 @@ function Router() {
       <Route path="/mall-events-demo" component={MallEventsDemo} />
       <Route path="/retailer-onboarding" component={RetailerOnboarding} />
       <Route path="/wishlist-notifications" component={WishlistNotifications} />
+      <Route path="/inventory-alerts-demo" component={InventoryAlertsDemo} />
+      <Route path="/language-demo" component={LanguageDemo} />
       <Route component={NotFound} />
     </Switch>
   );
