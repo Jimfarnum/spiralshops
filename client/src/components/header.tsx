@@ -91,6 +91,12 @@ export default function Header() {
             
             {isAuthenticated ? (
               <div className="hidden lg:flex items-center space-x-1">
+                <Link href="/loyalty">
+                  <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 text-[var(--spiral-coral)] hover:text-[var(--spiral-coral)]/80">
+                    <Star className="h-4 w-4" />
+                    <span className="hidden lg:inline text-sm">Loyalty</span>
+                  </Button>
+                </Link>
                 <Link href="/profile">
                   <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 text-gray-600 hover:text-gray-800">
                     <User className="h-4 w-4" />

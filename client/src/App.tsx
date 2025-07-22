@@ -52,7 +52,7 @@ import MallContextSync from "@/components/mall-context-sync";
 import MallEventsDemo from "@/pages/mall-events-demo";
 import P1FeaturesDemo from "@/pages/p1-features-demo";
 import P1TestSuite from "@/pages/p1-test-suite";
-import LoyaltyDashboard from "@/components/loyalty-dashboard";
+
 import RetailerOnboarding from "@/components/retailer-onboarding";
 import WishlistNotifications from "@/components/wishlist-notifications";
 import InventoryAlertsDemo from "@/pages/inventory-alerts-demo";
@@ -71,6 +71,7 @@ import TrackingPage from "@/pages/tracking";
 import PerformanceOptimizationDemo from "@/pages/performance-optimization-demo";
 import Phase11Demo from "@/pages/phase-11-demo";
 import SystemAudit from "@/pages/system-audit";
+import LoyaltyDashboard from "@/pages/loyalty";
 
 function Router() {
   return (
@@ -151,6 +152,7 @@ function Router() {
       <Route path="/performance-optimization-demo" component={PerformanceOptimizationDemo} />
       <Route path="/phase-11-demo" component={Phase11Demo} />
       <Route path="/system-audit" component={SystemAudit} />
+      <Route path="/loyalty" component={LoyaltyDashboard} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -476,6 +476,38 @@ export type InviteCode = typeof inviteCodes.$inferSelect;
 export type InsertInviteCode = z.infer<typeof insertInviteCodeSchema>;
 export type LeaderboardEntry = typeof leaderboardEntries.$inferSelect;
 export type InsertLeaderboardEntry = z.infer<typeof insertLeaderboardEntrySchema>;
+
+// User Loyalty tracking table for loyalty dashboard
+export const userLoyalty = pgTable("user_loyalty", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  totalEarned: integer("total_earned").default(0).notNull(),
+  currentBalance: integer("current_balance").default(0).notNull(),
+  pendingPoints: integer("pending_points").default(0).notNull(),
+  tier: text("tier").default("Bronze").notNull(),
+  referralCode: text("referral_code").unique().notNull(),
+  referralCount: integer("referral_count").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Loyalty transactions table for detailed transaction history
+export const loyaltyTransactions = pgTable("loyalty_transactions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  orderId: text("order_id"),
+  type: text("type").notNull(), // 'earned' or 'redeemed'
+  points: integer("points").notNull(),
+  description: text("description").notNull(),
+  status: text("status").default("completed").notNull(), // 'completed', 'pending', 'processing'
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type UserLoyalty = typeof userLoyalty.$inferSelect;
+export type InsertUserLoyalty = typeof userLoyalty.$inferInsert;
+export type LoyaltyTransaction = typeof loyaltyTransactions.$inferSelect;
+export type InsertLoyaltyTransaction = typeof loyaltyTransactions.$inferInsert;
 export type Mall = typeof malls.$inferSelect;
 export type InsertMall = z.infer<typeof insertMallSchema>;
 export type GiftCard = typeof giftCards.$inferSelect;
