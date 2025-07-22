@@ -10,6 +10,7 @@ import { registerEventsRoutes } from "./eventsRoutes";
 import { registerRetailerRoutes } from "./retailerRoutes";
 import { registerWishlistAlertRoutes } from "./wishlistAlertRoutes";
 import { registerGiftCardRoutes } from "./giftCardRoutes";
+import { registerAnalyticsRoutes } from "./analyticsRoutes";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema, insertGiftCardSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -439,6 +440,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register gift card routes
   registerGiftCardRoutes(app);
+
+  // Register analytics routes
+  registerAnalyticsRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

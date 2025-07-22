@@ -31,6 +31,8 @@ import InviteFriend from "@/pages/invite-friend";
 import Leaderboard from "@/pages/leaderboard";
 import RetailerTestimonials from "@/pages/retailer-testimonials";
 import RetailerAnalytics from "@/pages/retailer-analytics";
+import MallAnalytics from "@/pages/mall-analytics";
+import Feature10Demo from "@/pages/feature-10-demo";
 import RetailerInsights from "@/pages/retailer-insights";
 import TestFlow from "@/pages/test-flow";
 import About from "@/pages/about";
@@ -128,6 +130,8 @@ function Router() {
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/retailer-testimonials" component={RetailerTestimonials} />
       <Route path="/retailer-analytics" component={RetailerAnalytics} />
+      <Route path="/mall/analytics" component={MallAnalytics} />
+      <Route path="/feature-10-demo" component={Feature10Demo} />
       <Route path="/retailer-insights" component={RetailerInsights} />
       <Route path="/test-flow" component={TestFlow} />
       <Route path="/about" component={About} />

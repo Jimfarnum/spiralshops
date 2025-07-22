@@ -1,449 +1,358 @@
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Users, 
-  ShoppingCart, 
-  DollarSign, 
-  Star, 
-  Eye, 
-  Heart, 
-  Share2,
-  Calendar,
-  Download,
-  Target,
-  Award,
-  MapPin,
-  Clock
-} from 'lucide-react';
-import Header from '@/components/header';
-import Footer from '@/components/footer';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BarChart, LineChart, PieChart, Bar, Line, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { TrendingUp, TrendingDown, DollarSign, ShoppingCart, Users, Package, Download, RefreshCw, AlertTriangle, Info } from "lucide-react";
+
+interface RetailerAnalyticsData {
+  totalSales: number;
+  totalOrders: number;
+  avgOrderValue: number;
+  repeatCustomers: number;
+  topProducts: Array<{ name: string; sales: number; units: number }>;
+  salesByDay: Array<{ date: string; sales: number }>;
+  categoryBreakdown: Array<{ category: string; percentage: number; amount: number }>;
+  recentOrders: Array<any>;
+  alerts: Array<{ type: string; message: string; priority: string; timestamp: string }>;
+}
 
 export default function RetailerAnalytics() {
-  const [timeRange, setTimeRange] = useState('30d');
-  const [selectedStore] = useState('artisan-corner');
+  const [timeframe, setTimeframe] = useState("30d");
+  const [retailerId] = useState(1); // Mock retailer ID
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Mock analytics data
-  const summaryStats = {
-    totalRevenue: 28459,
-    revenueChange: 12.5,
-    totalOrders: 247,
-    ordersChange: 8.3,
-    avgOrderValue: 115.2,
-    avgOrderChange: 3.7,
-    newCustomers: 89,
-    customersChange: 15.2,
-    spiralsAwarded: 2847,
-    spiralsChange: 18.4,
-    conversionRate: 3.2,
-    conversionChange: -0.8,
-    repeatCustomerRate: 67.5,
-    repeatChange: 5.1,
-    socialShares: 156,
-    sharesChange: 23.6
+  const { data: analyticsData, isLoading, refetch } = useQuery<RetailerAnalyticsData>({
+    queryKey: [`/api/retailer/${retailerId}/analytics`, timeframe],
+    queryFn: async () => {
+      const response = await fetch(`/api/retailer/${retailerId}/analytics?timeframe=${timeframe}`);
+      if (!response.ok) throw new Error("Failed to fetch analytics");
+      return response.json();
+    },
+    refetchInterval: 30000, // Auto-refresh every 30 seconds
+  });
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setTimeout(() => setIsRefreshing(false), 1000);
   };
 
-  const revenueData = [
-    { month: 'Jan', revenue: 18500, orders: 145, customers: 92 },
-    { month: 'Feb', revenue: 22100, orders: 178, customers: 108 },
-    { month: 'Mar', revenue: 25300, orders: 201, customers: 125 },
-    { month: 'Apr', revenue: 28459, orders: 247, customers: 156 },
-    { month: 'May', revenue: 31200, orders: 289, customers: 178 },
-    { month: 'Jun', revenue: 29800, orders: 265, customers: 162 }
-  ];
+  const handleExport = async () => {
+    try {
+      const response = await fetch(`/api/retailer/${retailerId}/analytics/export?timeframe=${timeframe}`);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `retailer-analytics-${timeframe}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Export failed:", error);
+    }
+  };
 
-  const categoryData = [
-    { name: 'Handmade Jewelry', value: 45, revenue: 12867 },
-    { name: 'Art Supplies', value: 25, revenue: 7115 },
-    { name: 'Custom Crafts', value: 20, revenue: 5692 },
-    { name: 'Workshops', value: 10, revenue: 2785 }
-  ];
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
 
-  const spiralData = [
-    { week: 'Week 1', earned: 680, redeemed: 245 },
-    { week: 'Week 2', earned: 720, redeemed: 298 },
-    { week: 'Week 3', earned: 845, redeemed: 356 },
-    { week: 'Week 4', earned: 602, redeemed: 189 }
-  ];
+  const COLORS = ['#006d77', '#ff9f1c', '#e9c46a', '#f4a261', '#e76f51'];
 
-  const customerEngagement = [
-    { metric: 'Profile Views', value: 1245, change: 8.2 },
-    { metric: 'Product Clicks', value: 3567, change: 12.4 },
-    { metric: 'Store Followers', value: 289, change: 15.7 },
-    { metric: 'Review Rating', value: 4.8, change: 0.2 }
-  ];
-
-  const topProducts = [
-    { name: 'Custom Engagement Ring', sales: 45, revenue: 6750, spirals: 675 },
-    { name: 'Artisan Necklace Set', sales: 38, revenue: 4560, spirals: 456 },
-    { name: 'Handmade Earrings', sales: 52, revenue: 3120, spirals: 312 },
-    { name: 'Jewelry Workshop', sales: 15, revenue: 2250, spirals: 450 },
-    { name: 'Custom Bracelet', sales: 29, revenue: 2175, spirals: 217 }
-  ];
-
-  const colors = ['#E27D60', '#2C3E50', '#A8BFAA', '#F4B860'];
-
-  const StatCard = ({ title, value, change, icon: Icon, format = 'number' }: any) => {
-    const isPositive = change >= 0;
-    const formattedValue = format === 'currency' ? `$${value.toLocaleString()}` : 
-                          format === 'percentage' ? `${value}%` : 
-                          value.toLocaleString();
-
+  if (isLoading) {
     return (
-      <Card className="section-box">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{title}</p>
-              <p className="text-2xl font-bold text-[var(--spiral-navy)]">{formattedValue}</p>
-            </div>
-            <div className="text-right">
-              <Icon className="h-8 w-8 text-[var(--spiral-coral)] mb-2" />
-              <div className={`flex items-center text-sm ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
-                {isPositive ? <TrendingUp className="h-4 w-4 mr-1" /> : <TrendingDown className="h-4 w-4 mr-1" />}
-                {Math.abs(change)}%
-              </div>
+      <div className="min-h-screen bg-[#fefefe] p-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-32 bg-gray-200 rounded"></div>
+              ))}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-[var(--spiral-cream)]">
-      <Header />
-      
-      <main className="section-modern">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-[var(--spiral-navy)] mb-2">
-                Analytics Dashboard
-              </h1>
-              <p className="text-gray-600">Artisan Corner - Downtown District</p>
-            </div>
-            <div className="flex items-center gap-4 mt-4 md:mt-0">
-              <Select value={timeRange} onValueChange={setTimeRange}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="7d">Last 7 days</SelectItem>
-                  <SelectItem value="30d">Last 30 days</SelectItem>
-                  <SelectItem value="90d">Last 90 days</SelectItem>
-                  <SelectItem value="1y">Last year</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="flex gap-2">
-                <Button variant="outline" className="flex items-center gap-2">
-                  <Download className="h-4 w-4" />
-                  Export
-                </Button>
-                <Button variant="default" className="bg-[var(--spiral-coral)] hover:bg-[var(--spiral-navy)]">
-                  <a href="/retailer-insights" className="flex items-center gap-2 text-white">
-                    AI Insights
-                  </a>
-                </Button>
-              </div>
-            </div>
+    <div className="min-h-screen bg-[#fefefe] p-4">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-[#006d77]">Retailer Analytics Dashboard</h1>
+            <p className="text-gray-600">Track your store performance and insights</p>
           </div>
-
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatCard 
-              title="Total Revenue" 
-              value={summaryStats.totalRevenue} 
-              change={summaryStats.revenueChange} 
-              icon={DollarSign}
-              format="currency"
-            />
-            <StatCard 
-              title="Total Orders" 
-              value={summaryStats.totalOrders} 
-              change={summaryStats.ordersChange} 
-              icon={ShoppingCart}
-            />
-            <StatCard 
-              title="New Customers" 
-              value={summaryStats.newCustomers} 
-              change={summaryStats.customersChange} 
-              icon={Users}
-            />
-            <StatCard 
-              title="SPIRALs Awarded" 
-              value={summaryStats.spiralsAwarded} 
-              change={summaryStats.spiralsChange} 
-              icon={Award}
-            />
+          
+          <div className="flex flex-wrap gap-2">
+            <Select value={timeframe} onValueChange={setTimeframe}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="today">Today</SelectItem>
+                <SelectItem value="7d">7 Days</SelectItem>
+                <SelectItem value="30d">30 Days</SelectItem>
+                <SelectItem value="custom">Custom</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Button 
+              onClick={handleRefresh} 
+              disabled={isRefreshing}
+              variant="outline"
+              size="sm"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            
+            <Button onClick={handleExport} variant="outline" size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Export CSV
+            </Button>
           </div>
+        </div>
 
-          {/* Secondary Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatCard 
-              title="Avg Order Value" 
-              value={summaryStats.avgOrderValue} 
-              change={summaryStats.avgOrderChange} 
-              icon={Target}
-              format="currency"
-            />
-            <StatCard 
-              title="Conversion Rate" 
-              value={summaryStats.conversionRate} 
-              change={summaryStats.conversionChange} 
-              icon={TrendingUp}
-              format="percentage"
-            />
-            <StatCard 
-              title="Repeat Customers" 
-              value={summaryStats.repeatCustomerRate} 
-              change={summaryStats.repeatChange} 
-              icon={Heart}
-              format="percentage"
-            />
-            <StatCard 
-              title="Social Shares" 
-              value={summaryStats.socialShares} 
-              change={summaryStats.sharesChange} 
-              icon={Share2}
-            />
-          </div>
-
-          <Tabs defaultValue="revenue" className="space-y-8">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="revenue">Revenue & Orders</TabsTrigger>
-              <TabsTrigger value="customers">Customer Analytics</TabsTrigger>
-              <TabsTrigger value="products">Product Performance</TabsTrigger>
-              <TabsTrigger value="spirals">SPIRAL Activity</TabsTrigger>
-            </TabsList>
-
-            {/* Revenue & Orders Tab */}
-            <TabsContent value="revenue" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="section-box">
-                  <CardHeader>
-                    <CardTitle>Revenue Trend</CardTitle>
-                    <CardDescription>Monthly revenue performance over time</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <AreaChart data={revenueData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip formatter={(value, name) => [`$${value.toLocaleString()}`, 'Revenue']} />
-                        <Area type="monotone" dataKey="revenue" stroke="#E27D60" fill="#E27D60" fillOpacity={0.3} />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-
-                <Card className="section-box">
-                  <CardHeader>
-                    <CardTitle>Order Volume</CardTitle>
-                    <CardDescription>Number of orders processed monthly</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={revenueData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="orders" fill="#2C3E50" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <Card className="section-box">
-                <CardHeader>
-                  <CardTitle>Category Performance</CardTitle>
-                  <CardDescription>Revenue breakdown by product category</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <ResponsiveContainer width="100%" height={300}>
-                      <PieChart>
-                        <Pie
-                          data={categoryData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={120}
-                          paddingAngle={5}
-                          dataKey="value"
-                        >
-                          {categoryData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip formatter={(value) => [`${value}%`, 'Share']} />
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <div className="space-y-4">
-                      {categoryData.map((category, index) => (
-                        <div key={category.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div 
-                              className="w-4 h-4 rounded-full" 
-                              style={{ backgroundColor: colors[index % colors.length] }}
-                            />
-                            <span className="font-medium text-gray-700">{category.name}</span>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-semibold text-[var(--spiral-navy)]">${category.revenue.toLocaleString()}</div>
-                            <div className="text-sm text-gray-500">{category.value}%</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+        {/* Alerts */}
+        {analyticsData?.alerts && analyticsData.alerts.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {analyticsData.alerts.map((alert, index) => (
+              <div
+                key={index}
+                className={`p-4 rounded-lg border-l-4 ${
+                  alert.priority === 'high' ? 'border-red-500 bg-red-50' :
+                  alert.priority === 'medium' ? 'border-yellow-500 bg-yellow-50' :
+                  'border-blue-500 bg-blue-50'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  {alert.type === 'warning' ? (
+                    <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5" />
+                  ) : (
+                    <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+                  )}
+                  <div>
+                    <p className="font-medium text-gray-900">{alert.message}</p>
+                    <p className="text-sm text-gray-500">
+                      {new Date(alert.timestamp).toLocaleString()}
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Customer Analytics Tab */}
-            <TabsContent value="customers" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="section-box">
-                  <CardHeader>
-                    <CardTitle>Customer Growth</CardTitle>
-                    <CardDescription>New vs returning customers over time</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={revenueData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="customers" stroke="#E27D60" strokeWidth={3} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-
-                <Card className="section-box">
-                  <CardHeader>
-                    <CardTitle>Customer Engagement</CardTitle>
-                    <CardDescription>Key engagement metrics and trends</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {customerEngagement.map((metric, index) => (
-                        <div key={metric.metric} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <span className="font-medium text-gray-700">{metric.metric}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-[var(--spiral-navy)]">{metric.value}</span>
-                            <Badge variant={metric.change >= 0 ? "default" : "destructive"} className="text-xs">
-                              {metric.change >= 0 ? '+' : ''}{metric.change}%
-                            </Badge>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                </div>
               </div>
-            </TabsContent>
+            ))}
+          </div>
+        )}
 
-            {/* Product Performance Tab */}
-            <TabsContent value="products" className="space-y-6">
-              <Card className="section-box">
-                <CardHeader>
-                  <CardTitle>Top Performing Products</CardTitle>
-                  <CardDescription>Best sellers by revenue and units sold</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {topProducts.map((product, index) => (
-                      <div key={product.name} className="flex items-center justify-between p-4 bg-white border rounded-lg hover:shadow-md transition-shadow">
-                        <div className="flex items-center gap-4">
-                          <div className="w-8 h-8 bg-[var(--spiral-coral)] text-white rounded-full flex items-center justify-center font-bold">
-                            {index + 1}
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-[var(--spiral-navy)]">{product.name}</h4>
-                            <p className="text-sm text-gray-500">{product.sales} units sold</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-bold text-[var(--spiral-navy)]">${product.revenue.toLocaleString()}</div>
-                          <div className="text-sm text-[var(--spiral-coral)]">{product.spirals} SPIRALs awarded</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
+              <DollarSign className="h-4 w-4 text-[#006d77]" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{formatCurrency(analyticsData?.totalSales || 0)}</div>
+              <p className="text-xs text-gray-600 flex items-center mt-1">
+                <TrendingUp className="h-3 w-3 mr-1 text-green-600" />
+                +12.5% from last period
+              </p>
+            </CardContent>
+          </Card>
 
-            {/* SPIRAL Activity Tab */}
-            <TabsContent value="spirals" className="space-y-6">
-              <Card className="section-box">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+              <ShoppingCart className="h-4 w-4 text-[#006d77]" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{analyticsData?.totalOrders || 0}</div>
+              <p className="text-xs text-gray-600 flex items-center mt-1">
+                <TrendingUp className="h-3 w-3 mr-1 text-green-600" />
+                +8.2% from last period
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Avg Order Value</CardTitle>
+              <Package className="h-4 w-4 text-[#006d77]" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{formatCurrency(analyticsData?.avgOrderValue || 0)}</div>
+              <p className="text-xs text-gray-600 flex items-center mt-1">
+                <TrendingUp className="h-3 w-3 mr-1 text-green-600" />
+                +3.8% from last period
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Repeat Customers</CardTitle>
+              <Users className="h-4 w-4 text-[#006d77]" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{analyticsData?.repeatCustomers || 0}</div>
+              <p className="text-xs text-gray-600 flex items-center mt-1">
+                <TrendingDown className="h-3 w-3 mr-1 text-red-600" />
+                -2.1% from last period
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Charts and Data */}
+        <Tabs defaultValue="overview" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="products">Products</TabsTrigger>
+            <TabsTrigger value="trends">Trends</TabsTrigger>
+            <TabsTrigger value="orders">Recent Orders</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Sales Trend */}
+              <Card>
                 <CardHeader>
-                  <CardTitle>SPIRAL Points Activity</CardTitle>
-                  <CardDescription>SPIRALs earned vs redeemed by customers</CardDescription>
+                  <CardTitle>Sales Trend</CardTitle>
+                  <CardDescription>Daily sales over the selected period</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={spiralData}>
+                    <LineChart data={analyticsData?.salesByDay || []}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="week" />
+                      <XAxis dataKey="date" />
                       <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="earned" fill="#E27D60" name="SPIRALs Earned" />
-                      <Bar dataKey="redeemed" fill="#A8BFAA" name="SPIRALs Redeemed" />
-                    </BarChart>
+                      <Tooltip formatter={(value) => [formatCurrency(value as number), 'Sales']} />
+                      <Line type="monotone" dataKey="sales" stroke="#006d77" strokeWidth={2} />
+                    </LineChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="section-box bg-gradient-to-br from-[var(--spiral-coral)]/10 to-[var(--spiral-gold)]/10">
-                  <CardContent className="p-6 text-center">
-                    <Award className="h-12 w-12 text-[var(--spiral-coral)] mx-auto mb-4" />
-                    <h3 className="font-bold text-xl text-[var(--spiral-navy)] mb-2">2,847</h3>
-                    <p className="text-gray-600">Total SPIRALs Awarded</p>
-                    <p className="text-sm text-[var(--spiral-coral)] mt-2">+18.4% this month</p>
-                  </CardContent>
-                </Card>
+              {/* Category Breakdown */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sales by Category</CardTitle>
+                  <CardDescription>Revenue distribution across categories</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={analyticsData?.categoryBreakdown || []}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ category, percentage }) => `${category} ${percentage}%`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="amount"
+                      >
+                        {(analyticsData?.categoryBreakdown || []).map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(value) => [formatCurrency(value as number), 'Revenue']} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
 
-                <Card className="section-box bg-gradient-to-br from-[var(--spiral-sage)]/10 to-[var(--spiral-navy)]/10">
-                  <CardContent className="p-6 text-center">
-                    <Star className="h-12 w-12 text-[var(--spiral-sage)] mx-auto mb-4" />
-                    <h3 className="font-bold text-xl text-[var(--spiral-navy)] mb-2">1,088</h3>
-                    <p className="text-gray-600">SPIRALs Redeemed</p>
-                    <p className="text-sm text-[var(--spiral-sage)] mt-2">38% redemption rate</p>
-                  </CardContent>
-                </Card>
+          <TabsContent value="products" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Top Performing Products</CardTitle>
+                <CardDescription>Best-selling products in your store</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {analyticsData?.topProducts?.map((product, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <h4 className="font-medium">{product.name}</h4>
+                        <p className="text-sm text-gray-600">{product.units} units sold</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold">{formatCurrency(product.sales)}</p>
+                        <Badge variant="secondary">#{index + 1}</Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                <Card className="section-box bg-gradient-to-br from-[var(--spiral-gold)]/10 to-[var(--spiral-coral)]/10">
-                  <CardContent className="p-6 text-center">
-                    <Heart className="h-12 w-12 text-[var(--spiral-gold)] mx-auto mb-4" />
-                    <h3 className="font-bold text-xl text-[var(--spiral-navy)] mb-2">4.8</h3>
-                    <p className="text-gray-600">Customer Satisfaction</p>
-                    <p className="text-sm text-[var(--spiral-gold)] mt-2">Based on 247 reviews</p>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </main>
-      
-      <Footer />
+          <TabsContent value="trends" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Performance Trends</CardTitle>
+                <CardDescription>Track your business growth over time</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart data={analyticsData?.salesByDay || []}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip formatter={(value) => [formatCurrency(value as number), 'Sales']} />
+                    <Bar dataKey="sales" fill="#006d77" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="orders" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Orders</CardTitle>
+                <CardDescription>Latest order activity in your store</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {analyticsData?.recentOrders?.length > 0 ? (
+                    analyticsData.recentOrders.map((order, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium">Order #{order.orderId}</p>
+                          <p className="text-sm text-gray-600">
+                            {order.customerName || 'Anonymous'} • {order.itemCount} items
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold">{formatCurrency(order.amount)}</p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(order.timestamp).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-center py-8">No recent orders</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }

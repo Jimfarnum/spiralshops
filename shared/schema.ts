@@ -1,4 +1,4 @@
-import { pgTable, text, varchar, serial, integer, boolean, decimal, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, boolean, decimal, timestamp, uuid, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -565,6 +565,63 @@ export type GiftCard = typeof giftCards.$inferSelect;
 export type InsertGiftCard = typeof giftCards.$inferInsert;
 export type GiftCardRedemption = typeof giftCardRedemptions.$inferSelect;
 export type InsertGiftCardRedemption = typeof giftCardRedemptions.$inferInsert;
+
+// Analytics tables for Feature 10
+export const retailerAnalyticsSnapshots = pgTable("retailer_analytics_snapshots", {
+  id: serial("id").primaryKey(),
+  retailerId: integer("retailer_id").references(() => stores.id).notNull(),
+  sales: decimal("sales", { precision: 12, scale: 2 }).notNull(),
+  orders: integer("orders").notNull(),
+  avgOrderValue: decimal("avg_order_value", { precision: 10, scale: 2 }).notNull(),
+  repeatCustomers: integer("repeat_customers").notNull(),
+  timeframe: varchar("timeframe", { length: 50 }).notNull(), // "today", "7d", "30d", "custom"
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const mallAnalytics = pgTable("mall_analytics", {
+  id: serial("id").primaryKey(),
+  mallId: integer("mall_id").references(() => malls.id).notNull(),
+  totalRevenue: decimal("total_revenue", { precision: 12, scale: 2 }).notNull(),
+  storeMetrics: text("store_metrics").notNull(), // JSON string of store performance data
+  loyaltySummary: text("loyalty_summary").notNull(), // JSON string of loyalty program metrics
+  footTraffic: text("foot_traffic").notNull(), // JSON string of traffic patterns by hour/day
+  timestamp: timestamp("timestamp").defaultNow(),
+});
+
+export const liveOrdersActivity = pgTable("live_orders_activity", {
+  id: serial("id").primaryKey(),
+  orderId: varchar("order_id").notNull(),
+  retailerId: integer("retailer_id").references(() => stores.id).notNull(),
+  mallId: integer("mall_id").references(() => malls.id),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  itemCount: integer("item_count").notNull(),
+  customerName: varchar("customer_name"),
+  timestamp: timestamp("timestamp").defaultNow(),
+});
+
+// Analytics insert schemas
+export const insertRetailerAnalyticsSnapshotSchema = createInsertSchema(retailerAnalyticsSnapshots).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertMallAnalyticsSchema = createInsertSchema(mallAnalytics).omit({
+  id: true,
+  timestamp: true,
+});
+
+export const insertLiveOrdersActivitySchema = createInsertSchema(liveOrdersActivity).omit({
+  id: true,
+  timestamp: true,
+});
+
+// Analytics types
+export type RetailerAnalyticsSnapshot = typeof retailerAnalyticsSnapshots.$inferSelect;
+export type InsertRetailerAnalyticsSnapshot = z.infer<typeof insertRetailerAnalyticsSnapshotSchema>;
+export type MallAnalytics = typeof mallAnalytics.$inferSelect;
+export type InsertMallAnalytics = z.infer<typeof insertMallAnalyticsSchema>;
+export type LiveOrdersActivity = typeof liveOrdersActivity.$inferSelect;
+export type InsertLiveOrdersActivity = z.infer<typeof insertLiveOrdersActivitySchema>;
 
 // Cart items table for multi-retailer cart
 export const cartItems = pgTable("cart_items", {
