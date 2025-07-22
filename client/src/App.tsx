@@ -42,6 +42,8 @@ import MallTemplate from "@/pages/mall-template";
 import MallStorePage from "@/pages/mall-store";
 import ProductDetailNew from "@/pages/product-detail";
 import GiftCards from "@/pages/gift-cards";
+import AccountGiftCards from "@/pages/account-gift-cards";
+import AdminGiftCards from "@/pages/admin-gift-cards";
 import Events from "@/pages/events";
 import MultiCart from "@/pages/multi-cart";
 import SplitFulfillment from "@/pages/split-fulfillment";
@@ -141,6 +143,8 @@ function Router() {
       <Route path="/mall/:mallId/store/:storeId" component={MallStorePage} />
       <Route path="/product-new/:productId" component={ProductDetailNew} />
       <Route path="/gift-cards" component={GiftCards} />
+      <Route path="/account/gift-cards" component={AccountGiftCards} />
+      <Route path="/admin/gift-cards" component={AdminGiftCards} />
       <Route path="/events" component={Events} />
       <Route path="/multi-cart" component={MultiCart} />
       <Route path="/split-fulfillment" component={SplitFulfillment} />

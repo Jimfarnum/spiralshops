@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, decimal, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, boolean, decimal, timestamp, uuid } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -289,23 +289,7 @@ export const malls = pgTable("malls", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Gift cards table
-export const giftCards = pgTable("gift_cards", {
-  id: serial("id").primaryKey(),
-  code: text("code").unique().notNull(),
-  purchasedByUserId: integer("purchased_by_user_id").references(() => users.id),
-  recipientEmail: text("recipient_email"),
-  recipientName: text("recipient_name"),
-  originalAmount: decimal("original_amount", { precision: 10, scale: 2 }).notNull(),
-  currentBalance: decimal("current_balance", { precision: 10, scale: 2 }).notNull(),
-  mallId: integer("mall_id").references(() => malls.id), // null means all malls
-  storeId: integer("store_id").references(() => stores.id), // null means all stores in mall
-  personalMessage: text("personal_message"),
-  isActive: boolean("is_active").default(true),
-  expiresAt: timestamp("expires_at"),
-  purchasedAt: timestamp("purchased_at").defaultNow(),
-  redeemedAt: timestamp("redeemed_at"),
-});
+// Gift cards table removed - using Feature 9 implementation later in file
 
 // Feature 7: Retailer Self-Onboarding System
 
@@ -517,6 +501,71 @@ export type UserNotificationPreferences = typeof userNotificationPreferences.$in
 export type InsertNotificationHistory = typeof notificationHistory.$inferInsert;
 export type NotificationHistory = typeof notificationHistory.$inferSelect;
 
+// Gift Cards System (Feature 9)
+export const giftCards = pgTable("gift_cards", {
+  id: serial("id").primaryKey(),
+  code: varchar("code", { length: 20 }).notNull().unique(), // Format: SPRL-XXXX-XXXX
+  senderName: varchar("sender_name", { length: 100 }).notNull(),
+  senderEmail: varchar("sender_email", { length: 255 }),
+  recipientEmail: varchar("recipient_email", { length: 255 }).notNull(),
+  recipientUserId: integer("recipient_user_id").references(() => users.id),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  balance: decimal("balance", { precision: 10, scale: 2 }).notNull(),
+  message: text("message"),
+  status: text("status").default("active").notNull(), // 'active', 'redeemed', 'expired', 'cancelled'
+  expirationDate: timestamp("expiration_date"),
+  deliveryDate: timestamp("delivery_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+  redeemedAt: timestamp("redeemed_at"),
+});
+
+export const giftCardRedemptions = pgTable("gift_card_redemptions", {
+  id: serial("id").primaryKey(),
+  giftCardId: integer("gift_card_id").notNull().references(() => giftCards.id),
+  userId: integer("user_id").references(() => users.id),
+  orderId: text("order_id"),
+  amountUsed: decimal("amount_used", { precision: 10, scale: 2 }).notNull(),
+  redeemedAt: timestamp("redeemed_at").defaultNow(),
+});
+
+// Gift card relations
+export const giftCardsRelations = relations(giftCards, ({ one, many }) => ({
+  recipientUser: one(users, {
+    fields: [giftCards.recipientUserId],
+    references: [users.id],
+  }),
+  redemptions: many(giftCardRedemptions),
+}));
+
+export const giftCardRedemptionsRelations = relations(giftCardRedemptions, ({ one }) => ({
+  giftCard: one(giftCards, {
+    fields: [giftCardRedemptions.giftCardId],
+    references: [giftCards.id],
+  }),
+  user: one(users, {
+    fields: [giftCardRedemptions.userId],
+    references: [users.id],
+  }),
+}));
+
+// Insert schemas for gift cards
+export const insertGiftCardSchema = createInsertSchema(giftCards).omit({
+  id: true,
+  createdAt: true,
+  redeemedAt: true,
+});
+
+export const insertGiftCardRedemptionSchema = createInsertSchema(giftCardRedemptions).omit({
+  id: true,
+  redeemedAt: true,
+});
+
+// Gift card types
+export type GiftCard = typeof giftCards.$inferSelect;
+export type InsertGiftCard = typeof giftCards.$inferInsert;
+export type GiftCardRedemption = typeof giftCardRedemptions.$inferSelect;
+export type InsertGiftCardRedemption = typeof giftCardRedemptions.$inferInsert;
+
 // Cart items table for multi-retailer cart
 export const cartItems = pgTable("cart_items", {
   id: serial("id").primaryKey(),
@@ -530,29 +579,6 @@ export const cartItems = pgTable("cart_items", {
   fulfillmentMethod: text("fulfillment_method").notNull(), // 'ship-to-me', 'in-store-pickup', 'ship-to-mall'
   addedAt: timestamp("added_at").defaultNow(),
 });
-
-// Relations for new tables
-export const mallsRelations = relations(malls, ({ many }) => ({
-  giftCards: many(giftCards),
-  cartItems: many(cartItems),
-}));
-
-export const giftCardsRelations = relations(giftCards, ({ one }) => ({
-  purchasedBy: one(users, {
-    fields: [giftCards.purchasedByUserId],
-    references: [users.id],
-  }),
-  mall: one(malls, {
-    fields: [giftCards.mallId],
-    references: [malls.id],
-  }),
-  store: one(stores, {
-    fields: [giftCards.storeId],
-    references: [stores.id],
-  }),
-}));
-
-// Old relations removed - using new Feature 6 implementation below
 
 export const cartItemsRelations = relations(cartItems, ({ one }) => ({
   user: one(users, {
@@ -569,20 +595,7 @@ export const cartItemsRelations = relations(cartItems, ({ one }) => ({
   }),
 }));
 
-// Insert schemas for new tables
-export const insertMallSchema = createInsertSchema(malls).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertGiftCardSchema = createInsertSchema(giftCards).omit({
-  id: true,
-  purchasedAt: true,
-  redeemedAt: true,
-});
-
-// Old insert schemas removed - using new Feature 6 implementation below
-
+// Insert schemas for cart items
 export const insertCartItemSchema = createInsertSchema(cartItems).omit({
   id: true,
   addedAt: true,

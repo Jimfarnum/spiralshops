@@ -9,6 +9,7 @@ import { registerTestimonialsRoutes } from "./testimonialsRoutes";
 import { registerEventsRoutes } from "./eventsRoutes";
 import { registerRetailerRoutes } from "./retailerRoutes";
 import { registerWishlistAlertRoutes } from "./wishlistAlertRoutes";
+import { registerGiftCardRoutes } from "./giftCardRoutes";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema, insertGiftCardSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -378,37 +379,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Gift card routes
-  app.post("/api/gift-cards/purchase", async (req, res) => {
-    try {
-      const validatedData = insertGiftCardSchema.parse(req.body);
-      const giftCard = await giftCardsStorage.createGiftCard(validatedData);
-      res.status(201).json(giftCard);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid gift card data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to purchase gift card" });
     }
   });
 
-  app.get("/api/gift-cards/my-cards", async (req, res) => {
-    try {
-      // Mock user ID for demo - would come from auth
-      const userId = 1;
-      const giftCards = await giftCardsStorage.getUserGiftCards(userId);
-      res.json(giftCards);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch gift cards" });
     }
   });
 
-  app.post("/api/gift-cards/redeem/:code", async (req, res) => {
-    try {
-      const { code } = req.params;
-      const giftCard = await giftCardsStorage.getGiftCardByCode(code);
-      
-      if (!giftCard) {
-        return res.status(404).json({ message: "Gift card not found" });
       }
 
       if (!giftCard.isActive || parseFloat(giftCard.currentBalance) <= 0) {
@@ -481,6 +459,170 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register wishlist alert routes
   registerWishlistAlertRoutes(app);
+
+  // Register gift card routes
+  registerGiftCardRoutes(app);
+
+  const httpServer = createServer(app);
+  return httpServer;
+}
+      
+      if (!giftCard || giftCard.status !== "active" || new Date() > new Date(giftCard.expirationDate)) {
+        return res.status(404).json({ 
+          message: "Gift card not found or expired",
+          valid: false 
+        });
+      }
+      
+      if (giftCard.balance <= 0) {
+        return res.status(400).json({ 
+          message: "Gift card has been fully redeemed",
+          valid: false,
+          balance: 0
+        });
+      }
+      
+      res.json({
+        valid: true,
+        giftCard: {
+          id: giftCard.id,
+          code: giftCard.code,
+          balance: giftCard.balance,
+          amount: giftCard.amount,
+          expirationDate: giftCard.expirationDate,
+          senderName: giftCard.senderName,
+        }
+      });
+    } catch (error) {
+      console.error("Error validating gift card:", error);
+      res.status(500).json({ message: "Failed to validate gift card" });
+    }
+  });
+  
+      }
+      
+      const giftCard = await giftCardsStorage.getGiftCardByCode(code.toUpperCase());
+      
+      if (!giftCard || giftCard.status !== "active" || new Date() > new Date(giftCard.expirationDate)) {
+        return res.status(404).json({ message: "Gift card not found or expired" });
+      }
+      
+      if (giftCard.balance < amount) {
+        return res.status(400).json({ 
+          message: "Insufficient gift card balance",
+          availableBalance: giftCard.balance
+        });
+      }
+      
+      const newBalance = giftCard.balance - amount;
+      const newStatus = newBalance === 0 ? "redeemed" : "active";
+      
+      await giftCardsStorage.updateGiftCard(giftCard.id, {
+        balance: newBalance,
+        status: newStatus,
+        redeemedAt: newBalance === 0 ? new Date() : undefined
+      });
+      
+      // Create redemption record
+      await giftCardsStorage.createRedemption({
+        giftCardId: giftCard.id,
+        userId: null, // Will be set when user authentication is implemented
+        orderId: orderId || null,
+        amountUsed: amount,
+      });
+      
+      res.json({
+        success: true,
+        redemption: {
+          amountUsed: amount,
+          remainingBalance: newBalance,
+          fullyRedeemed: newBalance === 0,
+        }
+      });
+    } catch (error) {
+      console.error("Error redeeming gift card:", error);
+      res.status(500).json({ message: "Failed to redeem gift card" });
+    }
+  });
+  
+      }
+      
+      const receivedCards = await giftCardsStorage.getGiftCardsByRecipientUserId(parseInt(userId));
+      
+      res.json({
+        received: receivedCards.map(card => ({
+          id: card.id,
+          code: card.code,
+          senderName: card.senderName,
+          amount: card.amount,
+          balance: card.balance,
+          message: card.message,
+          status: card.status,
+          expirationDate: card.expirationDate,
+          createdAt: card.createdAt,
+          redeemedAt: card.redeemedAt,
+        }))
+      });
+    } catch (error) {
+      console.error("Error fetching user gift cards:", error);
+      res.status(500).json({ message: "Failed to fetch gift cards" });
+    }
+  });
+  
+  // Admin gift card routes
+    } catch (error) {
+      console.error("Error fetching all gift cards:", error);
+      res.status(500).json({ message: "Failed to fetch gift cards" });
+    }
+  });
+  
+      }
+      
+      // Generate unique code
+      const code = `SPRL-${Math.random().toString(36).substr(2, 4).toUpperCase()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+      
+      const expirationDate = new Date();
+      expirationDate.setMonth(expirationDate.getMonth() + expirationMonths);
+      
+      const giftCard = await giftCardsStorage.createGiftCard({
+        code,
+        senderName,
+        senderEmail: senderEmail || null,
+        recipientEmail,
+        amount,
+        balance: amount,
+        message: message || null,
+        status: "active",
+        deliveryDate: new Date(),
+        expirationDate,
+      });
+      
+      res.json({
+        success: true,
+        giftCard: {
+          id: giftCard.id,
+          code: giftCard.code,
+          amount: giftCard.amount,
+          recipientEmail: giftCard.recipientEmail,
+          expirationDate: giftCard.expirationDate,
+        }
+      });
+    } catch (error) {
+      console.error("Error creating gift card:", error);
+      res.status(500).json({ message: "Failed to create gift card" });
+    }
+  });
+  
+      }
+      
+      await giftCardsStorage.updateGiftCard(parseInt(id), { status });
+      
+      res.json({ success: true, message: `Gift card status updated to ${status}` });
+    } catch (error) {
+      console.error("Error updating gift card status:", error);
+      res.status(500).json({ message: "Failed to update gift card status" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

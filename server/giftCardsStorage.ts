@@ -1,80 +1,139 @@
-import { giftCards, type GiftCard, type InsertGiftCard } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { giftCards, giftCardRedemptions, users } from "../shared/schema";
+import { eq, and, gte } from "drizzle-orm";
+import type { GiftCard, InsertGiftCard, GiftCardRedemption, InsertGiftCardRedemption } from "../shared/schema";
 
-export interface IGiftCardsStorage {
-  createGiftCard(giftCard: InsertGiftCard): Promise<GiftCard>;
-  getGiftCardByCode(code: string): Promise<GiftCard | undefined>;
-  getUserGiftCards(userId: number): Promise<GiftCard[]>;
-  redeemGiftCard(code: string, amount: number): Promise<GiftCard>;
-  updateGiftCardBalance(code: string, newBalance: number): Promise<GiftCard>;
+interface GiftCardsStorage {
+  createGiftCard(data: Omit<InsertGiftCard, 'id' | 'createdAt'>): Promise<GiftCard>;
+  getGiftCardById(id: number): Promise<GiftCard | null>;
+  getGiftCardByCode(code: string): Promise<GiftCard | null>;
+  getAllGiftCards(): Promise<GiftCard[]>;
+  getGiftCardsByRecipientUserId(userId: number): Promise<GiftCard[]>;
+  updateGiftCard(id: number, updates: Partial<GiftCard>): Promise<void>;
+  createRedemption(data: Omit<InsertGiftCardRedemption, 'id' | 'redeemedAt'>): Promise<GiftCardRedemption>;
 }
 
-export class DatabaseGiftCardsStorage implements IGiftCardsStorage {
-  async createGiftCard(giftCard: InsertGiftCard): Promise<GiftCard> {
-    const [newGiftCard] = await db
-      .insert(giftCards)
-      .values({
+class DatabaseGiftCardsStorage implements GiftCardsStorage {
+  async createGiftCard(data: Omit<InsertGiftCard, 'id' | 'createdAt'>): Promise<GiftCard> {
+    try {
+      const [giftCard] = await db.insert(giftCards).values({
+        ...data,
+        amount: data.amount.toString(),
+        balance: data.balance.toString(),
+      }).returning();
+      
+      return {
         ...giftCard,
-        code: this.generateGiftCardCode(),
-      })
-      .returning();
-    return newGiftCard;
-  }
-
-  async getGiftCardByCode(code: string): Promise<GiftCard | undefined> {
-    const [giftCard] = await db
-      .select()
-      .from(giftCards)
-      .where(eq(giftCards.code, code));
-    return giftCard;
-  }
-
-  async getUserGiftCards(userId: number): Promise<GiftCard[]> {
-    return await db
-      .select()
-      .from(giftCards)
-      .where(eq(giftCards.purchasedByUserId, userId));
-  }
-
-  async redeemGiftCard(code: string, amount: number): Promise<GiftCard> {
-    const giftCard = await this.getGiftCardByCode(code);
-    if (!giftCard) {
-      throw new Error("Gift card not found");
+        amount: parseFloat(giftCard.amount),
+        balance: parseFloat(giftCard.balance),
+      };
+    } catch (error) {
+      console.error("Error creating gift card:", error);
+      throw new Error("Failed to create gift card");
     }
-    
-    const newBalance = (parseFloat(giftCard.currentBalance) - amount).toFixed(2);
-    
-    const [updatedGiftCard] = await db
-      .update(giftCards)
-      .set({
-        currentBalance: newBalance,
-        redeemedAt: new Date(),
-      })
-      .where(eq(giftCards.code, code))
-      .returning();
-    return updatedGiftCard;
   }
 
-  async updateGiftCardBalance(code: string, newBalance: number): Promise<GiftCard> {
-    const [updatedGiftCard] = await db
-      .update(giftCards)
-      .set({
-        currentBalance: newBalance.toFixed(2),
-      })
-      .where(eq(giftCards.code, code))
-      .returning();
-    return updatedGiftCard;
-  }
-
-  private generateGiftCardCode(): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = 'SPIRAL-';
-    for (let i = 0; i < 8; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-      if (i === 3) result += '-';
+  async getGiftCardById(id: number): Promise<GiftCard | null> {
+    try {
+      const [giftCard] = await db.select().from(giftCards).where(eq(giftCards.id, id));
+      
+      if (!giftCard) return null;
+      
+      return {
+        ...giftCard,
+        amount: parseFloat(giftCard.amount),
+        balance: parseFloat(giftCard.balance),
+      };
+    } catch (error) {
+      console.error("Error fetching gift card by ID:", error);
+      throw new Error("Failed to fetch gift card");
     }
-    return result;
+  }
+
+  async getGiftCardByCode(code: string): Promise<GiftCard | null> {
+    try {
+      const [giftCard] = await db.select().from(giftCards).where(eq(giftCards.code, code.toUpperCase()));
+      
+      if (!giftCard) return null;
+      
+      return {
+        ...giftCard,
+        amount: parseFloat(giftCard.amount),
+        balance: parseFloat(giftCard.balance),
+      };
+    } catch (error) {
+      console.error("Error fetching gift card by code:", error);
+      throw new Error("Failed to fetch gift card");
+    }
+  }
+
+  async getAllGiftCards(): Promise<GiftCard[]> {
+    try {
+      const cards = await db.select().from(giftCards).orderBy(giftCards.createdAt);
+      
+      return cards.map(card => ({
+        ...card,
+        amount: parseFloat(card.amount),
+        balance: parseFloat(card.balance),
+      }));
+    } catch (error) {
+      console.error("Error fetching all gift cards:", error);
+      throw new Error("Failed to fetch gift cards");
+    }
+  }
+
+  async getGiftCardsByRecipientUserId(userId: number): Promise<GiftCard[]> {
+    try {
+      const cards = await db.select()
+        .from(giftCards)
+        .where(eq(giftCards.recipientUserId, userId))
+        .orderBy(giftCards.createdAt);
+      
+      return cards.map(card => ({
+        ...card,
+        amount: parseFloat(card.amount),
+        balance: parseFloat(card.balance),
+      }));
+    } catch (error) {
+      console.error("Error fetching gift cards by recipient:", error);
+      throw new Error("Failed to fetch gift cards");
+    }
+  }
+
+  async updateGiftCard(id: number, updates: Partial<GiftCard>): Promise<void> {
+    try {
+      const updateData: any = { ...updates };
+      
+      // Convert numbers to strings for decimal fields
+      if (updateData.amount !== undefined) {
+        updateData.amount = updateData.amount.toString();
+      }
+      if (updateData.balance !== undefined) {
+        updateData.balance = updateData.balance.toString();
+      }
+      
+      await db.update(giftCards).set(updateData).where(eq(giftCards.id, id));
+    } catch (error) {
+      console.error("Error updating gift card:", error);
+      throw new Error("Failed to update gift card");
+    }
+  }
+
+  async createRedemption(data: Omit<InsertGiftCardRedemption, 'id' | 'redeemedAt'>): Promise<GiftCardRedemption> {
+    try {
+      const [redemption] = await db.insert(giftCardRedemptions).values({
+        ...data,
+        amountUsed: data.amountUsed.toString(),
+      }).returning();
+      
+      return {
+        ...redemption,
+        amountUsed: parseFloat(redemption.amountUsed),
+      };
+    } catch (error) {
+      console.error("Error creating redemption:", error);
+      throw new Error("Failed to create redemption");
+    }
   }
 }
 
