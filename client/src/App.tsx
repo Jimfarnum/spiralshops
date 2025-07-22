@@ -60,6 +60,8 @@ import LanguageDemo from "@/pages/language-demo";
 import AccessibilitySettings from "@/pages/accessibility-settings";
 import AccessibilityDemo from "@/pages/accessibility-demo";
 import AccessibilityInitialization from "@/components/accessibility-initialization";
+import PerformanceOptimization from "@/pages/performance-optimization";
+import FeatureShowcase from "@/pages/feature-showcase";
 
 function Router() {
   return (
@@ -129,6 +131,8 @@ function Router() {
       <Route path="/language-demo" component={LanguageDemo} />
       <Route path="/accessibility-settings" component={AccessibilitySettings} />
       <Route path="/accessibility-demo" component={AccessibilityDemo} />
+      <Route path="/performance-optimization" component={PerformanceOptimization} />
+      <Route path="/feature-showcase" component={FeatureShowcase} />
       <Route component={NotFound} />
     </Switch>
   );
