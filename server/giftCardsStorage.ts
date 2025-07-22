@@ -125,8 +125,19 @@ class DatabaseGiftCardsStorage implements GiftCardsStorage {
 
   async createRedemption(data: Omit<InsertGiftCardRedemption, 'id' | 'redeemedAt'>): Promise<GiftCardRedemption> {
     try {
+      // If userId is provided, check if user exists, otherwise set to null
+      let validUserId = data.userId;
+      if (data.userId) {
+        const [user] = await db.select().from(users).where(eq(users.id, data.userId));
+        if (!user) {
+          console.warn(`User ${data.userId} not found, setting userId to null for redemption`);
+          validUserId = null;
+        }
+      }
+
       const [redemption] = await db.insert(giftCardRedemptions).values({
         ...data,
+        userId: validUserId,
         amountUsed: data.amountUsed.toString(),
       }).returning();
       

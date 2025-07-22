@@ -82,8 +82,8 @@ export function registerGiftCardRoutes(app: Express) {
     try {
       const { code, amount, orderId, userId } = req.body;
       
-      if (!code) {
-        return res.status(400).json({ message: "Gift card code is required" });
+      if (!code || !amount) {
+        return res.status(400).json({ message: "Gift card code and amount are required" });
       }
 
       const giftCard = await giftCardsStorage.getGiftCardByCode(code);
@@ -96,26 +96,39 @@ export function registerGiftCardRoutes(app: Express) {
         return res.status(400).json({ message: "Gift card is not active" });
       }
 
-      if (parseFloat(giftCard.balance) < amount) {
-        return res.status(400).json({ message: "Insufficient gift card balance" });
+      // Convert balance to number for comparison
+      const currentBalance = typeof giftCard.balance === 'string' ? parseFloat(giftCard.balance) : giftCard.balance;
+      const redemptionAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+      if (currentBalance < redemptionAmount) {
+        return res.status(400).json({ 
+          message: "Insufficient gift card balance",
+          availableBalance: currentBalance,
+          requestedAmount: redemptionAmount
+        });
       }
 
       const redemption = await giftCardsStorage.redeemGiftCard(
         giftCard.id, 
-        userId, 
-        amount, 
+        userId || null, 
+        redemptionAmount, 
         orderId
       );
       
+      const newBalance = currentBalance - redemptionAmount;
+      
       res.json({ 
         message: "Gift card redeemed successfully", 
-        amountUsed: amount,
-        remainingBalance: parseFloat(giftCard.balance) - amount,
+        amountUsed: redemptionAmount,
+        remainingBalance: newBalance,
         redemption 
       });
     } catch (error) {
       console.error("Gift card redemption error:", error);
-      res.status(500).json({ message: "Failed to redeem gift card" });
+      res.status(500).json({ 
+        message: "Failed to redeem gift card",
+        error: error.message 
+      });
     }
   });
 
