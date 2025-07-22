@@ -78,6 +78,9 @@ import RetailerLoyaltyPage from "@/pages/loyalty-retailers";
 import MallPerksPage from "@/pages/loyalty-mall-perks";
 import AdminReviewsPage from "@/pages/admin-reviews";
 import ReviewsDemoPage from "@/pages/reviews-demo";
+import AdminTestimonialsPage from "@/pages/admin-testimonials";
+import ShowcasePage from "@/pages/showcase";
+import TestimonialsDemoPage from "@/pages/testimonials-demo";
 
 function Router() {
   return (
@@ -165,6 +168,9 @@ function Router() {
       <Route path="/loyalty/mall-perks" component={MallPerksPage} />
       <Route path="/admin/reviews" component={AdminReviewsPage} />
       <Route path="/reviews-demo" component={ReviewsDemoPage} />
+      <Route path="/admin/testimonials" component={AdminTestimonialsPage} />
+      <Route path="/showcase" component={ShowcasePage} />
+      <Route path="/testimonials-demo" component={TestimonialsDemoPage} />
       <Route component={NotFound} />
     </Switch>
   );

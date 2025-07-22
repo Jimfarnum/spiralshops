@@ -660,6 +660,47 @@ export type UserProductPurchase = typeof userProductPurchases.$inferSelect;
 export type InsertUserProductPurchase = typeof userProductPurchases.$inferInsert;
 export type ReviewHelpfulness = typeof reviewHelpfulness.$inferSelect;
 export type InsertReviewHelpfulness = typeof reviewHelpfulness.$inferInsert;
+
+// Retailer testimonials table
+export const retailerTestimonials = pgTable("retailer_testimonials", {
+  id: serial("id").primaryKey(),
+  storeId: text("store_id").notNull(),
+  title: text("title").notNull(),
+  story: text("story").notNull(),
+  imageUrl: text("image_url"),
+  videoUrl: text("video_url"),
+  isApproved: boolean("is_approved").default(false).notNull(),
+  isFeatured: boolean("is_featured").default(false).notNull(),
+  likesCount: integer("likes_count").default(0).notNull(),
+  sharesCount: integer("shares_count").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Testimonial likes table
+export const testimonialLikes = pgTable("testimonial_likes", {
+  id: serial("id").primaryKey(),
+  testimonialId: integer("testimonial_id").notNull().references(() => retailerTestimonials.id),
+  userId: text("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Testimonial comments table
+export const testimonialComments = pgTable("testimonial_comments", {
+  id: serial("id").primaryKey(),
+  testimonialId: integer("testimonial_id").notNull().references(() => retailerTestimonials.id),
+  userId: text("user_id").notNull().references(() => users.id),
+  comment: text("comment").notNull(),
+  isApproved: boolean("is_approved").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type RetailerTestimonial = typeof retailerTestimonials.$inferSelect;
+export type InsertRetailerTestimonial = typeof retailerTestimonials.$inferInsert;
+export type TestimonialLike = typeof testimonialLikes.$inferSelect;
+export type InsertTestimonialLike = typeof testimonialLikes.$inferInsert;
+export type TestimonialComment = typeof testimonialComments.$inferSelect;
+export type InsertTestimonialComment = typeof testimonialComments.$inferInsert;
 export type Mall = typeof malls.$inferSelect;
 export type InsertMall = z.infer<typeof insertMallSchema>;
 export type GiftCard = typeof giftCards.$inferSelect;
