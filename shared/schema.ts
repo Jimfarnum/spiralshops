@@ -508,6 +508,28 @@ export type UserLoyalty = typeof userLoyalty.$inferSelect;
 export type InsertUserLoyalty = typeof userLoyalty.$inferInsert;
 export type LoyaltyTransaction = typeof loyaltyTransactions.$inferSelect;
 export type InsertLoyaltyTransaction = typeof loyaltyTransactions.$inferInsert;
+
+// Order tracking table for shipping tracker
+export const orderTracking = pgTable("order_tracking", {
+  id: serial("id").primaryKey(),
+  orderId: integer("order_id").notNull().references(() => orders.id),
+  orderNumber: text("order_number").notNull(),
+  carrier: text("carrier").notNull(), // 'FedEx', 'UPS', 'USPS', 'DHL'
+  trackingNumber: text("tracking_number").notNull(),
+  status: text("status").default("label_created").notNull(), // 'label_created', 'in_transit', 'out_for_delivery', 'delivered', 'exception'
+  lastUpdate: timestamp("last_update").defaultNow(),
+  eta: timestamp("eta"),
+  lastLocation: text("last_location"),
+  deliveryAddress: text("delivery_address"),
+  estimatedDeliveryDate: text("estimated_delivery_date"),
+  actualDeliveryDate: timestamp("actual_delivery_date"),
+  trackingEvents: text("tracking_events"), // JSON string of tracking events
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type OrderTracking = typeof orderTracking.$inferSelect;
+export type InsertOrderTracking = typeof orderTracking.$inferInsert;
 export type Mall = typeof malls.$inferSelect;
 export type InsertMall = z.infer<typeof insertMallSchema>;
 export type GiftCard = typeof giftCards.$inferSelect;

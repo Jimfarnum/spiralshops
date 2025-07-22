@@ -317,6 +317,23 @@ Preferred communication style: Simple, everyday language.
   - Platform approved for confident deployment, user onboarding, and promotional rollout
   - Full feature parity with major e-commerce platforms while maintaining unique local-focused differentiation
 
+✓ **SPIRAL Loyalty Dashboard Implementation (Feature 1 - January 2025)**:
+  - Complete loyalty dashboard (/loyalty) with tier system (Bronze/Silver/Gold/Platinum) and SPIRAL balance tracking
+  - Transaction history table with filtering (All/Earned/Redeemed) and mobile-responsive accordion design
+  - Referral system with unique codes, social sharing (Facebook/X/Email), and automatic SPIRAL earning (10 points per referral)
+  - Backend API routes with loyalty calculations, tier progression, and mock transaction data for demonstration
+  - Database schema expansion with userLoyalty and loyaltyTransactions tables for comprehensive tracking
+  - Header navigation integration with loyalty dashboard access for authenticated users
+
+✓ **Real-Time Shipping Tracker Implementation (Feature 2 - January 2025)**:
+  - Comprehensive shipping tracker with /orders overview and /order/:id detailed tracking pages
+  - Real-time status tracking with visual progress bars, carrier logos (UPS/FedEx/USPS/DHL), and external tracking links
+  - Mock EasyPost/Shippo API integration with realistic tracking events and delivery estimates
+  - Order tracking database schema with orderTracking table supporting multiple carriers and status updates
+  - Mobile-optimized responsive design with condensed progress indicators and touch-friendly interactions
+  - Backend webhook system for automated tracking updates and bulk refresh capabilities
+  - Complete order management system with shipping address display, order summaries, and customer support integration
+
 ## System Architecture
 
 ### Frontend Architecture

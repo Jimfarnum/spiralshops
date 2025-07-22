@@ -72,6 +72,8 @@ import PerformanceOptimizationDemo from "@/pages/performance-optimization-demo";
 import Phase11Demo from "@/pages/phase-11-demo";
 import SystemAudit from "@/pages/system-audit";
 import LoyaltyDashboard from "@/pages/loyalty";
+import OrdersPage from "@/pages/orders";
+import OrderDetailPage from "@/pages/order-detail";
 
 function Router() {
   return (
@@ -153,6 +155,8 @@ function Router() {
       <Route path="/phase-11-demo" component={Phase11Demo} />
       <Route path="/system-audit" component={SystemAudit} />
       <Route path="/loyalty" component={LoyaltyDashboard} />
+      <Route path="/orders" component={OrdersPage} />
+      <Route path="/order/:id" component={OrderDetailPage} />
       <Route component={NotFound} />
     </Switch>
   );
