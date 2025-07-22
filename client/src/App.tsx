@@ -57,6 +57,9 @@ import RetailerOnboarding from "@/components/retailer-onboarding";
 import WishlistNotifications from "@/components/wishlist-notifications";
 import InventoryAlertsDemo from "@/pages/inventory-alerts-demo";
 import LanguageDemo from "@/pages/language-demo";
+import AccessibilitySettings from "@/pages/accessibility-settings";
+import AccessibilityDemo from "@/pages/accessibility-demo";
+import AccessibilityInitialization from "@/components/accessibility-initialization";
 
 function Router() {
   return (
@@ -124,6 +127,8 @@ function Router() {
       <Route path="/wishlist-notifications" component={WishlistNotifications} />
       <Route path="/inventory-alerts-demo" component={InventoryAlertsDemo} />
       <Route path="/language-demo" component={LanguageDemo} />
+      <Route path="/accessibility-settings" component={AccessibilitySettings} />
+      <Route path="/accessibility-demo" component={AccessibilityDemo} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -133,6 +138,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <AccessibilityInitialization />
         <MallContextSync />
         <CartRestoreNotification />
         <ShareReminder />

@@ -6,6 +6,7 @@ import { useAuthStore } from "@/lib/authStore";
 import SpiralBalance from "./spiral-balance";
 import MobileNav from "./mobile-nav";
 import LanguageSelector from "./language-selector";
+import AccessibilityToggle from "./accessibility-toggle";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Header() {
@@ -66,6 +67,11 @@ export default function Header() {
             {/* Language Selector - Desktop */}
             <div className="hidden lg:block">
               <LanguageSelector compact={true} showProgress={false} />
+            </div>
+            
+            {/* Accessibility Toggle - Desktop */}
+            <div className="hidden lg:block">
+              <AccessibilityToggle compact={true} showLabel={false} />
             </div>
             
             {/* Mobile Navigation */}
