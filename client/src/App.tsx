@@ -85,6 +85,11 @@ import EventsPage from "@/pages/events";
 import EventDetailPage from "@/pages/event-detail";
 import AdminEventsPage from "@/pages/admin-events";
 import EventsDemoPage from "@/pages/events-demo";
+import RetailersSignupPage from "@/pages/retailers-signup";
+import RetailersLoginPage from "@/pages/retailers-login";
+import RetailersDashboardPage from "@/pages/retailers-dashboard";
+import AdminRetailersPage from "@/pages/admin-retailers";
+import RetailerFeatureDemoPage from "@/pages/retailer-feature-demo";
 
 function Router() {
   return (
@@ -179,6 +184,11 @@ function Router() {
       <Route path="/events/:id" component={EventDetailPage} />
       <Route path="/admin/events" component={AdminEventsPage} />
       <Route path="/events-demo" component={EventsDemoPage} />
+      <Route path="/retailers/signup" component={RetailersSignupPage} />
+      <Route path="/retailers/login" component={RetailersLoginPage} />
+      <Route path="/retailers/dashboard" component={RetailersDashboardPage} />
+      <Route path="/admin/retailers" component={AdminRetailersPage} />
+      <Route path="/retailer-feature-demo" component={RetailerFeatureDemoPage} />
       <Route component={NotFound} />
     </Switch>
   );

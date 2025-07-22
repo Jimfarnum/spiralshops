@@ -307,7 +307,152 @@ export const giftCards = pgTable("gift_cards", {
   redeemedAt: timestamp("redeemed_at"),
 });
 
-// Old mall events definitions removed - using new Feature 6 implementation below
+// Feature 7: Retailer Self-Onboarding System
+
+// Enhanced retailers table for self-onboarding
+export const retailerAccounts = pgTable("retailer_accounts", {
+  id: serial("id").primaryKey(),
+  email: text("email").unique().notNull(),
+  passwordHash: text("password_hash").notNull(),
+  businessName: text("business_name").notNull(),
+  contactName: text("contact_name").notNull(),
+  phone: text("phone"),
+  website: text("website"),
+  logoUrl: text("logo_url"),
+  address: text("address").notNull(),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  zipCode: text("zip_code").notNull(),
+  bio: text("bio"),
+  socialLinks: text("social_links").array(),
+  taxId: text("tax_id"),
+  preferredMallId: integer("preferred_mall_id").references(() => malls.id),
+  isApproved: boolean("is_approved").default(false).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  lastLoginAt: timestamp("last_login_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Retailer onboarding status tracking
+export const onboardingStatus = pgTable("onboarding_status", {
+  id: serial("id").primaryKey(),
+  retailerId: integer("retailer_id").notNull().references(() => retailerAccounts.id),
+  step: text("step").notNull(), // 'signup', 'profile', 'inventory', 'approved'
+  status: text("status").default("pending").notNull(), // 'pending', 'in_progress', 'completed', 'rejected'
+  notes: text("notes"),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Retailer products for inventory management
+export const retailerProducts = pgTable("retailer_products", {
+  id: serial("id").primaryKey(),
+  retailerId: integer("retailer_id").notNull().references(() => retailerAccounts.id),
+  title: text("title").notNull(),
+  description: text("description"),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  category: text("category").notNull(),
+  subcategory: text("subcategory"),
+  brand: text("brand"),
+  sku: text("sku"),
+  stock: integer("stock").default(0).notNull(),
+  imageUrl: text("image_url"),
+  imageUrls: text("image_urls").array(),
+  weight: decimal("weight", { precision: 8, scale: 2 }),
+  dimensions: text("dimensions"),
+  tags: text("tags").array(),
+  isActive: boolean("is_active").default(true).notNull(),
+  isFeatured: boolean("is_featured").default(false).notNull(),
+  salePrice: decimal("sale_price", { precision: 10, scale: 2 }),
+  saleStartDate: timestamp("sale_start_date"),
+  saleEndDate: timestamp("sale_end_date"),
+  spiralBonus: integer("spiral_bonus").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Product upload batches for CSV imports
+export const productUploadBatches = pgTable("product_upload_batches", {
+  id: serial("id").primaryKey(),
+  retailerId: integer("retailer_id").notNull().references(() => retailerAccounts.id),
+  filename: text("filename").notNull(),
+  totalRows: integer("total_rows").notNull(),
+  successRows: integer("success_rows").default(0).notNull(),
+  errorRows: integer("error_rows").default(0).notNull(),
+  status: text("status").default("processing").notNull(), // 'processing', 'completed', 'failed'
+  errors: text("errors").array(),
+  createdAt: timestamp("created_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+// Relations
+export const retailerAccountsRelations = relations(retailerAccounts, ({ one, many }) => ({
+  preferredMall: one(malls, {
+    fields: [retailerAccounts.preferredMallId],
+    references: [malls.id],
+  }),
+  onboardingStatuses: many(onboardingStatus),
+  products: many(retailerProducts),
+  uploadBatches: many(productUploadBatches),
+}));
+
+export const onboardingStatusRelations = relations(onboardingStatus, ({ one }) => ({
+  retailer: one(retailerAccounts, {
+    fields: [onboardingStatus.retailerId],
+    references: [retailerAccounts.id],
+  }),
+}));
+
+export const retailerProductsRelations = relations(retailerProducts, ({ one }) => ({
+  retailer: one(retailerAccounts, {
+    fields: [retailerProducts.retailerId],
+    references: [retailerAccounts.id],
+  }),
+}));
+
+export const productUploadBatchesRelations = relations(productUploadBatches, ({ one }) => ({
+  retailer: one(retailerAccounts, {
+    fields: [productUploadBatches.retailerId],
+    references: [retailerAccounts.id],
+  }),
+}));
+
+// Insert schemas
+export const insertRetailerAccountSchema = createInsertSchema(retailerAccounts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  lastLoginAt: true,
+});
+
+export const insertOnboardingStatusSchema = createInsertSchema(onboardingStatus).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
+export const insertRetailerProductSchema = createInsertSchema(retailerProducts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertProductUploadBatchSchema = createInsertSchema(productUploadBatches).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
+// Types
+export type RetailerAccount = typeof retailerAccounts.$inferSelect;
+export type InsertRetailerAccount = typeof retailerAccounts.$inferInsert;
+export type OnboardingStatus = typeof onboardingStatus.$inferSelect;
+export type InsertOnboardingStatus = typeof onboardingStatus.$inferInsert;
+export type RetailerProduct = typeof retailerProducts.$inferSelect;
+export type InsertRetailerProduct = typeof retailerProducts.$inferInsert;
+export type ProductUploadBatch = typeof productUploadBatches.$inferSelect;
+export type InsertProductUploadBatch = typeof productUploadBatches.$inferInsert;
 
 // Cart items table for multi-retailer cart
 export const cartItems = pgTable("cart_items", {

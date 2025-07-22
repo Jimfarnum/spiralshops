@@ -1,0 +1,62 @@
+✅ SPIRAL Feature 6: Mall Event System – COMPLETE & TESTED
+- Event creation, RSVP, reward logic, and event discovery all functional
+- Full mobile support and admin moderation verified
+- Database and API fully integrated
+
+---
+
+🚀 **NEXT FEATURE REQUEST – Feature 7: Retailer Self-Onboarding + Inventory Upload System**
+
+🎯 GOAL:
+Allow retailers to independently join SPIRAL, create a store profile, and upload/manage their product inventory via a self-serve interface.
+
+📦 FEATURE COMPONENTS:
+
+1. **Retailer Signup Portal (/retailers/signup)**
+   - Form for business name, location, contact info, website, logo, email/password
+   - Optional fields: tax ID, social links, preferred SPIRAL mall
+   - Email confirmation or admin approval trigger
+   - Database: `retailers` table + onboarding status field
+
+2. **Retailer Dashboard (/retailers/dashboard)**
+   - Section 1: Store Profile Management (name, logo, about, hours, location)
+   - Section 2: Product Inventory Manager
+     - Manual product entry (title, image, description, price, category, stock)
+     - CSV upload/import with validation and preview
+     - Real-time updates to SPIRAL search and filtering
+   - Section 3: Order Notifications & Analytics (placeholder for now)
+
+3. **Admin Review Panel (/admin/retailers)**
+   - Approve/edit/suspend retailers
+   - View onboarding progress, latest uploads, store activity
+   - Export reports and flag issues
+
+🧱 DATABASE:
+- `retailers`: id, name, email, password, logo_url, address, bio, approved, created_at
+- `products`: id, retailer_id, title, price, category, stock, image_url, description
+- `onboarding_status`: user_id, status (pending/approved/rejected)
+
+🔒 SECURITY:
+- Auth guards to prevent access to other retailers' data
+- Upload filtering for safe files
+- API rate-limiting for mass uploads
+
+📱 MOBILE UX:
+- Retailer dashboard responsive
+- Product upload preview mobile-compatible
+- Future mobile app sync ready (API-compliant)
+
+---
+
+🧪 **TEST INSTRUCTIONS**:
+1. Visit `/retailers/signup` and register a test store
+2. Log into `/retailers/dashboard` and fill out profile
+3. Manually add 2-3 products; verify they appear in store page and global search
+4. Test CSV upload with mock product list (check for validation errors/success)
+5. Log in as admin and verify ability to approve/suspend new retailer
+6. Check retailer product visibility in shopper interface
+7. Verify data flows to analytics layer and product APIs
+
+---
+
+After this is completed and tested, we'll move on to Feature 8: **Wishlist Alerts + Back-in-Stock Notification System**.
