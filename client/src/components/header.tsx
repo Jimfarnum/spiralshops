@@ -31,7 +31,7 @@ export default function Header() {
           {/* Logo Section */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0">
             <img 
-              src="/assets/spiral-blue.svg" 
+              src="/spiral-blue.svg" 
               alt="SPIRAL Logo" 
               className="w-10 h-10 object-contain"
             />

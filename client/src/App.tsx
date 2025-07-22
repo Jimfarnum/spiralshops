@@ -62,6 +62,9 @@ import AccessibilityDemo from "@/pages/accessibility-demo";
 import AccessibilityInitialization from "@/components/accessibility-initialization";
 import PerformanceOptimization from "@/pages/performance-optimization";
 import FeatureShowcase from "@/pages/feature-showcase";
+import GuestCheckout from "@/pages/guest-checkout";
+import SavedAddresses from "@/components/saved-addresses";
+import SavedAddressesPage from "@/pages/saved-addresses";
 
 function Router() {
   return (
@@ -133,6 +136,8 @@ function Router() {
       <Route path="/accessibility-demo" component={AccessibilityDemo} />
       <Route path="/performance-optimization" component={PerformanceOptimization} />
       <Route path="/feature-showcase" component={FeatureShowcase} />
+      <Route path="/guest-checkout" component={GuestCheckout} />
+      <Route path="/saved-addresses" component={SavedAddressesPage} />
       <Route component={NotFound} />
     </Switch>
   );

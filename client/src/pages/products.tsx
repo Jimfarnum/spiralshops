@@ -122,18 +122,24 @@ export function ProductsPage() {
               return false;
             }
             break;
+          case 'zip':
+            // ZIP code filtering - show products from that specific ZIP or nearby ZIPs
+            if (!product.zipCode) return false;
+            const userZip = parseInt(currentLocation.value);
+            const productZip = parseInt(product.zipCode);
+            const zipDistance = Math.abs(userZip - productZip);
+            // Allow products within reasonable ZIP code range (about 100 ZIP codes = ~50 miles)
+            if (zipDistance > 200) return false;
+            break;
           case 'city':
-            if (!product.city || product.city !== currentLocation.value) {
+            // City filtering
+            if (!product.city || product.city.toLowerCase() !== currentLocation.value.toLowerCase()) {
               return false;
             }
             break;
           case 'state':
-            if (!product.state || product.state !== currentLocation.value) {
-              return false;
-            }
-            break;
-          case 'zip':
-            if (!product.zipCode || product.zipCode !== currentLocation.value) {
+            // State filtering
+            if (!product.state || product.state.toLowerCase() !== currentLocation.value.toLowerCase()) {
               return false;
             }
             break;

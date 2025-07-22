@@ -192,6 +192,17 @@ const Cart = () => {
                     </Button>
                   </Link>
                   
+                  <Link href="/guest-checkout" className="block">
+                    <Button 
+                      variant="outline"
+                      size="lg" 
+                      className="w-full border-[var(--spiral-navy)] text-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)] hover:text-white h-12 rounded-xl transition-all duration-300"
+                    >
+                      <CreditCard className="h-5 w-5 mr-2" />
+                      Guest Checkout
+                    </Button>
+                  </Link>
+                  
                   <Link href="/split-fulfillment" className="block">
                     <Button 
                       variant="outline" 

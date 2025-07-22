@@ -10,6 +10,7 @@ import { useCartStore } from "@/lib/cartStore";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
 import ProductReviews from "@/components/product-reviews";
+import ProductBundles from "@/components/product-bundles";
 
 interface Product {
   id: string;
@@ -394,6 +395,15 @@ export function ProductDetailPage() {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Product Bundles Section */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-[var(--spiral-navy)] mb-6">Bundle Deals & Suggestions</h2>
+          <ProductBundles 
+            currentProductId={product.id}
+            currentProductCategory={product.category}
+          />
         </div>
 
         {/* Reviews Section */}
