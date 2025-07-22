@@ -307,33 +307,7 @@ export const giftCards = pgTable("gift_cards", {
   redeemedAt: timestamp("redeemed_at"),
 });
 
-// Mall events table
-export const mallEvents = pgTable("mall_events", {
-  id: serial("id").primaryKey(),
-  mallId: integer("mall_id").notNull().references(() => malls.id),
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  eventDate: timestamp("event_date").notNull(),
-  eventTime: text("event_time").notNull(),
-  location: text("location").notNull(),
-  category: text("category").notNull(), // 'Fashion', 'Family', 'Food', 'Entertainment', 'Shopping'
-  spiralBonus: integer("spiral_bonus").default(0),
-  maxAttendees: integer("max_attendees"),
-  currentAttendees: integer("current_attendees").default(0),
-  requiresRSVP: boolean("requires_rsvp").default(false),
-  imageUrl: text("image_url"),
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Event RSVPs table
-export const eventRSVPs = pgTable("event_rsvps", {
-  id: serial("id").primaryKey(),
-  eventId: integer("event_id").notNull().references(() => mallEvents.id),
-  userId: integer("user_id").notNull().references(() => users.id),
-  rsvpStatus: text("rsvp_status").default('attending'), // 'attending', 'maybe', 'not_attending'
-  createdAt: timestamp("created_at").defaultNow(),
-});
+// Old mall events definitions removed - using new Feature 6 implementation below
 
 // Cart items table for multi-retailer cart
 export const cartItems = pgTable("cart_items", {
@@ -351,7 +325,6 @@ export const cartItems = pgTable("cart_items", {
 
 // Relations for new tables
 export const mallsRelations = relations(malls, ({ many }) => ({
-  events: many(mallEvents),
   giftCards: many(giftCards),
   cartItems: many(cartItems),
 }));
@@ -371,24 +344,7 @@ export const giftCardsRelations = relations(giftCards, ({ one }) => ({
   }),
 }));
 
-export const mallEventsRelations = relations(mallEvents, ({ one, many }) => ({
-  mall: one(malls, {
-    fields: [mallEvents.mallId],
-    references: [malls.id],
-  }),
-  rsvps: many(eventRSVPs),
-}));
-
-export const eventRSVPsRelations = relations(eventRSVPs, ({ one }) => ({
-  event: one(mallEvents, {
-    fields: [eventRSVPs.eventId],
-    references: [mallEvents.id],
-  }),
-  user: one(users, {
-    fields: [eventRSVPs.userId],
-    references: [users.id],
-  }),
-}));
+// Old relations removed - using new Feature 6 implementation below
 
 export const cartItemsRelations = relations(cartItems, ({ one }) => ({
   user: one(users, {
@@ -417,15 +373,7 @@ export const insertGiftCardSchema = createInsertSchema(giftCards).omit({
   redeemedAt: true,
 });
 
-export const insertMallEventSchema = createInsertSchema(mallEvents).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertEventRSVPSchema = createInsertSchema(eventRSVPs).omit({
-  id: true,
-  createdAt: true,
-});
+// Old insert schemas removed - using new Feature 6 implementation below
 
 export const insertCartItemSchema = createInsertSchema(cartItems).omit({
   id: true,
@@ -701,14 +649,47 @@ export type TestimonialLike = typeof testimonialLikes.$inferSelect;
 export type InsertTestimonialLike = typeof testimonialLikes.$inferInsert;
 export type TestimonialComment = typeof testimonialComments.$inferSelect;
 export type InsertTestimonialComment = typeof testimonialComments.$inferInsert;
+
+// Mall events table
+export const mallEvents = pgTable("mall_events", {
+  id: serial("id").primaryKey(),
+  mallId: text("mall_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time").notNull(),
+  imageUrl: text("image_url"),
+  eventType: text("event_type").notNull(), // Kids, Fashion, Tech, Food, Music, etc.
+  location: text("location").notNull(), // Food Court, Main Plaza, etc.
+  maxRsvp: integer("max_rsvp").default(100).notNull(),
+  currentRsvp: integer("current_rsvp").default(0).notNull(),
+  rewardPoints: integer("reward_points").default(10).notNull(),
+  isApproved: boolean("is_approved").default(false).notNull(),
+  isPublished: boolean("is_published").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Event RSVPs table
+export const eventRsvps = pgTable("event_rsvps", {
+  id: serial("id").primaryKey(),
+  eventId: integer("event_id").notNull().references(() => mallEvents.id),
+  userId: text("user_id").notNull().references(() => users.id),
+  status: text("status").notNull().default("pending"), // pending, confirmed, cancelled, attended
+  rsvpedAt: timestamp("rsvped_at").defaultNow(),
+  attendedAt: timestamp("attended_at"),
+  rewardClaimed: boolean("reward_claimed").default(false).notNull(),
+});
+
+export type MallEvent = typeof mallEvents.$inferSelect;
+export type InsertMallEvent = typeof mallEvents.$inferInsert;
+export type EventRsvp = typeof eventRsvps.$inferSelect;
+export type InsertEventRsvp = typeof eventRsvps.$inferInsert;
 export type Mall = typeof malls.$inferSelect;
 export type InsertMall = z.infer<typeof insertMallSchema>;
 export type GiftCard = typeof giftCards.$inferSelect;
 export type InsertGiftCard = z.infer<typeof insertGiftCardSchema>;
-export type MallEvent = typeof mallEvents.$inferSelect;
-export type InsertMallEvent = z.infer<typeof insertMallEventSchema>;
-export type EventRSVP = typeof eventRSVPs.$inferSelect;
-export type InsertEventRSVP = z.infer<typeof insertEventRSVPSchema>;
+// Old types removed - using new Feature 6 implementation below
 export type CartItem = typeof cartItems.$inferSelect;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
 export type Review = typeof reviews.$inferSelect;

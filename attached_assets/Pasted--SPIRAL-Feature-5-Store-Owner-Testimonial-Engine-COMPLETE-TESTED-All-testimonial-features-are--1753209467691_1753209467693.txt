@@ -1,0 +1,68 @@
+✅ SPIRAL Feature 5: Store Owner Testimonial Engine – COMPLETE & TESTED
+All testimonial features are live:
+- Store submission → Admin approval → Retailer showcase display
+- Public likes, comments, and sharing
+- Fully mobile-optimized and secure
+
+---
+
+🚀 **NEXT FEATURE REQUEST – Feature 6: Mall Event System with RSVP & SPIRAL Rewards**
+
+🎯 GOAL:
+Enable malls to post events, track RSVPs, and reward shopper participation with SPIRALs. Enhance mall visibility and community activity through discoverable, engaging event pages.
+
+📦 FEATURE COMPONENTS:
+
+1. **Event Creation (Mall Admin Panel)**
+   - Admin UI to create events: title, date/time, description, image, tags, RSVP limit, mall ID
+   - Fields: event_type, location (e.g., Food Court), rewards (e.g., +10 SPIRALs), RSVP max
+   - Approve/publish toggle
+
+2. **Public Event Discovery Page (/events)**
+   - Browseable and filterable events by date, location, type (e.g., Kids, Fashion, Tech)
+   - Search by keyword, mall, or region
+   - Sort by soonest, most popular, SPIRAL reward
+
+3. **Individual Event Pages (/events/[id])**
+   - Full event details
+   - RSVP button (if logged in)
+   - Progress bar for RSVP slots remaining
+   - "Add to Calendar" support (Google/Apple)
+   - Social share buttons (Facebook/X)
+
+4. **RSVP System**
+   - Logged-in users can RSVP
+   - Users can manage (cancel/update) RSVPs
+   - Stores RSVP in PostgreSQL and connects to SPIRAL points system
+   - Prevent RSVP after max limit is reached
+
+5. **SPIRAL Reward Logic**
+   - +SPIRALs earned after attending (via manual or QR scan confirmation)
+   - “Pending” until confirmed attended
+   - Event-specific bonus tracking in loyalty history
+
+🧱 DATABASE:
+- `mall_events`: id, mall_id, title, start_time, end_time, description, image_url, event_type, max_rsvp, reward_points, approved
+- `event_rsvps`: id, event_id, user_id, status (pending/confirmed/cancelled)
+
+🔒 ADMIN:
+- `/admin/events` – CRUD panel for mall managers
+- RSVP list export (CSV)
+
+📱 MOBILE UX:
+- Optimized event cards
+- Tap-to-RSVP and event calendar sync
+
+---
+
+🧪 **TEST INSTRUCTIONS**:
+1. Go to `/admin/events`, create a new event with reward SPIRALs
+2. Approve and publish the event
+3. As a user, visit `/events` and RSVP to the event
+4. Confirm RSVP visible in user dashboard and attendee list
+5. Simulate attendance confirmation → verify SPIRAL reward applied
+6. Check responsive design and mobile sharing
+
+---
+
+Once this feature is complete and tested, we’ll proceed to Feature 7: **Retailer Self-Onboarding + Inventory Upload System**.

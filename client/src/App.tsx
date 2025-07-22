@@ -81,6 +81,10 @@ import ReviewsDemoPage from "@/pages/reviews-demo";
 import AdminTestimonialsPage from "@/pages/admin-testimonials";
 import ShowcasePage from "@/pages/showcase";
 import TestimonialsDemoPage from "@/pages/testimonials-demo";
+import EventsPage from "@/pages/events";
+import EventDetailPage from "@/pages/event-detail";
+import AdminEventsPage from "@/pages/admin-events";
+import EventsDemoPage from "@/pages/events-demo";
 
 function Router() {
   return (
@@ -171,6 +175,10 @@ function Router() {
       <Route path="/admin/testimonials" component={AdminTestimonialsPage} />
       <Route path="/showcase" component={ShowcasePage} />
       <Route path="/testimonials-demo" component={TestimonialsDemoPage} />
+      <Route path="/events" component={EventsPage} />
+      <Route path="/events/:id" component={EventDetailPage} />
+      <Route path="/admin/events" component={AdminEventsPage} />
+      <Route path="/events-demo" component={EventsDemoPage} />
       <Route component={NotFound} />
     </Switch>
   );
