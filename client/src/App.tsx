@@ -65,6 +65,11 @@ import FeatureShowcase from "@/pages/feature-showcase";
 import GuestCheckout from "@/pages/guest-checkout";
 import SavedAddresses from "@/components/saved-addresses";
 import SavedAddressesPage from "@/pages/saved-addresses";
+import NotificationsPage from "@/pages/notifications";
+import ReturnsPage from "@/pages/returns";
+import TrackingPage from "@/pages/tracking";
+import PerformanceOptimizationDemo from "@/pages/performance-optimization-demo";
+import Phase11Demo from "@/pages/phase-11-demo";
 
 function Router() {
   return (
@@ -138,6 +143,12 @@ function Router() {
       <Route path="/feature-showcase" component={FeatureShowcase} />
       <Route path="/guest-checkout" component={GuestCheckout} />
       <Route path="/saved-addresses" component={SavedAddressesPage} />
+      <Route path="/notifications" component={NotificationsPage} />
+      <Route path="/returns" component={ReturnsPage} />
+      <Route path="/tracking" component={TrackingPage} />
+      <Route path="/language-demo" component={LanguageDemo} />
+      <Route path="/performance-optimization-demo" component={PerformanceOptimizationDemo} />
+      <Route path="/phase-11-demo" component={Phase11Demo} />
       <Route component={NotFound} />
     </Switch>
   );
