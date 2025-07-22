@@ -70,6 +70,7 @@ import ReturnsPage from "@/pages/returns";
 import TrackingPage from "@/pages/tracking";
 import PerformanceOptimizationDemo from "@/pages/performance-optimization-demo";
 import Phase11Demo from "@/pages/phase-11-demo";
+import SystemAudit from "@/pages/system-audit";
 
 function Router() {
   return (
@@ -149,6 +150,7 @@ function Router() {
       <Route path="/language-demo" component={LanguageDemo} />
       <Route path="/performance-optimization-demo" component={PerformanceOptimizationDemo} />
       <Route path="/phase-11-demo" component={Phase11Demo} />
+      <Route path="/system-audit" component={SystemAudit} />
       <Route component={NotFound} />
     </Switch>
   );
