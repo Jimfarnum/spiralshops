@@ -454,6 +454,69 @@ export type InsertRetailerProduct = typeof retailerProducts.$inferInsert;
 export type ProductUploadBatch = typeof productUploadBatches.$inferSelect;
 export type InsertProductUploadBatch = typeof productUploadBatches.$inferInsert;
 
+// Wishlist tracking for back-in-stock and price alerts
+export const wishlistTrackers = pgTable("wishlist_trackers", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  productId: integer("product_id").notNull(), // References products or retailer_products
+  originalPrice: decimal("original_price", { precision: 10, scale: 2 }).notNull(),
+  alertType: text("alert_type").notNull(), // 'stock', 'price', 'both'
+  lastAlertedAt: timestamp("last_alerted_at"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User notification preferences
+export const userNotificationPreferences = pgTable("user_notification_preferences", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull().unique(),
+  emailEnabled: boolean("email_enabled").default(true),
+  smsEnabled: boolean("sms_enabled").default(false),
+  browserEnabled: boolean("browser_enabled").default(true),
+  alertFrequency: text("alert_frequency").default("immediate"), // 'immediate', 'daily', 'weekly'
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Notification history for tracking sent alerts
+export const notificationHistory = pgTable("notification_history", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  productId: integer("product_id").notNull(),
+  notificationType: text("notification_type").notNull(), // 'back_in_stock', 'price_drop'
+  deliveryMethod: text("delivery_method").notNull(), // 'email', 'sms', 'browser'
+  status: text("status").default("sent"), // 'sent', 'failed', 'pending'
+  metadata: text("metadata"), // JSON for additional data
+  sentAt: timestamp("sent_at").defaultNow(),
+});
+
+// Insert schemas for wishlist alert system
+export const insertWishlistTrackerSchema = createInsertSchema(wishlistTrackers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertUserNotificationPreferencesSchema = createInsertSchema(userNotificationPreferences).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertNotificationHistorySchema = createInsertSchema(notificationHistory).omit({
+  id: true,
+  sentAt: true,
+});
+
+// Wishlist alert system types
+export type InsertWishlistTracker = typeof wishlistTrackers.$inferInsert;
+export type WishlistTracker = typeof wishlistTrackers.$inferSelect;
+export type InsertUserNotificationPreferences = typeof userNotificationPreferences.$inferInsert;
+export type UserNotificationPreferences = typeof userNotificationPreferences.$inferSelect;
+export type InsertNotificationHistory = typeof notificationHistory.$inferInsert;
+export type NotificationHistory = typeof notificationHistory.$inferSelect;
+
 // Cart items table for multi-retailer cart
 export const cartItems = pgTable("cart_items", {
   id: serial("id").primaryKey(),

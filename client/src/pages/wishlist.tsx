@@ -11,7 +11,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import ProductCard from '@/components/product-card';
 import { useCartStore } from '@/lib/cartStore';
-import { Heart, ShoppingCart, Search, Filter, Trash2, Share, Eye, Star, MapPin, Clock } from 'lucide-react';
+import { Heart, ShoppingCart, Search, Filter, Trash2, Share, Eye, Star, MapPin, Clock, Bell, Settings } from 'lucide-react';
 
 interface WishlistItem {
   id: number;
@@ -244,12 +244,13 @@ export default function WishlistPage() {
               {filteredAndSortedItems.length} saved {filteredAndSortedItems.length === 1 ? 'item' : 'items'}
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" className="hidden sm:flex">
-              <Share className="h-4 w-4 mr-2" />
-              Share Wishlist
+          <Link href="/wishlist/settings">
+            <Button variant="outline" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Alert Settings
             </Button>
-          </div>
+          </Link>
+
         </div>
 
         {/* Search and Filters */}
@@ -426,6 +427,19 @@ export default function WishlistPage() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Alert Status */}
+                  {item.availability === 'out-of-stock' && (
+                    <div className="mb-4 p-3 bg-orange-50 rounded-lg border border-orange-200 flex items-center justify-between">
+                      <div className="flex items-center text-sm text-orange-800">
+                        <Bell className="h-4 w-4 mr-2" />
+                        <span>Get notified when back in stock</span>
+                      </div>
+                      <Badge variant="outline" className="text-orange-700 border-orange-300">
+                        Alert Active
+                      </Badge>
+                    </div>
+                  )}
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">

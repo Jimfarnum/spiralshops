@@ -1,0 +1,63 @@
+✅ SPIRAL Feature 7: Retailer Self-Onboarding + Inventory Upload System – COMPLETE & TESTED
+- Self-service onboarding, inventory management, and admin approval all working as expected
+- Mobile-responsive, secure, and integrated with retailer dashboards
+
+---
+
+🚀 **NEXT FEATURE REQUEST – Feature 8: Wishlist Alerts + Back-in-Stock Notification System**
+
+🎯 GOAL:
+Enhance the Wishlist system by notifying users when saved products return to stock or drop in price.
+
+📦 FEATURE COMPONENTS:
+
+1. **Wishlist Product Monitoring**
+   - Track availability (in-stock / out-of-stock status)
+   - Track price changes vs. price at time of wishlist addition
+   - Database table `wishlist_trackers`: user_id, product_id, original_price, last_seen_stock
+
+2. **Alert Trigger System**
+   - Daily cron job or real-time webhook trigger on inventory update
+   - Compare product stock/price to stored wishlist values
+   - Trigger alerts for: back in stock, price drop, limited stock threshold
+
+3. **User Notification Options**
+   - Notification preferences stored in `user_settings`
+   - Options: Email, SMS (Twilio optional), browser push
+   - Setting toggles on `/wishlist/settings` page
+
+4. **Notification Delivery**
+   - Email templates for back-in-stock and price drop alerts
+   - Sendgrid (or nodemailer dev setup) for email dispatch
+   - Optional SMS integration (stubbed if not live)
+
+5. **Admin Testing Panel (optional)**
+   - `/admin/wishlist-alerts`: view queued alerts, send test alert, review history
+
+🧱 DATABASE SCHEMA:
+- `wishlist_trackers`: id, user_id, product_id, original_price, alert_type, last_alerted_at
+- `user_notification_preferences`: user_id, email_enabled, sms_enabled, browser_enabled
+
+🔐 SECURITY:
+- All alerts filtered to authenticated users with matching wishlist entries
+- Alert frequency capped (e.g. once per product per 24 hrs)
+- No duplicate alerts
+
+📱 MOBILE UX:
+- Wishlist settings responsive and accessible via `/wishlist`
+- Alert status visible per item (e.g. “Notify me when in stock” toggle)
+
+---
+
+🧪 **TEST INSTRUCTIONS**:
+1. Add an out-of-stock product to wishlist
+2. Confirm "Back-in-stock alert enabled" appears
+3. Update product inventory manually as admin → verify alert is triggered
+4. Add product with $50 price to wishlist, lower price to $40 → verify price-drop alert
+5. Visit `/wishlist/settings` and enable/disable alert channels
+6. Confirm emails or simulated SMS are dispatched based on preferences
+7. Optional: Visit `/admin/wishlist-alerts` to test send/manual override
+
+---
+
+Upon successful test and deployment of Feature 8, we’ll move on to Feature 9: **Multi-Retailer Gift Cards System + Redemption Flow**.

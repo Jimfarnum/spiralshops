@@ -90,6 +90,8 @@ import RetailersLoginPage from "@/pages/retailers-login";
 import RetailersDashboardPage from "@/pages/retailers-dashboard";
 import AdminRetailersPage from "@/pages/admin-retailers";
 import RetailerFeatureDemoPage from "@/pages/retailer-feature-demo";
+import WishlistSettingsPage from "@/pages/wishlist-settings";
+import AdminWishlistAlertsPage from "@/pages/admin-wishlist-alerts";
 
 function Router() {
   return (
@@ -189,6 +191,8 @@ function Router() {
       <Route path="/retailers/dashboard" component={RetailersDashboardPage} />
       <Route path="/admin/retailers" component={AdminRetailersPage} />
       <Route path="/retailer-feature-demo" component={RetailerFeatureDemoPage} />
+      <Route path="/wishlist/settings" component={WishlistSettingsPage} />
+      <Route path="/admin/wishlist-alerts" component={AdminWishlistAlertsPage} />
       <Route component={NotFound} />
     </Switch>
   );
