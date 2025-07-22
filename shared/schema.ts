@@ -603,6 +603,63 @@ export type MallPerkCampaign = typeof mallPerkCampaigns.$inferSelect;
 export type InsertMallPerkCampaign = typeof mallPerkCampaigns.$inferInsert;
 export type UserMallPerk = typeof userMallPerks.$inferSelect;
 export type InsertUserMallPerk = typeof userMallPerks.$inferInsert;
+
+// Product reviews table
+export const productReviews = pgTable("product_reviews", {
+  id: serial("id").primaryKey(),
+  productId: text("product_id").notNull(),
+  userId: text("user_id").notNull().references(() => users.id),
+  orderId: integer("order_id").references(() => orders.id),
+  rating: integer("rating").notNull(), // 1-5 stars
+  title: text("title"),
+  comment: text("comment"),
+  photoUrl: text("photo_url"),
+  isVerifiedPurchase: boolean("is_verified_purchase").default(false).notNull(),
+  isApproved: boolean("is_approved").default(true).notNull(),
+  helpfulCount: integer("helpful_count").default(0).notNull(),
+  reportCount: integer("report_count").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Review flags/reports table
+export const reviewFlags = pgTable("review_flags", {
+  id: serial("id").primaryKey(),
+  reviewId: integer("review_id").notNull().references(() => productReviews.id),
+  reportedById: text("reported_by_id").notNull().references(() => users.id),
+  reason: text("reason").notNull(), // 'spam', 'inappropriate', 'fake', 'other'
+  description: text("description"),
+  status: text("status").default("pending").notNull(), // 'pending', 'reviewed', 'dismissed'
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User product purchases tracking for verification
+export const userProductPurchases = pgTable("user_product_purchases", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  productId: text("product_id").notNull(),
+  orderId: integer("order_id").notNull().references(() => orders.id),
+  purchaseDate: timestamp("purchase_date").defaultNow(),
+  verified: boolean("verified").default(true).notNull(),
+});
+
+// Review helpfulness votes
+export const reviewHelpfulness = pgTable("review_helpfulness", {
+  id: serial("id").primaryKey(),
+  reviewId: integer("review_id").notNull().references(() => productReviews.id),
+  userId: text("user_id").notNull().references(() => users.id),
+  isHelpful: boolean("is_helpful").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type ProductReview = typeof productReviews.$inferSelect;
+export type InsertProductReview = typeof productReviews.$inferInsert;
+export type ReviewFlag = typeof reviewFlags.$inferSelect;
+export type InsertReviewFlag = typeof reviewFlags.$inferInsert;
+export type UserProductPurchase = typeof userProductPurchases.$inferSelect;
+export type InsertUserProductPurchase = typeof userProductPurchases.$inferInsert;
+export type ReviewHelpfulness = typeof reviewHelpfulness.$inferSelect;
+export type InsertReviewHelpfulness = typeof reviewHelpfulness.$inferInsert;
 export type Mall = typeof malls.$inferSelect;
 export type InsertMall = z.infer<typeof insertMallSchema>;
 export type GiftCard = typeof giftCards.$inferSelect;
