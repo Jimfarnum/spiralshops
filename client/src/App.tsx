@@ -1,5 +1,5 @@
 import { Switch, Route } from "wouter";
-import { lazy } from "react";
+
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -103,6 +103,10 @@ import AdminRetailersPage from "@/pages/admin-retailers";
 import RetailerFeatureDemoPage from "@/pages/retailer-feature-demo";
 import WishlistSettingsPage from "@/pages/wishlist-settings";
 import AdminWishlistAlertsPage from "@/pages/admin-wishlist-alerts";
+import WalletPage from "@/pages/wallet";
+import WalletMallCredits from "@/pages/wallet-mall-credits";
+import Feature14Demo from "@/pages/feature-14-demo";
+import Feature13Demo from "@/pages/feature-13-demo";
 
 function Router() {
   return (
@@ -143,9 +147,9 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/inventory-dashboard" component={InventoryDashboard} />
-      <Route path="/wallet" component={lazy(() => import("@/pages/wallet"))} />
-      <Route path="/wallet/mall-credits" component={lazy(() => import("@/pages/wallet-mall-credits"))} />
-      <Route path="/feature-14-demo" component={lazy(() => import("@/pages/feature-14-demo"))} />
+      <Route path="/wallet" component={WalletPage} />
+      <Route path="/wallet/mall-credits" component={WalletMallCredits} />
+      <Route path="/feature-14-demo" component={Feature14Demo} />
       <Route path="/feature-testing" component={FeatureTesting} />
       <Route path="/dynamic-testing" component={DynamicFeatureTesting} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
@@ -214,7 +218,7 @@ function Router() {
       <Route path="/admin/returns" component={AdminReturns} />
       <Route path="/feature-11-demo" component={Feature11Demo} />
       <Route path="/feature-12-demo" component={Feature12Demo} />
-      <Route path="/feature-13-demo" component={lazy(() => import("@/pages/feature-13-demo"))} />
+      <Route path="/feature-13-demo" component={Feature13Demo} />
       <Route component={NotFound} />
     </Switch>
   );
