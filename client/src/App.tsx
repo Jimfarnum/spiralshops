@@ -73,6 +73,7 @@ import PerformanceOptimization from "@/pages/performance-optimization";
 import FeatureShowcase from "@/pages/feature-showcase";
 import GuestCheckout from "@/pages/guest-checkout";
 import SavedAddresses from "@/components/saved-addresses";
+import Feature12Demo from "@/pages/feature-12-demo";
 import SavedAddressesPage from "@/pages/saved-addresses";
 import NotificationsPage from "@/pages/notifications";
 import ReturnsPage from "@/pages/returns";
@@ -208,6 +209,7 @@ function Router() {
       <Route path="/orders/returns" component={OrdersReturns} />
       <Route path="/admin/returns" component={AdminReturns} />
       <Route path="/feature-11-demo" component={Feature11Demo} />
+      <Route path="/feature-12-demo" component={Feature12Demo} />
       <Route component={NotFound} />
     </Switch>
   );

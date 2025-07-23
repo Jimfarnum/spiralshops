@@ -12,6 +12,7 @@ import { registerWishlistAlertRoutes } from "./wishlistAlertRoutes";
 import { registerGiftCardRoutes } from "./giftCardRoutes";
 import { registerAnalyticsRoutes } from "./analyticsRoutes";
 import { registerReturnRoutes } from "./returnRoutes";
+import { recommendationEngine } from "./smartRecommendation";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema, insertGiftCardSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -449,5 +450,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerReturnRoutes(app);
 
   const httpServer = createServer(app);
+  // AI Recommendations API
+  app.get("/api/recommend", async (req: any, res) => {
+    try {
+      const { userId, productId, context, limit } = req.query;
+      
+      const recommendations = await recommendationEngine.getPersonalizedRecommendations({
+        userId: userId || undefined,
+        productId: productId || undefined,
+        context: context || 'homepage',
+        limit: parseInt(limit) || 5
+      });
+
+      res.json(recommendations);
+    } catch (error) {
+      console.error("Recommendation error:", error);
+      res.status(500).json({ message: "Failed to get recommendations" });
+    }
+  });
+
+  // Smart Search API
+  app.get("/api/search", async (req: any, res) => {
+    try {
+      const { query, userId, category, minPrice, maxPrice, sort, limit } = req.query;
+      
+      const results = await recommendationEngine.performSmartSearch({
+        query: query || '',
+        userId: userId || undefined,
+        filters: {
+          category: category || undefined,
+          minPrice: minPrice ? parseInt(minPrice) : undefined,
+          maxPrice: maxPrice ? parseInt(maxPrice) : undefined
+        },
+        sort: sort || 'relevance',
+        limit: parseInt(limit) || 20
+      });
+
+      res.json(results);
+    } catch (error) {
+      console.error("Search error:", error);
+      res.status(500).json({ message: "Search failed" });
+    }
+  });
+
+  // Search Autocomplete API
+  app.get("/api/search/suggestions", async (req: any, res) => {
+    try {
+      const { query, limit } = req.query;
+      
+      const suggestions = await recommendationEngine.getSearchSuggestions(
+        query || '',
+        parseInt(limit) || 8
+      );
+
+      res.json(suggestions);
+    } catch (error) {
+      console.error("Search suggestions error:", error);
+      res.status(500).json({ message: "Failed to get suggestions" });
+    }
+  });
+
   return httpServer;
 }

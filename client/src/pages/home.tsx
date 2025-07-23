@@ -26,6 +26,8 @@ import AccessibilityMenu from "@/components/accessibility-menu";
 import type { Store } from "@shared/schema";
 import { mockProducts, categories } from "@/data/mockProducts";
 import OnboardingModal from "@/components/onboarding-modal";
+import AIRecommendations from "@/components/ai-recommendations";
+import SmartSearchBar from "@/components/smart-search-bar";
 
 export default function Home() {
   const [spiralStoryModalOpen, setSpiralStoryModalOpen] = useState(false);
@@ -304,8 +306,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* AI Smart Recommendations */}
       <section className="section-modern bg-[var(--spiral-cream)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AIRecommendations
+            context="homepage"
+            title="AI-Powered Recommendations for You"
+            limit={5}
+            showReason={true}
+            className="mb-16"
+          />
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section className="section-modern bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">Featured Local Finds</h2>
@@ -372,7 +387,7 @@ export default function Home() {
       </section>
 
       {/* Featured Malls Section */}
-      <section className="section-modern bg-white">
+      <section className="section-modern bg-[var(--spiral-cream)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">Featured Malls</h2>
@@ -441,7 +456,7 @@ export default function Home() {
       </section>
 
       {/* Local Picks Section */}
-      <section className="section-modern bg-[var(--spiral-cream)]">
+      <section className="section-modern bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">Local Picks</h2>
@@ -532,7 +547,7 @@ export default function Home() {
       </section>
 
       {/* SPIRAL Stories Section */}
-      <section className="section-modern bg-white">
+      <section className="section-modern bg-[var(--spiral-cream)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">SPIRAL Stories</h2>
