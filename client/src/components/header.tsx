@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { ShoppingCart, User, LogOut } from "lucide-react";
+import { ShoppingCart, User, LogOut, Package, Star, Wallet } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
 import { useAuthStore } from "@/lib/authStore";
 import SpiralBalance from "./spiral-balance";
@@ -101,6 +101,12 @@ export default function Header() {
                   <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 text-[var(--spiral-coral)] hover:text-[var(--spiral-coral)]/80">
                     <Star className="h-4 w-4" />
                     <span className="hidden lg:inline text-sm">Loyalty</span>
+                  </Button>
+                </Link>
+                <Link href="/wallet">
+                  <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 text-purple-600 hover:text-purple-800">
+                    <Wallet className="h-4 w-4" />
+                    <span className="hidden lg:inline text-sm">Wallet</span>
                   </Button>
                 </Link>
                 <Link href="/profile">
