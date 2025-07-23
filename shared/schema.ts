@@ -965,8 +965,6 @@ export type EventRsvp = typeof eventRsvps.$inferSelect;
 export type InsertEventRsvp = typeof eventRsvps.$inferInsert;
 export type Mall = typeof malls.$inferSelect;
 export type InsertMall = z.infer<typeof insertMallSchema>;
-export type GiftCard = typeof giftCards.$inferSelect;
-export type InsertGiftCard = z.infer<typeof insertGiftCardSchema>;
 // Old types removed - using new Feature 6 implementation below
 export type CartItem = typeof cartItems.$inferSelect;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
@@ -1094,5 +1092,83 @@ export type WishlistNotification = typeof wishlistNotifications.$inferSelect;
 export type InsertWishlistNotification = z.infer<typeof insertWishlistNotificationSchema>;
 export type UserNotification = typeof userNotifications.$inferSelect;
 export type InsertUserNotification = z.infer<typeof insertUserNotificationSchema>;
+
+// Return & Refund System Tables
+export const returnRequests = pgTable("return_requests", {
+  id: text("id").primaryKey().$default(() => crypto.randomUUID()),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  orderId: integer("order_id").references(() => orders.id).notNull(),
+  productId: text("product_id").notNull(),
+  productName: text("product_name").notNull(),
+  originalAmount: integer("original_amount").notNull(), // in cents
+  reason: text("reason").notNull(),
+  refundType: text("refund_type").notNull(), // 'original', 'spiral_credit'
+  status: text("status").notNull().default("pending"), // 'pending', 'approved', 'rejected', 'refunded'
+  imageUrl: text("image_url"),
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  decisionAt: timestamp("decision_at"),
+  decisionNote: text("decision_note"),
+  autoApproved: boolean("auto_approved").default(false),
+  adminUserId: integer("admin_user_id").references(() => users.id),
+});
+
+export const refundTransactions = pgTable("refund_transactions", {
+  id: text("id").primaryKey().$default(() => crypto.randomUUID()),
+  returnId: text("return_id").references(() => returnRequests.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  method: text("method").notNull(), // 'stripe', 'spiral_credit'
+  amount: integer("amount").notNull(), // in cents
+  spiralPointsAwarded: integer("spiral_points_awarded"),
+  status: text("status").notNull().default("processing"), // 'processing', 'completed', 'failed'
+  stripeRefundId: text("stripe_refund_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+export const returnRequestRelations = relations(returnRequests, ({ one }) => ({
+  user: one(users, {
+    fields: [returnRequests.userId],
+    references: [users.id]
+  }),
+  order: one(orders, {
+    fields: [returnRequests.orderId],
+    references: [orders.id]
+  }),
+  adminUser: one(users, {
+    fields: [returnRequests.adminUserId],
+    references: [users.id]
+  })
+}));
+
+export const refundTransactionRelations = relations(refundTransactions, ({ one }) => ({
+  returnRequest: one(returnRequests, {
+    fields: [refundTransactions.returnId],
+    references: [returnRequests.id]
+  }),
+  user: one(users, {
+    fields: [refundTransactions.userId],
+    references: [users.id]
+  })
+}));
+
+// Return & Refund Insert schemas
+export const insertReturnRequestSchema = createInsertSchema(returnRequests).omit({
+  id: true,
+  submittedAt: true,
+  decisionAt: true,
+  autoApproved: true,
+});
+
+export const insertRefundTransactionSchema = createInsertSchema(refundTransactions).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
+// Return & Refund Type exports
+export type ReturnRequest = typeof returnRequests.$inferSelect;
+export type InsertReturnRequest = z.infer<typeof insertReturnRequestSchema>;
+export type RefundTransaction = typeof refundTransactions.$inferSelect;
+export type InsertRefundTransaction = z.infer<typeof insertRefundTransactionSchema>;
 
 

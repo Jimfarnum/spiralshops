@@ -11,6 +11,7 @@ import { registerRetailerRoutes } from "./retailerRoutes";
 import { registerWishlistAlertRoutes } from "./wishlistAlertRoutes";
 import { registerGiftCardRoutes } from "./giftCardRoutes";
 import { registerAnalyticsRoutes } from "./analyticsRoutes";
+import { registerReturnRoutes } from "./returnRoutes";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema, insertGiftCardSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -443,6 +444,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register analytics routes
   registerAnalyticsRoutes(app);
+
+  // Register return & refund system routes
+  registerReturnRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

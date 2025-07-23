@@ -35,6 +35,9 @@ import MallAnalytics from "@/pages/mall-analytics";
 import EnhancedRetailerAnalytics from "@/pages/enhanced-retailer-analytics";
 import EnhancedMallAnalytics from "@/pages/enhanced-mall-analytics";
 import Feature10Demo from "@/pages/feature-10-demo";
+import OrdersReturns from "@/pages/orders-returns";
+import AdminReturns from "@/pages/admin-returns";
+import Feature11Demo from "@/pages/feature-11-demo";
 import RetailerInsights from "@/pages/retailer-insights";
 import TestFlow from "@/pages/test-flow";
 import About from "@/pages/about";
@@ -132,10 +135,7 @@ function Router() {
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/retailer-testimonials" component={RetailerTestimonials} />
       <Route path="/retailer-analytics" component={RetailerAnalytics} />
-      <Route path="/enhanced-retailer-analytics" component={EnhancedRetailerAnalytics} />
-      <Route path="/mall/analytics" component={MallAnalytics} />
-      <Route path="/enhanced-mall-analytics" component={EnhancedMallAnalytics} />
-      <Route path="/feature-10-demo" component={Feature10Demo} />
+
       <Route path="/retailer-insights" component={RetailerInsights} />
       <Route path="/test-flow" component={TestFlow} />
       <Route path="/about" component={About} />
@@ -205,6 +205,9 @@ function Router() {
       <Route path="/retailer-feature-demo" component={RetailerFeatureDemoPage} />
       <Route path="/wishlist/settings" component={WishlistSettingsPage} />
       <Route path="/admin/wishlist-alerts" component={AdminWishlistAlertsPage} />
+      <Route path="/orders/returns" component={OrdersReturns} />
+      <Route path="/admin/returns" component={AdminReturns} />
+      <Route path="/feature-11-demo" component={Feature11Demo} />
       <Route component={NotFound} />
     </Switch>
   );
