@@ -1,0 +1,105 @@
+// 🚀 SPIRAL Feature 11: Return & Refund System – FULL IMPLEMENTATION REQUEST
+
+// 🎯 GOAL:
+// Create a full return and refund system for SPIRAL that enables customers to submit return requests,
+// retailers/admins to manage them, and supports both Stripe refunds and SPIRAL credit refunds.
+
+// ✅ FEATURE BREAKDOWN:
+
+// 1. Customer Dashboard (/orders/returns)
+// - Allows users to select an order → product(s) → reason for return
+// - Optional photo upload (e.g., damaged item proof)
+// - Choose refund type: ‘original’ or ‘spiral_credit’
+// - View return status: pending, approved, rejected, refunded
+
+// 2. Retailer/Admin Dashboard (/admin/returns)
+// - View all return requests by status
+// - Review reasons, images, and order history
+// - Approve/reject with optional note
+// - Trigger refund (Stripe or SPIRAL Points rollback)
+
+// 3. Rules Engine
+// - Automatically approve low-risk returns (e.g., under $100, within 30 days, no abuse flags)
+// - Manual review for outliers or flagged accounts/products
+
+// ✅ DATABASE SCHEMA:
+
+CREATE TABLE return_requests (
+  id SERIAL PRIMARY KEY,
+  user_id UUID REFERENCES users(id),
+  order_id UUID REFERENCES orders(id),
+  product_id UUID REFERENCES products(id),
+  reason TEXT,
+  refund_type TEXT CHECK (refund_type IN ('original', 'spiral_credit')),
+  status TEXT CHECK (status IN ('pending', 'approved', 'rejected', 'refunded')) DEFAULT 'pending',
+  submitted_at TIMESTAMP DEFAULT now(),
+  approved_at TIMESTAMP,
+  retailer_notes TEXT,
+  image_url TEXT,
+  auto_approved BOOLEAN DEFAULT false
+);
+
+CREATE TABLE refund_transactions (
+  id SERIAL PRIMARY KEY,
+  return_id INTEGER REFERENCES return_requests(id),
+  user_id UUID,
+  refund_method TEXT,
+  refund_amount DECIMAL,
+  refund_status TEXT,
+  timestamp TIMESTAMP DEFAULT now()
+);
+
+// ✅ API ENDPOINTS:
+
+// POST /api/returns/request – Create a new return request
+// GET /api/returns/status – Get return status for logged-in user
+// POST /api/returns/admin/decision – Admin approves/rejects a request
+// POST /api/returns/refund – Trigger refund transaction (Stripe/SPIRAL credit)
+
+// ✅ LOGIC & INTEGRATION NOTES:
+// - Validate order ownership for submitted return requests
+// - Prevent multiple return requests for the same product/order combo
+// - Refund SPIRAL points if applicable (rollback from loyalty ledger)
+// - Stripe refund API uses secure key already integrated
+// - SPIRAL credit appears in user’s loyalty dashboard
+// - Admin moderation screen shows photo preview and comment history
+
+// ✅ UI/UX FRONTEND:
+
+// /orders/returns:
+// - Responsive form to select product from past orders
+// - Reason dropdown, refund method, optional photo (with preview)
+// - Return status display with color-coded badges
+
+// /admin/returns:
+// - Filter by status: pending, approved, refunded
+// - Modal for return details and moderation
+// - One-click refund trigger with confirmation toast
+
+// ✅ TEST PLAN:
+
+// 1. Place test order → simulate return via /orders/returns
+// 2. Admin reviews via /admin/returns → Approves
+// 3. Confirm refund logic:
+//    - Stripe refund triggers for ‘original’
+//    - SPIRAL credits apply and show in loyalty dashboard
+// 4. Test rule engine (auto-approve for <$100 within 30 days)
+// 5. Abuse test: multiple returns → system flags for manual review
+// 6. UI tested on desktop and mobile (Android & iOS touch interactions)
+
+// ✅ SECURITY & SCALABILITY:
+
+// - All API routes secured via JWT
+// - Requests validated server-side against order history
+// - IBM Cloud PostgreSQL schema compliant
+// - Stripe and Cloudant integrations future-compatible
+
+// ✅ READY FOR DEPLOYMENT – NEXT STEPS:
+
+// 1. Implement above components across frontend/backend
+// 2. Integrate with Stripe + SPIRAL loyalty APIs
+// 3. Deploy on Replit + prepare for Vercel frontend deployment
+// 4. Hook refund logs into IBM Cloud Observability if active
+// 5. Confirm with POSTMAN test or user simulation
+
+// 🚀 Once confirmed, proceed to Feature 12: Smart AI Product Suggestions + Personalized Search

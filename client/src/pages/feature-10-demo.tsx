@@ -150,11 +150,18 @@ export default function Feature10Demo() {
                     <li>✅ Interactive charts and visualizations</li>
                     <li>✅ CSV export functionality</li>
                   </ul>
-                  <Link href="/retailer/analytics">
-                    <Button className="w-full" variant="outline">
-                      View Retailer Dashboard
-                    </Button>
-                  </Link>
+                  <div className="space-y-2">
+                    <Link href="/enhanced-retailer-analytics">
+                      <Button className="w-full bg-[#006d77] hover:bg-[#004d55] text-white">
+                        🚀 Enhanced Retailer Dashboard
+                      </Button>
+                    </Link>
+                    <Link href="/retailer-analytics">
+                      <Button className="w-full" variant="outline">
+                        Standard Dashboard
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -182,11 +189,18 @@ export default function Feature10Demo() {
                     <li>✅ Category performance breakdown</li>
                     <li>✅ Real-time mall activity feed</li>
                   </ul>
-                  <Link href="/mall/analytics">
-                    <Button className="w-full" variant="outline">
-                      View Mall Dashboard
-                    </Button>
-                  </Link>
+                  <div className="space-y-2">
+                    <Link href="/enhanced-mall-analytics">
+                      <Button className="w-full bg-[#ff9f1c] hover:bg-[#e88a00] text-white">
+                        🚀 Enhanced Mall Dashboard
+                      </Button>
+                    </Link>
+                    <Link href="/mall/analytics">
+                      <Button className="w-full" variant="outline">
+                        Standard Dashboard
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             </div>
