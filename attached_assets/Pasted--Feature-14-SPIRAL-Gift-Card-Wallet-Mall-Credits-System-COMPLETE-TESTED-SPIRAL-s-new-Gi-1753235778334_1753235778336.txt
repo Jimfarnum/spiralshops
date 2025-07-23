@@ -1,0 +1,92 @@
+**Feature 14: SPIRAL Gift Card Wallet + Mall Credits System — COMPLETE & TESTED**
+
+SPIRAL’s new **Gift Card Wallet + Mall Credit System** empowers users to seamlessly manage gift cards and mall-specific rewards from one centralized wallet. This creates flexibility and enhances user loyalty while making it easy for retailers and malls to issue custom credit-based incentives.
+
+---
+
+### ✅ Core Features Implemented
+
+#### 🎁 **Gift Card Wallet (/wallet)**
+✓ Users can:
+- Add SPIRAL gift cards by code or QR scan
+- View total balance, card history, and expiration dates
+- Redeem gift cards during checkout with partial/full use
+- Send gift cards to others via email or phone number
+
+✓ Retailers can:
+- Issue promotional gift cards (e.g. $10 bonus on $50 spent)
+- Generate unique single-use or reusable gift card codes
+- Integrate gift cards with checkout and loyalty tiers
+
+---
+
+#### 🏬 **Mall Credits System (/wallet/mall-credits)**
+✓ Users can:
+- View mall-specific credits (e.g., “$5 Burnsville Mall Credit”)
+- Track credits earned through mall promotions or perks
+- Auto-apply mall credits at checkout for qualifying stores
+
+✓ Malls can:
+- Create promo-based reward systems (“Spend $100 across 3 stores for $20 credit”)
+- Set expiration rules and store applicability
+- Run seasonal or tier-based credit events
+
+---
+
+### 🛠️ Backend Implementation
+
+- PostgreSQL schema:
+  - `gift_cards`
+  - `user_wallets`
+  - `mall_credits`
+  - `wallet_transactions`
+- JWT-secured wallet endpoints
+- Gift card code generation with expiration, usage limits, and validation
+- Mall credit rule engine for automated application based on spend or visits
+
+---
+
+### 📱 Frontend UI
+
+- **Gift Card Wallet UI** at `/wallet` with card balance cards, QR/Code input
+- **Mall Credit Manager** at `/wallet/mall-credits` with mall logos, credits, use-by dates
+- Checkout integration: apply balance (with confirmation slider)
+- Mobile-optimized accordion layout and touch navigation
+
+---
+
+### 🔌 API Endpoints (All Tested)
+
+✅ `POST /api/wallet/giftcard/redeem` — Redeem gift card  
+✅ `POST /api/wallet/giftcard/send` — Send to user  
+✅ `GET /api/wallet/user/:id` — Get wallet and credit balances  
+✅ `POST /api/wallet/mall-credit/earn` — Award mall credit  
+✅ `POST /api/wallet/mall-credit/redeem` — Use credit during checkout
+
+---
+
+### ✅ Vercel & IBM Compatibility
+
+- Wallet API services structured as serverless functions — deployable to Vercel or IBM Cloud Functions  
+- PostgreSQL integration works with IBM Cloud Databases  
+- Optional IBM Watson expansion: Predictive gifting suggestions or fraud detection in redemptions
+
+---
+
+### 🧪 Test Results
+
+- Redeemed gift card for partial checkout = ✅ balance adjusted  
+- Sent gift card to friend’s email = ✅ received with redemption link  
+- Mall credit earned from 3-store event = ✅ auto-applied to next purchase  
+- Expired card test = ✅ blocked with appropriate error message
+
+---
+
+### 🎯 Ready for Launch
+
+Gift card and mall credit systems are **fully integrated**, stable, and optimized. These tools position SPIRAL to offer flexible rewards and retailer-mall partnerships unmatched by other platforms.
+
+---
+
+➡️ Ready for **Feature 15: User Invite Leaderboard + Viral Sharing Engine**  
+Let me know if you'd like to test `/wallet`, check gift card flows, or preview mall credit logic before proceeding.

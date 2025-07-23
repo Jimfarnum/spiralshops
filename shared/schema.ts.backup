@@ -503,7 +503,23 @@ export type NotificationHistory = typeof notificationHistory.$inferSelect;
 
 
 
+// Insert schemas for gift cards
+export const insertGiftCardSchema = createInsertSchema(giftCards).omit({
+  id: true,
+  createdAt: true,
+  redeemedAt: true,
+});
 
+export const insertGiftCardRedemptionSchema = createInsertSchema(giftCardRedemptions).omit({
+  id: true,
+  redeemedAt: true,
+});
+
+// Gift card types
+export type GiftCard = typeof giftCards.$inferSelect;
+export type InsertGiftCard = typeof giftCards.$inferInsert;
+export type GiftCardRedemption = typeof giftCardRedemptions.$inferSelect;
+export type InsertGiftCardRedemption = typeof giftCardRedemptions.$inferInsert;
 
 // Analytics tables for Feature 10
 export const retailerAnalyticsSnapshots = pgTable("retailer_analytics_snapshots", {

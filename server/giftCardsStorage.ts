@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { giftCards, giftCardRedemptions, users } from "../shared/schema";
+import { users } from "../shared/schema";
 import { eq, and, gte } from "drizzle-orm";
 import type { GiftCard, InsertGiftCard, GiftCardRedemption, InsertGiftCardRedemption } from "../shared/schema";
 

@@ -9,11 +9,12 @@ import { registerTestimonialsRoutes } from "./testimonialsRoutes";
 import { registerEventsRoutes } from "./eventsRoutes";
 import { registerRetailerRoutes } from "./retailerRoutes";
 import { registerWishlistAlertRoutes } from "./wishlistAlertRoutes";
+import walletRoutes from "./walletRoutes";
 import { registerGiftCardRoutes } from "./giftCardRoutes";
 import { registerAnalyticsRoutes } from "./analyticsRoutes";
 import { registerReturnRoutes } from "./returnRoutes";
 import { recommendationEngine } from "./smartRecommendation";
-import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema, insertGiftCardSchema } from "@shared/schema";
+import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
 import { z } from "zod";
@@ -442,6 +443,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register gift card routes
   registerGiftCardRoutes(app);
+  
+  // Feature 14: Wallet routes
+  app.use("/api/wallet", walletRoutes);
 
   // Register analytics routes
   registerAnalyticsRoutes(app);

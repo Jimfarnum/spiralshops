@@ -384,6 +384,19 @@ Preferred communication style: Simple, everyday language.
   - Advanced alert types: back-in-stock notifications, price drop alerts with target pricing, and promotional offers
   - Notification history tracking with status monitoring, delivery confirmation, and failure reason logging
 
+✓ **SPIRAL Gift Card Wallet + Mall Credits System (Feature 14 - January 2025)**:
+  - Comprehensive gift card wallet system with redeem, send, and management functionality
+  - Mall-specific credit earning system supporting promotions, loyalty bonuses, events, and referral rewards
+  - Complete backend API infrastructure with wallet routes, transaction processing, and balance management
+  - Frontend wallet interface (/wallet) with gift card redemption, sending capabilities, and transaction history
+  - Mall credits manager (/wallet/mall-credits) with earning demonstrations and usage tracking
+  - Auto-apply functionality for checkout integration with both gift cards and mall credits
+  - Transaction history tracking with detailed records of all wallet activity
+  - Gift card sending system with email notifications and unique code generation
+  - Mall credit earning from multiple sources: shopping challenges, loyalty tiers, events, referrals
+  - Complete Feature 14 demo page (/feature-14-demo) with comprehensive testing interface and API validation
+  - Real-time balance updates and seamless integration with existing SPIRAL loyalty program
+
 ## System Architecture
 
 ### Frontend Architecture

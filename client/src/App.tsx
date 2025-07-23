@@ -143,6 +143,9 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/inventory-dashboard" component={InventoryDashboard} />
+      <Route path="/wallet" component={lazy(() => import("@/pages/wallet"))} />
+      <Route path="/wallet/mall-credits" component={lazy(() => import("@/pages/wallet-mall-credits"))} />
+      <Route path="/feature-14-demo" component={lazy(() => import("@/pages/feature-14-demo"))} />
       <Route path="/feature-testing" component={FeatureTesting} />
       <Route path="/dynamic-testing" component={DynamicFeatureTesting} />
       <Route path="/explore-spirals" component={ExploreSPIRALsPage} />
