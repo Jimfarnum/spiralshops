@@ -1171,4 +1171,103 @@ export type InsertReturnRequest = z.infer<typeof insertReturnRequestSchema>;
 export type RefundTransaction = typeof refundTransactions.$inferSelect;
 export type InsertRefundTransaction = z.infer<typeof insertRefundTransactionSchema>;
 
+// Feature 13: Enhanced Wishlist Alert System with Push/Email/SMS Notifications
+
+// Enhanced wishlist alerts table
+export const wishlistAlerts = pgTable("wishlist_alerts", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  productId: integer("product_id").notNull(),
+  productName: text("product_name").notNull(),
+  currentPrice: integer("current_price"), // Price in cents
+  targetPrice: integer("target_price"), // Alert when price drops below this
+  isActive: boolean("is_active").default(true),
+  alertType: text("alert_type").notNull(), // stock, price, promo
+  notificationMethods: text("notification_methods").array().default(['email']), // email, sms, push
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Enhanced notification preferences table
+export const notificationPreferences = pgTable("notification_preferences", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  email: text("email"),
+  phone: text("phone"),
+  pushToken: text("push_token"),
+  enableEmail: boolean("enable_email").default(true),
+  enableSms: boolean("enable_sms").default(false),
+  enablePush: boolean("enable_push").default(true),
+  globalOptOut: boolean("global_opt_out").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Enhanced notification log table
+export const notificationLog = pgTable("notification_log", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  alertId: integer("alert_id").references(() => wishlistAlerts.id),
+  notificationType: text("notification_type").notNull(), // email, sms, push
+  subject: text("subject"),
+  message: text("message").notNull(),
+  status: text("status").default('pending'), // pending, sent, failed
+  sentAt: timestamp("sent_at"),
+  failureReason: text("failure_reason"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Enhanced wishlist alerts schema for Feature 13
+export const insertWishlistAlertSchema = createInsertSchema(wishlistAlerts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertNotificationPreferencesSchema = createInsertSchema(notificationPreferences).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertNotificationLogSchema = createInsertSchema(notificationLog).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Enhanced wishlist alert relations
+export const wishlistAlertsRelations = relations(wishlistAlerts, ({ one, many }) => ({
+  user: one(users, {
+    fields: [wishlistAlerts.userId],
+    references: [users.id],
+  }),
+  notifications: many(notificationLog),
+}));
+
+export const notificationPreferencesRelations = relations(notificationPreferences, ({ one }) => ({
+  user: one(users, {
+    fields: [notificationPreferences.userId],
+    references: [users.id],
+  }),
+}));
+
+export const notificationLogRelations = relations(notificationLog, ({ one }) => ({
+  user: one(users, {
+    fields: [notificationLog.userId],
+    references: [users.id],
+  }),
+  alert: one(wishlistAlerts, {
+    fields: [notificationLog.alertId],
+    references: [wishlistAlerts.id],
+  }),
+}));
+
+// Enhanced wishlist alert types for Feature 13
+export type WishlistAlert = typeof wishlistAlerts.$inferSelect;
+export type InsertWishlistAlert = typeof wishlistAlerts.$inferInsert;
+export type NotificationPreferences = typeof notificationPreferences.$inferSelect;
+export type InsertNotificationPreferences = typeof notificationPreferences.$inferInsert;
+export type NotificationLog = typeof notificationLog.$inferSelect;
+export type InsertNotificationLog = typeof notificationLog.$inferInsert;
+
 

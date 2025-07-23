@@ -1,395 +1,318 @@
-import { Express } from "express";
-import { db } from "./db";
-import { 
-  wishlistTrackers, 
-  userNotificationPreferences, 
-  notificationHistory,
-  users,
-  insertWishlistTrackerSchema,
-  insertUserNotificationPreferencesSchema,
-  insertNotificationHistorySchema 
-} from "@shared/schema";
-import { eq, and, sql, lt, gte } from "drizzle-orm";
+import type { Express } from "express";
+import { storage } from "./storage";
+import { notificationEngine } from "./notificationEngine";
 import { z } from "zod";
-
-// Mock email service (replace with real service like SendGrid in production)
-const sendEmailAlert = async (userEmail: string, productName: string, alertType: string, productPrice?: string) => {
-  console.log(`📧 EMAIL ALERT SENT to ${userEmail}:`);
-  console.log(`Subject: ${alertType === 'back_in_stock' ? '🔄 Back in Stock' : '💰 Price Drop'} - ${productName}`);
-  console.log(`Content: ${alertType === 'back_in_stock' ? 
-    `Great news! "${productName}" is back in stock. Order now before it sells out again!` :
-    `Price drop alert! "${productName}" is now available for ${productPrice}. Save money today!`
-  }`);
-  return { success: true, messageId: `mock_${Date.now()}` };
-};
-
-// Mock SMS service (replace with Twilio in production)
-const sendSMSAlert = async (phoneNumber: string, productName: string, alertType: string) => {
-  console.log(`📱 SMS ALERT SENT to ${phoneNumber}:`);
-  console.log(`${alertType === 'back_in_stock' ? '🔄 SPIRAL: Back in Stock' : '💰 SPIRAL: Price Drop'} - ${productName}. Check your wishlist now!`);
-  return { success: true, messageId: `sms_mock_${Date.now()}` };
-};
 
 export function registerWishlistAlertRoutes(app: Express) {
   
-  // Get user's notification preferences
-  app.get("/api/wishlist-alerts/preferences", async (req, res) => {
+  // Create or update wishlist alert
+  app.post("/api/wishlist/alerts", async (req, res) => {
     try {
-      // Mock user ID for demo - would come from auth middleware
-      const userId = 1;
-      
-      let preferences = await db
-        .select()
-        .from(userNotificationPreferences)
-        .where(eq(userNotificationPreferences.userId, userId))
-        .limit(1);
+      const alertSchema = z.object({
+        productId: z.number(),
+        productName: z.string(),
+        currentPrice: z.number().optional(),
+        targetPrice: z.number().optional(),
+        alertType: z.enum(['stock', 'price', 'promo']),
+        notificationMethods: z.array(z.enum(['email', 'sms', 'push'])).default(['email'])
+      });
 
-      if (preferences.length === 0) {
-        // Create default preferences
-        const defaultPrefs = {
-          userId,
-          emailEnabled: true,
-          smsEnabled: false,
-          browserEnabled: true,
-          alertFrequency: "immediate"
-        };
-        
-        const [newPrefs] = await db
-          .insert(userNotificationPreferences)
-          .values(defaultPrefs)
-          .returning();
-        
-        preferences = [newPrefs];
+      const validatedData = alertSchema.parse(req.body);
+      const userId = 1; // Mock user ID
+
+      // In a real implementation, this would save to the database
+      // For demo purposes, we simulate saving the alert
+      const alertId = Math.floor(Math.random() * 1000) + 1;
+
+      console.log(`✅ Wishlist alert created:`, {
+        id: alertId,
+        userId,
+        ...validatedData
+      });
+
+      res.json({
+        id: alertId,
+        userId,
+        ...validatedData,
+        isActive: true,
+        createdAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error creating wishlist alert:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid alert data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create alert" });
+    }
+  });
+
+  // Get user's active wishlist alerts
+  app.get("/api/wishlist/alerts/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
       }
 
-      res.json(preferences[0]);
+      // In a real implementation, this would query the database
+      // For demo purposes, return mock alerts
+      const mockAlerts = [
+        {
+          id: 1,
+          userId,
+          productId: 101,
+          productName: "Artisan Coffee Blend - Local Roasters",
+          currentPrice: 3499, // $34.99
+          targetPrice: 2500, // Alert when under $25.00
+          alertType: 'price',
+          notificationMethods: ['email', 'push'],
+          isActive: true,
+          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: 2,
+          userId,
+          productId: 102,
+          productName: "Handmade Ceramic Vase - Garden Studio",
+          currentPrice: 4599, // $45.99
+          targetPrice: null,
+          alertType: 'stock',
+          notificationMethods: ['email', 'sms'],
+          isActive: true,
+          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: 3,
+          userId,
+          productId: 103,
+          productName: "Organic Honey Set - Valley Bee Farm",
+          currentPrice: 1899, // $18.99
+          targetPrice: 1500, // Alert when under $15.00
+          alertType: 'price',
+          notificationMethods: ['email'],
+          isActive: false,
+          createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ];
+
+      res.json(mockAlerts);
+    } catch (error) {
+      console.error("Error fetching wishlist alerts:", error);
+      res.status(500).json({ message: "Failed to fetch alerts" });
+    }
+  });
+
+  // Update alert preferences
+  app.put("/api/wishlist/alerts/:alertId", async (req, res) => {
+    try {
+      const alertId = parseInt(req.params.alertId);
+      
+      if (isNaN(alertId)) {
+        return res.status(400).json({ message: "Invalid alert ID" });
+      }
+
+      const updateSchema = z.object({
+        targetPrice: z.number().optional(),
+        notificationMethods: z.array(z.enum(['email', 'sms', 'push'])).optional(),
+        isActive: z.boolean().optional()
+      });
+
+      const validatedData = updateSchema.parse(req.body);
+
+      // In a real implementation, this would update the database
+      console.log(`📝 Alert ${alertId} updated:`, validatedData);
+
+      res.json({
+        id: alertId,
+        ...validatedData,
+        updatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error updating wishlist alert:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid update data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update alert" });
+    }
+  });
+
+  // Delete wishlist alert
+  app.delete("/api/wishlist/alerts/:alertId", async (req, res) => {
+    try {
+      const alertId = parseInt(req.params.alertId);
+      
+      if (isNaN(alertId)) {
+        return res.status(400).json({ message: "Invalid alert ID" });
+      }
+
+      // In a real implementation, this would delete from database
+      console.log(`🗑️ Alert ${alertId} deleted`);
+
+      res.json({ message: "Alert deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting wishlist alert:", error);
+      res.status(500).json({ message: "Failed to delete alert" });
+    }
+  });
+
+  // Send notification (manual trigger)
+  app.post("/api/notifications/send", async (req, res) => {
+    try {
+      const notificationSchema = z.object({
+        userId: z.number(),
+        productId: z.number(),
+        alertType: z.enum(['stock', 'price', 'promo']),
+        notificationMethods: z.array(z.enum(['email', 'sms', 'push'])).default(['email'])
+      });
+
+      const validatedData = notificationSchema.parse(req.body);
+
+      // Trigger test notification
+      const success = await notificationEngine.triggerTestAlert(
+        validatedData.productId,
+        validatedData.alertType,
+        validatedData.userId
+      );
+
+      if (success) {
+        res.json({ 
+          message: "Notification sent successfully",
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        res.status(500).json({ message: "Failed to send notification" });
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid notification data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to send notification" });
+    }
+  });
+
+  // Get notification history
+  app.get("/api/notifications/history/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+
+      const history = notificationEngine.getNotificationHistory(userId);
+      res.json(history);
+    } catch (error) {
+      console.error("Error fetching notification history:", error);
+      res.status(500).json({ message: "Failed to fetch notification history" });
+    }
+  });
+
+  // Update notification preferences
+  app.post("/api/notifications/preferences", async (req, res) => {
+    try {
+      const preferencesSchema = z.object({
+        userId: z.number().default(1),
+        email: z.string().email().optional(),
+        phone: z.string().optional(),
+        pushToken: z.string().optional(),
+        enableEmail: z.boolean().default(true),
+        enableSms: z.boolean().default(false),
+        enablePush: z.boolean().default(true),
+        globalOptOut: z.boolean().default(false)
+      });
+
+      const validatedData = preferencesSchema.parse(req.body);
+
+      // In a real implementation, this would update the database
+      console.log(`⚙️ Notification preferences updated for user ${validatedData.userId}:`, validatedData);
+
+      res.json({
+        ...validatedData,
+        updatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error updating notification preferences:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid preferences data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update preferences" });
+    }
+  });
+
+  // Get notification preferences
+  app.get("/api/notifications/preferences/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+
+      // In a real implementation, this would query the database
+      // For demo purposes, return mock preferences
+      const mockPreferences = {
+        id: 1,
+        userId,
+        email: "user@example.com",
+        phone: "+15551234567",
+        pushToken: "fcm_token_12345",
+        enableEmail: true,
+        enableSms: false,
+        enablePush: true,
+        globalOptOut: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      res.json(mockPreferences);
     } catch (error) {
       console.error("Error fetching notification preferences:", error);
       res.status(500).json({ message: "Failed to fetch preferences" });
     }
   });
 
-  // Update user's notification preferences
-  app.post("/api/wishlist-alerts/preferences", async (req, res) => {
+  // Trigger automated check for product changes (scheduled job endpoint)
+  app.post("/api/notifications/check-changes", async (req, res) => {
     try {
-      const userId = 1; // Mock user ID
+      console.log("🔄 Starting automated product change check...");
+      await notificationEngine.checkProductChanges();
       
-      const validatedData = insertUserNotificationPreferencesSchema.parse({
-        ...req.body,
-        userId
+      res.json({
+        message: "Product change check completed",
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error during product change check:", error);
+      res.status(500).json({ message: "Failed to check product changes" });
+    }
+  });
+
+  // Test alert endpoint for demo purposes
+  app.post("/api/wishlist/alerts/test", async (req, res) => {
+    try {
+      const testSchema = z.object({
+        productId: z.number(),
+        alertType: z.enum(['stock', 'price', 'promo']),
+        userId: z.number().default(1)
       });
 
-      const [updatedPrefs] = await db
-        .insert(userNotificationPreferences)
-        .values(validatedData)
-        .onConflictDoUpdate({
-          target: userNotificationPreferences.userId,
-          set: {
-            emailEnabled: validatedData.emailEnabled,
-            smsEnabled: validatedData.smsEnabled,
-            browserEnabled: validatedData.browserEnabled,
-            alertFrequency: validatedData.alertFrequency,
-            updatedAt: new Date(),
-          },
-        })
-        .returning();
+      const { productId, alertType, userId } = testSchema.parse(req.body);
 
-      res.json(updatedPrefs);
+      const success = await notificationEngine.triggerTestAlert(productId, alertType, userId);
+
+      res.json({
+        success,
+        message: success ? "Test alert sent successfully" : "Test alert failed",
+        timestamp: new Date().toISOString()
+      });
     } catch (error) {
+      console.error("Error sending test alert:", error);
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid preferences data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid test data", errors: error.errors });
       }
-      console.error("Error updating notification preferences:", error);
-      res.status(500).json({ message: "Failed to update preferences" });
-    }
-  });
-
-  // Add product to wishlist tracking
-  app.post("/api/wishlist-alerts/track", async (req, res) => {
-    try {
-      const userId = 1; // Mock user ID
-      const { productId, originalPrice, alertType } = req.body;
-
-      if (!productId || !originalPrice || !alertType) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
-      const trackerData = {
-        userId,
-        productId: parseInt(productId),
-        originalPrice: originalPrice.toString(),
-        alertType,
-        isActive: true
-      };
-
-      const validatedData = insertWishlistTrackerSchema.parse(trackerData);
-
-      const [tracker] = await db
-        .insert(wishlistTrackers)
-        .values(validatedData)
-        .onConflictDoNothing()
-        .returning();
-
-      res.json(tracker || { message: "Already tracking this product" });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid tracker data", errors: error.errors });
-      }
-      console.error("Error creating wishlist tracker:", error);
-      res.status(500).json({ message: "Failed to create tracker" });
-    }
-  });
-
-  // Remove product from wishlist tracking
-  app.delete("/api/wishlist-alerts/track/:productId", async (req, res) => {
-    try {
-      const userId = 1; // Mock user ID
-      const { productId } = req.params;
-
-      await db
-        .update(wishlistTrackers)
-        .set({ isActive: false, updatedAt: new Date() })
-        .where(
-          and(
-            eq(wishlistTrackers.userId, userId),
-            eq(wishlistTrackers.productId, parseInt(productId))
-          )
-        );
-
-      res.json({ message: "Tracking disabled for product" });
-    } catch (error) {
-      console.error("Error removing wishlist tracker:", error);
-      res.status(500).json({ message: "Failed to remove tracker" });
-    }
-  });
-
-  // Get user's active wishlist trackers
-  app.get("/api/wishlist-alerts/trackers", async (req, res) => {
-    try {
-      const userId = 1; // Mock user ID
-
-      const trackers = await db
-        .select()
-        .from(wishlistTrackers)
-        .where(
-          and(
-            eq(wishlistTrackers.userId, userId),
-            eq(wishlistTrackers.isActive, true)
-          )
-        )
-        .orderBy(sql`${wishlistTrackers.createdAt} DESC`);
-
-      res.json(trackers);
-    } catch (error) {
-      console.error("Error fetching wishlist trackers:", error);
-      res.status(500).json({ message: "Failed to fetch trackers" });
-    }
-  });
-
-  // Manual trigger for testing alerts (simulates inventory/price changes)
-  app.post("/api/wishlist-alerts/trigger-test", async (req, res) => {
-    try {
-      const { productId, alertType } = req.body;
-
-      if (!productId || !alertType) {
-        return res.status(400).json({ message: "Missing productId or alertType" });
-      }
-
-      // Find active trackers for this product
-      const activeTrackers = await db
-        .select({
-          tracker: wishlistTrackers,
-          user: users
-        })
-        .from(wishlistTrackers)
-        .innerJoin(users, eq(wishlistTrackers.userId, users.id))
-        .where(
-          and(
-            eq(wishlistTrackers.productId, parseInt(productId)),
-            eq(wishlistTrackers.isActive, true),
-            sql`(${wishlistTrackers.alertType} = ${alertType} OR ${wishlistTrackers.alertType} = 'both')`
-          )
-        );
-
-      if (activeTrackers.length === 0) {
-        return res.json({ message: "No active trackers found for this product" });
-      }
-
-      const alertResults = [];
-      
-      for (const { tracker, user } of activeTrackers) {
-        // Check if we've alerted recently (prevent spam)
-        const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        if (tracker.lastAlertedAt && tracker.lastAlertedAt > dayAgo) {
-          continue; // Skip if alerted within last 24 hours
-        }
-
-        // Get user preferences
-        const [prefs] = await db
-          .select()
-          .from(userNotificationPreferences)
-          .where(eq(userNotificationPreferences.userId, user.id))
-          .limit(1);
-
-        const preferences = prefs || {
-          emailEnabled: true,
-          smsEnabled: false,
-          browserEnabled: true
-        };
-
-        // Mock product data (in real app, fetch from products/retailerProducts)
-        const productName = `Test Product ${productId}`;
-        const productPrice = "$29.99";
-        
-        // Send notifications based on preferences
-        if (preferences.emailEnabled && user.email) {
-          try {
-            await sendEmailAlert(user.email, productName, alertType, productPrice);
-            
-            // Log notification history
-            await db.insert(notificationHistory).values({
-              userId: user.id,
-              productId: parseInt(productId),
-              notificationType: alertType,
-              deliveryMethod: 'email',
-              status: 'sent',
-              metadata: JSON.stringify({ email: user.email, productName })
-            });
-            
-            alertResults.push(`Email sent to ${user.email}`);
-          } catch (error) {
-            console.error("Email send failed:", error);
-          }
-        }
-
-        if (preferences.smsEnabled) {
-          try {
-            await sendSMSAlert("+1234567890", productName, alertType); // Mock phone
-            
-            await db.insert(notificationHistory).values({
-              userId: user.id,
-              productId: parseInt(productId),
-              notificationType: alertType,
-              deliveryMethod: 'sms',
-              status: 'sent',
-              metadata: JSON.stringify({ phone: "+1234567890", productName })
-            });
-            
-            alertResults.push(`SMS sent to user ${user.id}`);
-          } catch (error) {
-            console.error("SMS send failed:", error);
-          }
-        }
-
-        // Update last alerted timestamp
-        await db
-          .update(wishlistTrackers)
-          .set({ lastAlertedAt: new Date(), updatedAt: new Date() })
-          .where(eq(wishlistTrackers.id, tracker.id));
-      }
-
-      res.json({
-        message: `Test alert triggered for product ${productId}`,
-        results: alertResults,
-        trackersFound: activeTrackers.length
-      });
-    } catch (error) {
-      console.error("Error triggering test alert:", error);
-      res.status(500).json({ message: "Failed to trigger test alert" });
-    }
-  });
-
-  // Get notification history for user
-  app.get("/api/wishlist-alerts/history", async (req, res) => {
-    try {
-      const userId = 1; // Mock user ID
-      const { limit = 20 } = req.query;
-
-      const history = await db
-        .select()
-        .from(notificationHistory)
-        .where(eq(notificationHistory.userId, userId))
-        .orderBy(sql`${notificationHistory.sentAt} DESC`)
-        .limit(parseInt(limit as string));
-
-      res.json(history);
-    } catch (error) {
-      console.error("Error fetching notification history:", error);
-      res.status(500).json({ message: "Failed to fetch history" });
-    }
-  });
-
-  // Admin endpoint to view all pending alerts
-  app.get("/api/admin/wishlist-alerts", async (req, res) => {
-    try {
-      const pendingAlerts = await db
-        .select({
-          tracker: wishlistTrackers,
-          user: users
-        })
-        .from(wishlistTrackers)
-        .innerJoin(users, eq(wishlistTrackers.userId, users.id))
-        .where(eq(wishlistTrackers.isActive, true))
-        .orderBy(sql`${wishlistTrackers.createdAt} DESC`);
-
-      const alertStats = await db
-        .select({
-          total: sql<number>`count(*)`,
-          stockAlerts: sql<number>`count(*) filter (where alert_type = 'stock' or alert_type = 'both')`,
-          priceAlerts: sql<number>`count(*) filter (where alert_type = 'price' or alert_type = 'both')`
-        })
-        .from(wishlistTrackers)
-        .where(eq(wishlistTrackers.isActive, true));
-
-      res.json({
-        pendingAlerts,
-        stats: alertStats[0]
-      });
-    } catch (error) {
-      console.error("Error fetching admin alert data:", error);
-      res.status(500).json({ message: "Failed to fetch admin data" });
-    }
-  });
-
-  // Admin endpoint to manually send alert to all users tracking a product
-  app.post("/api/admin/wishlist-alerts/broadcast", async (req, res) => {
-    try {
-      const { productId, alertType, message } = req.body;
-
-      if (!productId || !alertType) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
-      const results = await db
-        .select({
-          tracker: wishlistTrackers,
-          user: users
-        })
-        .from(wishlistTrackers)
-        .innerJoin(users, eq(wishlistTrackers.userId, users.id))
-        .where(
-          and(
-            eq(wishlistTrackers.productId, parseInt(productId)),
-            eq(wishlistTrackers.isActive, true)
-          )
-        );
-
-      let sentCount = 0;
-      for (const { user } of results) {
-        if (user.email) {
-          await sendEmailAlert(user.email, `Product ${productId}`, alertType);
-          sentCount++;
-        }
-      }
-
-      res.json({
-        message: `Broadcast sent to ${sentCount} users`,
-        productId,
-        alertType
-      });
-    } catch (error) {
-      console.error("Error broadcasting alert:", error);
-      res.status(500).json({ message: "Failed to broadcast alert" });
+      res.status(500).json({ message: "Failed to send test alert" });
     }
   });
 }

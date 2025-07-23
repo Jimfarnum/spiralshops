@@ -5,6 +5,7 @@ import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Bell,
@@ -16,7 +17,10 @@ import {
   DollarSign,
   Clock,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Mail,
+  Smartphone,
+  Monitor
 } from 'lucide-react';
 
 interface WishlistItem {
@@ -30,6 +34,9 @@ interface WishlistItem {
   storeName: string;
   isInStock: boolean;
   lastChecked: string;
+  alertType?: 'stock' | 'price' | 'promo';
+  targetPrice?: number;
+  notificationMethods?: ('email' | 'sms' | 'push')[];
 }
 
 interface NotificationSettings {

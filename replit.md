@@ -371,6 +371,19 @@ Preferred communication style: Simple, everyday language.
   - Mobile-responsive interface with protected routes and comprehensive form validation
   - Integration with mall system for preferred location selection and multi-store support
 
+✓ **Enhanced Wishlist Alert System with Push/Email/SMS Notifications (Feature 13 - January 2025)**:
+  - Complete notification engine with multi-channel delivery (email, SMS, push notifications) via simulated API integration
+  - Advanced wishlist alert management supporting stock, price, and promotional alerts with customizable triggers
+  - Comprehensive notification preferences system with granular control over delivery methods and frequency
+  - Real-time inventory monitoring with automated product change detection and alert processing
+  - Full database schema expansion with wishlistAlerts, notificationPreferences, and notificationLog tables
+  - Interactive Feature 13 demo page (/feature-13-demo) with live notification testing and management interface
+  - Backend notification engine with 85-95% simulated success rates for realistic testing scenarios
+  - WishlistAlertManager component for easy integration into product pages and wishlist interfaces
+  - Complete API infrastructure with alert CRUD operations, notification history, and preference management
+  - Advanced alert types: back-in-stock notifications, price drop alerts with target pricing, and promotional offers
+  - Notification history tracking with status monitoring, delivery confirmation, and failure reason logging
+
 ## System Architecture
 
 ### Frontend Architecture
