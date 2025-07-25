@@ -1581,3 +1581,87 @@ export type InsertRetailerProfile = z.infer<typeof insertRetailerProfileSchema>;
 export type LargeRetailerSetting = typeof largeRetailerSettings.$inferSelect;
 export type InsertLargeRetailerSetting = z.infer<typeof insertLargeRetailerSettingSchema>;
 
+// Follow/favorite system for retailers - Feature 16
+export const retailerFollowSystem = pgTable("retailer_follow_system", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  followType: text("follow_type").notNull(), // 'store', 'retailer', 'mall'
+  followId: integer("follow_id").notNull(), // references stores.id, retailers.id, or malls.id
+  followedAt: timestamp("followed_at").defaultNow(),
+  notificationsEnabled: boolean("notifications_enabled").default(true),
+  tags: text("tags").array(), // user-defined tags like 'favorite', 'deals', 'new-arrivals'
+});
+
+// Retailer favorites analytics for tracking most followed stores
+export const retailerFollowStats = pgTable("retailer_follow_stats", {
+  id: serial("id").primaryKey(),
+  storeId: integer("store_id").notNull().references(() => stores.id),
+  totalFollowers: integer("total_followers").default(0),
+  followersThisWeek: integer("followers_this_week").default(0),
+  followersThisMonth: integer("followers_this_month").default(0),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
+// User follow preferences for notification settings
+export const followNotificationPreferences = pgTable("follow_notification_preferences", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id).unique(),
+  newProductNotifications: boolean("new_product_notifications").default(true),
+  saleNotifications: boolean("sale_notifications").default(true),
+  eventNotifications: boolean("event_notifications").default(true),
+  weeklyDigest: boolean("weekly_digest").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Relations for follow system
+export const retailerFollowSystemRelations = relations(retailerFollowSystem, ({ one }) => ({
+  user: one(users, {
+    fields: [retailerFollowSystem.userId],
+    references: [users.id],
+  }),
+  store: one(stores, {
+    fields: [retailerFollowSystem.followId],
+    references: [stores.id],
+  }),
+}));
+
+export const retailerFollowStatsRelations = relations(retailerFollowStats, ({ one }) => ({
+  store: one(stores, {
+    fields: [retailerFollowStats.storeId],
+    references: [stores.id],
+  }),
+}));
+
+export const followNotificationPreferencesRelations = relations(followNotificationPreferences, ({ one }) => ({
+  user: one(users, {
+    fields: [followNotificationPreferences.userId],
+    references: [users.id],
+  }),
+}));
+
+// Insert schemas for follow system
+export const insertRetailerFollowSystemSchema = createInsertSchema(retailerFollowSystem).omit({
+  id: true,
+  followedAt: true,
+});
+
+export const insertRetailerFollowStatsSchema = createInsertSchema(retailerFollowStats).omit({
+  id: true,
+  lastUpdated: true,
+});
+
+export const insertFollowNotificationPreferencesSchema = createInsertSchema(followNotificationPreferences).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Follow system types
+export type RetailerFollowSystem = typeof retailerFollowSystem.$inferSelect;
+export type InsertRetailerFollowSystem = z.infer<typeof insertRetailerFollowSystemSchema>;
+export type RetailerFollowStats = typeof retailerFollowStats.$inferSelect;
+export type InsertRetailerFollowStats = z.infer<typeof insertRetailerFollowStatsSchema>;
+export type FollowNotificationPreferences = typeof followNotificationPreferences.$inferSelect;
+export type InsertFollowNotificationPreferences = z.infer<typeof insertFollowNotificationPreferencesSchema>;
+

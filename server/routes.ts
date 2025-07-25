@@ -17,7 +17,7 @@ import { registerAnalyticsRoutes } from "./analyticsRoutes";
 import { registerInviteRoutes } from "./inviteRoutes";
 import { registerReturnRoutes } from "./returnRoutes";
 import { recommendationEngine } from "./smartRecommendation";
-import { registerFollowRoutes } from "./followRoutes";
+import followRoutes from "./followRoutes";
 import { registerFeature17Routes } from "./feature17Routes";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
@@ -468,7 +468,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerReturnRoutes(app);
 
   // Register follow system routes (Feature 16)
-  registerFollowRoutes(app);
+  app.use(followRoutes);
 
   // Register Feature 17: Unified Enhancement Bundle routes
   registerFeature17Routes(app);
