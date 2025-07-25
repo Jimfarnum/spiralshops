@@ -26,6 +26,73 @@ import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Store routes
+  // Store verification lookup endpoint
+  app.get("/api/lookup-store", async (req, res) => {
+    try {
+      const { name } = req.query;
+      
+      if (!name || typeof name !== 'string') {
+        return res.status(400).json({ 
+          error: "Store name is required",
+          isVerified: false 
+        });
+      }
+
+      const stores = await storage.getStores();
+      const searchTerm = name.toLowerCase().trim();
+      
+      // Find exact match first
+      const exactMatch = stores.find(store => 
+        store.name.toLowerCase() === searchTerm
+      );
+      
+      if (exactMatch) {
+        return res.json({
+          name: exactMatch.name,
+          isVerified: exactMatch.isVerified || false,
+          tier: exactMatch.verificationTier || "Unverified",
+          category: exactMatch.category,
+          address: exactMatch.address,
+          rating: exactMatch.rating,
+          description: exactMatch.description
+        });
+      }
+      
+      // If no exact match, find partial matches
+      const partialMatches = stores.filter(store => 
+        store.name.toLowerCase().includes(searchTerm)
+      ).slice(0, 5);
+      
+      if (partialMatches.length > 0) {
+        return res.json({
+          exactMatch: false,
+          suggestions: partialMatches.map(store => ({
+            name: store.name,
+            isVerified: store.isVerified || false,
+            tier: store.verificationTier || "Unverified",
+            category: store.category,
+            address: store.address
+          }))
+        });
+      }
+      
+      // No matches found
+      return res.json({
+        name: name,
+        isVerified: false,
+        tier: "Not Found",
+        message: "Store not found in SPIRAL directory"
+      });
+      
+    } catch (error) {
+      console.error("Error in store lookup:", error);
+      res.status(500).json({ 
+        error: "Failed to lookup store",
+        isVerified: false 
+      });
+    }
+  });
+
   app.get("/api/stores", async (req, res) => {
     try {
       const stores = await storage.getStores();

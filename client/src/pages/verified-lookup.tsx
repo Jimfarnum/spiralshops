@@ -12,16 +12,27 @@ import type { Store } from "@shared/schema";
 
 export default function VerifiedLookupPage() {
   const [search, setSearch] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [result, setResult] = useState<any>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
-  // Fetch all stores to search through
-  const { data: stores = [], isLoading } = useQuery<Store[]>({
-    queryKey: ["/api/stores"],
-  });
-
-  const handleSearch = () => {
-    if (search.trim()) {
-      setSearchQuery(search.trim());
+  const handleSearch = async () => {
+    if (!search.trim()) return;
+    
+    setIsSearching(true);
+    try {
+      const res = await fetch(`/api/lookup-store?name=${encodeURIComponent(search.trim())}`);
+      const data = await res.json();
+      setResult(data);
+    } catch (error) {
+      console.error("Search error:", error);
+      setResult({
+        name: search,
+        isVerified: false,
+        tier: "Error",
+        message: "Search failed. Please try again."
+      });
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -30,17 +41,6 @@ export default function VerifiedLookupPage() {
       handleSearch();
     }
   };
-
-  // Find matching stores
-  const searchResults = searchQuery
-    ? stores.filter((store) =>
-        store.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
-
-  const exactMatch = searchResults.find(
-    (store) => store.name.toLowerCase() === searchQuery.toLowerCase()
-  );
 
   const getVerificationStatus = (store: Store) => {
     if (store.isVerified) {
@@ -100,31 +100,31 @@ export default function VerifiedLookupPage() {
               </div>
               <Button
                 onClick={handleSearch}
-                disabled={!search.trim() || isLoading}
+                disabled={!search.trim() || isSearching}
                 className="px-8 py-3 bg-green-600 hover:bg-green-700"
               >
                 <Search className="w-4 h-4 mr-2" />
-                Lookup
+                {isSearching ? "Searching..." : "Lookup"}
               </Button>
             </div>
             
-            {isLoading && (
-              <p className="text-sm text-gray-500 mt-2">Loading store database...</p>
+            {isSearching && (
+              <p className="text-sm text-gray-500 mt-2">Searching SPIRAL database...</p>
             )}
           </CardContent>
         </Card>
 
         {/* Results Section */}
-        {searchQuery && (
+        {result && (
           <div className="space-y-6">
-            {exactMatch ? (
-              <Card className="border-2 border-green-200">
+            {result.isVerified && !result.suggestions ? (
+              <Card className={`border-2 ${result.isVerified ? 'border-green-200' : 'border-red-200'}`}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-2xl">{exactMatch.name}</CardTitle>
+                    <CardTitle className="text-2xl">{result.name}</CardTitle>
                     <VerifiedBadge 
-                      isVerified={exactMatch.isVerified} 
-                      tier={exactMatch.verificationTier}
+                      isVerified={result.isVerified || false} 
+                      tier={result.tier as "Unverified" | "Basic" | "Local" | "Regional" | "National" | null}
                     />
                   </div>
                 </CardHeader>
@@ -133,22 +133,22 @@ export default function VerifiedLookupPage() {
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-3">Business Information</h3>
                       <div className="space-y-2 text-sm">
-                        <p><span className="font-medium">Category:</span> {exactMatch.category || "N/A"}</p>
-                        <p><span className="font-medium">Location:</span> {exactMatch.address || "N/A"}</p>
-                        <p><span className="font-medium">Rating:</span> {exactMatch.rating ? `${exactMatch.rating}/5 stars` : "No ratings yet"}</p>
-                        <p><span className="font-medium">Description:</span> {exactMatch.description || "No description available"}</p>
+                        <p><span className="font-medium">Category:</span> {result.category || "N/A"}</p>
+                        <p><span className="font-medium">Location:</span> {result.address || "N/A"}</p>
+                        <p><span className="font-medium">Rating:</span> {result.rating ? `${result.rating}/5 stars` : "No ratings yet"}</p>
+                        <p><span className="font-medium">Description:</span> {result.description || "No description available"}</p>
                       </div>
                     </div>
                     
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-3">Verification Status</h3>
                       <div className="space-y-3">
-                        {exactMatch.isVerified ? (
+                        {result.isVerified ? (
                           <>
                             <div className="flex items-center gap-2">
                               <CheckCircle className="w-5 h-5 text-green-600" />
-                              <Badge className={getVerificationStatus(exactMatch).color}>
-                                {getVerificationStatus(exactMatch).status}
+                              <Badge className="bg-green-100 text-green-800">
+                                ✅ {result.name} is SPIRAL Verified ({result.tier})
                               </Badge>
                             </div>
                             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -161,15 +161,15 @@ export default function VerifiedLookupPage() {
                         ) : (
                           <>
                             <div className="flex items-center gap-2">
-                              <XCircle className="w-5 h-5 text-gray-500" />
-                              <Badge className="bg-gray-100 text-gray-800">
-                                Not Verified
+                              <XCircle className="w-5 h-5 text-red-500" />
+                              <Badge className="bg-red-100 text-red-800">
+                                ❌ Not Verified
                               </Badge>
                             </div>
                             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                               <p className="text-sm text-yellow-800">
                                 <strong>⚠️ This business is not yet verified</strong><br />
-                                They may still be legitimate, but have not completed SPIRAL's verification process.
+                                {result.message || "They may still be legitimate, but have not completed SPIRAL's verification process."}
                               </p>
                             </div>
                           </>
@@ -179,16 +179,14 @@ export default function VerifiedLookupPage() {
                   </div>
                 </CardContent>
               </Card>
-            ) : searchResults.length > 0 ? (
+            ) : result.suggestions && result.suggestions.length > 0 ? (
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Similar stores found ({searchResults.length})
+                  Similar stores found ({result.suggestions.length})
                 </h3>
                 <div className="grid gap-4">
-                  {searchResults.slice(0, 5).map((store) => {
-                    const verificationStatus = getVerificationStatus(store);
-                    return (
-                      <Card key={store.id} className="hover:shadow-md transition-shadow">
+                  {result.suggestions.map((store: any, index: number) => (
+                      <Card key={index} className="hover:shadow-md transition-shadow">
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
@@ -196,19 +194,14 @@ export default function VerifiedLookupPage() {
                               <p className="text-sm text-gray-600">{store.category} • {store.address}</p>
                             </div>
                             <div className="flex items-center gap-3">
-                              <Badge className={verificationStatus.color}>
-                                {verificationStatus.status}
+                              <Badge className={store.isVerified ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                                {store.isVerified ? `✅ Verified (${store.tier})` : "❌ Not Verified"}
                               </Badge>
-                              <VerifiedBadge 
-                                isVerified={store.isVerified} 
-                                tier={store.verificationTier}
-                              />
                             </div>
                           </div>
                         </CardContent>
                       </Card>
-                    );
-                  })}
+                    ))}
                 </div>
               </div>
             ) : (
@@ -219,7 +212,7 @@ export default function VerifiedLookupPage() {
                     No stores found
                   </h3>
                   <p className="text-gray-600 mb-4">
-                    We couldn't find any stores matching "{searchQuery}". This could mean:
+                    We couldn't find any stores matching "{result.name}". This could mean:
                   </p>
                   <ul className="text-sm text-gray-500 text-left max-w-md mx-auto space-y-1">
                     <li>• The store name is spelled differently</li>
@@ -227,7 +220,7 @@ export default function VerifiedLookupPage() {
                     <li>• The store operates under a different name</li>
                   </ul>
                   <Button
-                    onClick={() => setSearchQuery("")}
+                    onClick={() => setResult(null)}
                     variant="outline"
                     className="mt-4"
                   >
