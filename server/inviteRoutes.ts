@@ -17,7 +17,7 @@ class MemoryInviteStorage implements InviteStorage {
   private rewards: Map<string, any> = new Map();
 
   async generateReferralCode(userId: string): Promise<string> {
-    const code = `${userId}-${nanoid(6)}`.toUpperCase();
+    const code = `${userId.toUpperCase()}-${nanoid(6)}`;
     
     // Check if user already has a referral code
     const existingCode = Array.from(this.referrals.values())
@@ -38,15 +38,20 @@ class MemoryInviteStorage implements InviteStorage {
     };
 
     this.referrals.set(referral.id, referral);
+    console.log(`Generated referral: ${JSON.stringify(referral)}`);
+    console.log(`Total referrals in memory: ${this.referrals.size}`);
     return code;
   }
 
   async trackReferral(referralCode: string, referredUserId: string): Promise<void> {
+    console.log(`Looking for referral code: ${referralCode}`);
+    console.log(`Available referrals: ${Array.from(this.referrals.values()).map(r => r.referralCode).join(', ')}`);
+    
     const referral = Array.from(this.referrals.values())
       .find(r => r.referralCode === referralCode);
 
     if (!referral) {
-      throw new Error("Invalid referral code");
+      throw new Error(`Invalid referral code: ${referralCode}`);
     }
 
     if (referral.referredUserId) {

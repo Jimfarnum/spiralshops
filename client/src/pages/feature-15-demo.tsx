@@ -51,11 +51,12 @@ export default function Feature15Demo() {
   // Generate referral code mutation
   const generateCodeMutation = useMutation({
     mutationFn: async (userId: string) => {
-      return apiRequest('/api/invite/generate', {
+      const response = await fetch('/api/invite/generate', {
         method: 'POST',
         body: JSON.stringify({ userId }),
         headers: { 'Content-Type': 'application/json' }
       });
+      return response.json();
     },
     onSuccess: (result: any) => {
       setReferralCode(result.referralCode);
@@ -70,11 +71,12 @@ export default function Feature15Demo() {
   // Track referral mutation
   const trackReferralMutation = useMutation({
     mutationFn: async ({ referralCode, referredUserId }: { referralCode: string; referredUserId: string }) => {
-      return apiRequest('/api/invite/track', {
+      const response = await fetch('/api/invite/track', {
         method: 'POST',
         body: JSON.stringify({ referralCode, referredUserId }),
         headers: { 'Content-Type': 'application/json' }
       });
+      return response.json();
     },
     onSuccess: (result: any) => {
       toast({
@@ -89,11 +91,12 @@ export default function Feature15Demo() {
   // First purchase bonus mutation
   const firstPurchaseMutation = useMutation({
     mutationFn: async ({ referredUserId, orderId, orderAmount }: { referredUserId: string; orderId: string; orderAmount: number }) => {
-      return apiRequest('/api/invite/first-purchase', {
+      const response = await fetch('/api/invite/first-purchase', {
         method: 'POST',
         body: JSON.stringify({ referredUserId, orderId, orderAmount }),
         headers: { 'Content-Type': 'application/json' }
       });
+      return response.json();
     },
     onSuccess: (result: any) => {
       if (result.success) {
@@ -115,7 +118,7 @@ export default function Feature15Demo() {
   // Share tracking mutation
   const shareTrackingMutation = useMutation({
     mutationFn: async (platform: string) => {
-      return apiRequest('/api/invite/share', {
+      const response = await fetch('/api/invite/share', {
         method: 'POST',
         body: JSON.stringify({ 
           userId: testUserId, 
@@ -124,6 +127,7 @@ export default function Feature15Demo() {
         }),
         headers: { 'Content-Type': 'application/json' }
       });
+      return response.json();
     },
     onSuccess: (result: any) => {
       toast({
@@ -397,9 +401,9 @@ export default function Feature15Demo() {
                       </div>
                     ))}
                   </div>
-                ) : leaderboard?.leaderboard?.length > 0 ? (
+                ) : (leaderboard as any)?.leaderboard?.length > 0 ? (
                   <div className="grid gap-4">
-                    {leaderboard.leaderboard.map((entry: any, index: number) => (
+                    {(leaderboard as any).leaderboard.map((entry: any, index: number) => (
                       <div key={entry.id} className={`flex items-center justify-between p-4 rounded-lg border ${index < 3 ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-50'}`}>
                         <div className="flex items-center gap-4">
                           <div className="flex items-center gap-2">
@@ -446,24 +450,24 @@ export default function Feature15Demo() {
                   <div className="animate-pulse">
                     <div className="h-32 bg-gray-200 rounded"></div>
                   </div>
-                ) : userStats ? (
+                ) : (userStats as any) ? (
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="text-center p-4 bg-blue-50 rounded-lg">
-                        <p className="text-2xl font-bold text-blue-600">{userStats.totalInvites}</p>
+                        <p className="text-2xl font-bold text-blue-600">{(userStats as any).totalInvites}</p>
                         <p className="text-sm text-gray-600">Total Invites</p>
                       </div>
                       <div className="text-center p-4 bg-green-50 rounded-lg">
-                        <p className="text-2xl font-bold text-green-600">{userStats.successfulInvites}</p>
+                        <p className="text-2xl font-bold text-green-600">{(userStats as any).successfulInvites}</p>
                         <p className="text-sm text-gray-600">Successful</p>
                       </div>
                       <div className="text-center p-4 bg-purple-50 rounded-lg">
-                        <p className="text-2xl font-bold text-purple-600">{userStats.totalSpiralEarned}</p>
+                        <p className="text-2xl font-bold text-purple-600">{(userStats as any).totalSpiralEarned}</p>
                         <p className="text-sm text-gray-600">SPIRALs Earned</p>
                       </div>
                       <div className="text-center p-4 bg-yellow-50 rounded-lg">
                         <p className="text-2xl font-bold text-yellow-600">
-                          {userStats.currentRank ? `#${userStats.currentRank}` : 'Unranked'}
+                          {(userStats as any).currentRank ? `#${(userStats as any).currentRank}` : 'Unranked'}
                         </p>
                         <p className="text-sm text-gray-600">Current Rank</p>
                       </div>
@@ -471,9 +475,9 @@ export default function Feature15Demo() {
 
                     <div>
                       <h4 className="font-semibold mb-3">Recent Referrals</h4>
-                      {userStats.recentReferrals && userStats.recentReferrals.length > 0 ? (
+                      {(userStats as any).recentReferrals && (userStats as any).recentReferrals.length > 0 ? (
                         <div className="space-y-2">
-                          {userStats.recentReferrals.map((referral: any) => (
+                          {(userStats as any).recentReferrals.map((referral: any) => (
                             <div key={referral.id} className="flex justify-between items-center p-3 bg-gray-50 rounded">
                               <span className="text-sm text-gray-600">
                                 {new Date(referral.completedAt).toLocaleString()}
