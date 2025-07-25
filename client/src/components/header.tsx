@@ -58,6 +58,9 @@ export default function Header() {
             <Link href="/trusted-local-stores" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
               Trusted Local
             </Link>
+            <Link href="/verified-lookup" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
+              Verify Store
+            </Link>
             <Link href="/social-feed" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
               Community
             </Link>

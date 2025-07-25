@@ -156,14 +156,14 @@ export default function Home() {
               </div>
             </Link>
 
-            {/* Retailer Sign-Up */}
-            <Link href="/retailer-login" className="group">
+            {/* Verify Store */}
+            <Link href="/verified-lookup" className="group">
               <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
                 <div className="flex items-center gap-4 text-left">
-                  <div className="text-3xl">🏪</div>
+                  <div className="text-3xl">🔍</div>
                   <div>
-                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Join as Retailer</h3>
-                    <p className="text-sm text-white/90 font-['Inter']">List your business and connect with customers</p>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Verify Store</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Check if a business is SPIRAL verified</p>
                   </div>
                 </div>
               </div>

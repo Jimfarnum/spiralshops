@@ -127,6 +127,7 @@ import VerificationDemo from "@/pages/verification-demo";
 import VerificationLevels from "@/pages/verification-levels";
 import TrustedLocalStores from "@/pages/trusted-local-stores";
 import DiscoverStores from "@/pages/discover-stores";
+import VerifiedLookup from "@/pages/verified-lookup";
 
 function Router() {
   return (
@@ -259,6 +260,7 @@ function Router() {
       <Route path="/verification-levels" component={VerificationLevels} />
       <Route path="/trusted-local-stores" component={TrustedLocalStores} />
       <Route path="/discover-stores" component={DiscoverStores} />
+      <Route path="/verified-lookup" component={VerifiedLookup} />
       <Route component={NotFound} />
     </Switch>
   );
