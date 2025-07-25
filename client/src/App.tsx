@@ -24,6 +24,7 @@ import RetailerLogin from "@/pages/retailer-login";
 import RetailerDashboard from "@/pages/retailer-dashboard";
 import RetailerDashboardNew from "@/components/RetailerDashboard";
 import ShopperDashboard from "@/components/ShopperDashboard";
+import Following from "@/pages/following";
 import MarketingCenter from "@/pages/marketing-center";
 import AnalyticsDashboard from "@/pages/analytics-dashboard";
 import SocialFeed from "@/pages/social-feed";
@@ -233,6 +234,7 @@ function Router() {
       <Route path="/spiral-wallet-demo" component={SpiralWalletDemo} />
       <Route path="/retailer-dashboard-new" component={RetailerDashboardNew} />
       <Route path="/shopper-dashboard" component={ShopperDashboard} />
+      <Route path="/following" component={Following} />
       <Route component={NotFound} />
     </Switch>
   );

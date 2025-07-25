@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Share2, Copy, Gift, TrendingUp, Award } from "lucide-react";
+import { Share2, Copy, Gift, TrendingUp, Award, Heart } from "lucide-react";
 
 export default function ShopperDashboard() {
   const [walletBalance, setWalletBalance] = useState<number>(0);
@@ -340,13 +340,21 @@ export default function ShopperDashboard() {
 
         {/* Quick Actions */}
         <div className="mt-8 text-center">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <Button 
               variant="outline" 
               className="border-[var(--spiral-navy)] text-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)] hover:text-white"
               onClick={() => window.location.href = '/products'}
             >
               Start Shopping
+            </Button>
+            <Button 
+              variant="outline"
+              className="border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)] hover:text-white"
+              onClick={() => window.location.href = '/following'}
+            >
+              <Heart className="w-4 h-4 mr-2" />
+              My Following
             </Button>
             <Button 
               variant="outline"

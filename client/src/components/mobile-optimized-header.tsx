@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { useCartStore } from '@/lib/cartStore';
 import { useAuthStore } from '@/lib/authStore';
 import { useLoyaltyStore } from '@/lib/loyaltyStore';
-import { Menu, ShoppingCart, User, LogOut, X, Home, Package, Building2, Users, Info, Store } from 'lucide-react';
+import { Menu, ShoppingCart, User, LogOut, X, Home, Package, Building2, Users, Info, Store, Heart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface MobileOptimizedHeaderProps {
@@ -34,6 +34,7 @@ export default function MobileOptimizedHeader({ className = '' }: MobileOptimize
     { href: '/', label: 'Discover', icon: Home },
     { href: '/products', label: 'Products', icon: Package },
     { href: '/malls', label: 'Shopping Malls', icon: Building2 },
+    { href: '/following', label: 'Following', icon: Heart },
     { href: '/social-feed', label: 'Community', icon: Users },
     { href: '/about', label: 'About', icon: Info },
     { href: '/retailer-login', label: 'For Retailers', icon: Store }

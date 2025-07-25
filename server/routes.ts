@@ -17,6 +17,7 @@ import { registerAnalyticsRoutes } from "./analyticsRoutes";
 import { registerInviteRoutes } from "./inviteRoutes";
 import { registerReturnRoutes } from "./returnRoutes";
 import { recommendationEngine } from "./smartRecommendation";
+import { registerFollowRoutes } from "./followRoutes";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -464,6 +465,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register return & refund system routes
   registerReturnRoutes(app);
+
+  // Register follow system routes (Feature 16)
+  registerFollowRoutes(app);
 
   const httpServer = createServer(app);
   // AI Recommendations API

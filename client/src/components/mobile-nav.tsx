@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "wouter";
-import { Menu, Home, Package, Building2, Users, User, ShoppingCart, LogOut } from "lucide-react";
+import { Menu, Home, Package, Building2, Users, User, ShoppingCart, LogOut, Heart } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
 import { useAuthStore } from "@/lib/authStore";
 import SpiralBalance from "./spiral-balance";
@@ -37,6 +37,7 @@ export default function MobileNav({ className }: MobileNavProps) {
     { href: "/", icon: Home, label: "Discover", description: "Explore local businesses" },
     { href: "/products", icon: Package, label: "Products", description: "Browse all products" },
     { href: "/malls", icon: Building2, label: "Malls", description: "Shopping centers" },
+    { href: "/following", icon: Heart, label: "Following", description: "Stores you follow" },
     { href: "/social-feed", icon: Users, label: "Community", description: "Connect with locals" },
   ];
 

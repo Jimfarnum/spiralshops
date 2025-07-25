@@ -122,10 +122,19 @@ export const fulfillmentGroups = pgTable("fulfillment_groups", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// User Follows table for retailer favorites/follow system
+export const userFollows = pgTable("user_follows", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  retailerId: integer("retailer_id").notNull().references(() => retailers.id, { onDelete: "cascade" }),
+  followedAt: timestamp("followed_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   spiralTransactions: many(spiralTransactions),
   orders: many(orders),
+  follows: many(userFollows),
 }));
 
 export const spiralTransactionsRelations = relations(spiralTransactions, ({ one }) => ({
@@ -170,7 +179,20 @@ export const fulfillmentGroupsRelations = relations(fulfillmentGroups, ({ one })
   }),
 }));
 
+export const userFollowsRelations = relations(userFollows, ({ one }) => ({
+  user: one(users, {
+    fields: [userFollows.userId],
+    references: [users.id],
+  }),
+  retailer: one(retailers, {
+    fields: [userFollows.retailerId],
+    references: [retailers.id],
+  }),
+}));
 
+export const retailersRelations = relations(retailers, ({ many }) => ({
+  followers: many(userFollows),
+}));
 
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
@@ -201,6 +223,11 @@ export const insertFulfillmentGroupSchema = createInsertSchema(fulfillmentGroups
   createdAt: true,
 });
 
+export const insertUserFollowSchema = createInsertSchema(userFollows).omit({
+  id: true,
+  followedAt: true,
+});
+
 export type InsertStore = z.infer<typeof insertStoreSchema>;
 export type Store = typeof stores.$inferSelect;
 export type InsertRetailer = z.infer<typeof insertRetailerSchema>;
@@ -215,6 +242,8 @@ export type OrderItem = typeof orderItems.$inferSelect;
 export type FulfillmentGroup = typeof fulfillmentGroups.$inferSelect;
 export type InsertOrderItem = typeof orderItems.$inferInsert;
 export type InsertFulfillmentGroup = typeof fulfillmentGroups.$inferInsert;
+export type InsertUserFollow = z.infer<typeof insertUserFollowSchema>;
+export type UserFollow = typeof userFollows.$inferSelect;
 
 // Invite codes table for friend referral system
 export const inviteCodes = pgTable("invite_codes", {

@@ -1,0 +1,127 @@
+// Feature 16: Retailer Favorites + Follow System
+
+// --- DATABASE (PostgreSQL) SCHEMA ---
+/*
+CREATE TABLE user_follows (
+  id SERIAL PRIMARY KEY,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  retailer_id UUID REFERENCES retailers(id) ON DELETE CASCADE,
+  followed_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, retailer_id)
+);
+*/
+
+// --- API ROUTES ---
+// POST /api/follow - Follow a retailer
+// DELETE /api/unfollow - Unfollow a retailer
+// GET /api/following - List followed retailers for user
+
+// --- BACKEND (pages/api/follow.ts) ---
+import { getSession } from "next-auth/react";
+import prisma from "@/lib/prisma";
+
+export default async function handler(req, res) {
+  const session = await getSession({ req });
+  if (!session?.user?.id) return res.status(401).json({ error: "Unauthorized" });
+
+  const { retailerId } = req.body;
+
+  if (req.method === "POST") {
+    const follow = await prisma.userFollows.upsert({
+      where: { user_id_retailer_id: { user_id: session.user.id, retailer_id: retailerId } },
+      update: {},
+      create: { user_id: session.user.id, retailer_id: retailerId },
+    });
+    return res.status(200).json(follow);
+  }
+
+  if (req.method === "DELETE") {
+    await prisma.userFollows.deleteMany({
+      where: { user_id: session.user.id, retailer_id: retailerId },
+    });
+    return res.status(200).json({ success: true });
+  }
+
+  if (req.method === "GET") {
+    const follows = await prisma.userFollows.findMany({
+      where: { user_id: session.user.id },
+      include: { retailer: true },
+    });
+    return res.status(200).json(follows);
+  }
+
+  res.status(405).end();
+}
+
+// --- FRONTEND FOLLOW BUTTON (components/FollowRetailerButton.tsx) ---
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+export default function FollowRetailerButton({ retailerId }) {
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  useEffect(() => {
+    axios.get("/api/following").then((res) => {
+      const followed = res.data.some((f) => f.retailer_id === retailerId);
+      setIsFollowing(followed);
+    });
+  }, [retailerId]);
+
+  const toggleFollow = async () => {
+    if (isFollowing) {
+      await axios.delete("/api/unfollow", { data: { retailerId } });
+      setIsFollowing(false);
+    } else {
+      await axios.post("/api/follow", { retailerId });
+      setIsFollowing(true);
+    }
+  };
+
+  return (
+    <button
+      onClick={toggleFollow}
+      className={`px-4 py-2 rounded-xl ${
+        isFollowing ? "bg-red-200 text-red-700" : "bg-green-200 text-green-700"
+      } hover:opacity-80 transition`}
+    >
+      {isFollowing ? "Unfollow Store" : "Follow Store"}
+    </button>
+  );
+}
+
+// --- RETAILER PROFILE PAGE INTEGRATION (/retailer/[id].tsx) ---
+import FollowRetailerButton from "@/components/FollowRetailerButton";
+
+// Inside your page component
+<FollowRetailerButton retailerId={retailer.id} />
+
+// --- USER DASHBOARD / Following Retailers Page (pages/following.tsx) ---
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+export default function Following() {
+  const [stores, setStores] = useState([]);
+
+  useEffect(() => {
+    axios.get("/api/following").then((res) => setStores(res.data));
+  }, []);
+
+  return (
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">Stores You Follow</h1>
+      <ul className="space-y-4">
+        {stores.map((store) => (
+          <li key={store.retailer.id} className="bg-white shadow p-4 rounded-xl">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-semibold">{store.retailer.name}</h2>
+                <p className="text-gray-500">{store.retailer.city}, {store.retailer.state}</p>
+              </div>
+              <FollowRetailerButton retailerId={store.retailer.id} />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
