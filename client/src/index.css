@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.section-description {
+  color: #333333;
+  font-weight: 400;
+}
+
 :root {
   /* SPIRAL Professional Color Palette */
   --background: #F5F3EF; /* Off-white background */

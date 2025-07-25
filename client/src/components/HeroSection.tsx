@@ -9,7 +9,7 @@ export default function HeroSection() {
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           Your Main Street isn't gone—it's waiting to come back
         </h1>
-        <p className="text-lg md:text-xl mb-6 max-w-2xl mx-auto">
+        <p className="section-description text-lg md:text-xl mb-6 max-w-2xl mx-auto">
           SPIRAL connects shoppers with real local stores, rewarding every purchase that supports a real place and real people.
         </p>
         <div className="flex justify-center gap-4">
@@ -32,15 +32,15 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-xl font-semibold mb-2">Shop Local</h3>
-            <p>Discover and shop from local retailers near you or across the country.</p>
+            <p className="section-description">Discover and shop from local retailers near you or across the country.</p>
           </div>
           <div>
             <h3 className="text-xl font-semibold mb-2">Earn SPIRALs</h3>
-            <p>Earn rewards on every purchase—doubled when redeemed in person.</p>
+            <p className="section-description">Earn rewards on every purchase—doubled when redeemed in person.</p>
           </div>
           <div>
             <h3 className="text-xl font-semibold mb-2">Fuel Community</h3>
-            <p>Your purchases power real jobs, local places, and Main Street revival.</p>
+            <p className="section-description">Your purchases power real jobs, local places, and Main Street revival.</p>
           </div>
         </div>
       </section>
@@ -48,7 +48,7 @@ export default function HeroSection() {
       {/* Wallet Preview */}
       <section className="py-20 px-6 bg-gray-50 w-full text-center">
         <h2 className="text-3xl font-semibold mb-6">SPIRAL Wallet</h2>
-        <p className="mb-6 max-w-xl mx-auto">
+        <p className="section-description mb-6 max-w-xl mx-auto">
           Track your earnings, see your impact, and redeem rewards easily—all in one place.
         </p>
         <Link href="/spiral-wallet-demo" className="text-blue-600 underline text-lg">
@@ -59,7 +59,7 @@ export default function HeroSection() {
       {/* Join Section */}
       <section className="py-20 px-6 text-center bg-yellow-50">
         <h2 className="text-3xl font-semibold mb-4">Be Part of the Movement</h2>
-        <p className="mb-6 max-w-xl mx-auto">
+        <p className="section-description mb-6 max-w-xl mx-auto">
           Whether you're a shopper or a retailer—SPIRAL makes every local connection count.
         </p>
         <Link href="/products">
