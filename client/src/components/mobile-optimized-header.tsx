@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { useCartStore } from '@/lib/cartStore';
 import { useAuthStore } from '@/lib/authStore';
 import { useLoyaltyStore } from '@/lib/loyaltyStore';
-import { Menu, ShoppingCart, User, LogOut, X, Home, Package, Building2, Users, Info, Store, Heart } from 'lucide-react';
+import { Menu, ShoppingCart, User, LogOut, X, Home, Package, Building2, Users, Info, Store, Heart, Calendar, MessageCircle, Map, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface MobileOptimizedHeaderProps {
@@ -37,7 +37,13 @@ export default function MobileOptimizedHeader({ className = '' }: MobileOptimize
     { href: '/following', label: 'Following', icon: Heart },
     { href: '/social-feed', label: 'Community', icon: Users },
     { href: '/about', label: 'About', icon: Info },
-    { href: '/retailer-login', label: 'For Retailers', icon: Store }
+    { href: '/retailer-login', label: 'For Retailers', icon: Store },
+    // Feature 17 Enhancement Bundle
+    { href: '/feature-17-demo', label: 'Feature 17 Demo', icon: Settings, divider: true },
+    { href: '/pickup-scheduler', label: 'Pickup Scheduling', icon: Calendar },
+    { href: '/messages', label: 'Messages', icon: MessageCircle },
+    { href: '/mall/1/map', label: 'Mall Maps', icon: Map },
+    { href: '/large-retailer-settings', label: 'Retailer Preferences', icon: Settings }
   ];
 
   return (
@@ -171,18 +177,32 @@ export default function MobileOptimizedHeader({ className = '' }: MobileOptimize
                   {/* Navigation */}
                   <div className="flex-1 overflow-y-auto">
                     <nav className="p-4 space-y-2">
-                      {navigationItems.map((item) => {
+                      {navigationItems.map((item, index) => {
                         const IconComponent = item.icon;
                         return (
-                          <Link key={item.href} href={item.href}>
-                            <button
-                              onClick={() => setIsMobileMenuOpen(false)}
-                              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left hover:bg-gray-100 transition-colors"
-                            >
-                              <IconComponent className="h-5 w-5 text-gray-600" />
-                              <span className="font-medium text-gray-900">{item.label}</span>
-                            </button>
-                          </Link>
+                          <div key={item.href}>
+                            {item.divider && (
+                              <div className="py-2">
+                                <div className="border-t border-gray-200 mb-2"></div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider px-2">
+                                  Feature 17 Enhancement Bundle
+                                </p>
+                              </div>
+                            )}
+                            <Link href={item.href}>
+                              <button
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left hover:bg-gray-100 transition-colors ${
+                                  item.divider ? 'bg-blue-50 border border-blue-200' : ''
+                                }`}
+                              >
+                                <IconComponent className={`h-5 w-5 ${item.divider ? 'text-blue-600' : 'text-gray-600'}`} />
+                                <span className={`font-medium ${item.divider ? 'text-blue-900' : 'text-gray-900'}`}>
+                                  {item.label}
+                                </span>
+                              </button>
+                            </Link>
+                          </div>
                         );
                       })}
                     </nav>

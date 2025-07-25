@@ -115,6 +115,11 @@ import InviteLeaderboard from "@/pages/invite-leaderboard";
 import Feature15Demo from "@/pages/feature-15-demo";
 import MVPTest from "@/pages/mvp-test";
 import SpiralWalletDemo from "@/pages/spiral-wallet-demo";
+import PickupScheduler from "@/pages/pickup-scheduler";
+import Messages from "@/pages/messages";
+import MallMap from "@/pages/mall-map";
+import LargeRetailerSettings from "@/pages/large-retailer-settings";
+import Feature17Demo from "@/pages/feature-17-demo";
 
 function Router() {
   return (
@@ -235,6 +240,11 @@ function Router() {
       <Route path="/retailer-dashboard-new" component={RetailerDashboardNew} />
       <Route path="/shopper-dashboard" component={ShopperDashboard} />
       <Route path="/following" component={Following} />
+      <Route path="/pickup-scheduler" component={PickupScheduler} />
+      <Route path="/messages" component={Messages} />
+      <Route path="/mall/:id/map" component={MallMap} />
+      <Route path="/large-retailer-settings" component={LargeRetailerSettings} />
+      <Route path="/feature-17-demo" component={Feature17Demo} />
       <Route component={NotFound} />
     </Switch>
   );

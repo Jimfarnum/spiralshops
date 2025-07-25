@@ -1439,3 +1439,145 @@ export type InsertSpiralWallet = z.infer<typeof insertSpiralWalletSchema>;
 export type SpiralWalletTransaction = typeof spiralWalletHistory.$inferSelect;
 export type InsertSpiralWalletTransaction = z.infer<typeof insertSpiralWalletTransactionSchema>;
 
+// ======================================================
+// FEATURE 17: UNIFIED ENHANCEMENT BUNDLE
+// ======================================================
+
+// 1. Pickup Windows for Local Pickup Scheduling
+export const pickupWindows = pgTable("pickup_windows", {
+  id: serial("id").primaryKey(),
+  retailerId: integer("retailer_id").references(() => retailers.id).notNull(),
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time").notNull(),
+  capacity: integer("capacity").default(10).notNull(),
+  booked: integer("booked").default(0).notNull(),
+  dayOfWeek: integer("day_of_week").notNull(), // 0=Sunday, 1=Monday, etc.
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// 2. User Pickups for scheduled pickups
+export const userPickups = pgTable("user_pickups", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  orderId: integer("order_id").references(() => orders.id),
+  windowId: integer("window_id").references(() => pickupWindows.id).notNull(),
+  customerName: varchar("customer_name").notNull(),
+  customerPhone: varchar("customer_phone").notNull(),
+  specialInstructions: text("special_instructions"),
+  status: varchar("status").default("scheduled").notNull(), // scheduled, completed, cancelled, no_show
+  scheduledAt: timestamp("scheduled_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+// 3. Messages for Retailer-User Communication
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  senderId: varchar("sender_id").notNull(),
+  receiverId: varchar("receiver_id").notNull(),
+  senderType: varchar("sender_type").notNull(), // 'user' or 'retailer'
+  receiverType: varchar("receiver_type").notNull(), // 'user' or 'retailer'
+  subject: varchar("subject"),
+  message: text("message").notNull(),
+  isRead: boolean("is_read").default(false),
+  isArchived: boolean("is_archived").default(false),
+  isFlagged: boolean("is_flagged").default(false),
+  timestamp: timestamp("timestamp").defaultNow(),
+});
+
+// 4. Mall Maps for interactive mall navigation
+export const mallMaps = pgTable("mall_maps", {
+  id: serial("id").primaryKey(),
+  mallId: integer("mall_id").unique().notNull(),
+  mallName: varchar("mall_name").notNull(),
+  svgUrl: varchar("svg_url"),
+  jsonPathData: jsonb("json_path_data"), // Store clickable areas and paths
+  mapMetadata: jsonb("map_metadata"), // Additional map info like dimensions, scale
+  storeLocations: jsonb("store_locations"), // Store positions on map
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// 5. Retailer Profiles for enhanced retailer information
+export const retailerProfiles = pgTable("retailer_profiles", {
+  id: serial("id").primaryKey(),
+  retailerId: integer("retailer_id").references(() => retailers.id).unique().notNull(),
+  aboutText: text("about_text"),
+  logoUrl: varchar("logo_url"),
+  website: varchar("website"),
+  operatingHours: jsonb("operating_hours"), // Store hours by day
+  contactInfo: jsonb("contact_info"), // Phone, email, address details
+  socialLinks: jsonb("social_links"), // Social media links
+  specialties: text("specialties").array(), // What they specialize in
+  paymentMethods: text("payment_methods").array(), // Accepted payment types
+  isVerified: boolean("is_verified").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// 6. Large Retailer Settings for opt-in preferences
+export const largeRetailerSettings = pgTable("large_retailer_settings", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").unique().notNull(),
+  optedIn: boolean("opted_in").default(false).notNull(),
+  preferences: jsonb("preferences"), // Additional preferences like categories, distance
+  notificationEnabled: boolean("notification_enabled").default(true),
+  timestamp: timestamp("timestamp").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Insert schemas for Feature 17
+export const insertPickupWindowSchema = createInsertSchema(pickupWindows).omit({
+  id: true,
+  booked: true,
+  createdAt: true,
+});
+
+export const insertUserPickupSchema = createInsertSchema(userPickups).omit({
+  id: true,
+  scheduledAt: true,
+  completedAt: true,
+});
+
+export const insertMessageSchema = createInsertSchema(messages).omit({
+  id: true,
+  timestamp: true,
+});
+
+export const insertMallMapSchema = createInsertSchema(mallMaps).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertRetailerProfileSchema = createInsertSchema(retailerProfiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertLargeRetailerSettingSchema = createInsertSchema(largeRetailerSettings).omit({
+  id: true,
+  timestamp: true,
+  updatedAt: true,
+});
+
+// Feature 17 types
+export type PickupWindow = typeof pickupWindows.$inferSelect;
+export type InsertPickupWindow = z.infer<typeof insertPickupWindowSchema>;
+
+export type UserPickup = typeof userPickups.$inferSelect;
+export type InsertUserPickup = z.infer<typeof insertUserPickupSchema>;
+
+export type Message = typeof messages.$inferSelect;
+export type InsertMessage = z.infer<typeof insertMessageSchema>;
+
+export type MallMap = typeof mallMaps.$inferSelect;
+export type InsertMallMap = z.infer<typeof insertMallMapSchema>;
+
+export type RetailerProfile = typeof retailerProfiles.$inferSelect;
+export type InsertRetailerProfile = z.infer<typeof insertRetailerProfileSchema>;
+
+export type LargeRetailerSetting = typeof largeRetailerSettings.$inferSelect;
+export type InsertLargeRetailerSetting = z.infer<typeof insertLargeRetailerSettingSchema>;
+
