@@ -7,6 +7,7 @@ import { MapPin, Phone, Mail, Star, Clock, Gift, Leaf, Navigation, Share2, Arrow
 import { Link } from "wouter";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import VerifiedBadge from "@/components/VerifiedBadge";
 import type { Store } from "@shared/schema";
 
 export default function Store() {
@@ -134,6 +135,13 @@ export default function Store() {
                       {store.rating} ({store.reviewCount} reviews)
                     </span>
                   </div>
+                </div>
+
+                <div className="mb-4">
+                  <VerifiedBadge 
+                    isVerified={store.isVerified || false} 
+                    tier={store.verificationTier as "Local" | "Regional" | "National" | null}
+                  />
                 </div>
 
                 <p className="text-gray-600 mb-6">{store.description}</p>

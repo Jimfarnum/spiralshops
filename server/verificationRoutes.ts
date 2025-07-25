@@ -193,13 +193,14 @@ router.get("/api/admin/pending-verifications", async (req, res) => {
 router.post("/api/admin/approve-verification/:storeId", async (req, res) => {
   try {
     const { storeId } = req.params;
-    const { imageUrl, rating } = req.body;
+    const { imageUrl, rating, verificationTier } = req.body;
 
     const [updatedStore] = await db
       .update(stores)
       .set({
         isVerified: true,
         verificationStatus: 'approved',
+        verificationTier: verificationTier || 'Local',
         reviewedAt: new Date(),
         imageUrl: imageUrl || null,
         rating: rating || 4.5,

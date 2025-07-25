@@ -23,6 +23,7 @@ import {
   Image as ImageIcon,
   Star
 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface PendingStore {
   id: number;
@@ -42,7 +43,8 @@ export default function AdminVerifications() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [approvalData, setApprovalData] = useState({
     imageUrl: "",
-    rating: "4.5"
+    rating: "4.5",
+    verificationTier: "Local"
   });
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -55,19 +57,20 @@ export default function AdminVerifications() {
 
   // Approve verification mutation
   const approveMutation = useMutation({
-    mutationFn: async (data: { storeId: number; imageUrl: string; rating: number }) => {
+    mutationFn: async (data: { storeId: number; imageUrl: string; rating: number; verificationTier: string }) => {
       return apiRequest(`/api/admin/approve-verification/${data.storeId}`, {
         method: 'POST',
         body: {
           imageUrl: data.imageUrl,
-          rating: data.rating
+          rating: data.rating,
+          verificationTier: data.verificationTier
         }
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/pending-verifications'] });
       setSelectedStore(null);
-      setApprovalData({ imageUrl: "", rating: "4.5" });
+      setApprovalData({ imageUrl: "", rating: "4.5", verificationTier: "Local" });
       toast({
         title: "Store Approved!",
         description: "The store verification has been approved and is now live.",
@@ -127,7 +130,8 @@ export default function AdminVerifications() {
     approveMutation.mutate({
       storeId: selectedStore.id,
       imageUrl: approvalData.imageUrl,
-      rating: parseFloat(approvalData.rating)
+      rating: parseFloat(approvalData.rating),
+      verificationTier: approvalData.verificationTier
     });
   };
 
@@ -352,6 +356,23 @@ export default function AdminVerifications() {
                                             value={approvalData.rating}
                                             onChange={(e) => setApprovalData(prev => ({ ...prev, rating: e.target.value }))}
                                           />
+                                        </div>
+
+                                        <div>
+                                          <Label htmlFor="verificationTier">Verification Tier</Label>
+                                          <Select
+                                            value={approvalData.verificationTier}
+                                            onValueChange={(value) => setApprovalData(prev => ({ ...prev, verificationTier: value }))}
+                                          >
+                                            <SelectTrigger>
+                                              <SelectValue placeholder="Select verification tier" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="Local">Local Store - Green Badge</SelectItem>
+                                              <SelectItem value="Regional">Regional Store - Yellow Badge</SelectItem>
+                                              <SelectItem value="National">National Store - Blue Badge</SelectItem>
+                                            </SelectContent>
+                                          </Select>
                                         </div>
                                         
                                         <Button 

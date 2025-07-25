@@ -21,6 +21,7 @@ export const stores = pgTable("stores", {
   // Verification fields
   isVerified: boolean("is_verified").default(false),
   verificationStatus: text("verification_status").default('pending'), // 'pending', 'approved', 'rejected'
+  verificationTier: text("verification_tier").default('Local'), // 'Local', 'Regional', 'National'
   verificationDocumentPath: text("verification_document_path"),
   submittedAt: timestamp("submitted_at").defaultNow(),
   reviewedAt: timestamp("reviewed_at"),
