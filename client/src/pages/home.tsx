@@ -28,6 +28,7 @@ import { mockProducts, categories } from "@/data/mockProducts";
 import OnboardingModal from "@/components/onboarding-modal";
 import AIRecommendations from "@/components/ai-recommendations";
 import SmartSearchBar from "@/components/smart-search-bar";
+import HeroSection from "@/components/HeroSection";
 
 export default function Home() {
   const [spiralStoryModalOpen, setSpiralStoryModalOpen] = useState(false);
@@ -112,55 +113,8 @@ export default function Home() {
       <div className="min-h-screen bg-[var(--spiral-cream)]">
         <Header />
       
-      {/* Hero Section */}
-      <section className="bg-white py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* SPIRAL Logo */}
-          <div className="flex justify-center mb-8">
-            <div className="relative">
-              <img 
-                src="@assets/mqy7md_1753122664873.jpg" 
-                alt="SPIRAL Logo" 
-                className="w-16 h-16 mx-auto md:mx-0 object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-          </div>
-          
-          <h1 className="text-4xl lg:text-5xl font-bold text-[var(--spiral-navy)] mb-6">
-            Everything Local. Just for You.
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Discover amazing local businesses, earn rewards, and build your community with SPIRAL.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button 
-              className="button-primary px-8 py-4 text-lg"
-              onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-            >
-              Start Shopping Local
-            </Button>
-            <Button 
-              className="button-secondary px-8 py-4 text-lg"
-            >
-              Explore Stores
-            </Button>
-          </div>
-          
-          {/* Enhanced Search Bar */}
-          <SearchWithSuggestions
-            placeholder="Search for products, stores, or deals near you…"
-            onSearch={(query) => {
-              toast({
-                title: "Searching...",
-                description: `Looking for "${query}"`,
-              });
-              // Navigate to products with search query
-              window.location.href = `/products?search=${encodeURIComponent(query)}`;
-            }}
-            className="mx-auto"
-          />
-        </div>
-      </section>
+      {/* Hero Section with Main Street Revival Messaging */}
+      <HeroSection />
 
       {/* Feature Tiles Section */}
       <section className="py-20 bg-[var(--spiral-cream)]">
