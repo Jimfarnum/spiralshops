@@ -12,10 +12,10 @@ import {
 import { z } from "zod";
 import { eq, and } from "drizzle-orm";
 import { 
-  sendVerificationEmail, 
-  getVerificationSubmittedEmailHTML, 
-  getVerificationApprovedEmailHTML, 
-  getVerificationRejectedEmailHTML 
+  sendRetailerConfirmation,
+  sendAdminNotification,
+  sendApprovalEmail,
+  sendRejectionEmail
 } from "./utils/email";
 
 const router = Router();
@@ -99,15 +99,19 @@ router.post("/api/verify-store", upload.single('document'), async (req, res) => 
 
     // Send verification submitted email
     try {
-      await sendVerificationEmail({
-        to: email,
-        subject: "SPIRAL Store Verification Submitted",
-        html: getVerificationSubmittedEmailHTML(storeName, store.id)
-      });
+      await sendRetailerConfirmation(email, storeName);
       console.log(`Verification email sent to: ${email}`);
     } catch (emailError) {
       console.error("Failed to send verification email:", emailError);
       // Continue with response even if email fails
+    }
+
+    // Send admin notification
+    try {
+      await sendAdminNotification('admin@spiral.app', storeName);
+      console.log(`Admin notification sent for store: ${storeName}`);
+    } catch (emailError) {
+      console.error("Failed to send admin notification:", emailError);
     }
 
     // Log verification submission
@@ -209,11 +213,7 @@ router.post("/api/admin/approve-verification/:storeId", async (req, res) => {
 
     // Send approval email
     try {
-      await sendVerificationEmail({
-        to: updatedStore.email!,
-        subject: "🎉 Your SPIRAL Store Verification is Approved!",
-        html: getVerificationApprovedEmailHTML(updatedStore.name)
-      });
+      await sendApprovalEmail(updatedStore.email!, updatedStore.name);
       console.log(`Approval email sent to: ${updatedStore.email}`);
     } catch (emailError) {
       console.error("Failed to send approval email:", emailError);
@@ -257,11 +257,7 @@ router.post("/api/admin/reject-verification/:storeId", async (req, res) => {
 
     // Send rejection email  
     try {
-      await sendVerificationEmail({
-        to: updatedStore.email!,
-        subject: "SPIRAL Store Verification - Additional Information Needed",
-        html: getVerificationRejectedEmailHTML(updatedStore.name, rejectionReason)
-      });
+      await sendRejectionEmail(updatedStore.email!, updatedStore.name, rejectionReason);
       console.log(`Rejection email sent to: ${updatedStore.email}`);
     } catch (emailError) {
       console.error("Failed to send rejection email:", emailError);
