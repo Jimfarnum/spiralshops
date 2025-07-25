@@ -110,6 +110,7 @@ import Feature13Demo from "@/pages/feature-13-demo";
 import BusinessCalculator from "@/pages/business-calculator";
 import InviteLeaderboard from "@/pages/invite-leaderboard";
 import Feature15Demo from "@/pages/feature-15-demo";
+import MVPTest from "@/pages/mvp-test";
 
 function Router() {
   return (
@@ -225,6 +226,7 @@ function Router() {
       <Route path="/business-calculator" component={BusinessCalculator} />
       <Route path="/invite-leaderboard" component={InviteLeaderboard} />
       <Route path="/feature-15-demo" component={Feature15Demo} />
+      <Route path="/mvp-test" component={MVPTest} />
       <Route component={NotFound} />
     </Switch>
   );
