@@ -52,6 +52,9 @@ export default function Header() {
             <Link href="/malls" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
               Malls
             </Link>
+            <Link href="/discover-stores" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
+              Discover
+            </Link>
             <Link href="/trusted-local-stores" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
               Trusted Local
             </Link>

@@ -34,6 +34,7 @@ export default function Home() {
   const [spiralStoryModalOpen, setSpiralStoryModalOpen] = useState(false);
   const [searchZip, setSearchZip] = useState("");
   const [activeZip, setActiveZip] = useState("");
+  const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const { toast } = useToast();
@@ -730,6 +731,40 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Verification Filter */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center">
+                <input
+                  id="verifiedToggle"
+                  type="checkbox"
+                  checked={showVerifiedOnly}
+                  onChange={() => setShowVerifiedOnly(!showVerifiedOnly)}
+                  className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                />
+                <label htmlFor="verifiedToggle" className="ml-2 text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <span>🛡️</span>
+                  Show only SPIRAL Verified Stores
+                </label>
+              </div>
+              {showVerifiedOnly && (
+                <div className="text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full">
+                  Showing verified businesses only
+                </div>
+              )}
+            </div>
+            <div className="text-sm text-gray-500">
+              {stores && stores.length > 0 && (
+                <>
+                  {showVerifiedOnly 
+                    ? `${stores.filter(store => store.isVerified).length} verified stores`
+                    : `${stores.length} total stores`
+                  }
+                </>
+              )}
+            </div>
+          </div>
+
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {[...Array(6)].map((_, i) => (
@@ -763,7 +798,7 @@ export default function Home() {
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                {stores.map((store) => (
+                {(showVerifiedOnly ? stores.filter(store => store.isVerified) : stores).map((store) => (
                   <StoreCard key={store.id} store={store} />
                 ))}
               </div>
