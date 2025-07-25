@@ -11,6 +11,7 @@ import { registerRetailerRoutes } from "./retailerRoutes";
 import { registerWishlistAlertRoutes } from "./wishlistAlertRoutes";
 import walletRoutes from "./walletRoutes";
 import { registerGiftCardRoutes } from "./giftCardRoutes";
+import { registerBusinessCalculatorRoutes } from "./businessCalculator";
 import { registerAnalyticsRoutes } from "./analyticsRoutes";
 import { registerReturnRoutes } from "./returnRoutes";
 import { recommendationEngine } from "./smartRecommendation";
@@ -446,6 +447,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Feature 14: Wallet routes
   app.use("/api/wallet", walletRoutes);
+
+  // Business calculator routes
+  registerBusinessCalculatorRoutes(app);
 
   // Register analytics routes
   registerAnalyticsRoutes(app);

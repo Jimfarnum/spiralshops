@@ -107,6 +107,7 @@ import WalletPage from "@/pages/wallet";
 import WalletMallCredits from "@/pages/wallet-mall-credits";
 import Feature14Demo from "@/pages/feature-14-demo";
 import Feature13Demo from "@/pages/feature-13-demo";
+import BusinessCalculator from "@/pages/business-calculator";
 
 function Router() {
   return (
@@ -219,6 +220,7 @@ function Router() {
       <Route path="/feature-11-demo" component={Feature11Demo} />
       <Route path="/feature-12-demo" component={Feature12Demo} />
       <Route path="/feature-13-demo" component={Feature13Demo} />
+      <Route path="/business-calculator" component={BusinessCalculator} />
       <Route component={NotFound} />
     </Switch>
   );
