@@ -1,0 +1,33 @@
+import React, { useEffect, useState } from "react"; import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button"; import { Input } from "@/components/ui/input"; import axios from "axios";
+
+export default function ShopperDashboard() { const [walletBalance, setWalletBalance] = useState<number>(0); const [referralCode, setReferralCode] = useState<string>(""); const [earnings, setEarnings] = useState<number>(0); const [redeemed, setRedeemed] = useState<number>(0);
+
+useEffect(() => { // Fetch wallet balance and transaction data axios.get("/api/shopper-wallet").then((res) => { const data = res.data; setWalletBalance(data.balance); setEarnings(data.totalEarned); setRedeemed(data.totalRedeemed); setReferralCode(data.referralCode); }); }, []);
+
+const handleShareReferral = () => { navigator.clipboard.writeText(referralCode); alert("Referral code copied! Share it to earn SPIRALs."); };
+
+return ( <div className="p-6 space-y-6"> <h1 className="text-3xl font-bold text-center">Your SPIRAL Wallet</h1> <Card> <CardContent className="space-y-2"> <p><strong>Wallet Balance:</strong> {walletBalance} SPIRALs</p> <p><strong>Total Earned:</strong> {earnings} SPIRALs</p> <p><strong>Total Redeemed:</strong> {redeemed} SPIRALs</p> </CardContent> </Card>
+
+<Card>
+    <CardContent className="space-y-2">
+      <p className="font-semibold">Refer Friends & Family</p>
+      <div className="flex gap-2">
+        <Input value={referralCode} readOnly className="w-full" />
+        <Button onClick={handleShareReferral}>Copy</Button>
+      </div>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent className="space-y-2">
+      <p className="font-semibold">How to Earn SPIRALs</p>
+      <ul className="list-disc pl-5">
+        <li>Shop online or in-store at participating retailers</li>
+        <li>Refer friends — earn 10 SPIRALs each</li>
+        <li>Share SPIRAL on social media</li>
+      </ul>
+    </CardContent>
+  </Card>
+
+  <div className="text-center mt-6">
+
