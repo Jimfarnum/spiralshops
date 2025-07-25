@@ -123,6 +123,7 @@ import Feature17Demo from "@/pages/feature-17-demo";
 import RetailerFollowDemo from "@/pages/retailer-follow-demo";
 import VerifyStore from "@/pages/verify-store";
 import AdminVerifications from "@/pages/admin-verifications";
+import VerificationDemo from "@/pages/verification-demo";
 
 function Router() {
   return (
@@ -251,6 +252,7 @@ function Router() {
       <Route path="/retailer-follow-demo" component={RetailerFollowDemo} />
       <Route path="/verify-store" component={VerifyStore} />
       <Route path="/admin/verifications" component={AdminVerifications} />
+      <Route path="/verification-demo" component={VerificationDemo} />
       <Route component={NotFound} />
     </Switch>
   );
