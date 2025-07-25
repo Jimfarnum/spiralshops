@@ -25,11 +25,17 @@ export default function StoreCard({ store }: StoreCardProps) {
           <span className="text-sm text-gray-500">0.3 mi</span>
         </div>
         
-        <div className="mb-3">
+        <div className="mb-3 flex items-center justify-between">
           <VerifiedBadge 
             isVerified={store.isVerified || false} 
             tier={store.verificationTier as "Unverified" | "Basic" | "Local" | "Regional" | "National" | null}
           />
+          {store.isVerified && (
+            <div className="text-xs text-green-600 flex items-center gap-1">
+              <span>🛡️</span>
+              <span>Verified Business</span>
+            </div>
+          )}
         </div>
         
         <p className="text-gray-600 mb-4">{store.description}</p>

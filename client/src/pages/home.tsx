@@ -129,14 +129,14 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-            {/* Shop Local Stores */}
-            <Link href="/products" className="group">
-              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+            {/* Trusted Local Stores */}
+            <Link href="/trusted-local-stores" className="group">
+              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-green-600 to-green-400 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
                 <div className="flex items-center gap-4 text-left">
-                  <div className="text-3xl">🛍️</div>
+                  <div className="text-3xl">🛡️</div>
                   <div>
-                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Shop Local</h3>
-                    <p className="text-sm text-white/90 font-['Inter']">Browse products from neighborhood businesses</p>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Trusted Local</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Verified businesses you can trust</p>
                   </div>
                 </div>
               </div>

@@ -125,6 +125,7 @@ import VerifyStore from "@/pages/verify-store";
 import AdminVerifications from "@/pages/admin-verifications";
 import VerificationDemo from "@/pages/verification-demo";
 import VerificationLevels from "@/pages/verification-levels";
+import TrustedLocalStores from "@/pages/trusted-local-stores";
 
 function Router() {
   return (
@@ -255,6 +256,7 @@ function Router() {
       <Route path="/admin/verifications" component={AdminVerifications} />
       <Route path="/verification-demo" component={VerificationDemo} />
       <Route path="/verification-levels" component={VerificationLevels} />
+      <Route path="/trusted-local-stores" component={TrustedLocalStores} />
       <Route component={NotFound} />
     </Switch>
   );
