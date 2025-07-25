@@ -18,6 +18,14 @@ export const stores = pgTable("stores", {
   hours: text("hours"),
   imageUrl: text("image_url"),
   perks: text("perks").array(),
+  // Verification fields
+  isVerified: boolean("is_verified").default(false),
+  verificationStatus: text("verification_status").default('pending'), // 'pending', 'approved', 'rejected'
+  verificationDocumentPath: text("verification_document_path"),
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  reviewedAt: timestamp("reviewed_at"),
+  rejectionReason: text("rejection_reason"),
+  website: text("website"),
 });
 
 export const retailers = pgTable("retailers", {

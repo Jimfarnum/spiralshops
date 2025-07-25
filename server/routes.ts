@@ -473,6 +473,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register Feature 17: Unified Enhancement Bundle routes
   registerFeature17Routes(app);
 
+  // Register store verification routes
+  const verificationRoutes = await import("./verificationRoutes");
+  app.use(verificationRoutes.default);
+
   const httpServer = createServer(app);
   // AI Recommendations API
   app.get("/api/recommend", async (req: any, res) => {

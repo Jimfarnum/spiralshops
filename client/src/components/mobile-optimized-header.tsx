@@ -38,6 +38,9 @@ export default function MobileOptimizedHeader({ className = '' }: MobileOptimize
     { href: '/social-feed', label: 'Community', icon: Users },
     { href: '/about', label: 'About', icon: Info },
     { href: '/retailer-login', label: 'For Retailers', icon: Store },
+    { href: '/verify-store', label: 'Verify Store', icon: Store },
+    { href: '/retailer-follow-demo', label: 'Follow System', icon: Heart },
+    { href: '/admin/verifications', label: 'Admin Panel', icon: Settings },
     // Feature 17 Enhancement Bundle
     { href: '/feature-17-demo', label: 'Feature 17 Demo', icon: Settings, divider: true },
     { href: '/pickup-scheduler', label: 'Pickup Scheduling', icon: Calendar },

@@ -121,6 +121,8 @@ import MallMap from "@/pages/mall-map";
 import LargeRetailerSettings from "@/pages/large-retailer-settings";
 import Feature17Demo from "@/pages/feature-17-demo";
 import RetailerFollowDemo from "@/pages/retailer-follow-demo";
+import VerifyStore from "@/pages/verify-store";
+import AdminVerifications from "@/pages/admin-verifications";
 
 function Router() {
   return (
@@ -247,6 +249,8 @@ function Router() {
       <Route path="/large-retailer-settings" component={LargeRetailerSettings} />
       <Route path="/feature-17-demo" component={Feature17Demo} />
       <Route path="/retailer-follow-demo" component={RetailerFollowDemo} />
+      <Route path="/verify-store" component={VerifyStore} />
+      <Route path="/admin/verifications" component={AdminVerifications} />
       <Route component={NotFound} />
     </Switch>
   );
