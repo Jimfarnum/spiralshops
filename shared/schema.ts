@@ -1370,3 +1370,43 @@ export type InsertInviteLeaderboard = z.infer<typeof insertInviteLeaderboardSche
 export type ReferralReward = typeof referralRewards.$inferSelect;
 export type InsertReferralReward = z.infer<typeof insertReferralRewardSchema>;
 
+// SPIRAL Wallet for tracking user balances and transaction history
+export const spiralWallets = pgTable("spiral_wallets", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().unique(),
+  balance: integer("balance").default(0), // SPIRALs available
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// SPIRAL Wallet transaction history
+export const spiralWalletHistory = pgTable("spiral_wallet_history", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  date: timestamp("date").defaultNow(),
+  type: text("type").notNull(), // "earn" | "spend"
+  source: text("source").notNull(), // "purchase" | "referral" | "share" | "in_person_bonus" | "reward_redeem"
+  amount: integer("amount").notNull(),
+  description: text("description").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// SPIRAL Wallet schemas
+export const insertSpiralWalletSchema = createInsertSchema(spiralWallets).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSpiralWalletTransactionSchema = createInsertSchema(spiralWalletHistory).omit({
+  id: true,
+  date: true,
+  createdAt: true,
+});
+
+// SPIRAL Wallet types
+export type SpiralWallet = typeof spiralWallets.$inferSelect;
+export type InsertSpiralWallet = z.infer<typeof insertSpiralWalletSchema>;
+export type SpiralWalletTransaction = typeof spiralWalletHistory.$inferSelect;
+export type InsertSpiralWalletTransaction = z.infer<typeof insertSpiralWalletTransactionSchema>;
+

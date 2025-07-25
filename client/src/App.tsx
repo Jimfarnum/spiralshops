@@ -111,6 +111,7 @@ import BusinessCalculator from "@/pages/business-calculator";
 import InviteLeaderboard from "@/pages/invite-leaderboard";
 import Feature15Demo from "@/pages/feature-15-demo";
 import MVPTest from "@/pages/mvp-test";
+import SpiralWalletDemo from "@/pages/spiral-wallet-demo";
 
 function Router() {
   return (
@@ -227,6 +228,7 @@ function Router() {
       <Route path="/invite-leaderboard" component={InviteLeaderboard} />
       <Route path="/feature-15-demo" component={Feature15Demo} />
       <Route path="/mvp-test" component={MVPTest} />
+      <Route path="/spiral-wallet-demo" component={SpiralWalletDemo} />
       <Route component={NotFound} />
     </Switch>
   );
