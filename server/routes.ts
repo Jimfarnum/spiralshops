@@ -13,6 +13,7 @@ import walletRoutes from "./walletRoutes";
 import { registerGiftCardRoutes } from "./giftCardRoutes";
 import { registerBusinessCalculatorRoutes } from "./businessCalculator";
 import { registerAnalyticsRoutes } from "./analyticsRoutes";
+import { registerInviteRoutes } from "./inviteRoutes";
 import { registerReturnRoutes } from "./returnRoutes";
 import { recommendationEngine } from "./smartRecommendation";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
@@ -453,6 +454,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register analytics routes
   registerAnalyticsRoutes(app);
+
+  // Feature 15: Invite leaderboard routes
+  registerInviteRoutes(app);
 
   // Register return & refund system routes
   registerReturnRoutes(app);

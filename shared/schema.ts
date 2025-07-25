@@ -1310,3 +1310,63 @@ export type MallCredit = typeof mallCredits.$inferSelect;
 export type InsertWalletTransaction = z.infer<typeof insertWalletTransactionSchema>;
 export type WalletTransaction = typeof walletTransactions.$inferSelect;
 
+// Feature 15: Invite Leaderboard + Viral Sharing Engine
+export const userReferrals = pgTable("user_referrals", {
+  id: varchar("id").primaryKey(),
+  referrerId: varchar("referrer_id").notNull(),
+  referredUserId: varchar("referred_user_id"),
+  referralCode: varchar("referral_code").notNull().unique(),
+  status: varchar("status").notNull().default("pending"), // pending, completed, rewarded
+  spiralsEarned: integer("spirals_earned").notNull().default(0),
+  firstPurchaseBonus: boolean("first_purchase_bonus").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+});
+
+export const inviteLeaderboard = pgTable("invite_leaderboard", {
+  id: varchar("id").primaryKey(),
+  userId: varchar("user_id").notNull().unique(),
+  totalInvites: integer("total_invites").notNull().default(0),
+  successfulInvites: integer("successful_invites").notNull().default(0),
+  totalSpiralEarned: integer("total_spiral_earned").notNull().default(0),
+  currentRank: integer("current_rank"),
+  badges: text("badges").array().default([]),
+  isPublic: boolean("is_public").notNull().default(true),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const referralRewards = pgTable("referral_rewards", {
+  id: varchar("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  referralId: varchar("referral_id").notNull(),
+  rewardType: varchar("reward_type").notNull(), // signup, first_purchase, milestone
+  spiralAmount: integer("spiral_amount").notNull(),
+  description: varchar("description").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Feature 15 insert schemas
+export const insertUserReferralSchema = createInsertSchema(userReferrals).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
+export const insertInviteLeaderboardSchema = createInsertSchema(inviteLeaderboard).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export const insertReferralRewardSchema = createInsertSchema(referralRewards).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Feature 15 types
+export type UserReferral = typeof userReferrals.$inferSelect;
+export type InsertUserReferral = z.infer<typeof insertUserReferralSchema>;
+export type InviteLeaderboard = typeof inviteLeaderboard.$inferSelect;
+export type InsertInviteLeaderboard = z.infer<typeof insertInviteLeaderboardSchema>;
+export type ReferralReward = typeof referralRewards.$inferSelect;
+export type InsertReferralReward = z.infer<typeof insertReferralRewardSchema>;
+

@@ -108,6 +108,8 @@ import WalletMallCredits from "@/pages/wallet-mall-credits";
 import Feature14Demo from "@/pages/feature-14-demo";
 import Feature13Demo from "@/pages/feature-13-demo";
 import BusinessCalculator from "@/pages/business-calculator";
+import InviteLeaderboard from "@/pages/invite-leaderboard";
+import Feature15Demo from "@/pages/feature-15-demo";
 
 function Router() {
   return (
@@ -221,6 +223,8 @@ function Router() {
       <Route path="/feature-12-demo" component={Feature12Demo} />
       <Route path="/feature-13-demo" component={Feature13Demo} />
       <Route path="/business-calculator" component={BusinessCalculator} />
+      <Route path="/invite-leaderboard" component={InviteLeaderboard} />
+      <Route path="/feature-15-demo" component={Feature15Demo} />
       <Route component={NotFound} />
     </Switch>
   );
