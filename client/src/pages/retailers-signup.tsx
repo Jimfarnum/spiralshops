@@ -43,6 +43,8 @@ const retailerSignupSchema = z.object({
   bio: z.string().optional(),
   taxId: z.string().optional(),
   preferredMallId: z.string().optional(),
+  storeCount: z.number().min(1, 'Must have at least 1 store location'),
+  annualRevenue: z.number().min(0, 'Annual revenue must be non-negative').optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -73,6 +75,8 @@ export default function RetailerSignupPage() {
       bio: '',
       taxId: '',
       preferredMallId: '',
+      storeCount: 1,
+      annualRevenue: 0,
     },
   });
 
@@ -417,6 +421,56 @@ export default function RetailerSignupPage() {
                             <FormLabel>ZIP Code *</FormLabel>
                             <FormControl>
                               <Input placeholder="55401" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Business Scale Information */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-[var(--spiral-navy)] flex items-center gap-2">
+                      <Building className="h-5 w-5" />
+                      Business Scale (For Fee Calculation)
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="storeCount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Number of Store Locations *</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                min="1" 
+                                placeholder="1" 
+                                {...field} 
+                                onChange={(e) => field.onChange(Number(e.target.value))}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="annualRevenue"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Annual Revenue (USD, Optional)</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                min="0" 
+                                placeholder="1000000" 
+                                {...field} 
+                                onChange={(e) => field.onChange(Number(e.target.value))}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>

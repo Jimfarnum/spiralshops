@@ -78,6 +78,11 @@ export function registerRetailerRoutes(app: Express) {
       // Hash password
       const passwordHash = await bcrypt.hash(password, 10);
 
+      // Automatic Large Retailer classification
+      const storeCount = req.body.storeCount || 1;
+      const annualRevenue = req.body.annualRevenue || 0;
+      const isLargeRetailer = storeCount >= 10 || annualRevenue >= 10000000;
+
       // Create retailer account
       const [retailer] = await db.insert(retailerAccounts).values({
         email,
@@ -94,6 +99,9 @@ export function registerRetailerRoutes(app: Express) {
         socialLinks,
         taxId,
         preferredMallId: preferredMallId ? parseInt(preferredMallId) : null,
+        storeCount,
+        annualRevenue,
+        isLargeRetailer,
       }).returning();
 
       // Create initial onboarding status

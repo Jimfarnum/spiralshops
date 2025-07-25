@@ -130,6 +130,7 @@ import TrustedLocalStores from "@/pages/trusted-local-stores";
 import DiscoverStores from "@/pages/discover-stores";
 import VerifiedLookup from "@/pages/verified-lookup";
 import ContactSupport from "@/pages/contact-support";
+import FeeExplorer from "@/pages/fee-explorer";
 
 function Router() {
   return (
@@ -264,6 +265,7 @@ function Router() {
       <Route path="/discover-stores" component={DiscoverStores} />
       <Route path="/verified-lookup" component={VerifiedLookup} />
       <Route path="/contact-support" component={ContactSupport} />
+      <Route path="/fee-explorer" component={FeeExplorer} />
       <Route component={NotFound} />
     </Switch>
   );
