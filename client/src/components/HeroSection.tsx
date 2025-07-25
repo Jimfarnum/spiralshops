@@ -6,12 +6,12 @@ export default function HeroSection() {
     <section className="w-full min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-white to-gray-100 p-6">
       <div className="max-w-4xl text-center space-y-6">
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-          Amazon took your Main Street.<br className="hidden sm:inline" />
-          <span className="text-blue-600"> SPIRAL is bringing it back.</span>
+          Your Main Street isn't gone—<br className="hidden sm:inline" />
+          <span className="text-blue-600">it's waiting to come back.</span>
         </h1>
         
         <p className="text-lg sm:text-xl text-gray-700">
-          Shop local. Earn SPIRALs. Support real stores in your community and across the country.
+          SPIRAL connects you to the stores that built your community. Shop local. Earn rewards. Revive what matters.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -23,14 +23,14 @@ export default function HeroSection() {
           
           <Link href="/spiral-features">
             <button className="bg-white border border-gray-300 hover:border-gray-400 text-gray-800 font-semibold px-6 py-3 rounded-2xl shadow transition-colors">
-              Learn How It Works
+              See How It Works
             </button>
           </Link>
         </div>
         
         <div className="mt-8 space-y-4">
           <p className="text-sm text-gray-500">
-            #SPIRALMovement #ShopLocal #MainStreetRevival
+            #SPIRALMovement #ShopLocal #MainStreetRevival #EarnSPIRALs
           </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 text-sm">
