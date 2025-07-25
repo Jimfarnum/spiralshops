@@ -27,6 +27,7 @@ export const stores = pgTable("stores", {
   reviewedAt: timestamp("reviewed_at"),
   rejectionReason: text("rejection_reason"),
   website: text("website"),
+  isLargeRetailer: boolean("is_large_retailer").default(false),
 });
 
 export const retailers = pgTable("retailers", {

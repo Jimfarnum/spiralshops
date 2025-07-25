@@ -6,6 +6,7 @@ interface Store {
   zipCode: string;
   isVerified: boolean;
   verificationTier?: string;
+  isLargeRetailer?: boolean;
 }
 
 export default function ShopperDashboard() {
@@ -14,6 +15,7 @@ export default function ShopperDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [zipFilter, setZipFilter] = useState('');
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
+  const [showLargeRetailersOnly, setShowLargeRetailersOnly] = useState(false);
 
   useEffect(() => {
     fetch('/api/stores')
@@ -37,8 +39,11 @@ export default function ShopperDashboard() {
     if (showVerifiedOnly) {
       filtered = filtered.filter(s => s.isVerified);
     }
+    if (showLargeRetailersOnly) {
+      filtered = filtered.filter(s => s.isLargeRetailer);
+    }
     setFilteredStores(filtered);
-  }, [searchTerm, zipFilter, showVerifiedOnly, stores]);
+  }, [searchTerm, zipFilter, showVerifiedOnly, showLargeRetailersOnly, stores]);
 
   return (
     <div className="p-4 max-w-xl mx-auto">
@@ -67,6 +72,14 @@ export default function ShopperDashboard() {
           />
           <label className="text-sm font-medium">Show Only Verified Businesses ✅</label>
         </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={showLargeRetailersOnly}
+            onChange={(e) => setShowLargeRetailersOnly(e.target.checked)}
+          />
+          <label className="text-sm font-medium">Show Only Large Retailers 🏢</label>
+        </div>
       </div>
 
       <ul className="space-y-2">
@@ -76,7 +89,10 @@ export default function ShopperDashboard() {
               <span className="font-medium">{store.name}</span>
               <span className="text-gray-500 text-sm ml-2">{store.zipCode}</span>
             </div>
-            {store.isVerified && <span className="text-green-600">✅ Verified</span>}
+            <div className="flex gap-2">
+              {store.isVerified && <span className="text-green-600">✅ Verified</span>}
+              {store.isLargeRetailer && <span className="text-blue-600">🏢 Large Retailer</span>}
+            </div>
           </li>
         ))}
         {filteredStores.length === 0 && (

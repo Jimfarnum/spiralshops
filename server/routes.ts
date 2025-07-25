@@ -96,7 +96,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/stores", async (req, res) => {
     try {
-      const stores = await storage.getStores();
+      const { largeRetailer } = req.query;
+      let stores = await storage.getStores();
+      
+      // Filter by large retailer status if requested
+      if (largeRetailer === 'true') {
+        stores = stores.filter(store => store.isLargeRetailer === true);
+      } else if (largeRetailer === 'false') {
+        stores = stores.filter(store => store.isLargeRetailer !== true);
+      }
+      
       res.json(stores);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch stores" });
