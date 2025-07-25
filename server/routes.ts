@@ -27,9 +27,10 @@ import { z } from "zod";
 export async function registerRoutes(app: Express): Promise<Server> {
   // Store routes
   // Store verification lookup endpoint
-  app.get("/api/lookup-store", async (req, res) => {
+  app.get("/api/verify-lookup", async (req, res) => {
     try {
-      const { name } = req.query;
+      const { store } = req.query;
+      const name = store;
       
       if (!name || typeof name !== 'string') {
         return res.status(400).json({ 

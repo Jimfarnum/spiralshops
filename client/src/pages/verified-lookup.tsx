@@ -5,7 +5,7 @@ export default function VerifiedLookupPage() {
   const [result, setResult] = useState<any>(null);
 
   const handleSearch = async () => {
-    const res = await fetch(`/api/lookup-store?name=${search}`);
+    const res = await fetch(`/api/verify-lookup?store=${encodeURIComponent(search)}`);
     const data = await res.json();
     setResult(data);
   };
