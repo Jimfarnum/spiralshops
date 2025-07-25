@@ -3,65 +3,72 @@ import { Link } from "wouter";
 
 export default function HeroSection() {
   return (
-    <section className="w-full min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-white to-gray-100 p-6">
-      <div className="max-w-4xl text-center space-y-6">
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-          Your Main Street isn't gone—<br className="hidden sm:inline" />
-          <span className="text-blue-600">it's waiting to come back.</span>
+    <div className="flex flex-col items-center w-full bg-white text-gray-900">
+      {/* Hero Section */}
+      <section className="w-full bg-yellow-100 text-center py-20 px-6">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          Your Main Street isn't gone—it's waiting to come back
         </h1>
-        
-        <p className="text-lg sm:text-xl text-gray-700">
-          SPIRAL connects you to the stores that built your community. Shop local. Earn rewards. Revive what matters.
+        <p className="text-lg md:text-xl mb-6 max-w-2xl mx-auto">
+          SPIRAL connects shoppers with real local stores, rewarding every purchase that supports a real place and real people.
         </p>
-        
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/signup">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-2xl shadow transition-colors">
-              Join the Movement
-            </button>
-          </Link>
-          
+        <div className="flex justify-center gap-4">
           <Link href="/spiral-features">
-            <button className="bg-white border border-gray-300 hover:border-gray-400 text-gray-800 font-semibold px-6 py-3 rounded-2xl shadow transition-colors">
+            <button className="bg-black text-white px-6 py-3 rounded-full text-lg hover:bg-gray-800">
               See How It Works
             </button>
           </Link>
+          <Link href="/signup">
+            <button className="border border-black px-6 py-3 rounded-full text-lg hover:bg-gray-200">
+              Join the Revival
+            </button>
+          </Link>
         </div>
-        
-        <div className="mt-8 space-y-4">
-          <p className="text-sm text-gray-500">
-            #SPIRALMovement #ShopLocal #MainStreetRevival #EarnSPIRALs
-          </p>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 text-sm">
-            <div className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border">
-              <div className="font-semibold text-blue-600">Local Discovery</div>
-              <div className="text-gray-600">Find stores in your community</div>
-            </div>
-            
-            <div className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border">
-              <div className="font-semibold text-blue-600">SPIRAL Rewards</div>
-              <div className="text-gray-600">Earn points for every purchase</div>
-            </div>
-            
-            <div className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border">
-              <div className="font-semibold text-blue-600">Community Impact</div>
-              <div className="text-gray-600">Support Main Street businesses</div>
-            </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-20 px-6 text-center w-full max-w-5xl">
+        <h2 className="text-3xl font-semibold mb-10">How SPIRAL Works</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 className="text-xl font-semibold mb-2">Shop Local</h3>
+            <p>Discover and shop from local retailers near you or across the country.</p>
           </div>
-          
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <Link href="/spiral-wallet-demo">
-              <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-8 py-3 rounded-2xl shadow-lg transition-all transform hover:scale-105">
-                🔥 Try SPIRAL Wallet Demo
-              </button>
-            </Link>
-            <p className="text-xs text-gray-500 mt-2">
-              Experience the complete wallet system with real-time transaction tracking
-            </p>
+          <div>
+            <h3 className="text-xl font-semibold mb-2">Earn SPIRALs</h3>
+            <p>Earn rewards on every purchase—doubled when redeemed in person.</p>
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold mb-2">Fuel Community</h3>
+            <p>Your purchases power real jobs, local places, and Main Street revival.</p>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Wallet Preview */}
+      <section className="py-20 px-6 bg-gray-50 w-full text-center">
+        <h2 className="text-3xl font-semibold mb-6">SPIRAL Wallet</h2>
+        <p className="mb-6 max-w-xl mx-auto">
+          Track your earnings, see your impact, and redeem rewards easily—all in one place.
+        </p>
+        <Link href="/spiral-wallet-demo" className="text-blue-600 underline text-lg">
+          Try the Wallet Demo
+        </Link>
+      </section>
+
+      {/* Join Section */}
+      <section className="py-20 px-6 text-center bg-yellow-50">
+        <h2 className="text-3xl font-semibold mb-4">Be Part of the Movement</h2>
+        <p className="mb-6 max-w-xl mx-auto">
+          Whether you're a shopper or a retailer—SPIRAL makes every local connection count.
+        </p>
+        <Link href="/products">
+          <button className="bg-black text-white px-6 py-3 rounded-full text-lg hover:bg-gray-800">
+            Start Shopping Local
+          </button>
+        </Link>
+        <p className="mt-4 text-sm text-gray-500">#EarnSPIRALs #MainStreetRevival</p>
+      </section>
+    </div>
   );
 }
