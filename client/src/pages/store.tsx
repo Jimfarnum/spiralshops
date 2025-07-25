@@ -140,7 +140,7 @@ export default function Store() {
                 <div className="mb-4">
                   <VerifiedBadge 
                     isVerified={store.isVerified || false} 
-                    tier={store.verificationTier as "Local" | "Regional" | "National" | null}
+                    tier={store.verificationTier as "Unverified" | "Basic" | "Local" | "Regional" | "National" | null}
                   />
                 </div>
 

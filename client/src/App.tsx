@@ -124,6 +124,7 @@ import RetailerFollowDemo from "@/pages/retailer-follow-demo";
 import VerifyStore from "@/pages/verify-store";
 import AdminVerifications from "@/pages/admin-verifications";
 import VerificationDemo from "@/pages/verification-demo";
+import VerificationLevels from "@/pages/verification-levels";
 
 function Router() {
   return (
@@ -253,6 +254,7 @@ function Router() {
       <Route path="/verify-store" component={VerifyStore} />
       <Route path="/admin/verifications" component={AdminVerifications} />
       <Route path="/verification-demo" component={VerificationDemo} />
+      <Route path="/verification-levels" component={VerificationLevels} />
       <Route component={NotFound} />
     </Switch>
   );

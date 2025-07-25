@@ -200,7 +200,7 @@ router.post("/api/admin/approve-verification/:storeId", async (req, res) => {
       .set({
         isVerified: true,
         verificationStatus: 'approved',
-        verificationTier: verificationTier || 'Local',
+        verificationTier: verificationTier || 'Basic',
         reviewedAt: new Date(),
         imageUrl: imageUrl || null,
         rating: rating || 4.5,

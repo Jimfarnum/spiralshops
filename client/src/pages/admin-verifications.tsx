@@ -44,7 +44,7 @@ export default function AdminVerifications() {
   const [approvalData, setApprovalData] = useState({
     imageUrl: "",
     rating: "4.5",
-    verificationTier: "Local"
+    verificationTier: "Basic"
   });
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -70,7 +70,7 @@ export default function AdminVerifications() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/pending-verifications'] });
       setSelectedStore(null);
-      setApprovalData({ imageUrl: "", rating: "4.5", verificationTier: "Local" });
+      setApprovalData({ imageUrl: "", rating: "4.5", verificationTier: "Basic" });
       toast({
         title: "Store Approved!",
         description: "The store verification has been approved and is now live.",
@@ -368,9 +368,10 @@ export default function AdminVerifications() {
                                               <SelectValue placeholder="Select verification tier" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                              <SelectItem value="Local">Local Store - Green Badge</SelectItem>
-                                              <SelectItem value="Regional">Regional Store - Yellow Badge</SelectItem>
-                                              <SelectItem value="National">National Store - Blue Badge</SelectItem>
+                                              <SelectItem value="Basic">🆔 Basic Verification - Gray Badge</SelectItem>
+                                              <SelectItem value="Local">🏪 Local Store - Green Badge</SelectItem>
+                                              <SelectItem value="Regional">🏢 Regional Store - Yellow Badge</SelectItem>
+                                              <SelectItem value="National">🏛️ National Store - Blue Badge</SelectItem>
                                             </SelectContent>
                                           </Select>
                                         </div>

@@ -13,7 +13,7 @@ const RetailerCard: React.FC<RetailerCardProps> = ({ store }) => {
         <h2 className="text-lg font-semibold">{store.name}</h2>
         <VerifiedBadge 
           isVerified={store.isVerified || false} 
-          tier={store.verificationTier as "Local" | "Regional" | "National" | null} 
+          tier={store.verificationTier as "Unverified" | "Basic" | "Local" | "Regional" | "National" | null} 
         />
       </div>
       <p className="text-sm text-gray-600 mb-3">{store.description}</p>
