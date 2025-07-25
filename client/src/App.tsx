@@ -22,6 +22,7 @@ import MallsPage from "@/pages/malls";
 import Account from "@/pages/account";
 import RetailerLogin from "@/pages/retailer-login";
 import RetailerDashboard from "@/pages/retailer-dashboard";
+import RetailerDashboardNew from "@/components/RetailerDashboard";
 import MarketingCenter from "@/pages/marketing-center";
 import AnalyticsDashboard from "@/pages/analytics-dashboard";
 import SocialFeed from "@/pages/social-feed";
@@ -229,6 +230,7 @@ function Router() {
       <Route path="/feature-15-demo" component={Feature15Demo} />
       <Route path="/mvp-test" component={MVPTest} />
       <Route path="/spiral-wallet-demo" component={SpiralWalletDemo} />
+      <Route path="/retailer-dashboard-new" component={RetailerDashboardNew} />
       <Route component={NotFound} />
     </Switch>
   );

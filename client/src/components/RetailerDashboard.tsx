@@ -1,207 +1,264 @@
-import React, { useState } from "react";
-import { Link } from "wouter";
-import { Calculator, Trophy, Megaphone, Settings, BarChart3, Store } from "lucide-react";
-import BusinessCalculator from "@/pages/business-calculator";
-import Feature15Demo from "@/pages/feature-15-demo";
+import React, { useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 const RetailerDashboard = () => {
-  const [activeSection, setActiveSection] = useState("overview");
+  const [sales, setSales] = useState(0);
+  const [fee, setFee] = useState(0);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [adBudget, setAdBudget] = useState(100);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  const renderContent = () => {
-    switch (activeSection) {
-      case "calculator":
-        return <BusinessCalculator />;
-      case "referrals":
-        return <Feature15Demo />;
-      case "ads":
-        return (
-          <div className="bg-white rounded-lg p-6 shadow-sm border">
-            <h2 className="text-xl font-semibold mb-4">Ad Planner</h2>
-            <p className="text-gray-600 mb-4">Manage your advertising campaigns and track performance.</p>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-blue-800">🚀 Coming Soon: Advanced advertising tools for social media campaigns, targeted promotions, and performance analytics.</p>
-            </div>
-          </div>
-        );
-      case "settings":
-        return (
-          <div className="bg-white rounded-lg p-6 shadow-sm border">
-            <h2 className="text-xl font-semibold mb-4">Account Settings</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
-                <input type="text" className="w-full p-2 border border-gray-300 rounded-md" placeholder="Your Business Name" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
-                <input type="email" className="w-full p-2 border border-gray-300 rounded-md" placeholder="contact@yourbusiness.com" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Business Category</label>
-                <select className="w-full p-2 border border-gray-300 rounded-md">
-                  <option>Select Category</option>
-                  <option>Retail</option>
-                  <option>Restaurant</option>
-                  <option>Services</option>
-                  <option>Health & Beauty</option>
-                </select>
-              </div>
-              <button className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
-                Save Changes
-              </button>
-            </div>
-          </div>
-        );
-      default:
-        return (
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg p-6 shadow-sm border">
-              <h2 className="text-xl font-semibold mb-4">Welcome to SPIRAL Retailer Dashboard</h2>
-              <p className="text-gray-600 mb-6">
-                Use these powerful tools to grow your business, calculate fees, track referrals, and manage your SPIRAL presence.
-              </p>
-              
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                  <Calculator className="w-8 h-8 text-purple-600 mb-2" />
-                  <h3 className="font-semibold text-purple-900">Fee Calculator</h3>
-                  <p className="text-sm text-purple-700">Calculate transaction fees and profit margins</p>
-                </div>
-                
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <Trophy className="w-8 h-8 text-blue-600 mb-2" />
-                  <h3 className="font-semibold text-blue-900">Viral Referrals</h3>
-                  <p className="text-sm text-blue-700">Track referrals and earn SPIRAL rewards</p>
-                </div>
-                
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <BarChart3 className="w-8 h-8 text-green-600 mb-2" />
-                  <h3 className="font-semibold text-green-900">Analytics</h3>
-                  <p className="text-sm text-green-700">View performance and customer insights</p>
-                </div>
-              </div>
-            </div>
+  const userId = 'demo-retailer-001';
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg p-6 shadow-sm border">
-                <h3 className="text-lg font-semibold mb-3">Quick Stats</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Sales</span>
-                    <span className="font-semibold">$12,450</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">SPIRAL Earnings</span>
-                    <span className="font-semibold text-purple-600">2,490 SPIRALs</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Referrals</span>
-                    <span className="font-semibold text-blue-600">15 Active</span>
-                  </div>
-                </div>
-              </div>
+  useEffect(() => {
+    fetchWallet();
+  }, []);
 
-              <div className="bg-white rounded-lg p-6 shadow-sm border">
-                <h3 className="text-lg font-semibold mb-3">Quick Actions</h3>
-                <div className="space-y-2">
-                  <Link href="/retailer-portal" className="block w-full bg-purple-600 text-white text-center py-2 rounded-md hover:bg-purple-700">
-                    Manage Products
-                  </Link>
-                  <button className="w-full bg-gray-100 text-gray-700 py-2 rounded-md hover:bg-gray-200">
-                    View Orders
-                  </button>
-                  <button className="w-full bg-gray-100 text-gray-700 py-2 rounded-md hover:bg-gray-200">
-                    Customer Support
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
+  const fetchWallet = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/spiral-wallet/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setWalletBalance(data.balance);
+      } else {
+        // Create wallet if it doesn't exist
+        const createResponse = await fetch(`/api/spiral-wallet/demo-transactions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId })
+        });
+        if (createResponse.ok) {
+          const createData = await createResponse.json();
+          setWalletBalance(createData.balance);
+        }
+      }
+    } catch (error) {
+      console.error('Wallet fetch error', error);
+      toast({
+        title: "Error fetching wallet",
+        description: "Unable to load SPIRAL wallet balance",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return (
-    <div className="flex min-h-screen bg-gray-100 text-gray-900">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md border-r border-gray-200">
-        <div className="p-6">
-          <Link href="/" className="font-bold text-xl text-purple-700 hover:text-purple-800">
-            SPIRAL
-          </Link>
-        </div>
-        <nav className="flex flex-col gap-2 px-4">
-          <button
-            onClick={() => setActiveSection("overview")}
-            className={`flex items-center gap-3 p-3 text-left rounded-lg hover:bg-gray-50 ${
-              activeSection === "overview" ? "bg-purple-50 text-purple-700 border-l-4 border-purple-600" : "text-gray-700"
-            }`}
-          >
-            <Store className="w-5 h-5" />
-            Overview
-          </button>
-          
-          <button
-            onClick={() => setActiveSection("calculator")}
-            className={`flex items-center gap-3 p-3 text-left rounded-lg hover:bg-gray-50 ${
-              activeSection === "calculator" ? "bg-purple-50 text-purple-700 border-l-4 border-purple-600" : "text-gray-700"
-            }`}
-          >
-            <Calculator className="w-5 h-5" />
-            Fee Calculator
-          </button>
-          
-          <button
-            onClick={() => setActiveSection("referrals")}
-            className={`flex items-center gap-3 p-3 text-left rounded-lg hover:bg-gray-50 ${
-              activeSection === "referrals" ? "bg-purple-50 text-purple-700 border-l-4 border-purple-600" : "text-gray-700"
-            }`}
-          >
-            <Trophy className="w-5 h-5" />
-            Referrals & Rewards
-          </button>
-          
-          <button
-            onClick={() => setActiveSection("ads")}
-            className={`flex items-center gap-3 p-3 text-left rounded-lg hover:bg-gray-50 ${
-              activeSection === "ads" ? "bg-purple-50 text-purple-700 border-l-4 border-purple-600" : "text-gray-700"
-            }`}
-          >
-            <Megaphone className="w-5 h-5" />
-            Ad Planner
-          </button>
-          
-          <button
-            onClick={() => setActiveSection("settings")}
-            className={`flex items-center gap-3 p-3 text-left rounded-lg hover:bg-gray-50 ${
-              activeSection === "settings" ? "bg-purple-50 text-purple-700 border-l-4 border-purple-600" : "text-gray-700"
-            }`}
-          >
-            <Settings className="w-5 h-5" />
-            Settings
-          </button>
-        </nav>
+  const handleSalesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value) || 0;
+    setSales(value);
+    setFee(calculateFee(value));
+  };
 
-        <div className="mt-8 p-4 border-t border-gray-200">
-          <div className="text-xs text-gray-500 mb-2">Quick Links</div>
-          <div className="space-y-1">
-            <Link href="/retailer-analytics" className="block text-sm text-gray-600 hover:text-purple-600">
-              Advanced Analytics
-            </Link>
-            <Link href="/marketing-center" className="block text-sm text-gray-600 hover:text-purple-600">
-              Marketing Center
-            </Link>
-            <Link href="/retailer-insights" className="block text-sm text-gray-600 hover:text-purple-600">
-              Business Insights
-            </Link>
+  const calculateFee = (amount: number) => {
+    if (amount <= 1000) return amount * 0.05;
+    if (amount <= 5000) return amount * 0.06;
+    return amount * 0.07;
+  };
+
+  const handleAdBudgetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAdBudget(parseFloat(e.target.value) || 0);
+  };
+
+  const refreshWallet = () => {
+    fetchWallet();
+    toast({
+      title: "Wallet refreshed",
+      description: "SPIRAL balance has been updated"
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-[var(--spiral-cream)] p-6">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-[var(--spiral-navy)] mb-2">
+            Retailer Dashboard
+          </h1>
+          <p className="section-description text-lg">
+            Manage your SPIRAL business metrics and advertising tools
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Sales & Fees Calculator */}
+          <Card className="bg-white shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-xl text-[var(--spiral-navy)]">
+                Sales & Platform Fees
+              </CardTitle>
+              <CardDescription>
+                Calculate your monthly SPIRAL platform fees
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="sales">Monthly Sales ($)</Label>
+                <Input
+                  id="sales"
+                  type="number"
+                  value={sales}
+                  onChange={handleSalesChange}
+                  placeholder="Enter monthly sales amount"
+                  className="mt-1"
+                />
+              </div>
+              
+              <div className="p-4 bg-blue-50 rounded-lg border">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-[var(--spiral-navy)]">
+                    SPIRAL Platform Fee:
+                  </span>
+                  <span className="text-lg font-bold text-[var(--spiral-coral)]">
+                    ${fee.toFixed(2)}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 mt-1">
+                  {sales <= 1000 ? "5% fee tier" : sales <= 5000 ? "6% fee tier" : "7% fee tier"}
+                </p>
+              </div>
+
+              <div className="p-4 bg-green-50 rounded-lg border">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-[var(--spiral-navy)]">
+                    Net Earnings:
+                  </span>
+                  <span className="text-lg font-bold text-green-600">
+                    ${(sales - fee).toFixed(2)}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 mt-1">
+                  After SPIRAL platform fees
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* SPIRAL Wallet */}
+          <Card className="bg-white shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-xl text-[var(--spiral-navy)]">
+                SPIRAL Wallet
+              </CardTitle>
+              <CardDescription>
+                Your accumulated SPIRAL rewards balance
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-6 bg-gradient-to-r from-yellow-100 to-yellow-50 rounded-lg border-2 border-yellow-200">
+                <div className="text-center">
+                  <span className="text-sm text-gray-600 block">Current Balance</span>
+                  <span className="text-3xl font-bold text-[var(--spiral-navy)]">
+                    {walletBalance.toFixed(0)} SPIRALs
+                  </span>
+                  <span className="text-sm text-gray-600 block mt-1">
+                    ≈ ${(walletBalance * 0.01).toFixed(2)} value
+                  </span>
+                </div>
+              </div>
+
+              <Button 
+                onClick={refreshWallet}
+                disabled={isLoading}
+                className="w-full bg-[var(--spiral-navy)] hover:bg-[var(--spiral-coral)]"
+              >
+                {isLoading ? "Refreshing..." : "Refresh Wallet"}
+              </Button>
+
+              <div className="text-xs text-gray-500 space-y-1">
+                <p>• Earn SPIRALs from customer purchases</p>
+                <p>• Redeem for advertising credits</p>
+                <p>• Use for platform fee discounts</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Advertising Tools */}
+          <Card className="bg-white shadow-lg md:col-span-2">
+            <CardHeader>
+              <CardTitle className="text-xl text-[var(--spiral-navy)]">
+                Advertising Preview Tool
+              </CardTitle>
+              <CardDescription>
+                Estimate reach and engagement for your SPIRAL ads
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="adBudget">Monthly Ad Budget ($)</Label>
+                  <Input
+                    id="adBudget"
+                    type="number"
+                    value={adBudget}
+                    onChange={handleAdBudgetChange}
+                    placeholder="Enter ad budget"
+                    className="mt-1"
+                  />
+                </div>
+
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <span className="text-sm text-gray-600 block">Estimated Reach</span>
+                  <span className="text-xl font-bold text-[var(--spiral-navy)]">
+                    {(adBudget * 50).toLocaleString()}
+                  </span>
+                  <span className="text-sm text-gray-600 block">impressions</span>
+                </div>
+
+                <div className="p-4 bg-green-50 rounded-lg">
+                  <span className="text-sm text-gray-600 block">Estimated Clicks</span>
+                  <span className="text-xl font-bold text-green-600">
+                    {Math.round(adBudget * 2.5).toLocaleString()}
+                  </span>
+                  <span className="text-sm text-gray-600 block">potential visits</span>
+                </div>
+              </div>
+
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-semibold text-[var(--spiral-navy)] mb-2">
+                  SPIRAL Advertising Benefits:
+                </h4>
+                <ul className="text-sm text-gray-700 space-y-1">
+                  <li>• Target local customers within your community</li>
+                  <li>• Promote on SPIRAL platform and partner networks</li>
+                  <li>• Use SPIRAL rewards to reduce advertising costs</li>
+                  <li>• Track performance with detailed analytics</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mt-8 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Button 
+              variant="outline" 
+              className="border-[var(--spiral-navy)] text-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)] hover:text-white"
+            >
+              Manage Products
+            </Button>
+            <Button 
+              variant="outline"
+              className="border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)] hover:text-white"
+            >
+              View Analytics
+            </Button>
+            <Button 
+              variant="outline"
+              className="border-[var(--spiral-gold)] text-[var(--spiral-gold)] hover:bg-[var(--spiral-gold)] hover:text-white"
+            >
+              Customer Support
+            </Button>
           </div>
         </div>
-      </aside>
-
-      {/* Main content */}
-      <main className="flex-1 p-8">
-        {renderContent()}
-      </main>
+      </div>
     </div>
   );
 };
