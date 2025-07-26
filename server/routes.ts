@@ -21,6 +21,7 @@ import followRoutes from "./followRoutes";
 import { registerFeature17Routes } from "./feature17Routes";
 import paymentRoutes from "./paymentRoutes";
 import aiAnalyticsRoutes from "./aiAnalyticsRoutes";
+import subscriptionRoutes from "./subscriptionRoutes";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -709,9 +710,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Register payment and AI analytics routes
+  // Register payment, AI analytics, and subscription routes
   app.use("/api/payment", paymentRoutes);
   app.use("/api/ai", aiAnalyticsRoutes);
+  app.use("/api/subscription", subscriptionRoutes);
 
   return httpServer;
 }

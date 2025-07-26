@@ -76,6 +76,9 @@ import AccessibilityDemo from "@/pages/accessibility-demo";
 import EnhancedCheckout from "@/pages/checkout-enhanced";
 import PaymentSuccess from "@/pages/payment-success";
 import PaymentFeaturesDemo from "@/pages/payment-features-demo";
+import AdvancedFeaturesHub from "@/pages/advanced-features-hub";
+import EnterpriseDashboard from "@/pages/enterprise-dashboard";
+import RealTimeMonitoring from "@/pages/real-time-monitoring";
 import AccessibilityInitialization from "@/components/accessibility-initialization";
 import PerformanceOptimization from "@/pages/performance-optimization";
 import FeatureShowcase from "@/pages/feature-showcase";
@@ -272,6 +275,9 @@ function Router() {
       <Route path="/checkout-enhanced" component={EnhancedCheckout} />
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-features-demo" component={PaymentFeaturesDemo} />
+      <Route path="/advanced-features-hub" component={AdvancedFeaturesHub} />
+      <Route path="/enterprise-dashboard" component={EnterpriseDashboard} />
+      <Route path="/real-time-monitoring" component={RealTimeMonitoring} />
       <Route component={NotFound} />
     </Switch>
   );
