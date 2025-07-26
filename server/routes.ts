@@ -615,5 +615,97 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Products API
+  app.get("/api/products", async (req, res) => {
+    try {
+      const products = await recommendationEngine.getAllProducts();
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch products" });
+    }
+  });
+
+  // Users API
+  app.get("/api/users", async (req, res) => {
+    try {
+      const users = await storage.getUsers();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  // Reviews API
+  app.get("/api/reviews", async (req, res) => {
+    try {
+      const reviews = await reviewsStorage.getAllReviews();
+      res.json(reviews);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch reviews" });
+    }
+  });
+
+  // Wishlist API
+  app.get("/api/wishlist/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const wishlist = await storage.getWishlist(parseInt(userId));
+      res.json(wishlist || []);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch wishlist" });
+    }
+  });
+
+  // Social Shares API
+  app.get("/api/social-shares", async (req, res) => {
+    try {
+      const shares = await storage.getSocialShares();
+      res.json(shares);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch social shares" });
+    }
+  });
+
+  // Invite Codes API
+  app.get("/api/invite-codes/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const inviteCodes = await storage.getInviteCodes(userId);
+      res.json(inviteCodes);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch invite codes" });
+    }
+  });
+
+  // Analytics Dashboard API
+  app.get("/api/analytics/dashboard", async (req, res) => {
+    try {
+      const analytics = await storage.getAnalyticsDashboard();
+      res.json(analytics);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch analytics" });
+    }
+  });
+
+  // Transactions API
+  app.get("/api/transactions", async (req, res) => {
+    try {
+      const transactions = await storage.getAllTransactions();
+      res.json(transactions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch transactions" });
+    }
+  });
+
+  // Gift Cards API
+  app.get("/api/gift-cards", async (req, res) => {
+    try {
+      const giftCards = await giftCardsStorage.getAllGiftCards();
+      res.json(giftCards);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch gift cards" });
+    }
+  });
+
   return httpServer;
 }

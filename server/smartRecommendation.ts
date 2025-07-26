@@ -233,6 +233,17 @@ export class SmartRecommendationEngine {
     }
   }
 
+  // Get all products for products API
+  async getAllProducts(): Promise<any[]> {
+    try {
+      const stores = await storage.getStores();
+      return this.generateMockProductsFromStores(stores, 50);
+    } catch (error) {
+      console.error('Get all products error:', error);
+      return [];
+    }
+  }
+
   // Helper methods
   private calculateContentScore(product: any, baseProduct?: any): number {
     let score = 0;

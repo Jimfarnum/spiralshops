@@ -7,6 +7,7 @@ export interface IReviewsStorage {
   createReview(review: InsertReview): Promise<Review>;
   updateReviewHelpfulVotes(reviewId: number): Promise<Review>;
   getAverageRating(reviewType: string, targetId: string): Promise<number>;
+  getAllReviews(): Promise<Review[]>;
 }
 
 export class DatabaseReviewsStorage implements IReviewsStorage {
@@ -43,6 +44,10 @@ export class DatabaseReviewsStorage implements IReviewsStorage {
     
     const sum = reviewList.reduce((acc, review) => acc + review.rating, 0);
     return sum / reviewList.length;
+  }
+
+  async getAllReviews(): Promise<Review[]> {
+    return await db.select().from(reviews).orderBy(desc(reviews.createdAt));
   }
 }
 

@@ -1,7 +1,7 @@
 import { db } from "./db";
-import { users } from "../shared/schema";
+import { users, giftCards, userWallets } from "@shared/schema";
 import { eq, and, gte } from "drizzle-orm";
-import type { GiftCard, InsertGiftCard, GiftCardRedemption, InsertGiftCardRedemption } from "../shared/schema";
+import type { GiftCard, InsertGiftCard } from "@shared/schema";
 
 interface GiftCardsStorage {
   createGiftCard(data: Omit<InsertGiftCard, 'id' | 'createdAt'>): Promise<GiftCard>;
@@ -10,7 +10,7 @@ interface GiftCardsStorage {
   getAllGiftCards(): Promise<GiftCard[]>;
   getGiftCardsByRecipientUserId(userId: number): Promise<GiftCard[]>;
   updateGiftCard(id: number, updates: Partial<GiftCard>): Promise<void>;
-  createRedemption(data: Omit<InsertGiftCardRedemption, 'id' | 'redeemedAt'>): Promise<GiftCardRedemption>;
+  createRedemption(data: any): Promise<any>;
   redeemGiftCard(giftCardId: number, userId: number | null, amount: number, orderId?: string): Promise<any>;
   getUserReceivedGiftCards(userId: number): Promise<GiftCard[]>;
   getUserPurchasedGiftCards(userId: number): Promise<GiftCard[]>;

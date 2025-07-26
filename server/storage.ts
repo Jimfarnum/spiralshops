@@ -34,6 +34,14 @@ export interface IStorage {
   createOrder(order: InsertOrder): Promise<Order>;
   getOrder(orderNumber: string): Promise<Order | undefined>;
   getUserOrders(userId: number): Promise<Order[]>;
+
+  // Additional API methods
+  getUsers(): Promise<User[]>;
+  getWishlist(userId: number): Promise<any[]>;
+  getSocialShares(): Promise<any[]>;
+  getInviteCodes(userId: string): Promise<any[]>;
+  getAnalyticsDashboard(): Promise<any>;
+  getAllTransactions(): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -170,6 +178,50 @@ export class DatabaseStorage implements IStorage {
       .from(orders)
       .where(eq(orders.userId, userId))
       .orderBy(desc(orders.createdAt));
+  }
+
+  // Additional API method implementations
+  async getUsers(): Promise<User[]> {
+    return await db.select().from(users);
+  }
+
+  async getWishlist(userId: number): Promise<any[]> {
+    // Mock wishlist data for demo
+    return [
+      { id: 1, productId: "prod_1", productName: "Silver Earrings", addedAt: new Date().toISOString() },
+      { id: 2, productId: "prod_2", productName: "Coffee Mug", addedAt: new Date().toISOString() }
+    ];
+  }
+
+  async getSocialShares(): Promise<any[]> {
+    // Mock social shares data
+    return [
+      { id: 1, platform: "facebook", shares: 250, clicks: 125 },
+      { id: 2, platform: "twitter", shares: 180, clicks: 95 }
+    ];
+  }
+
+  async getInviteCodes(userId: string): Promise<any[]> {
+    // Mock invite codes data
+    return [
+      { id: 1, code: "SPIRAL123", uses: 5, spiralsEarned: 50 },
+      { id: 2, code: "REFER456", uses: 2, spiralsEarned: 20 }
+    ];
+  }
+
+  async getAnalyticsDashboard(): Promise<any> {
+    // Mock analytics dashboard data
+    return {
+      totalUsers: 1245,
+      totalOrders: 987,
+      totalRevenue: 125000,
+      spiralsCirculated: 45000,
+      topCategories: ["Electronics", "Food & Beverage", "Clothing"]
+    };
+  }
+
+  async getAllTransactions(): Promise<any[]> {
+    return await db.select().from(spiralTransactions).orderBy(desc(spiralTransactions.createdAt));
   }
 }
 
