@@ -79,6 +79,9 @@ import PaymentFeaturesDemo from "@/pages/payment-features-demo";
 import AdvancedFeaturesHub from "@/pages/advanced-features-hub";
 import EnterpriseDashboard from "@/pages/enterprise-dashboard";
 import RealTimeMonitoring from "@/pages/real-time-monitoring";
+import InviteToShop from "@/pages/invite-to-shop";
+import InviteResponse from "@/pages/invite-response";
+import MyTrips from "@/pages/my-trips";
 import AccessibilityInitialization from "@/components/accessibility-initialization";
 import PerformanceOptimization from "@/pages/performance-optimization";
 import FeatureShowcase from "@/pages/feature-showcase";
@@ -278,6 +281,9 @@ function Router() {
       <Route path="/advanced-features-hub" component={AdvancedFeaturesHub} />
       <Route path="/enterprise-dashboard" component={EnterpriseDashboard} />
       <Route path="/real-time-monitoring" component={RealTimeMonitoring} />
+      <Route path="/invite-to-shop" component={InviteToShop} />
+      <Route path="/invite/:tripId" component={InviteResponse} />
+      <Route path="/my-trips" component={MyTrips} />
       <Route component={NotFound} />
     </Switch>
   );

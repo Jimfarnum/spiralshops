@@ -14,7 +14,7 @@ import spiralWalletRoutes from "./spiralWalletRoutes";
 import { registerGiftCardRoutes } from "./giftCardRoutes";
 import { registerBusinessCalculatorRoutes } from "./businessCalculator";
 import { registerAnalyticsRoutes } from "./analyticsRoutes";
-import { registerInviteRoutes } from "./inviteRoutes";
+import inviteRoutes from "./inviteRoutes";
 import { registerReturnRoutes } from "./returnRoutes";
 import { recommendationEngine } from "./smartRecommendation";
 import followRoutes from "./followRoutes";
@@ -22,6 +22,7 @@ import { registerFeature17Routes } from "./feature17Routes";
 import paymentRoutes from "./paymentRoutes";
 import aiAnalyticsRoutes from "./aiAnalyticsRoutes";
 import subscriptionRoutes from "./subscriptionRoutes";
+import inviteRoutes from "./inviteRoutes";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -542,7 +543,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerAnalyticsRoutes(app);
 
   // Feature 15: Invite leaderboard routes
-  registerInviteRoutes(app);
+  // Invite routes are registered below with other API routes
 
   // Register return & refund system routes
   registerReturnRoutes(app);
@@ -710,10 +711,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Register payment, AI analytics, and subscription routes
+  // Register payment, AI analytics, subscription, and invite routes
   app.use("/api/payment", paymentRoutes);
   app.use("/api/ai", aiAnalyticsRoutes);
   app.use("/api/subscription", subscriptionRoutes);
+  app.use("/api/invite", inviteRoutes);
 
   return httpServer;
 }

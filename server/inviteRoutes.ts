@@ -1,361 +1,318 @@
-import type { Express } from "express";
-import { nanoid } from "nanoid";
-import { z } from "zod";
+import { Router } from "express";
+import { storage } from "./storage";
 
-interface InviteStorage {
-  generateReferralCode(userId: string): Promise<string>;
-  trackReferral(referralCode: string, referredUserId: string): Promise<void>;
-  getLeaderboard(limit?: number, location?: string): Promise<any[]>;
-  getReferralStats(userId: string): Promise<any>;
-  rewardReferral(referralId: string, rewardType: string, spiralAmount: number): Promise<void>;
-  updateLeaderboard(userId: string): Promise<void>;
-}
+const router = Router();
 
-class MemoryInviteStorage implements InviteStorage {
-  private referrals: Map<string, any> = new Map();
-  private leaderboard: Map<string, any> = new Map();
-  private rewards: Map<string, any> = new Map();
+// Store invite trips in memory for now
+const inviteTrips: any[] = [];
+const inviteResponses: any[] = [];
 
-  async generateReferralCode(userId: string): Promise<string> {
-    const code = `${userId.toUpperCase()}-${nanoid(6)}`;
+// Create new shopping trip invite
+router.post("/invite-trip", async (req, res) => {
+  try {
+    const { userId, shopperName, date, location, invitees, specialOffers } = req.body;
+
+    if (!userId || !date || !location || !invitees?.length) {
+      return res.status(400).json({ 
+        error: "User ID, date, location, and at least one invitee required" 
+      });
+    }
+
+    // Generate unique trip ID
+    const tripId = `trip_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
-    // Check if user already has a referral code
-    const existingCode = Array.from(this.referrals.values())
-      .find(r => r.referrerId === userId && !r.referredUserId)?.referralCode;
-    
-    if (existingCode) return existingCode;
-
-    const referral = {
-      id: nanoid(),
-      referrerId: userId,
-      referredUserId: null,
-      referralCode: code,
+    const trip = {
+      tripId,
+      hostUserId: userId,
+      hostName: shopperName || "SPIRAL Shopper",
+      date,
+      location,
+      invitees: invitees.filter((email: string) => email.trim()),
+      specialOffers: specialOffers || [],
       status: "pending",
-      spiralsEarned: 0,
-      firstPurchaseBonus: false,
       createdAt: new Date(),
-      completedAt: null
+      responses: []
     };
 
-    this.referrals.set(referral.id, referral);
-    console.log(`Generated referral: ${JSON.stringify(referral)}`);
-    console.log(`Total referrals in memory: ${this.referrals.size}`);
-    return code;
-  }
+    inviteTrips.push(trip);
 
-  async trackReferral(referralCode: string, referredUserId: string): Promise<void> {
-    console.log(`Looking for referral code: ${referralCode}`);
-    console.log(`Available referrals: ${Array.from(this.referrals.values()).map(r => r.referralCode).join(', ')}`);
-    
-    const referral = Array.from(this.referrals.values())
-      .find(r => r.referralCode === referralCode);
+    // Send invitations (simulate email notifications)
+    const inviteResults = await sendInvitations(trip);
 
-    if (!referral) {
-      throw new Error(`Invalid referral code: ${referralCode}`);
-    }
-
-    if (referral.referredUserId) {
-      throw new Error("Referral code already used");
-    }
-
-    if (referral.referrerId === referredUserId) {
-      throw new Error("Cannot refer yourself");
-    }
-
-    // Update referral
-    referral.referredUserId = referredUserId;
-    referral.status = "completed";
-    referral.spiralsEarned = 10; // Base signup bonus
-    referral.completedAt = new Date();
-
-    // Award reward
-    await this.rewardReferral(referral.id, "signup", 10);
-    await this.updateLeaderboard(referral.referrerId);
-  }
-
-  async getLeaderboard(limit: number = 10, location?: string): Promise<any[]> {
-    const leaderboardData = Array.from(this.leaderboard.values())
-      .filter(entry => entry.isPublic)
-      .sort((a, b) => b.totalSpiralEarned - a.totalSpiralEarned)
-      .slice(0, limit)
-      .map((entry, index) => ({
-        ...entry,
-        currentRank: index + 1,
-        userName: `User${entry.userId.slice(-4)}`, // Mock user name
-        badges: this.calculateBadges(entry, index + 1)
-      }));
-
-    return leaderboardData;
-  }
-
-  async getReferralStats(userId: string): Promise<any> {
-    const userReferrals = Array.from(this.referrals.values())
-      .filter(r => r.referrerId === userId);
-
-    const leaderboardEntry = this.leaderboard.get(userId) || {
-      totalInvites: 0,
-      successfulInvites: 0,
-      totalSpiralEarned: 0,
-      currentRank: null,
-      badges: []
-    };
-
-    return {
-      totalInvites: userReferrals.length,
-      successfulInvites: userReferrals.filter(r => r.status === "completed").length,
-      pendingInvites: userReferrals.filter(r => r.status === "pending").length,
-      totalSpiralEarned: leaderboardEntry.totalSpiralEarned,
-      currentRank: leaderboardEntry.currentRank,
-      badges: leaderboardEntry.badges,
-      recentReferrals: userReferrals
-        .filter(r => r.status === "completed")
-        .slice(-5)
-        .map(r => ({
-          id: r.id,
-          spiralsEarned: r.spiralsEarned,
-          completedAt: r.completedAt
-        }))
-    };
-  }
-
-  async rewardReferral(referralId: string, rewardType: string, spiralAmount: number): Promise<void> {
-    const reward = {
-      id: nanoid(),
-      userId: "",
-      referralId,
-      rewardType,
-      spiralAmount,
-      description: `Earned ${spiralAmount} SPIRALs for ${rewardType}`,
-      createdAt: new Date()
-    };
-
-    const referral = this.referrals.get(referralId);
-    if (referral) {
-      reward.userId = referral.referrerId;
-    }
-
-    this.rewards.set(reward.id, reward);
-  }
-
-  async updateLeaderboard(userId: string): Promise<void> {
-    const userReferrals = Array.from(this.referrals.values())
-      .filter(r => r.referrerId === userId);
-
-    const totalInvites = userReferrals.length;
-    const successfulInvites = userReferrals.filter(r => r.status === "completed").length;
-    const totalSpiralEarned = userReferrals.reduce((sum, r) => sum + r.spiralsEarned, 0);
-
-    const entry = {
-      id: nanoid(),
-      userId,
-      totalInvites,
-      successfulInvites,
-      totalSpiralEarned,
-      currentRank: null,
-      badges: [],
-      isPublic: true,
-      updatedAt: new Date()
-    };
-
-    this.leaderboard.set(userId, entry);
-  }
-
-  private calculateBadges(entry: any, rank: number): string[] {
-    const badges = [];
-    
-    if (rank === 1) badges.push("👑 Top Referrer");
-    if (rank <= 3) badges.push("🥇 Top 3");
-    if (rank <= 10) badges.push("🎯 Top 10");
-    if (entry.totalSpiralEarned >= 1000) badges.push("💎 SPIRAL Champion");
-    if (entry.successfulInvites >= 50) badges.push("🌟 Super Inviter");
-    if (entry.successfulInvites >= 10) badges.push("🚀 Rising Star");
-
-    return badges;
-  }
-}
-
-const inviteStorage = new MemoryInviteStorage();
-
-export function registerInviteRoutes(app: Express) {
-  // Generate referral code for user
-  app.post('/api/invite/generate', async (req, res) => {
-    try {
-      const schema = z.object({
-        userId: z.string().min(1)
-      });
-
-      const { userId } = schema.parse(req.body);
-      const referralCode = await inviteStorage.generateReferralCode(userId);
-      
-      res.json({ 
-        referralCode,
-        shareUrl: `https://spiralshops.com/invite/${referralCode}`,
-        message: "Share this link with friends to earn SPIRALs!"
-      });
-    } catch (error) {
-      console.error('Error generating referral code:', error);
-      res.status(400).json({ 
-        message: error instanceof Error ? error.message : "Failed to generate referral code" 
-      });
-    }
-  });
-
-  // Track referral when someone signs up
-  app.post('/api/invite/track', async (req, res) => {
-    try {
-      const schema = z.object({
-        referralCode: z.string().min(1),
-        referredUserId: z.string().min(1)
-      });
-
-      const { referralCode, referredUserId } = schema.parse(req.body);
-      await inviteStorage.trackReferral(referralCode, referredUserId);
-      
-      res.json({ 
-        success: true,
-        message: "Referral tracked successfully! Referrer earned 10 SPIRALs.",
-        spiralsEarned: 10
-      });
-    } catch (error) {
-      console.error('Error tracking referral:', error);
-      res.status(400).json({ 
-        message: error instanceof Error ? error.message : "Failed to track referral" 
-      });
-    }
-  });
-
-  // Get invite leaderboard
-  app.get('/api/leaderboard/top', async (req, res) => {
-    try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const location = req.query.location as string;
-      
-      const leaderboard = await inviteStorage.getLeaderboard(limit, location);
-      
-      res.json({
-        leaderboard,
-        total: leaderboard.length,
-        lastUpdated: new Date().toISOString()
-      });
-    } catch (error) {
-      console.error('Error fetching leaderboard:', error);
-      res.status(500).json({ message: "Failed to fetch leaderboard" });
-    }
-  });
-
-  // Get leaderboard by location
-  app.get('/api/leaderboard/by-location', async (req, res) => {
-    try {
-      const { city, state, mallId } = req.query;
-      const limit = parseInt(req.query.limit as string) || 10;
-      
-      const location = city && state ? `${city}, ${state}` : undefined;
-      const leaderboard = await inviteStorage.getLeaderboard(limit, location);
-      
-      res.json({
-        leaderboard,
-        location: location || "All Locations",
-        mallId: mallId || null,
-        total: leaderboard.length
-      });
-    } catch (error) {
-      console.error('Error fetching location leaderboard:', error);
-      res.status(500).json({ message: "Failed to fetch location leaderboard" });
-    }
-  });
-
-  // Get user referral stats
-  app.get('/api/invite/stats/:userId', async (req, res) => {
-    try {
-      const userId = req.params.userId;
-      const stats = await inviteStorage.getReferralStats(userId);
-      
-      res.json(stats);
-    } catch (error) {
-      console.error('Error fetching referral stats:', error);
-      res.status(500).json({ message: "Failed to fetch referral stats" });
-    }
-  });
-
-  // Reward first purchase bonus
-  app.post('/api/invite/first-purchase', async (req, res) => {
-    try {
-      const schema = z.object({
-        referredUserId: z.string().min(1),
-        orderId: z.string().min(1),
-        orderAmount: z.number().min(0)
-      });
-
-      const { referredUserId, orderId, orderAmount } = schema.parse(req.body);
-      
-      // Find the referral for this user
-      const referrals = Array.from((inviteStorage as any).referrals.values());
-      const referral = referrals.find(r => 
-        r.referredUserId === referredUserId && 
-        r.status === "completed" && 
-        !r.firstPurchaseBonus
-      );
-
-      if (referral) {
-        const bonusAmount = Math.min(50, Math.floor(orderAmount * 0.1)); // 10% of order, max 50 SPIRALs
-        referral.firstPurchaseBonus = true;
-        referral.spiralsEarned += bonusAmount;
-
-        await inviteStorage.rewardReferral(referral.id, "first_purchase", bonusAmount);
-        await inviteStorage.updateLeaderboard(referral.referrerId);
-
-        res.json({
-          success: true,
-          bonusAmount,
-          message: `Referrer earned ${bonusAmount} bonus SPIRALs for first purchase!`
-        });
-      } else {
-        res.json({
-          success: false,
-          message: "No eligible referral found for first purchase bonus"
-        });
+    res.json({
+      tripId,
+      message: "Shopping trip invites sent successfully!",
+      invitesSent: inviteResults.sent,
+      invitesFailed: inviteResults.failed,
+      specialDeals: generateSpecialDeals(location, trip.invitees.length),
+      tripDetails: {
+        date: trip.date,
+        location: trip.location,
+        hostName: trip.hostName,
+        totalInvites: trip.invitees.length
       }
-    } catch (error) {
-      console.error('Error processing first purchase bonus:', error);
-      res.status(400).json({ 
-        message: error instanceof Error ? error.message : "Failed to process first purchase bonus" 
+    });
+  } catch (error: any) {
+    console.error("Invite trip error:", error);
+    res.status(500).json({ 
+      error: "Failed to create shopping trip invite",
+      message: error.message 
+    });
+  }
+});
+
+// Respond to trip invitation
+router.post("/respond-invite/:tripId", async (req, res) => {
+  try {
+    const { tripId } = req.params;
+    const { guestName, guestEmail, response, message } = req.body;
+
+    if (!tripId || !guestEmail || !response) {
+      return res.status(400).json({ 
+        error: "Trip ID, guest email, and response required" 
       });
     }
-  });
 
-  // Share referral link (for analytics)
-  app.post('/api/invite/share', async (req, res) => {
-    try {
-      const schema = z.object({
-        userId: z.string().min(1),
-        platform: z.string().min(1), // facebook, twitter, instagram, email, sms
-        referralCode: z.string().min(1)
-      });
+    const trip = inviteTrips.find(t => t.tripId === tripId);
+    if (!trip) {
+      return res.status(404).json({ error: "Shopping trip not found" });
+    }
 
-      const { userId, platform, referralCode } = schema.parse(req.body);
-      
-      // Award 2 SPIRALs for sharing
-      const shareReward = {
-        id: nanoid(),
-        userId,
-        referralId: referralCode,
-        rewardType: "share",
-        spiralAmount: 2,
-        description: `Earned 2 SPIRALs for sharing on ${platform}`,
-        createdAt: new Date()
+    // Check if guest was actually invited
+    if (!trip.invitees.includes(guestEmail)) {
+      return res.status(403).json({ error: "You were not invited to this trip" });
+    }
+
+    // Record response
+    const responseRecord = {
+      tripId,
+      guestName: guestName || "Guest",
+      guestEmail,
+      response, // 'accept', 'decline', 'maybe'
+      message: message || "",
+      respondedAt: new Date()
+    };
+
+    inviteResponses.push(responseRecord);
+
+    // Update trip responses
+    const existingResponseIndex = trip.responses.findIndex((r: any) => r.guestEmail === guestEmail);
+    if (existingResponseIndex >= 0) {
+      trip.responses[existingResponseIndex] = responseRecord;
+    } else {
+      trip.responses.push(responseRecord);
+    }
+
+    // Generate guest benefits if accepted
+    let guestBenefits = null;
+    if (response === 'accept') {
+      guestBenefits = {
+        spiralBonus: 25, // Extra SPIRALs for joining
+        sharedDeals: generateGuestDeals(trip.location),
+        exclusiveOffers: [
+          "Free shipping on orders over $25",
+          "10% off local artisan products",
+          "Priority checkout lane access"
+        ],
+        validUntil: trip.date
       };
+    }
 
-      res.json({
-        success: true,
-        spiralsEarned: 2,
-        platform,
-        message: `Earned 2 SPIRALs for sharing on ${platform}!`
+    res.json({
+      message: `Response recorded: ${response}`,
+      tripDetails: {
+        date: trip.date,
+        location: trip.location,
+        hostName: trip.hostName
+      },
+      guestBenefits,
+      responseStatus: response,
+      totalAccepted: trip.responses.filter((r: any) => r.response === 'accept').length,
+      totalResponded: trip.responses.length
+    });
+  } catch (error: any) {
+    console.error("Respond invite error:", error);
+    res.status(500).json({ 
+      error: "Failed to process invitation response",
+      message: error.message 
+    });
+  }
+});
+
+// Get trip details and status
+router.get("/trip/:tripId", async (req, res) => {
+  try {
+    const { tripId } = req.params;
+    
+    const trip = inviteTrips.find(t => t.tripId === tripId);
+    if (!trip) {
+      return res.status(404).json({ error: "Shopping trip not found" });
+    }
+
+    const tripStatus = {
+      ...trip,
+      summary: {
+        totalInvited: trip.invitees.length,
+        totalResponded: trip.responses.length,
+        accepted: trip.responses.filter((r: any) => r.response === 'accept').length,
+        declined: trip.responses.filter((r: any) => r.response === 'decline').length,
+        pending: trip.invitees.length - trip.responses.length
+      },
+      upcomingBenefits: trip.date >= new Date().toISOString().split('T')[0] ? 
+        generateTripBenefits(trip) : null
+    };
+
+    res.json(tripStatus);
+  } catch (error: any) {
+    console.error("Get trip error:", error);
+    res.status(500).json({ 
+      error: "Failed to retrieve trip details",
+      message: error.message 
+    });
+  }
+});
+
+// Get user's trips (as host or guest)
+router.get("/user-trips/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Trips where user is the host
+    const hostedTrips = inviteTrips.filter(trip => trip.hostUserId === userId);
+    
+    // Trips where user was invited (need email lookup)
+    const user = await storage.getUser(userId);
+    const guestTrips = user?.email ? 
+      inviteTrips.filter(trip => trip.invitees.includes(user.email)) : [];
+
+    res.json({
+      hostedTrips: hostedTrips.map(trip => ({
+        ...trip,
+        responseCount: trip.responses.length,
+        acceptedCount: trip.responses.filter((r: any) => r.response === 'accept').length
+      })),
+      guestTrips: guestTrips.map(trip => {
+        const userResponse = trip.responses.find((r: any) => r.guestEmail === user.email);
+        return {
+          ...trip,
+          userResponse: userResponse?.response || 'pending',
+          userMessage: userResponse?.message || null
+        };
+      })
+    });
+  } catch (error: any) {
+    console.error("Get user trips error:", error);
+    res.status(500).json({ 
+      error: "Failed to retrieve user trips",
+      message: error.message 
+    });
+  }
+});
+
+// Helper Functions
+
+async function sendInvitations(trip: any) {
+  const results = { sent: [], failed: [] };
+  
+  for (const email of trip.invitees) {
+    try {
+      // Simulate sending email invitation
+      const inviteLink = `${process.env.FRONTEND_URL || 'http://localhost:5000'}/invite/${trip.tripId}`;
+      
+      // In production, this would send real emails
+      console.log(`📧 Invitation sent to ${email} for trip to ${trip.location} on ${trip.date}`);
+      console.log(`📧 Invite link: ${inviteLink}`);
+      
+      results.sent.push({
+        email,
+        inviteLink,
+        sentAt: new Date()
       });
     } catch (error) {
-      console.error('Error tracking share:', error);
-      res.status(400).json({ 
-        message: error instanceof Error ? error.message : "Failed to track share" 
+      results.failed.push({
+        email,
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
-  });
+  }
+  
+  return results;
 }
+
+function generateSpecialDeals(location: string, inviteCount: number) {
+  const baseDeals = [
+    {
+      title: "Group Shopping Bonus",
+      description: `Extra ${inviteCount * 5} SPIRALs for bringing friends`,
+      code: `GROUP${inviteCount}`,
+      discount: inviteCount * 5,
+      type: "spiral_bonus"
+    },
+    {
+      title: "Social Shopper Discount",
+      description: "15% off when shopping with friends",
+      code: "SOCIAL15",
+      discount: 15,
+      type: "percentage"
+    }
+  ];
+
+  // Location-specific deals
+  if (location.toLowerCase().includes('mall')) {
+    baseDeals.push({
+      title: "Mall Explorer Special",
+      description: "Free food court item with $50+ purchase",
+      code: "MALLEXPLORE",
+      discount: 0,
+      type: "freebie"
+    });
+  }
+
+  return baseDeals;
+}
+
+function generateGuestDeals(location: string) {
+  return [
+    {
+      title: "Friend's Discount",
+      description: "10% off your first purchase today",
+      code: "FRIEND10",
+      discount: 10,
+      type: "percentage"
+    },
+    {
+      title: "Welcome SPIRALs",
+      description: "Earn double SPIRALs on today's purchases",
+      code: "WELCOME2X",
+      discount: 100,
+      type: "spiral_multiplier"
+    },
+    {
+      title: "Group Perks",
+      description: "Free gift wrapping on any purchase",
+      code: "GROUPGIFT",
+      discount: 0,
+      type: "service"
+    }
+  ];
+}
+
+function generateTripBenefits(trip: any) {
+  const acceptedCount = trip.responses.filter((r: any) => r.response === 'accept').length;
+  
+  return {
+    groupSize: acceptedCount + 1, // +1 for host
+    bonusMultiplier: Math.min(2.0, 1 + (acceptedCount * 0.2)), // Up to 2x multiplier
+    exclusiveAccess: acceptedCount >= 2 ? [
+      "VIP checkout lane",
+      "Personal shopping assistant",
+      "Complimentary gift wrapping"
+    ] : [
+      "Priority customer service",
+      "Extended return policy"
+    ],
+    totalSavingsEstimate: `$${(acceptedCount + 1) * 12}-${(acceptedCount + 1) * 25}`
+  };
+}
+
+export default router;
