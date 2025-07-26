@@ -1,0 +1,16 @@
+// SPIRAL: Feature Improvement & Integration Blueprint // Objective: Analyze, design, implement, test, and finalize essential feature upgrades // Stack: React (Web/Mobile), Express, Cloudant DB, IBM Watson Services, Vercel (CI/CD)
+
+/* PHASED ROLLOUT: Each feature will be scoped, integrated into the current app framework, and tested for 100% functional deployment with clear platform entry points. */
+
+//----------------------------------------------------------// // 1. SMART SEARCH IMPROVEMENT (Watson Discovery API) //----------------------------------------------------------// // 🔍 Goal: Replace simple text match with semantic relevance, typo-tolerance, and location boosting // 🔧 Tasks: // - Integrate IBM Watson Discovery with store/product index // - Modify /search endpoint to use Watson for query expansion // - Add fuzzy match & distance boost logic // ✅ Touchpoints: Homepage, mall directory, search results page, filters
+
+//----------------------------------------------------------// // 2. SPIRALPAY WALLET + LOYALTY BALANCE //----------------------------------------------------------// // 💳 Goal: Build user wallet to hold SPIRALS points, gift card balance, and purchases // 🔧 Tasks: // - Create /api/wallet endpoint // - Add React Wallet panel under user account // - Hook into SPIRALS loyalty engine for point accrual and redemption // ✅ Touchpoints: Checkout, rewards display, profile screen, gift card entry
+
+//----------------------------------------------------------// // 3. RETAILER AUTO-ONBOARDING + IMPORTER //----------------------------------------------------------// // 🛍️ Goal: Streamline onboarding via CSV import, Shopify, or Square POS sync // 🔧 Tasks: // - Import module for CSV + product mapping // - Shopify API connector (OAuth + product fetch) // - Square Inventory sync for inventory and sales // ✅ Touchpoints: Retailer dashboard, onboarding flow, admin panel
+
+//----------------------------------------------------------// // 4. FULFILLMENT & DELIVERY API LAYER //----------------------------------------------------------// // 🚚 Goal: Enable multi-option delivery from store, mall, or 3rd party // 🔧 Tasks: // - Integrate FedEx API + USPS for home delivery // - Local pickup/curbside logic with SPIRAL Center routing // - Update order flow to show delivery options and fees // ✅ Touchpoints: Checkout, order status, confirmation page
+
+//----------------------------------------------------------// // 5. PUSH NOTIFICATIONS & MOBILE ALERTS (PWA/Native) //----------------------------------------------------------// // 🔔 Goal: Notify users of wishlist drops, SPIRAL Day invites, and mall promos // 🔧 Tasks: // - Firebase Web Push setup (or IBM push service) // - App logic to allow alert opt-in + notification router // - Local mall alert display with badge counter // ✅ Touchpoints: Mobile app homescreen, SPIRAL invite flow, alerts dropdown
+
+//----------------------------------------------------------// // 6. LIVE SUPPORT + FAQ (Watson Assistant) //----------------------------------------------------------// // 💬 Goal: Provide real-time shopper and retailer support with chatbot + fallback email // 🔧 Tasks: // - Deploy Watson Assistant widget for FAQ and live help // - Link chatbot triggers to route categories to agents
+
