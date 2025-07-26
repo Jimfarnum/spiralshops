@@ -140,6 +140,9 @@ import DiscoverStores from "@/pages/discover-stores";
 import VerifiedLookup from "@/pages/verified-lookup";
 import ContactSupport from "@/pages/contact-support";
 import FeeExplorer from "@/pages/fee-explorer";
+import SmartSearchDemo from "@/pages/smart-search-demo";
+import EnhancedWalletDemo from "@/pages/enhanced-wallet-demo";
+import FeatureImprovementHub from "@/pages/feature-improvement-hub";
 
 function Router() {
   return (
@@ -275,6 +278,9 @@ function Router() {
       <Route path="/verified-lookup" component={VerifiedLookup} />
       <Route path="/contact-support" component={ContactSupport} />
       <Route path="/fee-explorer" component={FeeExplorer} />
+      <Route path="/smart-search-demo" component={SmartSearchDemo} />
+      <Route path="/enhanced-wallet-demo" component={EnhancedWalletDemo} />
+      <Route path="/feature-improvement-hub" component={FeatureImprovementHub} />
       <Route path="/checkout-enhanced" component={EnhancedCheckout} />
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-features-demo" component={PaymentFeaturesDemo} />

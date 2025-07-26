@@ -23,6 +23,12 @@ import paymentRoutes from "./paymentRoutes";
 import aiAnalyticsRoutes from "./aiAnalyticsRoutes";
 import subscriptionRoutes from "./subscriptionRoutes";
 import inviteRoutes from "./inviteRoutes";
+import { registerSmartSearchRoutes } from "./smartSearchRoutes";
+import { registerEnhancedWalletRoutes } from "./enhancedWalletRoutes";
+import { registerRetailerOnboardingRoutes } from "./retailerOnboardingRoutes";
+import { registerFulfillmentRoutes } from "./fulfillmentRoutes";
+import { registerNotificationRoutes } from "./notificationRoutes";
+import { registerLiveSupportRoutes } from "./liveSupportRoutes";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -553,6 +559,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register Feature 17: Unified Enhancement Bundle routes
   registerFeature17Routes(app);
+
+  // Register Feature Improvement & Integration Blueprint routes
+  registerSmartSearchRoutes(app);
+  registerEnhancedWalletRoutes(app);
+  registerRetailerOnboardingRoutes(app);
+  registerFulfillmentRoutes(app);
+  registerNotificationRoutes(app);
+  registerLiveSupportRoutes(app);
 
   // Register store verification routes
   const verificationRoutes = await import("./verificationRoutes");
