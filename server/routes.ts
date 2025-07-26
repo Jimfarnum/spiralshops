@@ -19,6 +19,8 @@ import { registerReturnRoutes } from "./returnRoutes";
 import { recommendationEngine } from "./smartRecommendation";
 import followRoutes from "./followRoutes";
 import { registerFeature17Routes } from "./feature17Routes";
+import paymentRoutes from "./paymentRoutes";
+import aiAnalyticsRoutes from "./aiAnalyticsRoutes";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -706,6 +708,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch gift cards" });
     }
   });
+
+  // Register payment and AI analytics routes
+  app.use("/api/payment", paymentRoutes);
+  app.use("/api/ai", aiAnalyticsRoutes);
 
   return httpServer;
 }

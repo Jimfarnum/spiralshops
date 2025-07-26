@@ -73,6 +73,9 @@ import InventoryAlertsDemo from "@/pages/inventory-alerts-demo";
 import LanguageDemo from "@/pages/language-demo";
 import AccessibilitySettings from "@/pages/accessibility-settings";
 import AccessibilityDemo from "@/pages/accessibility-demo";
+import EnhancedCheckout from "@/pages/checkout-enhanced";
+import PaymentSuccess from "@/pages/payment-success";
+import PaymentFeaturesDemo from "@/pages/payment-features-demo";
 import AccessibilityInitialization from "@/components/accessibility-initialization";
 import PerformanceOptimization from "@/pages/performance-optimization";
 import FeatureShowcase from "@/pages/feature-showcase";
@@ -266,6 +269,9 @@ function Router() {
       <Route path="/verified-lookup" component={VerifiedLookup} />
       <Route path="/contact-support" component={ContactSupport} />
       <Route path="/fee-explorer" component={FeeExplorer} />
+      <Route path="/checkout-enhanced" component={EnhancedCheckout} />
+      <Route path="/payment-success" component={PaymentSuccess} />
+      <Route path="/payment-features-demo" component={PaymentFeaturesDemo} />
       <Route component={NotFound} />
     </Switch>
   );
