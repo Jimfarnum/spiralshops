@@ -38,6 +38,7 @@ import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiral
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
 import { z } from "zod";
+import authSystem from "./authSystem.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Enable trust proxy for Replit environment
@@ -67,17 +68,234 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.get('/api/analytics/internal', spiralProtection.spiralAdminAuth, (req, res) => {
+  // ========================================
+  // SPIRAL USER AUTHENTICATION ROUTES
+  // ========================================
+
+  // Check username availability
+  app.get('/api/auth/check-username', async (req, res) => {
+    try {
+      const { username } = req.query;
+      if (!username || typeof username !== 'string') {
+        return res.status(400).json({ error: 'Username is required' });
+      }
+
+      const available = await authSystem.isUsernameAvailable(username);
+      res.json({ available });
+    } catch (error) {
+      res.status(500).json({ error: 'Could not check username availability' });
+    }
+  });
+
+  // Check email availability
+  app.get('/api/auth/check-email', async (req, res) => {
+    try {
+      const { email } = req.query;
+      if (!email || typeof email !== 'string') {
+        return res.status(400).json({ error: 'Email is required' });
+      }
+
+      const available = await authSystem.isEmailAvailable(email);
+      res.json({ available });
+    } catch (error) {
+      res.status(500).json({ error: 'Could not check email availability' });
+    }
+  });
+
+  // Check social handle availability
+  app.get('/api/auth/check-social-handle', async (req, res) => {
+    try {
+      const { handle } = req.query;
+      if (!handle || typeof handle !== 'string') {
+        return res.status(400).json({ error: 'Social handle is required' });
+      }
+
+      const available = await authSystem.isSocialHandleAvailable(handle);
+      res.json({ available });
+    } catch (error) {
+      res.status(500).json({ error: 'Could not check social handle availability' });
+    }
+  });
+
+  // User registration
+  app.post('/api/auth/register', async (req, res) => {
+    try {
+      // Validate request body
+      const validatedData = authSystem.userRegistrationSchema.parse(req.body);
+
+      // Check if username and email are available
+      const [usernameAvailable, emailAvailable] = await Promise.all([
+        authSystem.isUsernameAvailable(validatedData.username),
+        authSystem.isEmailAvailable(validatedData.email)
+      ]);
+
+      if (!usernameAvailable) {
+        return res.status(400).json({ error: 'Username is already taken' });
+      }
+
+      if (!emailAvailable) {
+        return res.status(400).json({ error: 'Email is already registered' });
+      }
+
+      // Check social handle if provided
+      if (validatedData.socialHandle) {
+        const socialHandleAvailable = await authSystem.isSocialHandleAvailable(validatedData.socialHandle);
+        if (!socialHandleAvailable) {
+          return res.status(400).json({ error: 'Social handle is already taken' });
+        }
+      }
+
+      // Hash password
+      const passwordHash = await authSystem.hashPassword(validatedData.password);
+
+      // Create user
+      const userData = {
+        ...validatedData,
+        passwordHash,
+        name: `${validatedData.firstName} ${validatedData.lastName}`,
+        inviteCode: authSystem.generateInviteCode(validatedData.username)
+      };
+      delete userData.password; // Remove plain password
+
+      const newUser = await authSystem.createUser(userData);
+
+      // Generate JWT token
+      const token = authSystem.generateUserToken(newUser);
+
+      // Set secure cookie
+      res.cookie('spiralUserToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      });
+
+      // Return user data (without password hash)
+      const userResponse = { ...newUser };
+      delete userResponse.passwordHash;
+
+      res.status(201).json({
+        message: 'Registration successful',
+        user: userResponse,
+        token
+      });
+    } catch (error) {
+      if (error.name === 'ZodError') {
+        return res.status(400).json({
+          error: 'Validation failed',
+          details: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
+        });
+      }
+
+      console.error('Registration error:', error);
+      res.status(500).json({ error: 'Registration failed. Please try again.' });
+    }
+  });
+
+  // User login
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      // Validate request body
+      const validatedData = authSystem.userLoginSchema.parse(req.body);
+
+      // Find user by email or username
+      const user = await authSystem.findUserByIdentifier(validatedData.identifier);
+      if (!user) {
+        return res.status(401).json({ error: 'Invalid email/username or password' });
+      }
+
+      // Verify password
+      const passwordValid = await authSystem.verifyPassword(validatedData.password, user.passwordHash);
+      if (!passwordValid) {
+        return res.status(401).json({ error: 'Invalid email/username or password' });
+      }
+
+      // Check if account is active
+      if (!user.isActive) {
+        return res.status(401).json({ error: 'Account is disabled. Please contact support.' });
+      }
+
+      // Generate JWT token
+      const token = authSystem.generateUserToken(user);
+
+      // Set secure cookie
+      res.cookie('spiralUserToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      });
+
+      // Update last login (in real implementation)
+      // await updateUserLastLogin(user.id);
+
+      // Return user data (without password hash)
+      const userResponse = { ...user };
+      delete userResponse.passwordHash;
+
+      res.json({
+        message: 'Login successful',
+        user: userResponse,
+        token
+      });
+    } catch (error) {
+      if (error.name === 'ZodError') {
+        return res.status(400).json({
+          error: 'Validation failed',
+          details: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
+        });
+      }
+
+      console.error('Login error:', error);
+      res.status(500).json({ error: 'Login failed. Please try again.' });
+    }
+  });
+
+  // Get current user
+  app.get('/api/auth/me', authSystem.authenticateUser, (req, res) => {
+    // Return user data from token (already validated by middleware)
     res.json({
-      totalUsers: 1247,
-      activeOrders: 89,
-      systemHealth: 98.7,
-      securityAlerts: 0,
-      apiRequests24h: 15420,
-      protectedRoutes: ['/admin', '/api/admin', '/internal'],
-      lastUpdate: new Date().toISOString()
+      user: {
+        id: req.user.userId,
+        email: req.user.email,
+        username: req.user.username,
+        userType: req.user.userType,
+        // Add more user fields as needed from database
+        firstName: 'Demo',
+        lastName: 'User',
+        name: 'Demo User',
+        spiralBalance: 150,
+        totalEarned: 500,
+        totalRedeemed: 350,
+        isEmailVerified: true,
+        isActive: true
+      }
     });
   });
+
+  // User logout
+  app.post('/api/auth/logout', (req, res) => {
+    res.clearCookie('spiralUserToken');
+    res.json({ message: 'Logout successful' });
+  });
+
+  // Protected shopper-only endpoint example
+  app.get('/api/shopper/profile', authSystem.authenticateUser, authSystem.requireShopper, (req, res) => {
+    res.json({
+      message: 'This is a shopper-only endpoint',
+      user: req.user
+    });
+  });
+
+  // Protected retailer-only endpoint example
+  app.get('/api/retailer/dashboard', authSystem.authenticateUser, authSystem.requireRetailer, (req, res) => {
+    res.json({
+      message: 'This is a retailer-only endpoint',
+      user: req.user
+    });
+  });
+
+
   // Store routes
   // Store verification lookup endpoint
   app.get("/api/verify-lookup", async (req, res) => {

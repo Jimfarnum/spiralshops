@@ -159,6 +159,7 @@ import CheckoutDemo from "@/pages/checkout-demo";
 import AdvancedShippingDemo from "@/pages/advanced-shipping-demo";
 import ShippingOptimizationDemo from "@/pages/shipping-optimization-demo";
 import SpiralAdminLogin from "@/pages/spiral-admin-login";
+import UserAuthDemo from "@/pages/user-auth-demo";
 
 function Router() {
   return (
@@ -313,6 +314,7 @@ function Router() {
       <Route path="/advanced-shipping-demo" component={AdvancedShippingDemo} />
       <Route path="/shipping-optimization-demo" component={ShippingOptimizationDemo} />
       <Route path="/spiral-admin" component={SpiralAdminLogin} />
+      <Route path="/user-auth-demo" component={UserAuthDemo} />
       <Route path="/checkout-enhanced" component={EnhancedCheckout} />
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-features-demo" component={PaymentFeaturesDemo} />

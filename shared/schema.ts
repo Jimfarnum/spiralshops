@@ -55,12 +55,18 @@ export const insertRetailerSchema = createInsertSchema(retailers).omit({
   approved: true,
 });
 
-// Users table for authentication and loyalty tracking
+// Enhanced Users table with authentication and unique usernames
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
-  name: text("name").notNull(),
+  username: text("username").notNull().unique(), // Unique username for platform and social sharing
+  passwordHash: text("password_hash").notNull(), // Encrypted password
+  userType: text("user_type").notNull().default("shopper"), // 'shopper' or 'retailer'
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  name: text("name").notNull(), // Display name
+  profileImageUrl: text("profile_image_url"),
+  socialHandle: text("social_handle").unique(), // Optional unique handle for social sharing experiences
   spiralBalance: integer("spiral_balance").default(0),
   totalEarned: integer("total_earned").default(0),
   totalRedeemed: integer("total_redeemed").default(0),
@@ -68,7 +74,11 @@ export const users = pgTable("users", {
   referredBy: text("referred_by"),
   totalReferrals: integer("total_referrals").default(0),
   referralEarnings: integer("referral_earnings").default(0),
+  isEmailVerified: boolean("is_email_verified").default(false),
+  isActive: boolean("is_active").default(true),
+  lastLogin: timestamp("last_login"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // SPIRAL transactions for tracking earning and redemption
