@@ -5,8 +5,8 @@ import rateLimit from 'express-rate-limit';
 
 // SPIRAL Admin Configuration
 const SPIRAL_ADMIN_CONFIG = {
-  // Change these credentials for production
-  adminPassphrase: 'SPIRAL_ADMIN_2025',
+  // Updated admin credentials
+  adminPassphrase: 'Ashland8!',
   adminCode: 'SP1RAL_S3CUR3',
   sessionSecret: process.env.SESSION_SECRET || 'spiral-admin-secret-key-2025',
   tokenExpiry: '24h'

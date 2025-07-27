@@ -13,7 +13,7 @@
 ## 🧑‍💼 SPIRAL Admin Area
 
 ### Authentication Methods
-- **Passphrase**: `SPIRAL_ADMIN_2025`
+- **Passphrase**: `Ashland8!`
 - **Admin Code**: `SP1RAL_S3CUR3`
 - **Access URL**: `/spiral-admin`
 
