@@ -143,6 +143,11 @@ import FeeExplorer from "@/pages/fee-explorer";
 import SmartSearchDemo from "@/pages/smart-search-demo";
 import EnhancedWalletDemo from "@/pages/enhanced-wallet-demo";
 import FeatureImprovementHub from "@/pages/feature-improvement-hub";
+import ComprehensiveFeatureTest from "@/pages/comprehensive-feature-test";
+import RetailerOnboardingDemo from "@/pages/retailer-onboarding-demo";
+import FulfillmentDemo from "@/pages/fulfillment-demo";
+import NotificationsDemo from "@/pages/notifications-demo";
+import LiveSupportDemo from "@/pages/live-support-demo";
 
 function Router() {
   return (
@@ -281,6 +286,11 @@ function Router() {
       <Route path="/smart-search-demo" component={SmartSearchDemo} />
       <Route path="/enhanced-wallet-demo" component={EnhancedWalletDemo} />
       <Route path="/feature-improvement-hub" component={FeatureImprovementHub} />
+      <Route path="/comprehensive-feature-test" component={ComprehensiveFeatureTest} />
+      <Route path="/retailer-onboarding-demo" component={RetailerOnboardingDemo} />
+      <Route path="/fulfillment-demo" component={FulfillmentDemo} />
+      <Route path="/notifications-demo" component={NotificationsDemo} />
+      <Route path="/live-support-demo" component={LiveSupportDemo} />
       <Route path="/checkout-enhanced" component={EnhancedCheckout} />
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-features-demo" component={PaymentFeaturesDemo} />
