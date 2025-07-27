@@ -854,7 +854,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (retailerId) {
         offers = offers.filter(offer => 
-          offer.offeredBy !== 'retailer' || offer.entityId === parseInt(retailerId)
+          offer.offeredBy !== 'seller' || offer.entityId === parseInt(retailerId)
         );
       }
       

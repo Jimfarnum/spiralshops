@@ -50,7 +50,7 @@ export const shippingRates = pgTable("shipping_rates", {
 // Free Shipping Offers Table
 export const freeShippingOffers = pgTable("free_shipping_offers", {
   id: integer("id").primaryKey(),
-  offeredBy: varchar("offered_by", { length: 50 }).notNull(), // 'retailer', 'manufacturer', 'spiral'
+  offeredBy: varchar("offered_by", { length: 50 }).notNull(), // 'seller', 'manufacturer', 'spiral'
   entityId: integer("entity_id").notNull(), // retailer_id, manufacturer_id, etc.
   entityName: varchar("entity_name", { length: 255 }).notNull(),
   offerType: varchar("offer_type", { length: 50 }).notNull(), // 'minimum_order', 'product_specific', 'promotional'

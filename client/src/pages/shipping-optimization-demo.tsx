@@ -443,7 +443,7 @@ export default function ShippingOptimizationDemo() {
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium text-green-800">{offer.entityName}</h4>
                         <Badge className="bg-green-100 text-green-800">
-                          {offer.offeredBy.charAt(0).toUpperCase() + offer.offeredBy.slice(1)} Offer
+                          {offer.offeredBy === 'seller' ? 'Seller' : offer.offeredBy.charAt(0).toUpperCase() + offer.offeredBy.slice(1)} Offer
                         </Badge>
                       </div>
                       <p className="text-sm text-green-700 mb-2">{offer.terms}</p>

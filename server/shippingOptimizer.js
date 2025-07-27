@@ -89,11 +89,11 @@ const SHIPPING_SERVICES = [
   { carrierId: 5, serviceName: "Amazon Same-Day", serviceCode: "AMZL_SD", estimatedDays: 0, baseCost: 12.99 }
 ];
 
-// Free shipping offers database
+// Free shipping offers database - from sellers and manufacturers
 const FREE_SHIPPING_OFFERS = [
   {
     id: 1,
-    offeredBy: "retailer",
+    offeredBy: "seller", // Retailer/Seller offers
     entityId: 1,
     entityName: "Twin Cities Tech Hub",
     offerType: "minimum_order",
@@ -101,7 +101,7 @@ const FREE_SHIPPING_OFFERS = [
     eligibleZipCodes: ["55401", "55402", "55403", "55404"], // Minneapolis area
     shippingMethods: ["USPS_GA", "UPS_GND"],
     isActive: true,
-    terms: "Free standard shipping on orders $75+ within Minneapolis"
+    terms: "Seller offers free standard shipping on orders $75+ within Minneapolis"
   },
   {
     id: 2,
@@ -114,23 +114,24 @@ const FREE_SHIPPING_OFFERS = [
     eligibleZipCodes: "nationwide",
     shippingMethods: ["USPS_PM", "UPS_GND", "FEDEX_GND"],
     isActive: true,
-    terms: "Free shipping on all Samsung electronics nationwide"
+    terms: "Manufacturer offers free shipping on all Samsung electronics nationwide"
   },
   {
     id: 3,
-    offeredBy: "spiral",
-    entityId: 1,
-    entityName: "SPIRAL Platform",
-    offerType: "promotional",
-    minimumOrderValue: 50.00,
+    offeredBy: "manufacturer",
+    entityId: 102,
+    entityName: "Apple Inc.",
+    offerType: "product_specific",
+    minimumOrderValue: 0,
+    applicableProducts: ["electronics", "phones", "tablets", "computers"],
     eligibleZipCodes: "nationwide",
-    shippingMethods: ["USPS_GA", "UPS_GND"],
+    shippingMethods: ["USPS_PM", "UPS_2DA", "FEDEX_ON"],
     isActive: true,
-    terms: "SPIRAL members get free standard shipping on orders $50+"
+    terms: "Manufacturer offers free expedited shipping on all Apple products"
   },
   {
     id: 4,
-    offeredBy: "retailer",
+    offeredBy: "seller",
     entityId: 2,
     entityName: "Mississippi River Coffee",
     offerType: "minimum_order",
@@ -138,7 +139,31 @@ const FREE_SHIPPING_OFFERS = [
     eligibleZipCodes: ["55101", "55102", "55103", "55104"], // St. Paul area
     shippingMethods: ["USPS_PM"],
     isActive: true,
-    terms: "Free Priority Mail shipping on coffee orders $35+ in St. Paul"
+    terms: "Seller offers free Priority Mail shipping on coffee orders $35+ in St. Paul"
+  },
+  {
+    id: 5,
+    offeredBy: "manufacturer",
+    entityId: 103,
+    entityName: "Nike Corporation",
+    offerType: "minimum_order",
+    minimumOrderValue: 50.00,
+    eligibleZipCodes: "nationwide",
+    shippingMethods: ["UPS_GND", "FEDEX_GND"],
+    isActive: true,
+    terms: "Manufacturer offers free ground shipping on Nike orders $50+ nationwide"
+  },
+  {
+    id: 6,
+    offeredBy: "seller",
+    entityId: 3,
+    entityName: "North Loop Fashion Co.",
+    offerType: "promotional",
+    minimumOrderValue: 40.00,
+    eligibleZipCodes: "nationwide",
+    shippingMethods: ["USPS_GA", "UPS_GND"],
+    isActive: true,
+    terms: "Seller promotional: Free shipping on fashion orders $40+ - limited time"
   }
 ];
 
@@ -247,8 +272,8 @@ export class ShippingOptimizer {
         continue;
       }
       
-      // Check retailer-specific offers
-      if (offer.offeredBy === "retailer" && offer.entityId !== retailerId) {
+      // Check seller-specific offers
+      if (offer.offeredBy === "seller" && offer.entityId !== retailerId) {
         continue;
       }
       
