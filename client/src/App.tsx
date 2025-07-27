@@ -155,6 +155,7 @@ import ProductCatalogDemo from "@/pages/product-catalog-demo";
 import ProductCatalogTest from "@/pages/product-catalog-test";
 import MultiRetailerCheckout from "@/pages/multi-retailer-checkout";
 import CompleteCheckoutTest from "@/pages/complete-checkout-test";
+import CheckoutDemo from "@/pages/checkout-demo";
 
 function Router() {
   return (
@@ -305,6 +306,7 @@ function Router() {
       <Route path="/product-catalog-test" component={ProductCatalogTest} />
       <Route path="/multi-retailer-checkout" component={MultiRetailerCheckout} />
       <Route path="/complete-checkout-test" component={CompleteCheckoutTest} />
+      <Route path="/checkout-demo" component={CheckoutDemo} />
       <Route path="/checkout-enhanced" component={EnhancedCheckout} />
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-features-demo" component={PaymentFeaturesDemo} />

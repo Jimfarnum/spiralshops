@@ -63,16 +63,16 @@ export default function MultiRetailerCheckout() {
         const data = await response.json();
         
         if (data.products && data.products.length > 0) {
-          // Create sample cart items from different stores
+          // Create sample cart items from different stores - ensuring we get variety
           const sampleItems: CartItem[] = data.products.slice(0, 8).map((product: any, index: number) => ({
-            id: product.id || `item_${index}`,
-            title: product.title,
-            price: product.price / 100, // Convert from cents
-            category: product.category,
-            storeName: product.storeName,
-            storeId: product.storeId,
+            id: product.id || product._id || `item_${index}`,
+            title: product.title || `Product ${index + 1}`,
+            price: (product.price || (Math.floor(Math.random() * 5000) + 1000)) / 100, // Convert from cents
+            category: product.category || 'General',
+            storeName: product.storeName || ['Target Store', 'Local Coffee Shop', 'Best Buy Electronics', 'Fashion Boutique'][index % 4],
+            storeId: product.storeId || (index % 4) + 1,
             quantity: Math.floor(Math.random() * 3) + 1,
-            imageUrl: product.imageUrl,
+            imageUrl: product.imageUrl || '',
             inStock: product.inStock !== false
           }));
           
