@@ -23,12 +23,14 @@ import paymentRoutes from "./paymentRoutes";
 import aiAnalyticsRoutes from "./aiAnalyticsRoutes";
 import subscriptionRoutes from "./subscriptionRoutes";
 import inviteRoutes from "./inviteRoutes";
-import { registerSmartSearchRoutes } from "./smartSearchRoutes";
-import { registerEnhancedWalletRoutes } from "./enhancedWalletRoutes";
-import { registerRetailerOnboardingRoutes } from "./retailerOnboardingRoutes";
-import { registerFulfillmentRoutes } from "./fulfillmentRoutes";
-import { registerNotificationRoutes } from "./notificationRoutes";
-import { registerLiveSupportRoutes } from "./liveSupportRoutes";
+import { 
+  registerSmartSearchRoutes,
+  registerEnhancedWalletRoutes,
+  registerRetailerOnboardingRoutes,
+  registerFulfillmentRoutes,
+  registerNotificationRoutes,
+  registerLiveSupportRoutes
+} from "./enhancedRoutes";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -724,6 +726,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch gift cards" });
     }
   });
+
+  // Register enhanced feature routes for 100% functionality
+  registerSmartSearchRoutes(app);
+  registerEnhancedWalletRoutes(app);
+  registerRetailerOnboardingRoutes(app);
+  registerFulfillmentRoutes(app);
+  registerNotificationRoutes(app);
+  registerLiveSupportRoutes(app);
 
   // Register payment, AI analytics, subscription, and invite routes
   app.use("/api/payment", paymentRoutes);

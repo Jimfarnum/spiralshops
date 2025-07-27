@@ -148,6 +148,7 @@ import RetailerOnboardingDemo from "@/pages/retailer-onboarding-demo";
 import FulfillmentDemo from "@/pages/fulfillment-demo";
 import NotificationsDemo from "@/pages/notifications-demo";
 import LiveSupportDemo from "@/pages/live-support-demo";
+import EnhancedFunctionalityTest from "@/pages/enhanced-functionality-test";
 
 function Router() {
   return (
@@ -291,6 +292,7 @@ function Router() {
       <Route path="/fulfillment-demo" component={FulfillmentDemo} />
       <Route path="/notifications-demo" component={NotificationsDemo} />
       <Route path="/live-support-demo" component={LiveSupportDemo} />
+      <Route path="/enhanced-functionality-test" component={EnhancedFunctionalityTest} />
       <Route path="/checkout-enhanced" component={EnhancedCheckout} />
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-features-demo" component={PaymentFeaturesDemo} />
