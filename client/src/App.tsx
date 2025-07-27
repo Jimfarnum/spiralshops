@@ -153,6 +153,8 @@ import CompetitiveAnalysis from "@/pages/competitive-analysis";
 import CompleteSystemValidation from "@/pages/complete-system-validation";
 import ProductCatalogDemo from "@/pages/product-catalog-demo";
 import ProductCatalogTest from "@/pages/product-catalog-test";
+import MultiRetailerCheckout from "@/pages/multi-retailer-checkout";
+import CompleteCheckoutTest from "@/pages/complete-checkout-test";
 
 function Router() {
   return (
@@ -301,6 +303,8 @@ function Router() {
       <Route path="/complete-system-validation" component={CompleteSystemValidation} />
       <Route path="/product-catalog-demo" component={ProductCatalogDemo} />
       <Route path="/product-catalog-test" component={ProductCatalogTest} />
+      <Route path="/multi-retailer-checkout" component={MultiRetailerCheckout} />
+      <Route path="/complete-checkout-test" component={CompleteCheckoutTest} />
       <Route path="/checkout-enhanced" component={EnhancedCheckout} />
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-features-demo" component={PaymentFeaturesDemo} />
