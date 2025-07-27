@@ -1,4 +1,6 @@
-// Advanced shipping calculation system
+import { ShippingOptimizer } from "./shippingOptimizer.js";
+
+// Advanced shipping calculation system with optimization
 export const calculateShippingOptions = (product, address, date = new Date()) => {
   const isLocal = address.city === 'Minneapolis' || address.city === 'St. Paul';
   const currentHour = date.getHours();

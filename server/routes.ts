@@ -809,25 +809,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerNotificationRoutes(app);
   registerLiveSupportRoutes(app);
 
-  // Advanced Shipping API Routes
-  app.post("/api/shipping/calculate", (req, res) => {
+
+  
+  // Comprehensive Multi-Carrier Shipping Optimization API
+  app.post("/api/shipping/optimize", async (req, res) => {
     try {
-      const { product, address } = req.body;
-      
-      if (!product || !address) {
-        return res.status(400).json({
-          error: "Product and address information required"
-        });
-      }
-      
-      const shippingOptions = calculateShippingOptions(product, address);
-      res.json({ shippingOptions });
+      const { ShippingOptimizer } = await import("./shippingOptimizer.js");
+      const shippingAnalysis = ShippingOptimizer.findOptimalShipping(req.body);
+      res.json(shippingAnalysis);
     } catch (error) {
-      console.error("Shipping calculation error:", error);
-      res.status(500).json({ error: "Failed to calculate shipping options" });
+      console.error("Shipping optimization error:", error);
+      res.status(500).json({ error: "Failed to optimize shipping" });
     }
   });
-  
+
+  app.post("/api/shipping/bulk-analyze", async (req, res) => {
+    try {
+      const { ShippingOptimizer } = await import("./shippingOptimizer.js");
+      const { orders } = req.body;
+      const bulkAnalysis = ShippingOptimizer.analyzeMultipleOrders(orders);
+      res.json(bulkAnalysis);
+    } catch (error) {
+      console.error("Bulk shipping analysis error:", error);
+      res.status(500).json({ error: "Failed to analyze multiple orders" });
+    }
+  });
+
+  app.get("/api/shipping/carriers", async (req, res) => {
+    try {
+      const { SHIPPING_CARRIERS } = await import("./shippingOptimizer.js");
+      res.json({ carriers: SHIPPING_CARRIERS.filter(c => c.isActive) });
+    } catch (error) {
+      console.error("Carriers fetch error:", error);
+      res.status(500).json({ error: "Failed to fetch carriers" });
+    }
+  });
+
+  app.get("/api/shipping/free-offers", async (req, res) => {
+    try {
+      const { FREE_SHIPPING_OFFERS } = await import("./shippingOptimizer.js");
+      const { retailerId, zip } = req.query;
+      
+      let offers = FREE_SHIPPING_OFFERS.filter(offer => offer.isActive);
+      
+      if (retailerId) {
+        offers = offers.filter(offer => 
+          offer.offeredBy !== 'retailer' || offer.entityId === parseInt(retailerId)
+        );
+      }
+      
+      if (zip) {
+        offers = offers.filter(offer => 
+          offer.eligibleZipCodes === 'nationwide' || 
+          offer.eligibleZipCodes.includes(zip)
+        );
+      }
+      
+      res.json({ offers });
+    } catch (error) {
+      console.error("Free offers fetch error:", error);
+      res.status(500).json({ error: "Failed to fetch free shipping offers" });
+    }
+  });
+
+  app.get("/api/shipping/metrics/:carrierId", async (req, res) => {
+    try {
+      const { ShippingOptimizer } = await import("./shippingOptimizer.js");
+      const { carrierId } = req.params;
+      const { route } = req.query;
+      
+      const metrics = ShippingOptimizer.getShippingMetrics(
+        parseInt(carrierId), 
+        route || "55401-55102"
+      );
+      res.json(metrics);
+    } catch (error) {
+      console.error("Shipping metrics error:", error);
+      res.status(500).json({ error: "Failed to fetch shipping metrics" });
+    }
+  });
+
   app.post("/api/shipping/validate-address", (req, res) => {
     try {
       const { address } = req.body;
