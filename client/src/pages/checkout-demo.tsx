@@ -20,7 +20,7 @@ const DEMO_CART_ITEMS: DemoCartItem[] = [
     id: '1',
     title: 'Wireless Bluetooth Headphones',
     price: 89.99,
-    storeName: 'Best Buy Electronics',
+    storeName: 'Twin Cities Tech Hub',
     storeId: 1,
     quantity: 1,
     category: 'Electronics'
@@ -29,7 +29,7 @@ const DEMO_CART_ITEMS: DemoCartItem[] = [
     id: '2', 
     title: 'Premium Coffee Beans (Dark Roast)',
     price: 24.99,
-    storeName: 'Local Coffee Shop',
+    storeName: 'Mississippi River Coffee',
     storeId: 2,
     quantity: 2,
     category: 'Food & Beverage'
@@ -38,7 +38,7 @@ const DEMO_CART_ITEMS: DemoCartItem[] = [
     id: '3',
     title: 'Cotton Casual T-Shirt',
     price: 19.99,
-    storeName: 'Target Store',
+    storeName: 'North Loop Fashion Co.',
     storeId: 3,
     quantity: 3,
     category: 'Clothing'
@@ -47,8 +47,8 @@ const DEMO_CART_ITEMS: DemoCartItem[] = [
     id: '4',
     title: 'LED Desk Lamp',
     price: 34.99,
-    storeName: 'Best Buy Electronics', 
-    storeId: 1,
+    storeName: 'Cedar Riverside Home Goods', 
+    storeId: 4,
     quantity: 1,
     category: 'Home & Office'
   },
@@ -56,8 +56,8 @@ const DEMO_CART_ITEMS: DemoCartItem[] = [
     id: '5',
     title: 'Organic Face Moisturizer',
     price: 28.99,
-    storeName: 'Fashion Boutique',
-    storeId: 4,
+    storeName: 'Edina Beauty Collective',
+    storeId: 5,
     quantity: 1,
     category: 'Beauty'
   }
