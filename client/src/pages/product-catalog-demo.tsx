@@ -37,12 +37,16 @@ export default function ProductCatalogDemo() {
   const limit = 12;
 
   const { data: productsData, isLoading: productsLoading } = useQuery({
-    queryKey: ['/api/products', { 
-      search: searchTerm, 
-      category: selectedCategory, 
-      limit, 
-      offset: currentPage * limit 
-    }],
+    queryKey: ['/api/products', searchTerm, selectedCategory, currentPage],
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      if (selectedCategory !== 'all') params.append('category', selectedCategory);
+      params.append('limit', limit.toString());
+      params.append('offset', (currentPage * limit).toString());
+      
+      return fetch(`/api/products?${params.toString()}`).then(res => res.json());
+    }
   });
 
   const { data: categoriesData } = useQuery({
