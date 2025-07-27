@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { products, categories } from "./productData.js";
 import { registerLoyaltyRoutes } from "./loyaltyRoutes";
 import { registerTrackingRoutes } from "./trackingRoutes";
 import { registerRetailerLoyaltyRoutes } from "./retailerLoyaltyRoutes";
@@ -573,6 +574,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register store verification routes
   const verificationRoutes = await import("./verificationRoutes");
   app.use(verificationRoutes.default);
+
+  // Product Catalog API Routes (Data Loaded from dataLoader.js)
+  app.get("/api/products", async (req, res) => {
+    try {
+      const { category, search, limit = 20, offset = 0 } = req.query;
+      let filteredProducts = [...products];
+      
+      // Filter by category
+      if (category && category !== 'all') {
+        filteredProducts = filteredProducts.filter(p => 
+          p.category.toLowerCase() === (category as string).toLowerCase()
+        );
+      }
+      
+      // Search filter
+      if (search) {
+        const searchTerm = (search as string).toLowerCase();
+        filteredProducts = filteredProducts.filter(p =>
+          p.name.toLowerCase().includes(searchTerm) ||
+          p.description.toLowerCase().includes(searchTerm) ||
+          p.category.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      // Pagination
+      const startIndex = parseInt(offset as string);
+      const endIndex = startIndex + parseInt(limit as string);
+      const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+      
+      res.json({
+        products: paginatedProducts,
+        total: filteredProducts.length,
+        categories: Object.values(categories),
+        pagination: {
+          offset: startIndex,
+          limit: parseInt(limit as string),
+          hasMore: endIndex < filteredProducts.length
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      res.status(500).json({ error: "Failed to fetch products" });
+    }
+  });
+
+  app.get("/api/products/:id", async (req, res) => {
+    try {
+      const productId = parseInt(req.params.id);
+      const product = products.find(p => p.id === productId);
+      
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      
+      res.json(product);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      res.status(500).json({ error: "Failed to fetch product" });
+    }
+  });
+
+  app.get("/api/categories", async (req, res) => {
+    try {
+      res.json({
+        categories: Object.values(categories),
+        total: Object.keys(categories).length
+      });
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
 
   const httpServer = createServer(app);
   // AI Recommendations API

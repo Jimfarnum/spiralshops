@@ -151,6 +151,7 @@ import LiveSupportDemo from "@/pages/live-support-demo";
 import EnhancedFunctionalityTest from "@/pages/enhanced-functionality-test";
 import CompetitiveAnalysis from "@/pages/competitive-analysis";
 import CompleteSystemValidation from "@/pages/complete-system-validation";
+import ProductCatalogDemo from "@/pages/product-catalog-demo";
 
 function Router() {
   return (
@@ -297,6 +298,7 @@ function Router() {
       <Route path="/enhanced-functionality-test" component={EnhancedFunctionalityTest} />
       <Route path="/competitive-analysis" component={CompetitiveAnalysis} />
       <Route path="/complete-system-validation" component={CompleteSystemValidation} />
+      <Route path="/product-catalog-demo" component={ProductCatalogDemo} />
       <Route path="/checkout-enhanced" component={EnhancedCheckout} />
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-features-demo" component={PaymentFeaturesDemo} />
