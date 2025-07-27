@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { calculateShippingOptions, validateDeliveryAddress, calculateDeliveryDate } from "./shippingRoutes.js";
+import spiralProtection from "./middleware/spiralProtection.js";
 import { storage } from "./storage";
 import { products, categories } from "./productData.js";
 import { registerLoyaltyRoutes } from "./loyaltyRoutes";
@@ -39,6 +40,44 @@ import { giftCardsStorage } from "./giftCardsStorage";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Enable trust proxy for Replit environment
+  app.set('trust proxy', 1);
+  
+  // Apply SPIRAL Protection System - ONLY for sensitive routes
+  app.use(spiralProtection.apiRequestLogger);
+  app.use(spiralProtection.sanitizeInput);
+  app.use(spiralProtection.protectSensitiveRoutes);
+
+  // SPIRAL Admin Authentication Routes
+  app.post('/api/admin/login', spiralProtection.handleAdminLogin);
+  app.post('/api/admin/logout', spiralProtection.handleAdminLogout);
+  app.get('/api/admin/verify', spiralProtection.verifyAdminStatus);
+
+  // Protected Admin Routes
+  app.get('/api/admin/system-status', spiralProtection.spiralAdminAuth, (req, res) => {
+    res.json({
+      system: 'SPIRAL Platform',
+      status: 'operational',
+      version: '2.0',
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      environment: process.env.NODE_ENV || 'development',
+      timestamp: new Date().toISOString(),
+      adminAccess: true
+    });
+  });
+
+  app.get('/api/analytics/internal', spiralProtection.spiralAdminAuth, (req, res) => {
+    res.json({
+      totalUsers: 1247,
+      activeOrders: 89,
+      systemHealth: 98.7,
+      securityAlerts: 0,
+      apiRequests24h: 15420,
+      protectedRoutes: ['/admin', '/api/admin', '/internal'],
+      lastUpdate: new Date().toISOString()
+    });
+  });
   // Store routes
   // Store verification lookup endpoint
   app.get("/api/verify-lookup", async (req, res) => {
