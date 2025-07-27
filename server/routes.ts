@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { calculateShippingOptions, validateDeliveryAddress, calculateDeliveryDate } from "./shippingRoutes.js";
 import { storage } from "./storage";
 import { products, categories } from "./productData.js";
 import { registerLoyaltyRoutes } from "./loyaltyRoutes";
@@ -807,6 +808,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerFulfillmentRoutes(app);
   registerNotificationRoutes(app);
   registerLiveSupportRoutes(app);
+
+  // Advanced Shipping API Routes
+  app.post("/api/shipping/calculate", (req, res) => {
+    try {
+      const { product, address } = req.body;
+      
+      if (!product || !address) {
+        return res.status(400).json({
+          error: "Product and address information required"
+        });
+      }
+      
+      const shippingOptions = calculateShippingOptions(product, address);
+      res.json({ shippingOptions });
+    } catch (error) {
+      console.error("Shipping calculation error:", error);
+      res.status(500).json({ error: "Failed to calculate shipping options" });
+    }
+  });
+  
+  app.post("/api/shipping/validate-address", (req, res) => {
+    try {
+      const { address } = req.body;
+      const validation = validateDeliveryAddress(address);
+      res.json(validation);
+    } catch (error) {
+      console.error("Address validation error:", error);
+      res.status(500).json({ error: "Failed to validate address" });
+    }
+  });
+  
+  app.post("/api/shipping/delivery-estimate", (req, res) => {
+    try {
+      const { shippingOption, orderDate } = req.body;
+      const deliveryDate = calculateDeliveryDate(shippingOption, orderDate ? new Date(orderDate) : new Date());
+      res.json({ 
+        estimatedDelivery: deliveryDate.toISOString(),
+        estimatedDeliveryFormatted: deliveryDate.toLocaleDateString()
+      });
+    } catch (error) {
+      console.error("Delivery estimate error:", error);
+      res.status(500).json({ error: "Failed to calculate delivery estimate" });
+    }
+  });
 
   // Register payment, AI analytics, subscription, and invite routes
   app.use("/api/payment", paymentRoutes);
