@@ -103,6 +103,9 @@ import MallPerksPage from "@/pages/loyalty-mall-perks";
 import AdminReviewsPage from "@/pages/admin-reviews";
 import ReviewsDemoPage from "@/pages/reviews-demo";
 import AdminTestimonialsPage from "@/pages/admin-testimonials";
+import AdvancedPaymentHub from "@/pages/advanced-payment-hub";
+import AIBusinessIntelligence from "@/pages/ai-business-intelligence";
+import MobilePayments from "@/pages/mobile-payments";
 import ShowcasePage from "@/pages/showcase";
 import TestimonialsDemoPage from "@/pages/testimonials-demo";
 import EventsPage from "@/pages/events";
@@ -326,6 +329,9 @@ function Router() {
       <Route path="/invite-to-shop" component={InviteToShop} />
       <Route path="/invite/:tripId" component={InviteResponse} />
       <Route path="/my-trips" component={MyTrips} />
+      <Route path="/advanced-payment-hub" component={AdvancedPaymentHub} />
+      <Route path="/ai-business-intelligence" component={AIBusinessIntelligence} />
+      <Route path="/mobile-payments" component={MobilePayments} />
       <Route component={NotFound} />
     </Switch>
   );

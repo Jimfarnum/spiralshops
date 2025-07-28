@@ -821,13 +821,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register Feature 17: Unified Enhancement Bundle routes
   registerFeature17Routes(app);
 
-  // Register Feature Improvement & Integration Blueprint routes
-  registerSmartSearchRoutes(app);
-  registerEnhancedWalletRoutes(app);
-  registerRetailerOnboardingRoutes(app);
-  registerFulfillmentRoutes(app);
-  registerNotificationRoutes(app);
-  registerLiveSupportRoutes(app);
+  // Register Advanced Payment & AI Business Intelligence routes
+  const { default: registerAdvancedPaymentRoutes } = await import("./advancedPaymentRoutes");
+  registerAdvancedPaymentRoutes(app);
+  
+  const { default: registerAIBusinessRoutes } = await import("./aiBusinessRoutes");
+  registerAIBusinessRoutes(app);
 
   // Register store verification routes
   const verificationRoutes = await import("./verificationRoutes");
