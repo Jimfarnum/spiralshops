@@ -1,6 +1,9 @@
 import { Express } from 'express';
 import Stripe from 'stripe';
 import path from 'path';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { logPaymentAction, logMobilePayment, logFraudDetection, logAPICall, logError } = require('../spiral_logger');
 
 // Initialize Stripe with secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {

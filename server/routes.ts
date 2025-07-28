@@ -828,6 +828,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const { default: registerAIBusinessRoutes } = await import("./aiBusinessRoutes");
   registerAIBusinessRoutes(app);
 
+  // Register System Logging routes
+  const { default: registerSystemLoggingRoutes } = await import("./systemLoggingRoutes");
+  registerSystemLoggingRoutes(app);
+
   // Register store verification routes
   const verificationRoutes = await import("./verificationRoutes");
   app.use(verificationRoutes.default);

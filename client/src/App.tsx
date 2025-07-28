@@ -106,6 +106,7 @@ import AdminTestimonialsPage from "@/pages/admin-testimonials";
 import AdvancedPaymentHub from "@/pages/advanced-payment-hub";
 import AIBusinessIntelligence from "@/pages/ai-business-intelligence";
 import MobilePayments from "@/pages/mobile-payments";
+import SpiralLoggingDemo from "@/pages/spiral-logging-demo";
 import ShowcasePage from "@/pages/showcase";
 import TestimonialsDemoPage from "@/pages/testimonials-demo";
 import EventsPage from "@/pages/events";
@@ -332,6 +333,7 @@ function Router() {
       <Route path="/advanced-payment-hub" component={AdvancedPaymentHub} />
       <Route path="/ai-business-intelligence" component={AIBusinessIntelligence} />
       <Route path="/mobile-payments" component={MobilePayments} />
+      <Route path="/spiral-logging-demo" component={SpiralLoggingDemo} />
       <Route component={NotFound} />
     </Switch>
   );

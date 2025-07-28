@@ -1,4 +1,7 @@
 import { Express } from 'express';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { logAIAnalytics, logAPICall, logError } = require('../spiral_logger');
 
 interface AIInsight {
   id: string;
@@ -405,6 +408,7 @@ export function registerAIBusinessRoutes(app: Express) {
   
   // AI Insights Dashboard
   app.get('/api/ai/insights', async (req, res) => {
+    const startTime = Date.now();
     try {
       const { timeframe = '30d' } = req.query;
       
@@ -441,16 +445,28 @@ export function registerAIBusinessRoutes(app: Express) {
         }
       ];
 
+      const responseTime = Date.now() - startTime;
+      const avgConfidence = Math.round(insights.reduce((sum, i) => sum + i.confidence, 0) / insights.length);
+      
+      logAIAnalytics('insights_dashboard', avgConfidence, `Generated ${insights.length} insights`, {
+        timeframe: timeframe,
+        highImpactCount: insights.filter(i => i.impact === 'high').length
+      });
+      logAPICall('/api/ai/insights', 'GET', 200, responseTime);
+
       res.json({
         success: true,
         insights,
         summary: {
           totalInsights: insights.length,
           highImpact: insights.filter(i => i.impact === 'high').length,
-          averageConfidence: Math.round(insights.reduce((sum, i) => sum + i.confidence, 0) / insights.length)
+          averageConfidence: avgConfidence
         }
       });
     } catch (error) {
+      const responseTime = Date.now() - startTime;
+      logError(error, 'AI insights generation');
+      logAPICall('/api/ai/insights', 'GET', 500, responseTime);
       console.error('AI insights error:', error);
       res.status(500).json({ error: 'Failed to generate AI insights' });
     }
