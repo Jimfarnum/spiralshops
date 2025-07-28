@@ -6,7 +6,73 @@ const { logAction, saveLogsToDisk, logs, logSystemTest } = require('../spiral_lo
 
 export function registerSystemLoggingRoutes(app: Express) {
   
-  // Get all system logs
+  // Public demo endpoint for logging demonstration (no auth required)
+  app.get('/api/system/logs-demo', async (req, res) => {
+    try {
+      // Generate demo logs for the frontend
+      const demoLogs = Array.from({ length: 25 }, (_, i) => {
+        const categories = ['payment', 'ai_analytics', 'user_action', 'api_call', 'spiral_points', 'store_verification', 'mobile_payment', 'fraud_detection'];
+        const actions = [
+          'payment_processed', 'ai_analysis_completed', 'user_login', 'api_request', 'points_earned', 
+          'store_verified', 'mobile_payment_attempt', 'fraud_alert_generated', 'checkout_completed',
+          'demand_forecast_generated', 'pricing_recommendation_made', 'customer_segmentation_updated'
+        ];
+        
+        const category = categories[Math.floor(Math.random() * categories.length)];
+        const action = actions[Math.floor(Math.random() * actions.length)];
+        
+        return {
+          timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
+          category,
+          action,
+          data: {
+            userId: `user_${Math.floor(Math.random() * 1000)}`,
+            amount: category === 'payment' ? Math.random() * 500 : undefined,
+            status: ['success', 'pending', 'failed'][Math.floor(Math.random() * 3)],
+            confidence: category === 'ai_analytics' ? Math.floor(Math.random() * 100) : undefined,
+            details: `Demo log entry ${i + 1}`,
+            responseTime: Math.floor(Math.random() * 2000) + 100
+          },
+          sessionId: 'demo_session',
+          environment: 'development'
+        };
+      });
+      
+      // Calculate demo statistics
+      const categories: Record<string, number> = {};
+      const actionCounts: Record<string, number> = {};
+      
+      demoLogs.forEach((log: any) => {
+        categories[log.category] = (categories[log.category] || 0) + 1;
+        actionCounts[log.action] = (actionCounts[log.action] || 0) + 1;
+      });
+      
+      const topActions = Object.entries(actionCounts)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 5)
+        .map(([action, count]) => ({ action, count }));
+      
+      res.json({
+        success: true,
+        logs: demoLogs,
+        totalLogs: demoLogs.length,
+        stats: {
+          totalActions: demoLogs.length,
+          categories,
+          recentActivity: demoLogs.slice(0, 10),
+          topActions
+        }
+      });
+    } catch (error) {
+      console.error('Error generating demo logs:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate demo logs',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+  
+  // Get all system logs (protected)
   app.get('/api/system/logs', async (req, res) => {
     try {
       const { category, limit = 100, offset = 0 } = req.query;
@@ -29,7 +95,7 @@ export function registerSystemLoggingRoutes(app: Express) {
       const categories: Record<string, number> = {};
       const actionCounts: Record<string, number> = {};
       
-      logs.forEach(log => {
+      logs.forEach((log: any) => {
         categories[log.category] = (categories[log.category] || 0) + 1;
         actionCounts[log.action] = (actionCounts[log.action] || 0) + 1;
       });
@@ -161,18 +227,18 @@ export function registerSystemLoggingRoutes(app: Express) {
       const oneHourAgo = now - (60 * 60 * 1000);
       
       // Filter logs from last hour
-      const recentLogs = logs.filter(log => 
+      const recentLogs = logs.filter((log: any) => 
         new Date(log.timestamp).getTime() > oneHourAgo
       );
       
       // Calculate metrics
-      const apiCalls = recentLogs.filter(log => log.category === 'api_call');
+      const apiCalls = recentLogs.filter((log: any) => log.category === 'api_call');
       const avgResponseTime = apiCalls.length > 0 
-        ? apiCalls.reduce((sum, log) => sum + (log.data.responseTime || 0), 0) / apiCalls.length
+        ? apiCalls.reduce((sum: any, log: any) => sum + (log.data.responseTime || 0), 0) / apiCalls.length
         : 0;
       
-      const errorCount = recentLogs.filter(log => log.category === 'error').length;
-      const successfulPayments = recentLogs.filter(log => 
+      const errorCount = recentLogs.filter((log: any) => log.category === 'error').length;
+      const successfulPayments = recentLogs.filter((log: any) => 
         log.category === 'payment' && log.data.status === 'success'
       ).length;
       
@@ -298,7 +364,7 @@ export function registerSystemLoggingRoutes(app: Express) {
       }
       
       testResults.summary.duration = Date.now() - testStartTime;
-      testResults.summary.successRate = (testResults.summary.passed / testResults.summary.total) * 100;
+      (testResults.summary as any).successRate = (testResults.summary.passed / testResults.summary.total) * 100;
       
       // Log the overall test suite completion
       logAction({

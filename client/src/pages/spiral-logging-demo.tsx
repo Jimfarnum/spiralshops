@@ -51,7 +51,7 @@ export default function SpiralLoggingDemo() {
   const loadSystemLogs = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/system/logs');
+      const response = await fetch('/api/system/logs-demo');
       const data = await response.json();
       
       if (data.success) {

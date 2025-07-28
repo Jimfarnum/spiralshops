@@ -20,6 +20,13 @@ const PROTECTED_ROUTES = [
   '/api/debug'
 ];
 
+// Public demo routes that bypass admin protection
+const PUBLIC_DEMO_ROUTES = [
+  '/api/system/logs-demo',
+  '/api/system/performance-demo',
+  '/api/system/test-demo'
+];
+
 // Sensitive API endpoints that require enhanced protection
 const SENSITIVE_APIS = [
   '/api/users',
@@ -108,6 +115,13 @@ export const spiralAdminAuth = (req, res, next) => {
  */
 export const protectSensitiveRoutes = (req, res, next) => {
   const path = req.path;
+  
+  // Check if this is a public demo route that should bypass protection
+  const isPublicDemoRoute = PUBLIC_DEMO_ROUTES.some(route => path === route);
+  
+  if (isPublicDemoRoute) {
+    return next(); // Skip protection for demo routes
+  }
   
   // Check if route requires admin protection
   const isProtectedRoute = PROTECTED_ROUTES.some(route => path.startsWith(route));
