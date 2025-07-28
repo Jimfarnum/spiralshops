@@ -188,7 +188,7 @@ function Router() {
       <Route path="/account" component={Account} />
       <Route path="/retailer-login" component={RetailerLogin} />
       <Route path="/retailer-dashboard" component={RetailerDashboard} />
-      <Route path="/retailer-portal" component={() => import('@/components/retailer-portal').then(m => m.default)} />
+      <Route path="/retailer-portal" component={RetailerDashboardNew} />
       <Route path="/marketing-center" component={MarketingCenter} />
       <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
       <Route path="/social-feed" component={SocialFeed} />
@@ -223,13 +223,12 @@ function Router() {
       <Route path="/events" component={Events} />
       <Route path="/multi-cart" component={MultiCart} />
       <Route path="/split-fulfillment" component={SplitFulfillment} />
-      <Route path="/feature-audit" component={() => import('@/components/feature-parity-audit').then(m => m.default)} />
-      <Route path="/competitive-analysis" component={() => import('@/components/competitive-analysis').then(m => m.default)} />
-      <Route path="/gift-card-system" component={() => import('@/components/gift-card-system').then(m => m.default)} />
-      <Route path="/retailer-demo" component={() => import('@/components/retailer-demo-dashboard').then(m => m.default)} />
-      <Route path="/store/:storeId/reviews" component={() => import('@/pages/store-reviews').then(m => m.default)} />
-      <Route path="/gift-cards" component={() => import('@/pages/gift-cards').then(m => m.default)} />
-      <Route path="/p0-features-demo" component={() => import('@/pages/p0-features-demo').then(m => m.default)} />
+      <Route path="/feature-audit" component={Feature14Demo} />
+      <Route path="/competitive-analysis" component={CompetitiveAnalysis} />
+      <Route path="/gift-card-system" component={GiftCards} />
+      <Route path="/retailer-demo" component={RetailerDashboardNew} />
+      <Route path="/store/:storeId/reviews" component={ReviewsDemoPage} />
+      <Route path="/p0-features-demo" component={P1FeaturesDemo} />
       <Route path="/p1-features-demo" component={P1FeaturesDemo} />
       <Route path="/p1-test-suite" component={P1TestSuite} />
       <Route path="/loyalty-dashboard" component={LoyaltyDashboard} />
