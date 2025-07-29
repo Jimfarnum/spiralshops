@@ -320,7 +320,6 @@ function Router() {
       <Route path="/checkout-demo" component={CheckoutDemo} />
       <Route path="/advanced-shipping-demo" component={AdvancedShippingDemo} />
       <Route path="/shipping-optimization-demo" component={ShippingOptimizationDemo} />
-      <Route path="/spiral-admin" component={SpiralAdminLogin} />
       <Route path="/user-auth-demo" component={UserAuthDemo} />
       <Route path="/product-category-test" component={ProductCategoryTest} />
       <Route path="/checkout-enhanced" component={EnhancedCheckout} />
