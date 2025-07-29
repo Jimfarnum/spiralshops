@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, XCircle, AlertCircle, Play, RotateCcw, Smartphone, Mouse, ExternalLink } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Play, RotateCcw, Smartphone, Mouse, ExternalLink, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
 
@@ -180,6 +180,10 @@ const buttonTests: ButtonTest[] = [
 const initialTests: ButtonTest[] = buttonTests.map(test => ({ ...test, status: 'pending' }));
 
 export default function ButtonTestingSuite() {
+  // Admin authentication check
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authPassword, setAuthPassword] = useState('');
+  const [authError, setAuthError] = useState('');
   const [tests, setTests] = useState<ButtonTest[]>(initialTests);
   const [currentTest, setCurrentTest] = useState<string | null>(null);
   const [testResults, setTestResults] = useState({
@@ -192,6 +196,60 @@ export default function ButtonTestingSuite() {
   const [deviceMode, setDeviceMode] = useState<'mobile' | 'desktop'>('mobile');
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+
+  const handleAdminLogin = () => {
+    if (authPassword === 'Ashland8!') {
+      setIsAuthenticated(true);
+      setAuthError('');
+      toast({
+        title: "Admin Access Granted",
+        description: "Welcome to the SPIRAL Button Testing Suite",
+      });
+    } else {
+      setAuthError('Invalid admin password');
+    }
+  };
+
+  // If not authenticated, show login form
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <Shield className="w-12 h-12 text-red-600" />
+            </div>
+            <CardTitle className="text-2xl">Admin Access Required</CardTitle>
+            <p className="text-muted-foreground">
+              Enter admin password to access the Button Testing Suite
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Admin Password</label>
+              <input
+                type="password"
+                value={authPassword}
+                onChange={(e) => setAuthPassword(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter admin password"
+              />
+              {authError && (
+                <p className="text-sm text-red-600">{authError}</p>
+              )}
+            </div>
+            <Button 
+              onClick={handleAdminLogin}
+              className="w-full"
+            >
+              Access Admin Tools
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   useEffect(() => {
     const passed = tests.filter(t => t.status === 'passed').length;
@@ -324,14 +382,23 @@ export default function ButtonTestingSuite() {
   return (
     <div className="container mx-auto p-4 space-y-6">
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold">SPIRAL Button Testing Suite</h1>
+        <div className="flex items-center justify-center gap-2">
+          <Shield className="w-8 h-8 text-red-600" />
+          <h1 className="text-3xl font-bold">SPIRAL Admin Button Testing Suite</h1>
+        </div>
         <p className="text-muted-foreground">
-          Comprehensive touchscreen and button functionality validation
+          Administrative tool for comprehensive touchscreen and button functionality validation
         </p>
         
-        <div className="flex items-center justify-center gap-2 text-sm">
-          <Smartphone className="w-4 h-4" />
-          <span>Optimized for Mobile Testing</span>
+        <div className="flex items-center justify-center gap-4 text-sm">
+          <div className="flex items-center gap-1">
+            <Smartphone className="w-4 h-4" />
+            <span>Mobile Optimized</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Shield className="w-4 h-4 text-red-600" />
+            <span>Admin Only</span>
+          </div>
         </div>
       </div>
 

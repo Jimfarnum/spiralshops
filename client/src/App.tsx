@@ -108,6 +108,7 @@ import AIBusinessIntelligence from "@/pages/ai-business-intelligence";
 import MobilePayments from "@/pages/mobile-payments";
 import SpiralLoggingDemo from "@/pages/spiral-logging-demo";
 import ButtonTestingSuite from "@/pages/button-testing-suite";
+import SpiralAdminDashboard from "@/pages/spiral-admin-dashboard";
 import ShowcasePage from "@/pages/showcase";
 import TestimonialsDemoPage from "@/pages/testimonials-demo";
 import EventsPage from "@/pages/events";
@@ -334,7 +335,8 @@ function Router() {
       <Route path="/ai-business-intelligence" component={AIBusinessIntelligence} />
       <Route path="/mobile-payments" component={MobilePayments} />
       <Route path="/spiral-logging-demo" component={SpiralLoggingDemo} />
-      <Route path="/button-testing-suite" component={ButtonTestingSuite} />
+      <Route path="/spiral-admin" component={SpiralAdminDashboard} />
+      <Route path="/spiral-admin/button-testing" component={ButtonTestingSuite} />
       <Route component={NotFound} />
     </Switch>
   );
