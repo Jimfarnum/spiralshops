@@ -109,6 +109,7 @@ import MobilePayments from "@/pages/mobile-payments";
 import SpiralLoggingDemo from "@/pages/spiral-logging-demo";
 import ButtonTestingSuite from "@/pages/button-testing-suite";
 import SpiralAdminDashboard from "@/pages/spiral-admin-dashboard";
+import SpiralTodoDashboard from "@/pages/spiral-todo-dashboard";
 import ShowcasePage from "@/pages/showcase";
 import TestimonialsDemoPage from "@/pages/testimonials-demo";
 import EventsPage from "@/pages/events";
@@ -337,6 +338,7 @@ function Router() {
       <Route path="/spiral-logging-demo" component={SpiralLoggingDemo} />
       <Route path="/spiral-admin" component={SpiralAdminDashboard} />
       <Route path="/spiral-admin/button-testing" component={ButtonTestingSuite} />
+      <Route path="/spiral-todo" component={SpiralTodoDashboard} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -1,0 +1,150 @@
+SPIRAL PLATFORM - MASTER TO DO LIST
+
+This list covers all essential tasks for the SPIRAL project across the website, MVP, mobile app, full stack GPT integration, and deployment to platforms like Vercel, IBM Watson, and venture/social partners.
+
+
+---
+
+PHASE 1: CURRENT PLATFORM & MVP COMPLETION
+
+🔧 CORE PLATFORM (WEB) TASKS
+
+[ ] Finalize navigation for shopper and retailer dashboards
+
+[ ] Clean up duplicated code and functions from Replit Agent
+
+[ ] Final styling updates to shopper dashboard (verified stores, search, ZIP filter, large retailer toggle)
+
+[ ] Implement store categories, tags, and filters for discovery
+
+[ ] Add business benefits section on homepage for retailers
+
+[ ] Final UI polish: buttons, typography, accessibility check
+
+
+📦 STORE SYSTEM & BUSINESS FEATURES
+
+[x] Retailer Wallet & Reward System ✅
+
+[x] Store Verification System ✅
+
+[x] Shopper Verified Store Filter ✅
+
+[x] Follow/Favorite Retailers ✅
+
+[x] Business Fee Calculator ✅
+
+[x] Large Retailer Tier & Fee System ✅
+
+[x] Chain-Level Advertising Package Tool ✅
+
+[ ] Add support document upload history to retailer dashboard
+
+[ ] Add FAQ/help section for retailers and shoppers
+
+
+💰 ADVERTISING SYSTEM
+
+[x] Add base ad calculator (CPM/CTR) ✅
+
+[ ] Implement campaign creator for sponsored posts, bundles
+
+[ ] Admin ad performance dashboard with billing data
+
+
+
+---
+
+PHASE 2: MOBILE APP DEPLOYMENT
+
+📱 MOBILE DEPLOYMENT TASKS
+
+[ ] Wrap platform in Capacitor or React Native for Android/iOS
+
+[ ] Optimize responsiveness and layout for mobile
+
+[ ] Submit apps to Play Store & App Store (prepare compliance)
+
+[ ] Add PWA install support for browsers
+
+
+
+---
+
+PHASE 3: SPIRAL AGENT + FULL STACK GPT
+
+🧠 SPIRAL AGENT (Replit)
+
+[x] Complete Agent integration into business dashboard ✅
+
+[ ] Refactor repeating output bugs (Replit memory cleanup)
+
+[ ] Create Agent task tracking console (checklists, flags)
+
+
+🤖 SPIRAL GPT + AUTOMATIONS
+
+[ ] Develop prompt-to-post engine for retailers (social templates)
+
+[ ] Train GPT-4 base on SPIRAL structure/FAQs/benefits
+
+[ ] Create marketing GPT to generate custom campaigns
+
+[ ] Add multilingual GPT for local translation help
+
+
+
+---
+
+PHASE 4: FINAL DEPLOYMENT & PARTNER PREP
+
+🚀 DEPLOYMENT (VERCEL / IBM)
+
+[ ] Clean and export deployment files (no GitHub)
+
+[ ] Deploy production version to Vercel
+
+[ ] Connect APIs for IBM Watson and analytics
+
+[ ] Monitor uptime and logs
+
+
+🤝 VENTURE + PARTNER SUPPORT MATERIALS
+
+[ ] Create investor and venture-ready demo site
+
+[ ] Create partner onboarding portal for social media/Visa
+
+[ ] Prepare live data API for engagement stats
+
+
+
+---
+
+PHASE 5: LAUNCH & SCALE
+
+📈 USER ONBOARDING + MARKETING
+
+[ ] Build viral signup page with referrals and tracking
+
+[ ] Run Main Street Campaign with #EarnSPIRALs hashtag
+
+[ ] Integrate share-to-earn on TikTok, Instagram, X
+
+[ ] Support onboarding guide for new retailers
+
+
+📊 BACKEND & ANALYTICS
+
+[ ] Admin dashboard for user/store/ad metrics
+
+[ ] Real-time fee and reward tracking reports
+
+[ ] Add Stripe or payment integration for retailers
+
+
+
+---
+
+Let me know if you'd like this rendered as a checklist web app or editable spreadsheet next!
+

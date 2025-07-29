@@ -24,6 +24,15 @@ import { useToast } from '@/hooks/use-toast';
 const adminTools = [
   // Platform Core Testing & Monitoring
   {
+    id: 'todo-dashboard',
+    title: 'Project TODO Dashboard',
+    description: 'Complete project monitoring system tracking 100% functionality across all phases',
+    icon: FileText,
+    route: '/spiral-todo',
+    category: 'Platform Testing',
+    status: 'active'
+  },
+  {
     id: 'button-testing',
     title: 'Button Testing Suite',
     description: 'Comprehensive touchscreen and button functionality validation for all platform components',
@@ -387,7 +396,7 @@ export default function SpiralAdminDashboard() {
           <Card>
             <CardContent className="p-6 text-center">
               <TestTube className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-              <div className="text-2xl font-bold text-blue-600">24</div>
+              <div className="text-2xl font-bold text-blue-600">25</div>
               <div className="text-sm text-gray-600">Active Admin Tools</div>
             </CardContent>
           </Card>
