@@ -681,6 +681,9 @@ Preferred communication style: Simple, everyday language.
 - **Server**: esbuild compiles TypeScript server to `dist/index.js`
 - **Static Files**: Express serves built client files
 - **Database**: PostgreSQL connection via DATABASE_URL environment variable
+- **Custom Domain**: spiralshops.com pointed to Replit (DNS propagation in progress)
+- **Development URL**: https://27d4f357-044c-4271-84d2-b2bf67be7115-5000.Jimfarnum.repl.co
+- **Production URL**: https://spiralshops.com (pending DNS propagation)
 
 ### Configuration Management
 - **Environment Variables**: DATABASE_URL for database connection
