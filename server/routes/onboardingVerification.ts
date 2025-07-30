@@ -171,12 +171,9 @@ router.get('/verify-retailer-onboarding', async (req, res) => {
 // Combined Onboarding Verification Report
 router.get('/verify-all-onboarding', async (req, res) => {
   try {
-    // Get both shopper and retailer results
-    const shopperResponse = await fetch(`${req.protocol}://${req.get('host')}/api/onboarding/verify-shopper-onboarding`);
-    const retailerResponse = await fetch(`${req.protocol}://${req.get('host')}/api/onboarding/verify-retailer-onboarding`);
-    
-    const shopperData = await shopperResponse.json();
-    const retailerData = await retailerResponse.json();
+    // Get both shopper and retailer results by calling functions directly
+    const shopperData = await simulateShopperOnboarding();
+    const retailerData = await simulateRetailerOnboarding();
 
     const overallPassed = shopperData.overallStatus === 'PASS' && retailerData.overallStatus === 'PASS';
     const totalSteps = shopperData.summary.total + retailerData.summary.total;
@@ -320,6 +317,81 @@ async function simulateRetailerStep(step: number) {
         responseTime: Date.now() - startTime
       };
   }
+}
+
+// Direct simulation functions
+async function simulateShopperOnboarding() {
+  const steps = [
+    { step: 1, name: 'Welcome Screen' },
+    { step: 2, name: 'Profile Setup' },
+    { step: 3, name: 'Interest Selection' },
+    { step: 4, name: 'SPIRAL Welcome Bonus' }
+  ];
+  
+  const results = await Promise.all(steps.map(async (step) => {
+    const testResult = await simulateShopperStep(step.step);
+    return {
+      ...step,
+      status: testResult.success ? 'PASS' : 'FAIL',
+      details: testResult.details,
+      responseTime: testResult.responseTime
+    };
+  }));
+  
+  const passedSteps = results.filter(r => r.status === 'PASS').length;
+  const totalSteps = results.length;
+  
+  return {
+    testType: 'Shopper Onboarding Verification',
+    timestamp: new Date().toISOString(),
+    overallStatus: passedSteps === totalSteps ? 'PASS' : 'FAIL',
+    successRate: `${passedSteps}/${totalSteps}`,
+    percentage: Math.round((passedSteps / totalSteps) * 100),
+    steps: results,
+    summary: {
+      total: totalSteps,
+      passed: passedSteps,
+      failed: totalSteps - passedSteps
+    }
+  };
+}
+
+async function simulateRetailerOnboarding() {
+  const steps = [
+    { step: 1, name: 'Business Registration' },
+    { step: 2, name: 'Document Upload' },
+    { step: 3, name: 'Business Verification' },
+    { step: 4, name: 'Payment Setup' },
+    { step: 5, name: 'Store Profile Creation' },
+    { step: 6, name: 'Product Catalog Setup' }
+  ];
+  
+  const results = await Promise.all(steps.map(async (step) => {
+    const testResult = await simulateRetailerStep(step.step);
+    return {
+      ...step,
+      status: testResult.success ? 'PASS' : 'FAIL',
+      details: testResult.details,
+      responseTime: testResult.responseTime
+    };
+  }));
+  
+  const passedSteps = results.filter(r => r.status === 'PASS').length;
+  const totalSteps = results.length;
+  
+  return {
+    testType: 'Retailer Onboarding Verification',
+    timestamp: new Date().toISOString(),
+    overallStatus: passedSteps === totalSteps ? 'PASS' : 'FAIL',
+    successRate: `${passedSteps}/${totalSteps}`,
+    percentage: Math.round((passedSteps / totalSteps) * 100),
+    steps: results,
+    summary: {
+      total: totalSteps,
+      passed: passedSteps,
+      failed: totalSteps - passedSteps
+    }
+  };
 }
 
 export default router;

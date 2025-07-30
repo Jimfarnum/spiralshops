@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
 
 // Content Security Policy Configuration
@@ -48,51 +47,98 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// API Rate Limiting Configuration
-export const apiRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: {
-    error: 'Too many requests from this IP',
-    code: 'RATE_LIMIT_EXCEEDED',
-    retryAfter: 15 * 60, // 15 minutes in seconds
-    timestamp: new Date().toISOString()
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req, res) => {
-    res.status(429).json({
+// Simple rate limiting middleware (Replit-compatible)
+const requestCounts = new Map();
+
+export const apiRateLimit = (req: Request, res: Response, next: NextFunction) => {
+  const ip = req.ip || req.connection.remoteAddress || 'unknown';
+  const now = Date.now();
+  const windowMs = 15 * 60 * 1000; // 15 minutes
+  
+  if (!requestCounts.has(ip)) {
+    requestCounts.set(ip, { count: 1, resetTime: now + windowMs });
+    return next();
+  }
+  
+  const record = requestCounts.get(ip);
+  if (now > record.resetTime) {
+    record.count = 1;
+    record.resetTime = now + windowMs;
+    return next();
+  }
+  
+  if (record.count >= 100) {
+    return res.status(429).json({
       error: 'Rate limit exceeded',
       code: 'RATE_LIMIT_EXCEEDED',
-      retryAfter: Math.ceil((req.rateLimit.resetTime - Date.now()) / 1000),
+      retryAfter: Math.ceil((record.resetTime - now) / 1000),
       timestamp: new Date().toISOString()
     });
   }
-});
+  
+  record.count++;
+  next();
+};
 
-// Strict API Rate Limiting for Sensitive Endpoints
-export const strictApiRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // Limit each IP to 20 requests per windowMs for sensitive endpoints
-  message: {
-    error: 'Too many requests to sensitive endpoint',
-    code: 'STRICT_RATE_LIMIT_EXCEEDED',
-    retryAfter: 15 * 60,
-    timestamp: new Date().toISOString()
+export const strictApiRateLimit = (req: Request, res: Response, next: NextFunction) => {
+  const ip = req.ip || req.connection.remoteAddress || 'unknown';
+  const now = Date.now();
+  const windowMs = 15 * 60 * 1000;
+  
+  if (!requestCounts.has(`strict_${ip}`)) {
+    requestCounts.set(`strict_${ip}`, { count: 1, resetTime: now + windowMs });
+    return next();
   }
-});
+  
+  const record = requestCounts.get(`strict_${ip}`);
+  if (now > record.resetTime) {
+    record.count = 1;
+    record.resetTime = now + windowMs;
+    return next();
+  }
+  
+  if (record.count >= 20) {
+    return res.status(429).json({
+      error: 'Strict rate limit exceeded',
+      code: 'STRICT_RATE_LIMIT_EXCEEDED',
+      retryAfter: Math.ceil((record.resetTime - now) / 1000),
+      timestamp: new Date().toISOString()
+    });
+  }
+  
+  record.count++;
+  next();
+};
 
-// Admin Rate Limiting
-export const adminRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // Very strict limit for admin endpoints
-  message: {
-    error: 'Admin endpoint rate limit exceeded',
-    code: 'ADMIN_RATE_LIMIT_EXCEEDED',
-    retryAfter: 15 * 60,
-    timestamp: new Date().toISOString()
+export const adminRateLimit = (req: Request, res: Response, next: NextFunction) => {
+  const ip = req.ip || req.connection.remoteAddress || 'unknown';
+  const now = Date.now();
+  const windowMs = 15 * 60 * 1000;
+  
+  if (!requestCounts.has(`admin_${ip}`)) {
+    requestCounts.set(`admin_${ip}`, { count: 1, resetTime: now + windowMs });
+    return next();
   }
-});
+  
+  const record = requestCounts.get(`admin_${ip}`);
+  if (now > record.resetTime) {
+    record.count = 1;
+    record.resetTime = now + windowMs;
+    return next();
+  }
+  
+  if (record.count >= 10) {
+    return res.status(429).json({
+      error: 'Admin rate limit exceeded',
+      code: 'ADMIN_RATE_LIMIT_EXCEEDED',
+      retryAfter: Math.ceil((record.resetTime - now) / 1000),
+      timestamp: new Date().toISOString()
+    });
+  }
+  
+  record.count++;
+  next();
+};
 
 // Security Headers Middleware
 export const securityHeaders = (req: Request, res: Response, next: NextFunction) => {
