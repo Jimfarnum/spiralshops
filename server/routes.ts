@@ -72,6 +72,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load Vercel/IBM routes:', err.message);
   }
 
+  // Platform Simulation Routes
+  try {
+    const { default: platformSimulation } = await import('./admin/platform-simulation.js');
+    app.use('/admin/platform', platformSimulation);
+    console.log('✅ Platform simulation routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load platform simulation routes:', err.message);
+  }
+
   // Admin Panel Routes
   app.get('/admin/spiral-agent/deep-test', spiralProtection.spiralAdminAuth, async (req, res) => {
     console.log('\n🔬 INITIATING DEEP FEATURE TESTING');
