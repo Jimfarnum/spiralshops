@@ -191,7 +191,8 @@ router.post('/support-assistant', async (req, res) => {
         prompt: message,
         context,
         feature: 'customer-support',
-        maxTokens: 300
+        maxTokens: 300,
+        temperature: 0.7
       }),
       confidence: Math.floor(Math.random() * 30) + 70,
       suggestedActions: [

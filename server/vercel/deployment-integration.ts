@@ -104,6 +104,36 @@ function simulateIBMCloudService(request: IBMCloudRequest) {
         port: 443,
         url: `https://${Math.random().toString(36)}-bluemix.cloudantnosqldb.appdomain.cloud`
       }
+    },
+    'redis': {
+      crn: `crn:v1:bluemix:public:databases-for-redis:${request.region}:a/${Math.random().toString(36)}:${Math.random().toString(36)}::`,
+      name: 'spiral-redis-cache',
+      resource_group_id: Math.random().toString(36),
+      state: 'active',
+      type: 'service_instance',
+      url: `https://redis-${Math.random().toString(36)}.databases.cloud.ibm.com`,
+      credentials: {
+        connection: {
+          redis: {
+            hosts: [{ hostname: `${Math.random().toString(36)}.databases.cloud.ibm.com`, port: 30967 }],
+            password: 'mock-redis-password-' + Math.random().toString(36),
+            composed: [`rediss://ibm_cloud_${Math.random().toString(36)}:password@host:30967/0`]
+          }
+        }
+      }
+    },
+    'kubernetes': {
+      crn: `crn:v1:bluemix:public:containers-kubernetes:${request.region}:a/${Math.random().toString(36)}:${Math.random().toString(36)}::`,
+      name: 'spiral-k8s-cluster',
+      resource_group_id: Math.random().toString(36),
+      state: 'normal',
+      type: 'service_instance',
+      url: `https://c${Math.random().toString(36).substring(0,8)}.${request.region}.containers.cloud.ibm.com`,
+      credentials: {
+        cluster_id: Math.random().toString(36),
+        server_url: `https://c${Math.random().toString(36).substring(0,8)}.${request.region}.containers.cloud.ibm.com:30426`,
+        token: 'mock-k8s-token-' + Math.random().toString(36)
+      }
     }
   };
 
