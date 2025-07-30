@@ -1,0 +1,70 @@
+// SPIRAL Progress Tracker - Full MVP, Mobile, Platform
+const fs = require('fs');
+const path = require('path');
+
+// Define Task Structure
+const SPIRAL_TASKS = [
+  { phase: 'MVP Core (Web)', tasks: [
+      { name: 'Wishlist System', done: false },
+      { name: 'SPIRALS Engine Final Logic', done: false },
+      { name: 'Shopper Profile System', done: false },
+      { name: 'Retailer Onboarding Flow', done: true },
+      { name: 'Mall Gift Cards', done: false },
+      { name: 'Invite-to-Shop Flow', done: false }
+  ]},
+  { phase: 'Mobile App (React Native)', tasks: [
+      { name: 'Base React Native Setup', done: false },
+      { name: 'Shared Firebase Cart & Auth', done: false },
+      { name: 'QR Code Pickup Module', done: false },
+      { name: 'Push Notifications', done: false }
+  ]},
+  { phase: 'AI + GPT Agents', tasks: [
+      { name: 'SPIRAL Full Stack GPT', done: true },
+      { name: 'Admin GPT Assistant', done: false },
+      { name: 'Retailer GPT Assistant', done: false },
+      { name: 'Shopper GPT Recommender', done: false }
+  ]},
+  { phase: 'Infrastructure (Vercel + IBM)', tasks: [
+      { name: 'Frontend deployed to Vercel', done: false },
+      { name: 'Cloudant DB connected', done: false },
+      { name: 'Watson GPT Integration', done: false }
+  ]},
+  { phase: 'Security + Legal', tasks: [
+      { name: 'Admin Panel Route Lock', done: false },
+      { name: 'Trademark + IP Lockdown', done: false },
+      { name: 'User Terms + Privacy Finalized', done: false }
+  ]}
+];
+
+// Track Progress
+function calculateProgress() {
+  let total = 0;
+  let complete = 0;
+  SPIRAL_TASKS.forEach(section => {
+    section.tasks.forEach(task => {
+      total++;
+      if (task.done) complete++;
+    });
+  });
+  return { complete, total, percent: ((complete / total) * 100).toFixed(2) };
+}
+
+// Display
+function showProgressReport() {
+  console.log('\n🌀 SPIRAL Platform Progress Report');
+  console.log('------------------------------------');
+  SPIRAL_TASKS.forEach(section => {
+    console.log(`\n📦 ${section.phase}`);
+    section.tasks.forEach(task => {
+      console.log(`   ${task.done ? '✅' : '❌'} ${task.name}`);
+    });
+  });
+
+  const { complete, total, percent } = calculateProgress();
+  console.log('\n📊 Overall Progress:');
+  console.log(`   ✔️ Completed: ${complete}/${total}`);
+  console.log(`   📈 Efficiency: ${percent}%\n`);
+}
+
+// Exported for use in routes or CLI
+module.exports = { showProgressReport, SPIRAL_TASKS };

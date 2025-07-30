@@ -79,6 +79,7 @@ import MallGiftCardSystem from "@/pages/mall-gift-card-system";
 import MultiMallCart from "@/pages/multi-mall-cart";
 import MobileResponsiveTest from "@/pages/mobile-responsive-test";
 import SpiralTodoProgress from "@/pages/spiral-todo-progress";
+import ComprehensiveFeatureTesting from "@/pages/comprehensive-feature-testing";
 import EnhancedCheckout from "@/pages/checkout-enhanced";
 import PaymentSuccess from "@/pages/payment-success";
 import PaymentFeaturesDemo from "@/pages/payment-features-demo";
@@ -350,6 +351,7 @@ function Router() {
       <Route path="/multi-mall-cart" component={MultiMallCart} />
       <Route path="/mobile-responsive-test" component={MobileResponsiveTest} />
       <Route path="/spiral-todo-progress" component={SpiralTodoProgress} />
+      <Route path="/comprehensive-feature-testing" component={ComprehensiveFeatureTesting} />
       <Route component={NotFound} />
     </Switch>
   );

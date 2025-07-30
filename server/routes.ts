@@ -25,7 +25,6 @@ import { registerFeature17Routes } from "./feature17Routes";
 import paymentRoutes from "./paymentRoutes";
 import aiAnalyticsRoutes from "./aiAnalyticsRoutes";
 import subscriptionRoutes from "./subscriptionRoutes";
-import inviteRoutes from "./inviteRoutes";
 import { 
   registerSmartSearchRoutes,
   registerEnhancedWalletRoutes,
@@ -39,6 +38,7 @@ import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
 import { z } from "zod";
 import authSystem from "./authSystem.js";
+import { getProgressData } from "../spiral-progress.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Enable trust proxy for Replit environment
@@ -66,6 +66,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       timestamp: new Date().toISOString(),
       adminAccess: true
     });
+  });
+
+  // SPIRAL Progress Tracker API
+  app.get('/api/admin/progress', spiralProtection.spiralAdminAuth, (req, res) => {
+    try {
+      const progressData = getProgressData();
+      res.json({
+        success: true,
+        data: progressData,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get progress data'
+      });
+    }
   });
 
   // ========================================

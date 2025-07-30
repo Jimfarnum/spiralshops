@@ -76,6 +76,9 @@ export default function Header() {
                   <Link href="/spiral-todo-progress" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     📊 Progress Dashboard
                   </Link>
+                  <Link href="/comprehensive-feature-testing" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🧪 Feature Testing
+                  </Link>
                 </div>
               </div>
             </div>
