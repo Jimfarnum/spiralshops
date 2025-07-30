@@ -75,6 +75,7 @@ import AccessibilitySettings from "@/pages/accessibility-settings";
 import AccessibilityDemo from "@/pages/accessibility-demo";
 import ExternalServicesDemo from "@/pages/ExternalServicesDemo";
 import AdminExternalServices from "@/pages/AdminExternalServices";
+import AdminVerification from "@/pages/AdminVerification";
 import ShopperOnboarding from "@/pages/shopper-onboarding";
 import EnhancedProfileSettings from "@/pages/enhanced-profile-settings";
 import MallGiftCardSystem from "@/pages/mall-gift-card-system";
@@ -360,6 +361,7 @@ function Router() {
       <Route path="/spiral-todo" component={SpiralTodoDashboard} />
       <Route path="/external-services" component={ExternalServicesDemo} />
       <Route path="/admin/external-services" component={AdminExternalServices} />
+      <Route path="/admin/verification" component={AdminVerification} />
       <Route path="/shopper-onboarding" component={ShopperOnboarding} />
       <Route path="/enhanced-profile-settings" component={EnhancedProfileSettings} />
       <Route path="/mall-gift-card-system" component={MallGiftCardSystem} />

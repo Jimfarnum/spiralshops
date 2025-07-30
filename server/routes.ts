@@ -142,6 +142,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load admin external services routes:', err.message);
   }
 
+  // Vendor Verification Routes
+  try {
+    const { default: vendorVerification } = await import('./routes/vendorVerification.js');
+    app.use('/api/vendor-verification', vendorVerification);
+    
+    // Set global verification phase
+    globalThis.spiralVerificationPhase = "External-Vendor-Audit";
+    globalThis.spiralVendorVerificationComplete = false;
+    
+    console.log('✅ Vendor verification routes loaded successfully');
+    console.log('📋 STEP 2: Vendor Verification Checklist Activation');
+  } catch (err) {
+    console.error('❌ Failed to load vendor verification routes:', err.message);
+  }
+
   // Admin Panel Routes
   app.get('/admin/spiral-agent/deep-test', spiralProtection.spiralAdminAuth, async (req, res) => {
     console.log('\n🔬 INITIATING DEEP FEATURE TESTING');
