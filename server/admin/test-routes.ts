@@ -17,7 +17,7 @@ function adminAuth(req, res, next) {
 
 // ✅ ROUTES TO TEST
 const pathsToTest = [
-  '/', '/product', '/wishlist', '/invite-shop', '/cart', '/checkout',
+  '/', '/product', '/wishlist', '/invite-to-shop', '/cart', '/checkout',
   '/mall', '/gift-cards', '/events', '/about', '/profile', '/support',
   '/retailer/dashboard', '/retailer/orders', '/admin/spiral-agent', '/spiral-logging-demo',
   '/wishlist-alerts-system', '/tiered-spirals-engine', '/qr-pickup-system',
