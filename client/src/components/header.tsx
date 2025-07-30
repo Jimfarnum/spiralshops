@@ -97,6 +97,9 @@ export default function Header() {
                   <Link href="/push-notification-settings" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🔔 Notifications
                   </Link>
+                  <Link href="/admin-test-dashboard" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🔧 Admin Tests
+                  </Link>
                 </div>
               </div>
             </div>

@@ -45,6 +45,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Enable trust proxy for Replit environment
   app.set('trust proxy', 1);
   
+  // Admin Test Routes Integration
+  try {
+    const { default: testRoutes } = await import('./admin/test-routes.js');
+    app.use('/admin/test', testRoutes);
+    console.log('✅ Admin test routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load admin test routes:', err.message);
+  }
+
   // Admin Panel Routes
   app.get('/admin/spiral-agent/deep-test', spiralProtection.spiralAdminAuth, async (req, res) => {
     console.log('\n🔬 INITIATING DEEP FEATURE TESTING');
