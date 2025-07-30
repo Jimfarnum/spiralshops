@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { calculateShippingOptions, validateDeliveryAddress, calculateDeliveryDate } from "./shippingRoutes.js";
 import spiralProtection from "./middleware/spiralProtection.js";
 import { storage } from "./storage";
-import { products, categories } from "./productData.js";
+import { getProducts, getCategories } from "./productData";
 import { registerLoyaltyRoutes } from "./loyaltyRoutes";
 import { registerTrackingRoutes } from "./trackingRoutes";
 import { registerRetailerLoyaltyRoutes } from "./retailerLoyaltyRoutes";
@@ -836,11 +836,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const verificationRoutes = await import("./verificationRoutes");
   app.use(verificationRoutes.default);
 
-  // Product Catalog API Routes (Data Loaded from dataLoader.js)
+  // Product Catalog API Routes (Data Loaded from DataService)
   app.get("/api/products", async (req, res) => {
     try {
       const { category, search, limit = 20, offset = 0 } = req.query;
-      let filteredProducts = [...products];
+      const allProducts = await getProducts();
+      const allCategories = await getCategories();
+      let filteredProducts = [...allProducts];
       
       // Filter by category
       if (category && category !== 'all') {
@@ -867,7 +869,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({
         products: paginatedProducts,
         total: filteredProducts.length,
-        categories: Object.values(categories),
+        categories: Object.values(allCategories),
         pagination: {
           offset: startIndex,
           limit: parseInt(limit as string),
@@ -883,7 +885,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/products/:id", async (req, res) => {
     try {
       const productId = parseInt(req.params.id);
-      const product = products.find(p => p.id === productId);
+      const allProducts = await getProducts();
+      const product = allProducts.find(p => p.id === productId);
       
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
@@ -898,9 +901,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/categories", async (req, res) => {
     try {
+      const allCategories = await getCategories();
       res.json({
-        categories: Object.values(categories),
-        total: Object.keys(categories).length
+        categories: Object.values(allCategories),
+        total: Object.keys(allCategories).length
       });
     } catch (error) {
       console.error("Error fetching categories:", error);

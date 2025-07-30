@@ -10,6 +10,22 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (January 2025)
 
+✓ **Production Deployment Fix (July 2025)**:
+  - Fixed critical deployment error: "Missing file during production build: spiral_sample_products.json"
+  - Created robust DataService (server/dataService.ts) with fallback loading from multiple file paths
+  - Updated data loading to work in both development and production environments
+  - Replaced synchronous fs.readFileSync with production-compatible async data loading
+  - Created build-script.js to copy data files to dist directory during production build
+  - Updated all API routes (/api/products, /api/categories, /api/products/:id) to use new async DataService
+  - Data files now available at multiple paths for maximum production compatibility:
+    - dist/data/spiral_sample_products.json
+    - dist/client/public/spiral_sample_products.json  
+    - dist/spiral_sample_products.json
+  - Removed legacy dataLoader.js and productData.js files in favor of modern TypeScript architecture
+  - All product data APIs confirmed working in development with successful data loading
+
+## Previous Changes (January 2025)
+
 ✓ **Complete Frontend Redesign**: Transformed homepage with 6 interactive CTA tiles, loyalty program preview, and logistics options
 ✓ **Brand Identity Update**: Replaced revolving logo with static SPIRAL logo, updated tagline to "Everything Local. Just for you."
 ✓ **Color Palette Refresh**: Implemented warmer, inviting colors - deep teal (#006d77), subtle orange highlights (#ff9f1c), soft white background (#fefefe)
