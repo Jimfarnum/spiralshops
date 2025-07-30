@@ -81,6 +81,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load platform simulation routes:', err.message);
   }
 
+  // Security Verification & Onboarding Routes
+  try {
+    const { default: onboardingVerification } = await import('./routes/onboardingVerification.js');
+    const { 
+      cspMiddleware, 
+      securityHeaders, 
+      sanitizeInput, 
+      apiRateLimit,
+      strictApiRateLimit,
+      adminRateLimit,
+      generateSecurityReport 
+    } = await import('./middleware/securityVerification.js');
+    
+    // Apply security middleware globally
+    app.use(securityHeaders);
+    app.use(cspMiddleware);
+    app.use(sanitizeInput);
+    
+    // Apply rate limiting to API routes
+    app.use('/api/', apiRateLimit);
+    app.use('/api/payment', strictApiRateLimit);
+    app.use('/api/auth', strictApiRateLimit);
+    app.use('/admin/', adminRateLimit);
+    
+    // Register onboarding verification routes
+    app.use('/api/onboarding', onboardingVerification);
+    
+    // Security report endpoint
+    app.get('/api/security/report', (req, res) => {
+      res.json(generateSecurityReport());
+    });
+    
+    console.log('✅ Security middleware and onboarding verification loaded successfully');
+    
+    // Launch Verification Routes
+    const { default: launchVerification } = await import('./routes/launchVerification.js');
+    app.use('/api/launch', launchVerification);
+    console.log('✅ Launch verification routes loaded successfully');
+    
+  } catch (err) {
+    console.error('❌ Failed to load security and onboarding routes:', err.message);
+  }
+
   // Admin Panel Routes
   app.get('/admin/spiral-agent/deep-test', spiralProtection.spiralAdminAuth, async (req, res) => {
     console.log('\n🔬 INITIATING DEEP FEATURE TESTING');
