@@ -80,6 +80,7 @@ import MultiMallCart from "@/pages/multi-mall-cart";
 import MobileResponsiveTest from "@/pages/mobile-responsive-test";
 import SpiralTodoProgress from "@/pages/spiral-todo-progress";
 import ComprehensiveFeatureTesting from "@/pages/comprehensive-feature-testing";
+import AdminDeepTest from "@/pages/admin-deep-test";
 import EnhancedCheckout from "@/pages/checkout-enhanced";
 import PaymentSuccess from "@/pages/payment-success";
 import PaymentFeaturesDemo from "@/pages/payment-features-demo";
@@ -352,6 +353,7 @@ function Router() {
       <Route path="/mobile-responsive-test" component={MobileResponsiveTest} />
       <Route path="/spiral-todo-progress" component={SpiralTodoProgress} />
       <Route path="/comprehensive-feature-testing" component={ComprehensiveFeatureTesting} />
+      <Route path="/admin/spiral-agent/deep-test" component={AdminDeepTest} />
       <Route component={NotFound} />
     </Switch>
   );
