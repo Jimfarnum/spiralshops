@@ -317,7 +317,7 @@ export default function TieredSpiralsEngine() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Badge className={upgradePreview.tier.color} size="lg">
+                  <Badge className={upgradePreview.tier.color}>
                     {upgradePreview.tier.icon}
                     <span className="ml-2">{upgradePreview.tier.name}</span>
                   </Badge>
