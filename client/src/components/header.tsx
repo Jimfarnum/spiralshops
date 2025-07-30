@@ -103,6 +103,12 @@ export default function Header() {
                   <Link href="/mobile-app-base" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     📱 Mobile App Base
                   </Link>
+                  <Link href="/gpt-integration-demo" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🧠 GPT Integration
+                  </Link>
+                  <Link href="/vercel-ibm-integration" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    ☁️ Vercel & IBM
+                  </Link>
                 </div>
               </div>
             </div>

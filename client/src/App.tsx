@@ -89,6 +89,8 @@ import GiftCardBalanceChecker from "@/pages/gift-card-balance-checker";
 import PushNotificationSettings from "@/pages/push-notification-settings";
 import AdminTestDashboard from "@/pages/admin-test-dashboard";
 import MobileAppBase from "@/pages/mobile-app-base";
+import GPTIntegrationDemo from "@/pages/gpt-integration-demo";
+import VercelIBMIntegration from "@/pages/vercel-ibm-integration";
 import EnhancedCheckout from "@/pages/checkout-enhanced";
 import PaymentSuccess from "@/pages/payment-success";
 import PaymentFeaturesDemo from "@/pages/payment-features-demo";
@@ -370,6 +372,8 @@ function Router() {
       <Route path="/push-notification-settings" component={PushNotificationSettings} />
       <Route path="/admin-test-dashboard" component={AdminTestDashboard} />
       <Route path="/mobile-app-base" component={MobileAppBase} />
+      <Route path="/gpt-integration-demo" component={GPTIntegrationDemo} />
+      <Route path="/vercel-ibm-integration" component={VercelIBMIntegration} />
       <Route component={NotFound} />
     </Switch>
   );

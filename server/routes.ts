@@ -54,6 +54,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load admin test routes:', err.message);
   }
 
+  // GPT Integration Routes
+  try {
+    const { default: gptRoutes } = await import('./gpt/gpt-integration.js');
+    app.use('/api/gpt', gptRoutes);
+    console.log('✅ GPT integration routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load GPT routes:', err.message);
+  }
+
+  // Vercel & IBM Cloud Integration Routes
+  try {
+    const { default: vercelRoutes } = await import('./vercel/deployment-integration.js');
+    app.use('/api/vercel', vercelRoutes);
+    console.log('✅ Vercel/IBM Cloud integration routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load Vercel/IBM routes:', err.message);
+  }
+
   // Admin Panel Routes
   app.get('/admin/spiral-agent/deep-test', spiralProtection.spiralAdminAuth, async (req, res) => {
     console.log('\n🔬 INITIATING DEEP FEATURE TESTING');
