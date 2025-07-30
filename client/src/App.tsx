@@ -81,6 +81,12 @@ import MobileResponsiveTest from "@/pages/mobile-responsive-test";
 import SpiralTodoProgress from "@/pages/spiral-todo-progress";
 import ComprehensiveFeatureTesting from "@/pages/comprehensive-feature-testing";
 import AdminDeepTest from "@/pages/admin-deep-test";
+import WishlistAlertsSystem from "@/pages/wishlist-alerts-system";
+import TieredSpiralsEngine from "@/pages/tiered-spirals-engine";
+import QRPickupSystem from "@/pages/qr-pickup-system";
+import RetailerAutomationFlow from "@/pages/retailer-automation-flow";
+import GiftCardBalanceChecker from "@/pages/gift-card-balance-checker";
+import PushNotificationSettings from "@/pages/push-notification-settings";
 import EnhancedCheckout from "@/pages/checkout-enhanced";
 import PaymentSuccess from "@/pages/payment-success";
 import PaymentFeaturesDemo from "@/pages/payment-features-demo";
@@ -354,6 +360,12 @@ function Router() {
       <Route path="/spiral-todo-progress" component={SpiralTodoProgress} />
       <Route path="/comprehensive-feature-testing" component={ComprehensiveFeatureTesting} />
       <Route path="/admin/spiral-agent/deep-test" component={AdminDeepTest} />
+      <Route path="/wishlist-alerts-system" component={WishlistAlertsSystem} />
+      <Route path="/tiered-spirals-engine" component={TieredSpiralsEngine} />
+      <Route path="/qr-pickup-system" component={QRPickupSystem} />
+      <Route path="/retailer-automation-flow" component={RetailerAutomationFlow} />
+      <Route path="/gift-card-balance-checker" component={GiftCardBalanceChecker} />
+      <Route path="/push-notification-settings" component={PushNotificationSettings} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -79,6 +79,24 @@ export default function Header() {
                   <Link href="/comprehensive-feature-testing" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🧪 Feature Testing
                   </Link>
+                  <Link href="/wishlist-alerts-system" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🔔 Wishlist Alerts
+                  </Link>
+                  <Link href="/tiered-spirals-engine" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    ⭐ Tiered SPIRALS
+                  </Link>
+                  <Link href="/qr-pickup-system" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    📱 QR Pickup
+                  </Link>
+                  <Link href="/retailer-automation-flow" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🏪 Retailer Setup
+                  </Link>
+                  <Link href="/gift-card-balance-checker" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    💳 Gift Card Balance
+                  </Link>
+                  <Link href="/push-notification-settings" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🔔 Notifications
+                  </Link>
                 </div>
               </div>
             </div>

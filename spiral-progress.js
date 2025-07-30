@@ -6,15 +6,21 @@ import path from 'path';
 const SPIRAL_TASKS = [
   { phase: 'MVP Core (Web)', tasks: [
       { name: 'Wishlist System', done: true },
-      { name: 'SPIRALS Engine Final Logic', done: true },
+      { name: 'SPIRALS Engine Final Logic', done: false },
       { name: 'Shopper Profile System', done: true },
-      { name: 'Retailer Onboarding Flow', done: true },
-      { name: 'Mall Gift Cards', done: true },
-      { name: 'Invite-to-Shop Flow', done: true },
+      { name: 'Retailer Onboarding Flow', done: false },
+      { name: 'Mall Gift Cards', done: false },
+      { name: 'Invite-to-Shop Flow', done: false },
       { name: 'Shopper Onboarding System', done: true },
       { name: 'Enhanced Profile Settings', done: true },
       { name: 'Multi-Mall Cart Support', done: true },
-      { name: 'Mobile Responsiveness Testing', done: true }
+      { name: 'Mobile Responsiveness Testing', done: true },
+      { name: 'Wishlist Alerts with Toggle', done: true },
+      { name: 'Tiered SPIRALS Auto-Upgrade', done: true },
+      { name: 'QR Code Pickup System', done: true },
+      { name: 'Retailer Automation Flow', done: true },
+      { name: 'Gift Card Balance Checker', done: true },
+      { name: 'Push Notification Settings', done: true }
   ]},
   { phase: 'Mobile App (React Native)', tasks: [
       { name: 'Base React Native Setup', done: false },
