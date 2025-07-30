@@ -124,6 +124,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load security and onboarding routes:', err.message);
   }
 
+  // External Services Integration Routes
+  try {
+    const { default: externalServices } = await import('./routes/externalServices.js');
+    app.use('/api/external', externalServices);
+    console.log('✅ External services integration routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load external services routes:', err.message);
+  }
+
   // Admin Panel Routes
   app.get('/admin/spiral-agent/deep-test', spiralProtection.spiralAdminAuth, async (req, res) => {
     console.log('\n🔬 INITIATING DEEP FEATURE TESTING');
