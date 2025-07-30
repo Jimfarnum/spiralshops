@@ -1,0 +1,241 @@
+Here is the Master SPIRAL To-Do List, organized by stage, focus area, and priority. This includes the MVP, full platform, mobile app, AI systems, and infrastructure (Replit → Vercel → IBM Watson/Cloudant). It’s structured to help us track progress to 100% completion.
+
+
+---
+
+✅ PHASE 0: FOUNDATION CHECK (Replit Status + System Integrity)
+
+(Completed — for reference only)
+
+[x] Server runs on port 5000
+
+[x] APIs connected (Store API, Verification Lookup)
+
+[x] Shopper Dashboard functional
+
+[x] Gift card system complete
+
+[x] Product & store reviews operational
+
+[x] Full test log simulation and logger working
+
+[x] /p0-features-demo with all demos built
+
+
+
+---
+
+🚀 PHASE 1: MVP COMPLETION (Web Platform - Core)
+
+📍 Goal: 100% feature parity with major platforms + unique SPIRAL features
+
+🔹 Shopper Features
+
+[x] Unified cart (multi-retailer)
+
+[x] Product search with filters/sorting
+
+[x] Product detail page with reviews and purchase
+
+[x] Store directory and ZIP-based search
+
+[x] Pickup, local delivery, split shipping options
+
+[x] Wishlist + wishlist alerts
+
+[x] Invite-to-Shop perk (social feature with shared deals)
+
+[x] SPIRALS Loyalty Engine
+
+[ ] Shopper onboarding & walkthrough
+
+[ ] SPIRAL user settings (profile, saved addresses, etc.)
+
+[ ] Full mobile responsiveness (test across devices)
+
+
+🔹 Retailer Features
+
+[x] Retailer demo dashboard with:
+
+Product management
+
+Order dashboard
+
+Analytics dashboard
+
+
+[x] Gift card creation & management
+
+[x] Spiral rewards setup
+
+[ ] Finalize Retailer Onboarding Portal (step-by-step flow)
+
+[ ] Retailer self-setup & documentation (video + text)
+
+[ ] Large Retailer API Setup (inventory + promos sync)
+
+[ ] Retailer Profile Page (viewed by shoppers)
+
+
+🔹 Mall Features (SpiralMalls.com)
+
+[x] Mall selector dropdown
+
+[x] Mall-specific store directory
+
+[x] Mall homepage with promos, perks, events
+
+[x] SPIRAL Center pickup option
+
+[ ] Mall Gift Card Purchase & Redemption
+
+[ ] Multi-mall cart support
+
+[ ] Mall Loyalty & SPIRALS integration
+
+
+
+---
+
+📱 PHASE 2: MOBILE APP (React Native / PWA)
+
+📍 Goal: Sync all web platform functionality into mobile
+
+[ ] React Native app skeleton
+
+[ ] Connect with same Firebase backend
+
+[ ] Shopper features parity (cart, perks, notifications)
+
+[ ] Retailer view (basic analytics)
+
+[ ] Push notification system
+
+[ ] QR scanning for in-store perks & pickup
+
+[ ] Mobile Invite-to-Shop flow
+
+[ ] App store submission (Apple + Google Play)
+
+
+
+---
+
+🧠 PHASE 3: AI SYSTEMS & GPT INTEGRATION
+
+📍 Goal: Leverage AI for internal tools, shopper experiences, and admin automation
+
+🔹 GPTs & AI Agents
+
+[x] SPIRAL Full Stack GPT (complete with test log analysis, QA sim)
+
+[ ] SPIRAL Admin GPT for platform control + diagnostics
+
+[ ] Shopper GPT (recommendations, guided shopping)
+
+[ ] Retailer GPT (store setup assistant, analytics insight)
+
+[ ] Mall GPT (perks, promos, event assistant)
+
+
+🔹 AI Use Cases
+
+[ ] Product & promo tagging via image recognition
+
+[ ] AI customer service chatbot
+
+[ ] Retailer success dashboard (predictive AI insights)
+
+[ ] Personalized shopping recommendations
+
+
+
+---
+
+🌐 PHASE 4: INFRASTRUCTURE + HOSTING MIGRATION
+
+📍 Goal: Move to scalable, production-ready environment
+
+[x] Replit development complete
+
+[ ] Deploy frontend to Vercel
+
+[ ] Link Spiralshops.com + SpiralMalls.com to Vercel
+
+[ ] Backend/database move to IBM Cloudant
+
+[ ] Connect IBM Watson for GPT + AI Agents
+
+[ ] Security layer, admin authentication
+
+[ ] Admin-only routes + protected test tools
+
+
+
+---
+
+📣 PHASE 5: MARKETING, ONBOARDING, GROWTH
+
+📍 Goal: Attract shoppers, retailers, and partners to use SPIRAL
+
+🔹 Shoppers
+
+[ ] Launch shopper-focused landing page
+
+[ ] Email signup + drip sequence
+
+[ ] Loyalty perks explanation page
+
+[ ] Social media assets for “Shop Local” campaign
+
+[ ] Video: “Why SPIRAL is Better Than Amazon”
+
+
+🔹 Retailers
+
+[ ] Launch retailer-focused landing page
+
+[ ] Signup form with validation
+
+[ ] In-mall recruiting materials (QR + POS)
+
+[ ] Press kit for local news
+
+[ ] Social media campaign: “Main Street Revival”
+
+
+🔹 Strategic Partnerships
+
+[ ] Partnership outreach (Visa, FedEx, Stripe)
+
+[ ] Affiliate and white-label versions
+
+[ ] Mall leasing companies / mall owners intro
+
+[ ] Launch Crowdfunding (Kickstarter $500k) campaign
+
+[ ] Retailer ambassador program (early adoption perks)
+
+
+
+---
+
+🔐 PHASE 6: LEGAL, IP, AND TRADEMARK
+
+[ ] Trademark “SPIRAL” + logo
+
+[ ] Terms of Use + Privacy Policy final draft
+
+[ ] Retailer agreement / user agreement
+
+[ ] SPIRAL stock & equity structure (futureproofing exit)
+
+[ ] Lock down code access (admin-only AI/GPT interfaces)
+
+
+
+---
+
+Would you like this exported as a trackable spreadsheet, Notion board, or integrated into a Kanban-style tracker (Trello-like)? I can also create a downloadable version with checkboxes.
+

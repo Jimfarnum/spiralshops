@@ -73,6 +73,12 @@ import InventoryAlertsDemo from "@/pages/inventory-alerts-demo";
 import LanguageDemo from "@/pages/language-demo";
 import AccessibilitySettings from "@/pages/accessibility-settings";
 import AccessibilityDemo from "@/pages/accessibility-demo";
+import ShopperOnboarding from "@/pages/shopper-onboarding";
+import EnhancedProfileSettings from "@/pages/enhanced-profile-settings";
+import MallGiftCardSystem from "@/pages/mall-gift-card-system";
+import MultiMallCart from "@/pages/multi-mall-cart";
+import MobileResponsiveTest from "@/pages/mobile-responsive-test";
+import SpiralTodoProgress from "@/pages/spiral-todo-progress";
 import EnhancedCheckout from "@/pages/checkout-enhanced";
 import PaymentSuccess from "@/pages/payment-success";
 import PaymentFeaturesDemo from "@/pages/payment-features-demo";
@@ -338,6 +344,12 @@ function Router() {
       <Route path="/spiral-admin" component={SpiralAdminDashboard} />
       <Route path="/spiral-admin/button-testing" component={ButtonTestingSuite} />
       <Route path="/spiral-todo" component={SpiralTodoDashboard} />
+      <Route path="/shopper-onboarding" component={ShopperOnboarding} />
+      <Route path="/enhanced-profile-settings" component={EnhancedProfileSettings} />
+      <Route path="/mall-gift-card-system" component={MallGiftCardSystem} />
+      <Route path="/multi-mall-cart" component={MultiMallCart} />
+      <Route path="/mobile-responsive-test" component={MobileResponsiveTest} />
+      <Route path="/spiral-todo-progress" component={SpiralTodoProgress} />
       <Route component={NotFound} />
     </Switch>
   );

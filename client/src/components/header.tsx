@@ -52,14 +52,35 @@ export default function Header() {
             <Link href="/malls" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
               Malls
             </Link>
-            <Link href="/discover-stores" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
-              Discover
-            </Link>
+            <div className="relative group">
+              <button className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
+                Features ▾
+              </button>
+              <div className="absolute top-full left-0 mt-1 w-64 bg-white shadow-lg border border-gray-200 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="p-2 space-y-1">
+                  <Link href="/shopper-onboarding" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🎯 Shopper Onboarding
+                  </Link>
+                  <Link href="/enhanced-profile-settings" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    ⚙️ Enhanced Profile Settings
+                  </Link>
+                  <Link href="/mall-gift-card-system" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🎁 Mall Gift Card System
+                  </Link>
+                  <Link href="/multi-mall-cart" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🛒 Multi-Mall Cart
+                  </Link>
+                  <Link href="/mobile-responsive-test" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    📱 Mobile Testing
+                  </Link>
+                  <Link href="/spiral-todo-progress" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    📊 Progress Dashboard
+                  </Link>
+                </div>
+              </div>
+            </div>
             <Link href="/trusted-local-stores" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
               Trusted Local
-            </Link>
-            <Link href="/verified-lookup" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
-              Verify Store
             </Link>
             <Link href="/social-feed" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
               Community
