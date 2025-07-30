@@ -90,13 +90,18 @@ router.get('/validate-paths', adminAuth, (req, res) => {
     }
   };
 
-  // Ensure admin directory exists
-  const adminDir = path.join(__dirname);
-  if (!fs.existsSync(adminDir)) {
-    fs.mkdirSync(adminDir, { recursive: true });
+  // Save results to file
+  const adminDir = path.join(process.cwd(), 'server', 'admin');
+  const resultsFile = path.join(adminDir, 'path-test-results.json');
+  
+  try {
+    if (!fs.existsSync(adminDir)) {
+      fs.mkdirSync(adminDir, { recursive: true });
+    }
+    fs.writeFileSync(resultsFile, JSON.stringify(testData, null, 2));
+  } catch (error) {
+    console.error('Failed to save test results:', error);
   }
-
-  fs.writeFileSync(path.join(adminDir, 'path-test-results.json'), JSON.stringify(testData, null, 2));
   
   // Format response
   const responseText = `🧪 SPIRAL Route Testing Results (${testData.timestamp})\n\n` +

@@ -100,6 +100,9 @@ export default function Header() {
                   <Link href="/admin-test-dashboard" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🔧 Admin Tests
                   </Link>
+                  <Link href="/mobile-app-base" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    📱 Mobile App Base
+                  </Link>
                 </div>
               </div>
             </div>

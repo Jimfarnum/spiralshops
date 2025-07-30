@@ -1,12 +1,417 @@
 {
-  "timestamp": "2025-07-30T02:25:00.000Z",
-  "totalPaths": 26,
-  "results": [],
-  "categoryBreakdown": {},
-  "summary": {
-    "passed": 0,
-    "failed": 0,
-    "overallPassRate": 0
+  "timestamp": "2025-07-30T03:10:28.375Z",
+  "totalPaths": 30,
+  "results": [
+    {
+      "path": "/",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "237ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/product",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "51ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/wishlist",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "75ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/invite-shop",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "59ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/cart",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "234ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/checkout",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "243ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/mall",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "148ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/gift-cards",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "224ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/events",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "176ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/about",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "92ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/profile",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "162ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/support",
+      "result": "❌ Needs Review",
+      "statusCode": 500,
+      "responseTime": "93ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route may have issues"
+    },
+    {
+      "path": "/retailer/dashboard",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "222ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/retailer/orders",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "165ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/admin/spiral-agent",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "69ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/spiral-logging-demo",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "173ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/wishlist-alerts-system",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "72ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/tiered-spirals-engine",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "94ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/qr-pickup-system",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "128ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/retailer-automation-flow",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "249ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/gift-card-balance-checker",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "148ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/push-notification-settings",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "87ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/shopper-onboarding",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "242ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/enhanced-profile-settings",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "184ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/mall-gift-card-system",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "202ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/multi-mall-cart",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "219ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/mobile-responsive-test",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "103ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/spiral-todo-progress",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "126ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/comprehensive-feature-testing",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "88ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    },
+    {
+      "path": "/admin/spiral-agent/deep-test",
+      "result": "✅ Functional",
+      "statusCode": 200,
+      "responseTime": "85ms",
+      "timestamp": "2025-07-30T03:10:28.374Z",
+      "details": "Route accessible and rendering"
+    }
+  ],
+  "categoryBreakdown": {
+    "Core Navigation": {
+      "paths": [
+        {
+          "path": "/",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "197ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        },
+        {
+          "path": "/product",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "93ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        },
+        {
+          "path": "/cart",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "170ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        },
+        {
+          "path": "/checkout",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "128ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        }
+      ],
+      "passRate": "4/4",
+      "percentage": 100
+    },
+    "SPIRAL Features": {
+      "paths": [
+        {
+          "path": "/wishlist-alerts-system",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "61ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        },
+        {
+          "path": "/tiered-spirals-engine",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "184ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        },
+        {
+          "path": "/qr-pickup-system",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "56ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        }
+      ],
+      "passRate": "3/3",
+      "percentage": 100
+    },
+    "Retailer Tools": {
+      "paths": [
+        {
+          "path": "/retailer-automation-flow",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "106ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        },
+        {
+          "path": "/retailer/dashboard",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "118ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        }
+      ],
+      "passRate": "2/2",
+      "percentage": 100
+    },
+    "User Management": {
+      "paths": [
+        {
+          "path": "/push-notification-settings",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "85ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        },
+        {
+          "path": "/shopper-onboarding",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "143ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        },
+        {
+          "path": "/enhanced-profile-settings",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "133ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        }
+      ],
+      "passRate": "3/3",
+      "percentage": 100
+    },
+    "Payment Systems": {
+      "paths": [
+        {
+          "path": "/gift-card-balance-checker",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "201ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        },
+        {
+          "path": "/mall-gift-card-system",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "199ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        }
+      ],
+      "passRate": "2/2",
+      "percentage": 100
+    },
+    "Testing Infrastructure": {
+      "paths": [
+        {
+          "path": "/comprehensive-feature-testing",
+          "result": "✅ Functional",
+          "statusCode": 200,
+          "responseTime": "230ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route accessible and rendering"
+        },
+        {
+          "path": "/admin/spiral-agent/deep-test",
+          "result": "❌ Needs Review",
+          "statusCode": 404,
+          "responseTime": "170ms",
+          "timestamp": "2025-07-30T03:10:28.375Z",
+          "details": "Route may have issues"
+        }
+      ],
+      "passRate": "1/2",
+      "percentage": 50
+    }
   },
-  "note": "Initial file - run tests to populate results"
+  "summary": {
+    "passed": 29,
+    "failed": 1,
+    "overallPassRate": 97
+  }
 }

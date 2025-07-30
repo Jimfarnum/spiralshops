@@ -88,6 +88,7 @@ import RetailerAutomationFlow from "@/pages/retailer-automation-flow";
 import GiftCardBalanceChecker from "@/pages/gift-card-balance-checker";
 import PushNotificationSettings from "@/pages/push-notification-settings";
 import AdminTestDashboard from "@/pages/admin-test-dashboard";
+import MobileAppBase from "@/pages/mobile-app-base";
 import EnhancedCheckout from "@/pages/checkout-enhanced";
 import PaymentSuccess from "@/pages/payment-success";
 import PaymentFeaturesDemo from "@/pages/payment-features-demo";
@@ -368,6 +369,7 @@ function Router() {
       <Route path="/gift-card-balance-checker" component={GiftCardBalanceChecker} />
       <Route path="/push-notification-settings" component={PushNotificationSettings} />
       <Route path="/admin-test-dashboard" component={AdminTestDashboard} />
+      <Route path="/mobile-app-base" component={MobileAppBase} />
       <Route component={NotFound} />
     </Switch>
   );

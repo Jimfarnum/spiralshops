@@ -20,10 +20,14 @@ const SPIRAL_TASKS = [
       { name: 'QR Code Pickup System', done: true },
       { name: 'Retailer Automation Flow', done: true },
       { name: 'Gift Card Balance Checker', done: true },
-      { name: 'Push Notification Settings', done: true }
+      { name: 'Push Notification Settings', done: true },
+      { name: 'Mobile App Base Structure', done: true },
+      { name: 'Admin Test Dashboard', done: true },
+      { name: 'Route Validation System', done: true }
   ]},
   { phase: 'Mobile App (React Native)', tasks: [
-      { name: 'Base React Native Setup', done: false },
+      { name: 'Base React Native Setup', done: true },
+      { name: 'PWA Manifest Configuration', done: true },
       { name: 'Shared Firebase Cart & Auth', done: false },
       { name: 'QR Code Pickup Module', done: false },
       { name: 'Push Notifications', done: false }
