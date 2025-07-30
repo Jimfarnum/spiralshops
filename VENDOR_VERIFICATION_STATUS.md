@@ -79,5 +79,28 @@ Or use the admin interface at: `/admin/verification`
 
 ---
 
-**Status:** Waiting for API key configuration to complete vendor verification
-**Progress:** 1/5 services verified (Stripe operational, 4 pending configuration)
+## API Key Configuration Instructions
+
+To add the API keys to your Replit project:
+
+1. **Open Replit Secrets Manager**
+   - Go to your Replit project dashboard
+   - Click on "Secrets" tab in the left sidebar
+   - Add each key individually:
+
+2. **Add These Secret Keys:**
+   ```
+   FEDEX_API_KEY = your-fedex-api-key
+   UPS_API_KEY = your-ups-api-key  
+   TWILIO_AUTH_TOKEN = your-twilio-auth-token
+   SENDGRID_API_KEY = your-sendgrid-api-key
+   ```
+
+3. **Restart the Application**
+   - After adding secrets, restart the workflow
+   - The vendor verification will automatically detect the new keys
+
+**Current Status:** Waiting for API key configuration through Replit Secrets
+**Progress:** 1/5 services verified (Stripe operational, 4 pending secrets configuration)
+
+**Once secrets are added, run:** `curl -X POST "http://localhost:5000/api/vendor-verification/audit"`
