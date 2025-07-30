@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // Comprehensive SPIRAL action logging system
 const logs = [];
@@ -212,7 +212,7 @@ logAction({
 });
 
 // Export for use in other modules
-module.exports = {
+export {
   logAction,
   saveLogsToDisk,
   logPaymentAction,

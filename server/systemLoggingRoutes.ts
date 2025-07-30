@@ -1,8 +1,6 @@
 import { Express } from 'express';
 import fs from 'fs';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const { logAction, saveLogsToDisk, logs, logSystemTest } = require('../spiral_logger');
+import { logAction, saveLogsToDisk, logs, logSystemTest } from '../spiral_logger.js';
 
 export function registerSystemLoggingRoutes(app: Express) {
   
