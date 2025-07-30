@@ -133,6 +133,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load external services routes:', err.message);
   }
 
+  // Admin External Services Routes
+  try {
+    const { default: adminExternalServices } = await import('./routes/adminExternalServices.js');
+    app.use('/api/admin/external', adminExternalServices);
+    console.log('✅ Admin external services routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load admin external services routes:', err.message);
+  }
+
   // Admin Panel Routes
   app.get('/admin/spiral-agent/deep-test', spiralProtection.spiralAdminAuth, async (req, res) => {
     console.log('\n🔬 INITIATING DEEP FEATURE TESTING');
