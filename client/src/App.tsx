@@ -61,7 +61,10 @@ import AdminGiftCards from "@/pages/admin-gift-cards";
 import Events from "@/pages/events";
 import MultiCart from "@/pages/multi-cart";
 import SplitFulfillment from "@/pages/split-fulfillment";
-import { ExploreSPIRALsPage, RedeemSPIRALsPage, LoyaltyProgramPage, DeliveryOptionsPage } from "@/pages/coming-soon";
+import ExploreSPIRALsPage from "@/pages/ExploreSPIRALsPage";
+import RedeemSPIRALsPage from "@/pages/RedeemSPIRALsPage";
+import LoyaltyProgramPage from "@/pages/LoyaltyProgramPage";
+import DeliveryOptionsPage from "@/pages/DeliveryOptionsPage";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
 import MallContextSync from "@/components/mall-context-sync";
@@ -206,6 +209,7 @@ import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import RetailerInventoryDashboard from "@/components/RetailerInventoryDashboard";
 import ProductsPage from "@/pages/products";
+
 
 function Router() {
   const [location] = useLocation();
