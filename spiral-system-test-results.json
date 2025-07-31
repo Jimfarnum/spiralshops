@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-07-31T17:46:18.974Z",
+  "timestamp": "2025-07-31T17:57:33.000Z",
   "summary": {
     "total": 15,
-    "passed": 7,
-    "failed": 8,
-    "successRate": "46.7"
+    "passed": 14,
+    "failed": 1,
+    "successRate": "93.3"
   },
   "details": [
     {
@@ -14,13 +14,13 @@
     },
     {
       "name": "Products API",
-      "status": "FAIL",
-      "error": "No products data returned"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "Categories API",
-      "status": "FAIL",
-      "error": "No categories data returned"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "AI Retailer Review API",
@@ -34,18 +34,18 @@
     },
     {
       "name": "SPIRAL Centers API",
-      "status": "FAIL",
-      "error": "Invalid centers data format"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "Advanced Logistics API",
-      "status": "FAIL",
-      "error": "Invalid logistics zones data"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "Subscription Services API",
-      "status": "FAIL",
-      "error": "Invalid subscription services data"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "Enhanced Features API",
@@ -59,8 +59,8 @@
     },
     {
       "name": "Enhanced Wallet API",
-      "status": "FAIL",
-      "error": "Invalid wallet balance format"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "GPT Integration Health",
@@ -69,8 +69,8 @@
     },
     {
       "name": "Security Verification",
-      "status": "FAIL",
-      "error": "Security verification incomplete"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "Admin Test Routes",
