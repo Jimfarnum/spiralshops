@@ -201,7 +201,7 @@ import AdminRetailerApplications from "@/pages/admin-retailer-applications";
 import AiRetailerDemo from "@/pages/ai-retailer-demo";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
-import RetailerInventoryDashboard from "@/pages/RetailerInventoryDashboard";
+import RetailerInventoryDashboard from "@/components/RetailerInventoryDashboard";
 import ProductsPage from "@/pages/products";
 
 function Router() {
