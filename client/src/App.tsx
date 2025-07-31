@@ -195,6 +195,9 @@ import SpiralCenters from "@/pages/spiral-centers";
 import SpiralCentersSubscriptionDemo from "@/pages/spiral-centers-subscription-demo";
 import AdvancedLogistics from "@/pages/advanced-logistics";
 import Spiral100CompatibilityTest from "@/pages/spiral-100-compatibility-test";
+import AiRetailerSignup from "@/pages/ai-retailer-signup";
+import PendingApplication from "@/pages/pending-application";
+import AdminRetailerApplications from "@/pages/admin-retailer-applications";
 
 function Router() {
   return (
@@ -392,6 +395,9 @@ function Router() {
       <Route path="/spiral-centers-subscription-demo" component={SpiralCentersSubscriptionDemo} />
       <Route path="/advanced-logistics" component={AdvancedLogistics} />
       <Route path="/spiral-100-compatibility-test" component={Spiral100CompatibilityTest} />
+      <Route path="/ai-retailer-signup" component={AiRetailerSignup} />
+      <Route path="/pending-application/:id" component={PendingApplication} />
+      <Route path="/admin/retailer-applications" component={AdminRetailerApplications} />
       <Route component={NotFound} />
     </Switch>
   );

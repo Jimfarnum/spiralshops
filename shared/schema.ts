@@ -44,6 +44,49 @@ export const retailers = pgTable("retailers", {
   approved: boolean("approved").default(false),
 });
 
+// AI Retailer Applications table
+export const aiRetailerApplications = pgTable("ai_retailer_applications", {
+  id: serial("id").primaryKey(),
+  storeName: text("store_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  address: text("address").notNull(),
+  category: text("category").notNull(),
+  hours: text("hours").notNull(),
+  description: text("description").notNull(),
+  
+  // File uploads
+  logoPath: text("logo_path"),
+  storefrontPhotoPath: text("storefront_photo_path"),
+  businessLicensePath: text("business_license_path"),
+  utilityBillPath: text("utility_bill_path"),
+  additionalDocPath: text("additional_doc_path"),
+  
+  // AI Processing Status
+  status: text("status").notNull().default("pending_review"), // pending_review, needs_review, pending_verification, needs_documents, approved, rejected, manual_review
+  aiReviewStatus: text("ai_review_status").default("pending"), // pending, approved, needs_review, rejected
+  verificationStatus: text("verification_status").default("pending"), // pending, verified, needs_documents, inconsistent
+  approvalStatus: text("approval_status").default("pending"), // pending, approved, rejected, manual_review
+  
+  // AI Results (stored as JSON)
+  aiReviewResult: jsonb("ai_review_result"),
+  verificationResult: jsonb("verification_result"),
+  approvalResult: jsonb("approval_result"),
+  adminOverride: jsonb("admin_override"),
+  
+  // Timestamps
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  reviewedAt: timestamp("reviewed_at"),
+  approvedAt: timestamp("approved_at"),
+});
+
+export const insertAiRetailerApplicationSchema = createInsertSchema(aiRetailerApplications).omit({
+  id: true,
+  submittedAt: true,
+  reviewedAt: true,
+  approvedAt: true,
+});
+
 export const insertStoreSchema = createInsertSchema(stores).omit({
   id: true,
   rating: true,

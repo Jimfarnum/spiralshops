@@ -1399,5 +1399,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load SPIRAL Centers routes:', err.message);
   }
 
+  // AI Retailer Onboarding routes
+  try {
+    const { default: aiRetailerOnboardingRoutes } = await import('./routes/aiRetailerOnboardingRoutes.js');
+    app.use('/api/ai-retailer-onboarding', aiRetailerOnboardingRoutes);
+    console.log('✅ AI retailer onboarding routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load AI retailer onboarding routes:', err.message);
+  }
+
   return httpServer;
 }
