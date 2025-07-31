@@ -406,6 +406,7 @@ function Router() {
       <Route path="/admin-login" component={AdminLogin} />
       <Route path="/admin-dashboard" component={AdminDashboard} />
       <Route path="/retailer-inventory" component={RetailerInventoryDashboard} />
+      <Route path="/retailer-dashboard" component={RetailerInventoryDashboard} />
       <Route path="/admin-test-dashboard" component={AdminTestDashboardExisting} />
       <Route component={NotFound} />
     </Switch>
