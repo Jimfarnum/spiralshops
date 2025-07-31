@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { useCartStore } from '@/lib/cartStore';
 import { useAuthStore } from '@/lib/authStore';
 import { useLoyaltyStore } from '@/lib/loyaltyStore';
-import { Menu, ShoppingCart, User, LogOut, X, Home, Package, Building2, Users, Info, Store, Heart, Calendar, MessageCircle, Map, Settings } from 'lucide-react';
+import { Menu, ShoppingCart, User, LogOut, X, Home, Package, Building2, Users, Info, Store, Heart, Calendar, MessageCircle, Map, Settings, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface MobileOptimizedHeaderProps {
@@ -46,7 +46,10 @@ export default function MobileOptimizedHeader({ className = '' }: MobileOptimize
     { href: '/pickup-scheduler', label: 'Pickup Scheduling', icon: Calendar },
     { href: '/messages', label: 'Messages', icon: MessageCircle },
     { href: '/mall/1/map', label: 'Mall Maps', icon: Map },
-    { href: '/large-retailer-settings', label: 'Retailer Preferences', icon: Settings }
+    { href: '/large-retailer-settings', label: 'Retailer Preferences', icon: Settings },
+    // AI Retailer Features
+    { href: '/ai-retailer-signup', label: 'AI Retailer Signup', icon: Bot, divider: true },
+    { href: '/admin/retailer-applications', label: 'Admin Applications', icon: Users }
   ];
 
   return (

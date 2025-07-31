@@ -198,6 +198,7 @@ import Spiral100CompatibilityTest from "@/pages/spiral-100-compatibility-test";
 import AiRetailerSignup from "@/pages/ai-retailer-signup";
 import PendingApplication from "@/pages/pending-application";
 import AdminRetailerApplications from "@/pages/admin-retailer-applications";
+import AiRetailerDemo from "@/pages/ai-retailer-demo";
 
 function Router() {
   return (
@@ -398,6 +399,7 @@ function Router() {
       <Route path="/ai-retailer-signup" component={AiRetailerSignup} />
       <Route path="/pending-application/:id" component={PendingApplication} />
       <Route path="/admin/retailer-applications" component={AdminRetailerApplications} />
+      <Route path="/ai-retailer-demo" component={AiRetailerDemo} />
       <Route component={NotFound} />
     </Switch>
   );

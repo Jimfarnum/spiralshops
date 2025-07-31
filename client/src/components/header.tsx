@@ -63,6 +63,26 @@ export default function Header() {
             </Link>
             <div className="relative group">
               <button className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
+                AI Retailers ↓
+              </button>
+              <div className="absolute top-full left-0 w-56 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="p-2 space-y-1">
+                  <Link href="/ai-retailer-signup" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🤖 AI Retailer Signup
+                  </Link>
+                  <Link href="/admin/retailer-applications" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    👥 Admin Applications
+                  </Link>
+                  <Link href="/ai-retailer-demo" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                    🧪 AI Review Demo
+                  </Link>
+                  <div className="border-t border-gray-200 my-1"></div>
+                  <div className="px-3 py-1 text-xs text-gray-500">AI-Powered Onboarding</div>
+                </div>
+              </div>
+            </div>
+            <div className="relative group">
+              <button className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
                 Features ▾
               </button>
               <div className="absolute top-full left-0 mt-1 w-64 bg-white shadow-lg border border-gray-200 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">

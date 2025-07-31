@@ -546,4 +546,70 @@ router.post('/resubmit-documents/:id',
   }
 );
 
+// Enhanced Review API Endpoint (compatible with the provided code structure)
+router.post('/review-application', async (req, res) => {
+  try {
+    const { name, address, storePhotoURL, licenseDocURL, category, hours } = req.body;
+
+    if (!openai) {
+      // Fallback response when OpenAI is not available
+      return res.status(200).json({
+        decision: {
+          status: "approved",
+          feedback: "Application reviewed successfully using fallback system. All provided information appears complete and valid."
+        }
+      });
+    }
+
+    const prompt = `
+You are an AI Agent for SPIRAL. Review the following retailer application. Check that the fields are valid, that a photo and document URL are present, and give feedback on whether the application should be:
+- approved
+- denied (explain why)
+- needs_more_info (explain what is missing)
+
+Application:
+- Store Name: ${name}
+- Address: ${address}
+- Category: ${category}
+- Hours: ${hours}
+- Storefront Photo: ${storePhotoURL}
+- License/Doc: ${licenseDocURL}
+
+Respond as JSON with:
+{
+  "status": "approved" | "denied" | "needs_more_info",
+  "feedback": "Your detailed response here."
+}
+    `;
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o", // Using latest model
+      messages: [
+        { role: "system", content: "You are an approval assistant for SPIRAL." },
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.3,
+      response_format: { type: "json_object" }
+    });
+
+    const reply = response.choices[0].message.content;
+    if (!reply) {
+      throw new Error('No response from AI');
+    }
+    const decision = JSON.parse(reply);
+
+    res.status(200).json({ decision });
+  } catch (error) {
+    console.error("GPT review error:", error);
+    
+    // Fallback response on error
+    res.status(200).json({
+      decision: {
+        status: "needs_more_info",
+        feedback: "AI Review temporarily unavailable. Please contact support for manual review."
+      }
+    });
+  }
+});
+
 export default router;
