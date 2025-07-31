@@ -29,6 +29,10 @@ import OnboardingModal from "@/components/onboarding-modal";
 import AIRecommendations from "@/components/ai-recommendations";
 import SmartSearchBar from "@/components/smart-search-bar";
 import HeroSection from "@/components/HeroSection";
+import RetailerCategoryMenu from "@/components/RetailerCategoryMenu";
+import FeaturedProducts from "@/components/FeaturedProducts";
+import MallEvents from "@/components/MallEvents";
+import LocalPromotions from "@/components/LocalPromotions";
 
 export default function Home() {
   const [spiralStoryModalOpen, setSpiralStoryModalOpen] = useState(false);
@@ -130,6 +134,18 @@ export default function Home() {
           Learn More About SPIRAL
         </a>
       </section>
+
+      {/* Grid Layout Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4 py-8">
+        <div className="col-span-1">
+          <RetailerCategoryMenu />
+        </div>
+        <div className="col-span-2">
+          <FeaturedProducts />
+          <MallEvents />
+          <LocalPromotions />
+        </div>
+      </div>
 
       {/* Feature Tiles Section */}
       <section className="py-20 bg-[var(--spiral-cream)]">
