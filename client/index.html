@@ -3,26 +3,69 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>SPIRAL — The Local Shopping Platform</title>
-    <meta name="description" content="Discover real local stores from across the U.S. with SPIRAL — a platform that connects shoppers to real brick-and-mortar retailers online." />
+    <!-- ✅ SPIRAL SEO + Social Metadata Bundle -->
+    <!-- Base SEO -->
+    <title>SPIRAL – The Local Shopping Platform</title>
+    <meta name="description" content="Shop real local stores across the U.S. from one platform. Support brick-and-mortar businesses with SPIRAL.">
+    <link rel="canonical" href="https://spiralshops.com" />
     <meta name="keywords" content="local shopping, spiralshops, spiral, online shopping, shop local, brick and mortar, U.S. retailers, local business, mall platform, small business marketplace" />
     <meta name="author" content="SPIRAL Inc." />
     <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="SPIRAL — The Local Shopping Platform" />
-    <meta property="og:description" content="Shop local nationwide. Discover and buy from real stores in real communities with SPIRAL." />
-    <meta property="og:url" content="https://spiralshops.com/" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://spiralshops.com/assets/spiral-og-image.jpg" />
+    
+    <!-- ✅ Open Graph (Truth Social, Facebook, LinkedIn, etc.) -->
+    <meta property="og:title" content="SPIRAL – The Local Shopping Platform">
+    <meta property="og:description" content="Connecting shoppers with real local retailers across the U.S. via a powerful online + in-store platform.">
+    <meta property="og:image" content="https://spiralshops.com/images/social-preview.jpg">
+    <meta property="og:url" content="https://spiralshops.com">
+    <meta property="og:type" content="website">
     <meta property="og:site_name" content="SPIRAL" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@spiralshops" />
-    <meta name="twitter:title" content="SPIRAL — The Local Shopping Platform" />
-    <meta name="twitter:description" content="Shop local online from real stores across the U.S." />
-    <meta name="twitter:image" content="https://spiralshops.com/assets/spiral-og-image.jpg" />
+    
+    <!-- ✅ X (formerly Twitter) Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SPIRAL – The Local Shopping Platform">
+    <meta name="twitter:description" content="Shop real stores locally and online. SPIRAL makes local shopping smarter.">
+    <meta name="twitter:image" content="https://spiralshops.com/images/social-preview.jpg">
     <link rel="canonical" href="https://spiralshops.com" />
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- ✅ TikTok Pixel -->
+    <script>
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject = t;
+      var ttq = w[t] = w[t] || [];
+      ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie"];
+      ttq.setAndDefer = function (t, e) {
+        t[e] = function () {
+          t.push([e].concat(Array.prototype.slice.call(arguments, 0)))
+        }
+      };
+      for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
+      ttq.instance = function (t) {
+        for (var e = ttq._i[t] || [], n = 0; n < ttq.methods.length; n++) ttq.setAndDefer(e, ttq.methods[n]);
+        return e
+      };
+      ttq.load = function (e, n) {
+        var i = "https://analytics.tiktok.com/i18n/pixel/events.js";
+        ttq._i = ttq._i || {};
+        ttq._i[e] = [];
+        ttq._i[e]._u = i;
+        ttq._t = ttq._t || {};
+        ttq._t[e] = +new Date;
+        ttq._o = ttq._o || {};
+        ttq._o[e] = n || {};
+        var o = document.createElement("script");
+        o.type = "text/javascript";
+        o.async = !0;
+        o.src = i + "?id=" + e + "&ev=PageView&noscript=1";
+        var a = document.getElementsByTagName("script")[0];
+        a.parentNode.insertBefore(o, a)
+      };
+      ttq.load('SPIRAL_PIXEL_ID');
+      ttq.page();
+    }(window, document, 'ttq');
+    </script>
   </head>
   <body>
     <div id="root"></div>
