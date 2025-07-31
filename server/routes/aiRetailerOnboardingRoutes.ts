@@ -65,8 +65,35 @@ const retailerApplicationSchema = z.object({
 }).passthrough();
 
 // In-memory storage for demo (replace with database in production)
-let retailerApplications: any[] = [];
-let applicationIdCounter = 1;
+let retailerApplications: any[] = [
+  {
+    id: '1',
+    name: 'Downtown Coffee Shop',
+    address: '123 Main St, Springfield, IL 62701',
+    category: 'Food & Beverage',
+    storePhotoURL: '/api/uploads/demo-storefront1.jpg',
+    licenseDocURL: '/api/uploads/demo-license1.pdf',
+    status: 'pending',
+    businessEmail: 'owner@downtowncoffee.com',
+    phone: '(555) 123-4567',
+    submittedAt: new Date().toISOString(),
+    feedback: ''
+  },
+  {
+    id: '2',
+    name: 'Green Valley Pharmacy',
+    address: '456 Oak Avenue, Springfield, IL 62702',
+    category: 'Health & Wellness',
+    storePhotoURL: '/api/uploads/demo-storefront2.jpg',
+    licenseDocURL: '/api/uploads/demo-license2.pdf',
+    status: 'pending',
+    businessEmail: 'contact@greenvalleyrx.com',
+    phone: '(555) 987-6543',
+    submittedAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+    feedback: ''
+  }
+];
+let applicationIdCounter = 3;
 
 // AI Agent Phase 1: Initial Review
 async function spiralAgentV1Review(applicationData: any) {
@@ -617,6 +644,114 @@ Respond as JSON with:
         feedback: "AI Review temporarily unavailable. Please contact support for manual review."
       }
     });
+  }
+});
+
+// Admin API Routes for Dashboard
+
+// Get all pending retailers for admin dashboard
+router.get('/pending-retailers', (req, res) => {
+  try {
+    const pendingApplications = retailerApplications.filter(app => app.status === 'pending');
+    res.json(pendingApplications);
+  } catch (error) {
+    console.error('Error fetching pending retailers:', error);
+    res.status(500).json({ error: 'Failed to fetch pending retailers' });
+  }
+});
+
+// AI Review endpoint for admin dashboard
+router.post('/review-application', async (req, res) => {
+  try {
+    const applicationData = req.body;
+    
+    // Run the full AI review process
+    const phase1Result = await spiralAgentV1Review(applicationData);
+    const verificationResult = await spiralVerificationAgent(applicationData, []);
+    const approvalResult = await approvalGPT(applicationData, verificationResult);
+    
+    // Determine final status based on approval result
+    let finalStatus: 'approved' | 'rejected' | 'under_review' = 'under_review';
+    let confidence = 0.5;
+    let feedback = 'Review completed';
+    
+    if (approvalResult.final_decision === 'approved') {
+      finalStatus = 'approved';
+      confidence = 0.85;
+      feedback = approvalResult.welcome_message || 'Application approved by AI review';
+    } else if (approvalResult.final_decision === 'rejected') {
+      finalStatus = 'rejected';
+      confidence = 0.75;
+      feedback = approvalResult.rejection_reason || 'Application rejected by AI review';
+    } else {
+      finalStatus = 'under_review';
+      confidence = 0.5;
+      feedback = approvalResult.manual_review_reason || 'Application requires manual review';
+    }
+    
+    res.json({
+      status: finalStatus,
+      confidence,
+      feedback,
+      reasoning: [
+        `SPIRAL Agent v1: ${phase1Result.review_status}`,
+        `Verification: ${verificationResult.verification_status}`,
+        `Final Decision: ${approvalResult.final_decision}`
+      ]
+    });
+    
+  } catch (error) {
+    console.error('AI Review error:', error);
+    res.status(500).json({
+      status: 'under_review',
+      confidence: 0,
+      feedback: 'AI review system temporarily unavailable - manual review required',
+      reasoning: ['System error during automated review']
+    });
+  }
+});
+
+// Set retailer status endpoint
+router.post('/set-retailer-status', (req, res) => {
+  try {
+    const { id, status, feedback, aiReviewed, confidence, manualReview } = req.body;
+    
+    const applicationIndex = retailerApplications.findIndex(app => app.id === id);
+    
+    if (applicationIndex === -1) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+    
+    // Update the application
+    retailerApplications[applicationIndex] = {
+      ...retailerApplications[applicationIndex],
+      status,
+      feedback,
+      reviewedAt: new Date().toISOString(),
+      aiReviewed: aiReviewed || false,
+      confidence: confidence || null,
+      manualReview: manualReview || false
+    };
+    
+    res.json({ 
+      success: true, 
+      message: `Application ${status} successfully`,
+      application: retailerApplications[applicationIndex]
+    });
+    
+  } catch (error) {
+    console.error('Error updating retailer status:', error);
+    res.status(500).json({ error: 'Failed to update retailer status' });
+  }
+});
+
+// Get all applications (for reviewed tab)
+router.get('/all-retailers', (req, res) => {
+  try {
+    res.json(retailerApplications);
+  } catch (error) {
+    console.error('Error fetching all retailers:', error);
+    res.status(500).json({ error: 'Failed to fetch retailers' });
   }
 });
 

@@ -200,6 +200,7 @@ import PendingApplication from "@/pages/pending-application";
 import AdminRetailerApplications from "@/pages/admin-retailer-applications";
 import AiRetailerDemo from "@/pages/ai-retailer-demo";
 import AdminLogin from "@/pages/AdminLogin";
+import AdminDashboard from "@/pages/AdminDashboard";
 import ProductsPage from "@/pages/products";
 
 function Router() {
@@ -402,6 +403,7 @@ function Router() {
       <Route path="/admin/retailer-applications" component={AdminRetailerApplications} />
       <Route path="/ai-retailer-demo" component={AiRetailerDemo} />
       <Route path="/admin-login" component={AdminLogin} />
+      <Route path="/admin-dashboard" component={AdminDashboard} />
       <Route path="/admin-test-dashboard" component={AdminTestDashboardExisting} />
       <Route component={NotFound} />
     </Switch>

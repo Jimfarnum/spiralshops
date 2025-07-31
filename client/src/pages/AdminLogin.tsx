@@ -44,7 +44,7 @@ export default function AdminLogin() {
         });
 
         // Redirect to admin dashboard
-        window.location.href = '/admin-test-dashboard';
+        window.location.href = '/admin-dashboard';
       } else {
         toast({
           title: "Login Failed",
