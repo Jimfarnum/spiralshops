@@ -1,55 +1,32 @@
 User-agent: *
 Allow: /
 
-# Allow all search engines
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-# Disallow admin and private areas
-Disallow: /admin/
-Disallow: /api/admin/
-Disallow: /private/
-Disallow: /*.json$
-Disallow: /server/
-Disallow: /node_modules/
-
-# Allow important user-facing pages
-Allow: /products
-Allow: /stores
-Allow: /malls
-Allow: /cart
-Allow: /checkout
-Allow: /wishlist
-Allow: /spirals
-Allow: /gift-cards
-Allow: /events
-Allow: /about
-Allow: /support
-Allow: /login
-Allow: /signup
-
-# Allow onboarding flows
-Allow: /shopper-onboarding
-Allow: /retailer-automation-flow
-
-# Allow SPIRAL features
-Allow: /wishlist-alerts-system
-Allow: /tiered-spirals-engine
-Allow: /qr-pickup-system
-Allow: /gift-card-balance-checker
-Allow: /push-notification-settings
-
-# Sitemap location
+# Main sitemap
 Sitemap: https://spiralshops.com/sitemap.xml
 
-# Crawl delay (be respectful)
-Crawl-delay: 1
+# Disallow admin and testing pages
+Disallow: /admin/
+Disallow: /test-*
+Disallow: /spiral-admin/
+Disallow: /api/
+Disallow: /_*
 
-# Cache directive
-Cache-Control: public, max-age=86400
+# Allow specific important pages
+Allow: /products
+Allow: /search
+Allow: /mall-directory
+Allow: /malls
+Allow: /login
+Allow: /signup
+Allow: /about
+Allow: /gift-cards
+Allow: /events
+Allow: /spiral-centers
+Allow: /advanced-logistics
+Allow: /ai-retailer-signup
+Allow: /retailer-login
+Allow: /spirals
+Allow: /loyalty-program
+
+# Crawl delay (optional)
+Crawl-delay: 1

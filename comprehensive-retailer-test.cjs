@@ -107,7 +107,7 @@ try {
   
   if (indexExists) {
     const indexContent = fs.readFileSync(indexPath, 'utf8');
-    testResult('Title Tag', indexContent.includes('SPIRAL - The Local Shopping Platform'));
+    testResult('Title Tag', indexContent.includes('SPIRAL — The Local Shopping Platform'));
     testResult('Description Meta', indexContent.includes('meta name="description"'));
     testResult('Keywords Meta', indexContent.includes('meta name="keywords"'));
     testResult('Open Graph Title', indexContent.includes('property="og:title"'));
