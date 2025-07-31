@@ -1371,6 +1371,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/ai", aiAnalyticsRoutes);
   // Subscription routes already loaded above
   app.use("/api/invite", inviteRoutes);
+  
+  // SPIRAL Centers Network Routes
+  try {
+    const { default: spiralCentersRoutes } = await import('./routes/spiralCentersRoutes.js');
+    app.use('/api/spiral-centers', spiralCentersRoutes);
+    console.log('✅ SPIRAL Centers network routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load SPIRAL Centers routes:', err.message);
+  }
 
   return httpServer;
 }

@@ -273,6 +273,16 @@ export type InsertSubscription = typeof subscriptions.$inferInsert;
 export type InsertSubscriptionItem = typeof subscriptionItems.$inferInsert;
 export type InsertSubscriptionOrder = typeof subscriptionOrders.$inferInsert;
 
+// SPIRAL Centers types
+export type SpiralCenter = typeof spiralCenters.$inferSelect;
+export type SpiralCenterRoute = typeof spiralCenterRoutes.$inferSelect;
+export type SpiralShipment = typeof spiralShipments.$inferSelect;
+export type SpiralCenterInventory = typeof spiralCenterInventory.$inferSelect;
+export type InsertSpiralCenter = typeof spiralCenters.$inferInsert;
+export type InsertSpiralCenterRoute = typeof spiralCenterRoutes.$inferInsert;
+export type InsertSpiralShipment = typeof spiralShipments.$inferInsert;
+export type InsertSpiralCenterInventory = typeof spiralCenterInventory.$inferInsert;
+
 // Invite codes table for friend referral system
 export const inviteCodes = pgTable("invite_codes", {
   id: serial("id").primaryKey(),
@@ -695,6 +705,83 @@ export const subscriptionOrders = pgTable("subscription_orders", {
   status: text("status").notNull().default("pending"), // 'pending', 'processed', 'delivered', 'failed'
   spiralsEarned: integer("spirals_earned").default(0), // Bonus SPIRAL points for subscription orders
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// SPIRAL Centers Network Infrastructure - Logistics hub system for efficient shipping
+export const spiralCenters = pgTable("spiral_centers", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(), // "SPIRAL Center Minneapolis"
+  code: text("code").notNull().unique(), // 3-letter code like "MSP", "CHI"
+  type: text("type").notNull(), // 'mall', 'mainstreet', 'hub', 'distribution'
+  address: text("address").notNull(),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  zipCode: text("zip_code").notNull(),
+  latitude: decimal("latitude", { precision: 10, scale: 8 }),
+  longitude: decimal("longitude", { precision: 11, scale: 8 }),
+  mallId: integer("mall_id").references(() => malls.id), // Optional - if located in a mall
+  capacity: integer("capacity").default(1000), // Package storage capacity
+  operatingHours: text("operating_hours").default("8AM-8PM"),
+  services: text("services").array().default([]), // 'pickup', 'delivery', 'returns', 'same-day'
+  status: text("status").default("active"), // 'active', 'maintenance', 'planned', 'closed'
+  managerName: text("manager_name"),
+  phone: text("phone"),
+  email: text("email"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Routes between SPIRAL Centers for network shipping
+export const spiralCenterRoutes = pgTable("spiral_center_routes", {
+  id: serial("id").primaryKey(),
+  fromCenterId: integer("from_center_id").notNull().references(() => spiralCenters.id),
+  toCenterId: integer("to_center_id").notNull().references(() => spiralCenters.id),
+  distance: decimal("distance", { precision: 6, scale: 2 }).notNull(), // Distance in miles
+  transportTime: text("transport_time").notNull(), // "2.5 hours", "1 day"
+  method: text("method").default("ground"), // 'ground', 'air', 'express'
+  frequency: text("frequency").default("daily"), // 'daily', 'weekly', 'on-demand'
+  cost: decimal("cost", { precision: 8, scale: 2 }), // Shipping cost between centers
+  status: text("status").default("active"), // 'active', 'suspended', 'seasonal'
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Shipments tracking through SPIRAL Center network
+export const spiralShipments = pgTable("spiral_shipments", {
+  id: serial("id").primaryKey(),
+  trackingNumber: text("tracking_number").notNull().unique(),
+  orderId: integer("order_id").notNull().references(() => orders.id),
+  fromCenterId: integer("from_center_id").notNull().references(() => spiralCenters.id),
+  toCenterId: integer("to_center_id").notNull().references(() => spiralCenters.id),
+  status: text("status").default("pending"), // 'pending', 'in-transit', 'arrived', 'delivered', 'pickup-ready'
+  shipmentType: text("shipment_type").default("standard"), // 'standard', 'express', 'same-day'
+  estimatedArrival: timestamp("estimated_arrival"),
+  actualArrival: timestamp("actual_arrival"),
+  finalDeliveryMethod: text("final_delivery_method").default("pickup"), // 'pickup', 'local-delivery', 'same-day'
+  recipientAddress: text("recipient_address"),
+  recipientName: text("recipient_name"),
+  packageCount: integer("package_count").default(1),
+  weight: decimal("weight", { precision: 6, scale: 2 }), // Weight in pounds
+  dimensions: text("dimensions"), // "12x8x6 inches"
+  specialInstructions: text("special_instructions"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Inventory management at SPIRAL Centers
+export const spiralCenterInventory = pgTable("spiral_center_inventory", {
+  id: serial("id").primaryKey(),
+  centerId: integer("center_id").notNull().references(() => spiralCenters.id),
+  productId: text("product_id").notNull(),
+  productName: text("product_name").notNull(),
+  storeId: integer("store_id").notNull().references(() => stores.id),
+  quantity: integer("quantity").default(0),
+  reserved: integer("reserved").default(0), // Reserved for pending orders
+  lastRestocked: timestamp("last_restocked"),
+  minimumStock: integer("minimum_stock").default(5),
+  storageLocation: text("storage_location"), // "A1", "B2", etc.
+  expiryDate: timestamp("expiry_date"), // For perishable items
+  notes: text("notes"),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Product and Store Reviews table

@@ -147,12 +147,21 @@ export default function Subscriptions() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4">
-            SPIRAL Subscriptions
-          </h1>
-          <p className="text-gray-600 text-lg">
-            Never run out of your local favorites. Save money and earn bonus SPIRAL points.
-          </p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4">
+                SPIRAL Subscriptions
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Never run out of your local favorites. Save money and earn bonus SPIRAL points.
+              </p>
+            </div>
+            <Link href="/spiral-centers-subscription-demo">
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                View SPIRAL Centers Integration
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Benefits Banner */}

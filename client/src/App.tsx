@@ -191,6 +191,8 @@ import UserAuthDemo from "@/pages/user-auth-demo";
 import ProductCategoryTest from "@/pages/product-category-test";
 import EnhancedFeaturesDemo from "@/pages/enhanced-features-demo";
 import Subscriptions from "@/pages/subscriptions";
+import SpiralCenters from "@/pages/spiral-centers";
+import SpiralCentersSubscriptionDemo from "@/pages/spiral-centers-subscription-demo";
 
 function Router() {
   return (
@@ -384,6 +386,8 @@ function Router() {
       <Route path="/vercel-ibm-integration" component={VercelIBMIntegration} />
       <Route path="/enhanced-features-demo" component={EnhancedFeaturesDemo} />
       <Route path="/subscriptions" component={Subscriptions} />
+      <Route path="/spiral-centers" component={SpiralCenters} />
+      <Route path="/spiral-centers-subscription-demo" component={SpiralCentersSubscriptionDemo} />
       <Route component={NotFound} />
     </Switch>
   );
