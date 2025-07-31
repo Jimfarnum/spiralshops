@@ -117,6 +117,20 @@ export default function Home() {
       {/* Hero Section with Main Street Revival Messaging */}
       <HeroSection />
 
+      {/* Press Release Section */}
+      <section id="press-release" className="bg-gray-100 px-6 py-12 rounded-2xl shadow-lg text-center max-w-5xl mx-auto my-8">
+        <h2 className="text-4xl font-bold text-gray-800 mb-4">SPIRAL: The Local Shopping Platform</h2>
+        <p className="text-lg text-gray-600 mb-6">
+          SPIRAL connects shoppers with real local stores across the U.S., rewarding every purchase that supports a real place, real jobs, and real communities.
+        </p>
+        <p className="text-md text-gray-700 italic mb-4">
+          Our mission is simple: empower small retailers, reinvigorate malls, and make local shopping easier and more rewarding than ever.
+        </p>
+        <a href="/about-spiral" className="inline-block px-6 py-3 bg-black text-white rounded-xl shadow hover:bg-gray-900">
+          Learn More About SPIRAL
+        </a>
+      </section>
+
       {/* Feature Tiles Section */}
       <section className="py-20 bg-[var(--spiral-cream)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
