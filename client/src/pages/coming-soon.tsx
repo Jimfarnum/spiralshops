@@ -1,104 +1,76 @@
-import { Link } from 'wouter';
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import Header from '@/components/header';
-import Footer from '@/components/footer';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { ArrowLeft, Star, Gift, Truck } from 'lucide-react';
+import { Link } from 'wouter';
 
-interface ComingSoonPageProps {
+const ComingSoonPage = ({ title, description, icon: Icon }: {
   title: string;
-  subtitle: string;
-  buttonText?: string;
-  buttonLink?: string;
-}
-
-export function ComingSoonPage({ 
-  title, 
-  subtitle, 
-  buttonText = "Back to Home", 
-  buttonLink = "/" 
-}: ComingSoonPageProps) {
-  return (
-    <div className="min-h-screen bg-[var(--spiral-cream)]">
-      <Header />
+  description: string;
+  icon: React.ComponentType<any>;
+}) => (
+  <div className="min-h-screen bg-gray-50 py-12">
+    <div className="max-w-2xl mx-auto px-4">
+      <Link href="/">
+        <Button variant="ghost" className="mb-6">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Home
+        </Button>
+      </Link>
       
-      <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
-        <div className="bg-white rounded-3xl shadow-lg p-12 max-w-md w-full">
-          <div className="mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] rounded-full flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="h-8 w-8 text-white" />
-            </div>
+      <Card className="text-center">
+        <CardHeader className="pb-6">
+          <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+            <Icon className="w-8 h-8 text-blue-600" />
           </div>
-          
-          <h1 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4 font-['Poppins']">
-            {title}
-          </h1>
-          
-          <p className="text-lg text-gray-600 mb-8 leading-relaxed font-['Inter']">
-            {subtitle}
-          </p>
-          
-          <div className="space-y-4">
-            <Link href={buttonLink}>
-              <Button 
-                size="lg" 
-                className="w-full bg-[var(--spiral-navy)] hover:bg-[var(--spiral-sage)] text-white h-12 text-lg font-semibold rounded-2xl transition-all duration-300"
-              >
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                {buttonText}
-              </Button>
-            </Link>
-            
-            <Link href="/products">
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="w-full border-[var(--spiral-navy)] text-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)] hover:text-white h-12 text-lg rounded-2xl transition-all duration-300"
-              >
-                Explore Products
-              </Button>
-            </Link>
+          <CardTitle className="text-2xl mb-2">{title}</CardTitle>
+          <p className="text-gray-600">{description}</p>
+        </CardHeader>
+        <CardContent>
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <p className="text-yellow-800">
+              🚧 This feature is coming soon! We're working hard to bring you the best local shopping experience.
+            </p>
           </div>
-        </div>
-      </div>
-
-      <Footer />
+          <Link href="/">
+            <Button>
+              Explore Available Features
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
     </div>
-  );
-}
+  </div>
+);
 
-// Specific page components
-export function ExploreSPIRALsPage() {
-  return (
-    <ComingSoonPage
-      title="Explore SPIRALs"
-      subtitle="Discover unique local experiences and hidden gems in your neighborhood. This exciting feature is launching soon!"
-    />
-  );
-}
+export const ExploreSPIRALsPage = () => (
+  <ComingSoonPage
+    title="Explore SPIRALs"
+    description="Discover all the ways to earn and redeem SPIRAL points in your local community"
+    icon={Star}
+  />
+);
 
-export function RedeemSPIRALsPage() {
-  return (
-    <ComingSoonPage
-      title="Redeem SPIRALs"
-      subtitle="Use your SPIRAL points to unlock exclusive perks and local experiences. Stay tuned for amazing rewards!"
-    />
-  );
-}
+export const RedeemSPIRALsPage = () => (
+  <ComingSoonPage
+    title="Redeem SPIRALs"
+    description="Use your SPIRAL points for exclusive rewards and discounts at local businesses"
+    icon={Gift}
+  />
+);
 
-export function LoyaltyProgramPage() {
-  return (
-    <ComingSoonPage
-      title="SPIRAL Rewards"
-      subtitle="Join our loyalty program to earn points with every purchase and unlock exclusive benefits from local businesses."
-    />
-  );
-}
+export const LoyaltyProgramPage = () => (
+  <ComingSoonPage
+    title="Loyalty Program"
+    description="Join our comprehensive loyalty program and earn rewards with every purchase"
+    icon={Star}
+  />
+);
 
-export function DeliveryOptionsPage() {
-  return (
-    <ComingSoonPage
-      title="Delivery Options"
-      subtitle="Choose from multiple fulfillment methods including same-day delivery, in-store pickup, and ship-to-store options."
-    />
-  );
-}
+export const DeliveryOptionsPage = () => (
+  <ComingSoonPage
+    title="Delivery Options"
+    description="Flexible delivery and pickup options for your local shopping needs"
+    icon={Truck}
+  />
+);

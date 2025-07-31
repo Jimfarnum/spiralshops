@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-07-31T17:15:32.236Z",
+  "timestamp": "2025-07-31T17:31:52.412Z",
   "summary": {
     "total": 15,
-    "passed": 3,
-    "failed": 12,
-    "successRate": "20.0"
+    "passed": 1,
+    "failed": 14,
+    "successRate": "6.7"
   },
   "details": [
     {
@@ -24,63 +24,63 @@
     },
     {
       "name": "AI Retailer Review API",
-      "status": "PASS",
-      "error": null
+      "status": "FAIL",
+      "error": "fetch failed"
     },
     {
       "name": "AI Application Submission",
       "status": "FAIL",
-      "error": "HTTP 400: Bad Request"
+      "error": "fetch failed"
     },
     {
       "name": "SPIRAL Centers API",
       "status": "FAIL",
-      "error": "Invalid centers data format"
+      "error": "fetch failed"
     },
     {
       "name": "Advanced Logistics API",
       "status": "FAIL",
-      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      "error": "fetch failed"
     },
     {
       "name": "Subscription Services API",
       "status": "FAIL",
-      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      "error": "fetch failed"
     },
     {
       "name": "Enhanced Features API",
       "status": "FAIL",
-      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      "error": "fetch failed"
     },
     {
       "name": "Smart Search API",
       "status": "FAIL",
-      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      "error": "fetch failed"
     },
     {
       "name": "Enhanced Wallet API",
       "status": "FAIL",
-      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      "error": "fetch failed"
     },
     {
       "name": "GPT Integration Health",
       "status": "FAIL",
-      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      "error": "fetch failed"
     },
     {
       "name": "Security Verification",
       "status": "FAIL",
-      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      "error": "fetch failed"
     },
     {
       "name": "Admin Test Routes",
       "status": "FAIL",
-      "error": "HTTP 401: Unauthorized"
+      "error": "fetch failed"
     },
     {
       "name": "SPIRAL 100% Compatibility",
-      "status": "PASS",
-      "error": null
+      "status": "FAIL",
+      "error": "fetch failed"
     }
   ]
 }

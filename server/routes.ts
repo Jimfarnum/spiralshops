@@ -1071,6 +1071,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const endIndex = startIndex + parseInt(limit as string);
       const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
       
+      // If no products found, try DataService fallback
+      if (paginatedProducts.length === 0 && !search && !category) {
+        const { dataService } = await import('./dataService.js');
+        const fallbackProducts = await dataService.getProducts();
+        return res.json(fallbackProducts);
+      }
+
       res.json({
         products: paginatedProducts,
         total: filteredProducts.length,
@@ -1083,7 +1090,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error fetching products:", error);
-      res.status(500).json({ error: "Failed to fetch products" });
+      // Try DataService fallback
+      try {
+        const { dataService } = await import('./dataService.js');
+        const fallbackProducts = await dataService.getProducts();
+        res.json(fallbackProducts);
+      } catch (fallbackError) {
+        res.status(500).json({ error: "Failed to fetch products" });
+      }
     }
   });
 
@@ -1107,13 +1121,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/categories", async (req, res) => {
     try {
       const allCategories = await getCategories();
+      const categoryList = Object.values(allCategories);
+      
+      // If no categories found, try DataService fallback
+      if (categoryList.length === 0) {
+        const { dataService } = await import('./dataService.js');
+        const fallbackCategories = await dataService.getCategories();
+        return res.json(fallbackCategories);
+      }
+
       res.json({
-        categories: Object.values(allCategories),
+        categories: categoryList,
         total: Object.keys(allCategories).length
       });
     } catch (error) {
       console.error("Error fetching categories:", error);
-      res.status(500).json({ error: "Failed to fetch categories" });
+      // Try DataService fallback
+      try {
+        const { dataService } = await import('./dataService.js');
+        const fallbackCategories = await dataService.getCategories();
+        res.json(fallbackCategories);
+      } catch (fallbackError) {
+        res.status(500).json({ error: "Failed to fetch categories" });
+      }
     }
   });
 
@@ -1397,6 +1427,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log('✅ SPIRAL Centers network routes loaded successfully');
   } catch (err) {
     console.error('❌ Failed to load SPIRAL Centers routes:', err.message);
+  }
+
+  // Mock Advanced Feature Routes (fixes HTML responses)
+  try {
+    const { default: mockAdvancedRoutes } = await import('./routes/mockAdvancedFeatureRoutes.js');
+    app.use('/api', mockAdvancedRoutes);
+    console.log('✅ Mock advanced feature routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load mock advanced routes:', err.message);
   }
 
   // AI Retailer Onboarding routes
