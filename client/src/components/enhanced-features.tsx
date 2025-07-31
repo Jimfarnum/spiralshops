@@ -46,8 +46,8 @@ interface StarRatingProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-export function StarRating({ value = 0, onChange, readOnly = false, size = 'md' }: StarRatingProps) {
-  const [hovered, setHovered] = useState(0);
+export const StarRating: React.FC<StarRatingProps> = ({ value = 0, onChange, readOnly = false, size = 'md' }) => {
+  const [hovered, setHovered] = useState<number>(0);
   const stars = [1, 2, 3, 4, 5];
   const sizeClasses = {
     sm: 'w-4 h-4',
