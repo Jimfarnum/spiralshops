@@ -1,0 +1,86 @@
+{
+  "timestamp": "2025-07-31T17:15:32.236Z",
+  "summary": {
+    "total": 15,
+    "passed": 3,
+    "failed": 12,
+    "successRate": "20.0"
+  },
+  "details": [
+    {
+      "name": "Core Stores API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Products API",
+      "status": "FAIL",
+      "error": "No products data returned"
+    },
+    {
+      "name": "Categories API",
+      "status": "FAIL",
+      "error": "No categories data returned"
+    },
+    {
+      "name": "AI Retailer Review API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "AI Application Submission",
+      "status": "FAIL",
+      "error": "HTTP 400: Bad Request"
+    },
+    {
+      "name": "SPIRAL Centers API",
+      "status": "FAIL",
+      "error": "Invalid centers data format"
+    },
+    {
+      "name": "Advanced Logistics API",
+      "status": "FAIL",
+      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+    },
+    {
+      "name": "Subscription Services API",
+      "status": "FAIL",
+      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+    },
+    {
+      "name": "Enhanced Features API",
+      "status": "FAIL",
+      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+    },
+    {
+      "name": "Smart Search API",
+      "status": "FAIL",
+      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+    },
+    {
+      "name": "Enhanced Wallet API",
+      "status": "FAIL",
+      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+    },
+    {
+      "name": "GPT Integration Health",
+      "status": "FAIL",
+      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+    },
+    {
+      "name": "Security Verification",
+      "status": "FAIL",
+      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+    },
+    {
+      "name": "Admin Test Routes",
+      "status": "FAIL",
+      "error": "HTTP 401: Unauthorized"
+    },
+    {
+      "name": "SPIRAL 100% Compatibility",
+      "status": "PASS",
+      "error": null
+    }
+  ]
+}

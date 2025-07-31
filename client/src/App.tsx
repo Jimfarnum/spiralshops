@@ -15,7 +15,6 @@ import Checkout from "@/pages/checkout";
 import Mall from "@/pages/mall";
 import Spirals from "@/pages/spirals";
 import ProfileSettings from "@/pages/profile-settings";
-import { ProductsPage } from "@/pages/products";
 import ProductDetailOld from "./ProductDetail";
 import MallDirectory from "@/pages/mall-directory";
 import MallsPage from "@/pages/malls";
@@ -199,6 +198,7 @@ import AiRetailerSignup from "@/pages/ai-retailer-signup";
 import PendingApplication from "@/pages/pending-application";
 import AdminRetailerApplications from "@/pages/admin-retailer-applications";
 import AiRetailerDemo from "@/pages/ai-retailer-demo";
+import ProductsPage from "@/pages/products";
 
 function Router() {
   return (
