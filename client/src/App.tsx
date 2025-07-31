@@ -130,6 +130,7 @@ import SpiralLoggingDemo from "@/pages/spiral-logging-demo";
 import ButtonTestingSuite from "@/pages/button-testing-suite";
 import SpiralAdminDashboard from "@/pages/spiral-admin-dashboard";
 import SpiralTodoDashboard from "@/pages/spiral-todo-dashboard";
+import AdminTestDashboardExisting from "@/pages/admin-test-dashboard";
 import ShowcasePage from "@/pages/showcase";
 import TestimonialsDemoPage from "@/pages/testimonials-demo";
 import EventsPage from "@/pages/events";
@@ -198,6 +199,7 @@ import AiRetailerSignup from "@/pages/ai-retailer-signup";
 import PendingApplication from "@/pages/pending-application";
 import AdminRetailerApplications from "@/pages/admin-retailer-applications";
 import AiRetailerDemo from "@/pages/ai-retailer-demo";
+import AdminLogin from "@/pages/AdminLogin";
 import ProductsPage from "@/pages/products";
 
 function Router() {
@@ -386,7 +388,6 @@ function Router() {
       <Route path="/retailer-automation-flow" component={RetailerAutomationFlow} />
       <Route path="/gift-card-balance-checker" component={GiftCardBalanceChecker} />
       <Route path="/push-notification-settings" component={PushNotificationSettings} />
-      <Route path="/admin-test-dashboard" component={AdminTestDashboard} />
       <Route path="/mobile-app-base" component={MobileAppBase} />
       <Route path="/gpt-integration-demo" component={GPTIntegrationDemo} />
       <Route path="/vercel-ibm-integration" component={VercelIBMIntegration} />
@@ -400,6 +401,8 @@ function Router() {
       <Route path="/pending-application/:id" component={PendingApplication} />
       <Route path="/admin/retailer-applications" component={AdminRetailerApplications} />
       <Route path="/ai-retailer-demo" component={AiRetailerDemo} />
+      <Route path="/admin-login" component={AdminLogin} />
+      <Route path="/admin-test-dashboard" component={AdminTestDashboardExisting} />
       <Route component={NotFound} />
     </Switch>
   );

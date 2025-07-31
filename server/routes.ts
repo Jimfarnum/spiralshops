@@ -247,6 +247,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ========================================
+  // SPIRAL ADMIN AUTHENTICATION ROUTES
+  // ========================================
+
+  // Admin login endpoint
+  app.post('/api/admin-login', (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      // Demo admin credentials
+      const ADMIN_EMAIL = 'admin@spiral.com';
+      const ADMIN_PASSWORD = 'Spiral2025!';
+      
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email and password are required'
+        });
+      }
+
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        // Generate simple token
+        const token = `spiral_admin_${Date.now()}`;
+        
+        console.log(`[SPIRAL ADMIN] Successful login: ${email} at ${new Date().toISOString()}`);
+        
+        res.json({
+          success: true,
+          token: token,
+          message: 'Admin authentication successful',
+          user: { email: email, role: 'admin' }
+        });
+      } else {
+        console.log(`[SPIRAL ADMIN] Failed login attempt: ${email} at ${new Date().toISOString()}`);
+        res.status(401).json({
+          success: false,
+          message: 'Invalid admin credentials'
+        });
+      }
+    } catch (error) {
+      console.error('Admin login error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error during authentication'
+      });
+    }
+  });
+
+  // ========================================
   // SPIRAL USER AUTHENTICATION ROUTES
   // ========================================
 
