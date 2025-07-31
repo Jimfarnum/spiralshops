@@ -1504,5 +1504,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load AI retailer onboarding routes:', err.message);
   }
 
+  // Inventory Management Routes
+  try {
+    const inventoryRoutes = await import('./routes/inventoryRoutes.js');
+    app.use('/api', inventoryRoutes.default);
+    console.log('✅ Inventory management routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load inventory routes:', err?.message);
+  }
+
   return httpServer;
 }
