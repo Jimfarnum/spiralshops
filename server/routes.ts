@@ -999,6 +999,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load advanced logistics routes:', err.message);
   }
 
+  // SPIRAL 100% Compatibility Test routes for deployment validation
+  try {
+    const spiral100CompatibilityRoutes = await import("./routes/spiral100CompatibilityRoutes.js");
+    app.use('/api/spiral-100-compatibility', spiral100CompatibilityRoutes.default);
+    console.log('✅ SPIRAL 100% compatibility test routes loaded successfully');
+  } catch (err: any) {
+    console.error('❌ Failed to load SPIRAL 100% compatibility test routes:', err.message);
+  }
+
   // Business calculator routes
   registerBusinessCalculatorRoutes(app);
 

@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useQuery } from '@tanstack/react-query';
-import { Truck, MapPin, Clock, Package, TrendingUp, Users, Route, Zap } from 'lucide-react';
+import { Truck, MapPin, Clock, Package, TrendingUp, Users, Route, Zap, Monitor } from 'lucide-react';
 import { Link } from 'wouter';
 
 const AdvancedLogistics = () => {
@@ -672,7 +672,7 @@ const AdvancedLogistics = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button asChild variant="outline" className="h-12">
               <Link href="/spiral-centers">
                 <MapPin className="h-4 w-4 mr-2" />
@@ -689,6 +689,12 @@ const AdvancedLogistics = () => {
               <Link href="/analytics-dashboard">
                 <TrendingUp className="h-4 w-4 mr-2" />
                 Business Analytics
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="h-12 border-blue-200 text-blue-600 hover:bg-blue-50">
+              <Link href="/spiral-100-compatibility-test">
+                <Monitor className="h-4 w-4 mr-2" />
+                100% Compatibility Test
               </Link>
             </Button>
           </div>
