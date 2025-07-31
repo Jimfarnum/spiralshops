@@ -33,6 +33,7 @@ import {
   registerNotificationRoutes,
   registerLiveSupportRoutes
 } from "./enhancedRoutes";
+import { registerEnhancedFeaturesRoutes } from "./routes/enhancedFeatures";
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -1249,6 +1250,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerFulfillmentRoutes(app);
   registerNotificationRoutes(app);
   registerLiveSupportRoutes(app);
+  registerEnhancedFeaturesRoutes(app);
 
 
   

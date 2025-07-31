@@ -1,0 +1,218 @@
+/*
+ * Spiralshops Feature Enhancements
+ *
+ * This module provides React components and helper functions to add
+ * missing functionality identified on spiralshops.com while staying
+ * focused on supporting local brick‑and‑mortar retailers.  These
+ * components can be imported into existing pages to provide the
+ * following features:
+ *
+ * 1. Ratings & Reviews: Allows customers to leave star ratings and
+ *    written feedback for products, and displays the average rating
+ *    with a count of reviews.  Reviews are stored in local state for
+ *    demonstration; integrate with your backend API to persist them.
+ *
+ * 2. Wishlists: Enables shoppers to add or remove products from a
+ *    personal wishlist.  The wishlist is stored in browser local storage
+ *    keyed by user ID.  You can connect this functionality to your
+ *    existing wishlist alert system or extend it with shareable lists.
+ *
+ * 3. Membership Banner: A simple banner to promote a future premium
+ *    membership (e.g., "Spiral Plus") that offers perks like free
+ *    same‑day delivery or SPIRAL point multipliers.  The banner
+ *    includes a call‑to‑action button that opens a modal for
+ *    subscription details.
+ *
+ * These examples are written in plain React without additional
+ * dependencies to keep integration straightforward.  Adjust styles
+ * and hook up to your backend as needed.
+ */
+
+import React, { useState, useEffect } from 'react';
+
+/*
+ * StarRating: Renders clickable stars for selecting a rating.  The
+ * component calls onChange with the new rating when a star is
+ * selected.  It also accepts a readOnly prop to display existing
+ * ratings without interactivity.
+ */
+function StarRating({ value = 0, onChange = () => {}, readOnly = false }) {
+  const [hovered, setHovered] = useState(0);
+  const stars = [1, 2, 3, 4, 5];
+
+  return (
+    <div style={{ display: 'inline-flex', cursor: readOnly ? 'default' : 'pointer' }}>
+      {stars.map((star) => {
+        const isFilled = star <= (hovered || value);
+        return (
+          <svg
+            key={star}
+            onMouseEnter={() => !readOnly && setHovered(star)}
+            onMouseLeave={() => !readOnly && setHovered(0)}
+            onClick={() => !readOnly && onChange(star)}
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill={isFilled ? '#FFC107' : '#E0E0E0'}
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ marginRight: 4 }}
+          >
+            <path d="M12 17.3l6.18 3.64-1.64-7.03 5.46-4.73-7.19-.61L12 2.5 9.19 8.57l-7.19.61 5.46 4.73L5.82 20.94 12 17.3z" />
+          </svg>
+        );
+      })}
+    </div>
+  );
+}
+
+/*
+ * RatingAndReview: Displays existing reviews, an average rating, and
+ * provides a form for logged‑in users to submit new reviews.  For
+ * demonstration purposes, reviews are stored in local component
+ * state.  Integrate with your backend API to fetch and post
+ * reviews.  This component assumes that a `productId` prop is
+ * provided to scope reviews to a specific product.
+ */
+function RatingAndReview({ productId, user }) {
+  const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+
+  useEffect(() => {
+    // TODO: Replace with API call to fetch existing reviews by productId
+    const stored = localStorage.getItem(`reviews-${productId}`);
+    if (stored) {
+      setReviews(JSON.parse(stored));
+    }
+  }, [productId]);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    if (!user) {
+      alert('Please sign in to leave a review.');
+      return;
+    }
+    const newReview = {
+      id: Date.now(),
+      user: user.name || 'Anonymous',
+      rating,
+      comment,
+      date: new Date().toISOString(),
+    };
+    const updated = [...reviews, newReview];
+    setReviews(updated);
+    localStorage.setItem(`reviews-${productId}`, JSON.stringify(updated));
+    setRating(0);
+    setComment('');
+  }
+
+  const averageRating =
+    reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
+
+  return (
+    <div className="ratings-reviews" style={{ borderTop: '1px solid #eee', paddingTop: 16 }}>
+      <h3>Customer Reviews</h3>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+        <StarRating value={averageRating} readOnly />
+        <span style={{ marginLeft: 8 }}>{averageRating.toFixed(1)} ({reviews.length})</span>
+      </div>
+      {reviews.map((r) => (
+        <div key={r.id} style={{ marginBottom: 12, borderBottom: '1px solid #f0f0f0', paddingBottom: 8 }}>
+          <div style={{ fontWeight: 'bold' }}>{r.user}</div>
+          <StarRating value={r.rating} readOnly />
+          <p style={{ margin: '4px 0' }}>{r.comment}</p>
+          <small style={{ color: '#888' }}>{new Date(r.date).toLocaleDateString()}</small>
+        </div>
+      ))}
+      {/* Review submission form */}
+      <form onSubmit={handleSubmit} style={{ marginTop: 16 }}>
+        <div><strong>Leave a review</strong></div>
+        <StarRating value={rating} onChange={setRating} />
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Share your thoughts about this product..."
+          style={{ width: '100%', minHeight: 80, marginTop: 8, padding: 8 }}
+        />
+        <button type="submit" style={{ marginTop: 8, padding: '8px 16px' }}>
+          Submit Review
+        </button>
+      </form>
+    </div>
+  );
+}
+
+/*
+ * WishlistManager: Provides an "Add to Wishlist" button and a simple
+ * wishlist viewer.  The wishlist is stored in browser local storage
+ * keyed by user ID.  When integrated into your product listing,
+ * pass the product id and name.  You can extend this component to
+ * trigger wishlist alerts when stock status or price changes.
+ */
+function WishlistManager({ userId, productId, productName }) {
+  const storageKey = `wishlist-${userId}`;
+  const [wishlist, setWishlist] = useState([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      setWishlist(JSON.parse(stored));
+    }
+  }, [storageKey]);
+
+  function toggleWishlist() {
+    let updated;
+    if (wishlist.some((item) => item.id === productId)) {
+      updated = wishlist.filter((item) => item.id !== productId);
+    } else {
+      updated = [...wishlist, { id: productId, name: productName }];
+    }
+    setWishlist(updated);
+    localStorage.setItem(storageKey, JSON.stringify(updated));
+  }
+
+  const inWishlist = wishlist.some((item) => item.id === productId);
+
+  return (
+    <div className="wishlist-manager" style={{ margin: '8px 0' }}>
+      <button onClick={toggleWishlist} style={{ padding: '6px 12px' }}>
+        {inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+      </button>
+    </div>
+  );
+}
+
+/*
+ * MembershipBanner: Displays a promotional banner for a premium
+ * membership program (e.g., "Spiral Plus").  Clicking the CTA
+ * opens a modal with placeholder text.  Replace the modal content
+ * with details about pricing, benefits, and sign‑up steps when
+ * implementing the membership program.
+ */
+function MembershipBanner() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ background: '#F2F4F7', padding: '16px', borderRadius: 8, margin: '24px 0' }}>
+      <h2>Introducing Spiral Plus</h2>
+      <p>Enjoy free same‑day delivery, SPIRAL point multipliers, and exclusive local deals.</p>
+      <button onClick={() => setOpen(true)} style={{ padding: '8px 16px' }}>Learn more</button>
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)' }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: '#fff', maxWidth: 500, margin: '10% auto', padding: 24, borderRadius: 8 }}
+          >
+            <h3>Spiral Plus Membership</h3>
+            <p>This is a placeholder for membership details. Describe benefits, pricing, and sign‑up steps here.</p>
+            <button onClick={() => setOpen(false)}>Close</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export { StarRating, RatingAndReview, WishlistManager, MembershipBanner };
