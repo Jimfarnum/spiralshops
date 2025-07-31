@@ -58,6 +58,9 @@ export default function Header() {
             <Link href="/spiral-centers" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
               SPIRAL Centers
             </Link>
+            <Link href="/advanced-logistics" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
+              Advanced Logistics
+            </Link>
             <div className="relative group">
               <button className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
                 Features ▾

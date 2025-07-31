@@ -727,6 +727,10 @@ export const spiralCenters = pgTable("spiral_centers", {
   managerName: text("manager_name"),
   phone: text("phone"),
   email: text("email"),
+  deliveryRadius: integer("delivery_radius").default(15), // miles for last-mile delivery
+  sameDayCapacity: integer("same_day_capacity").default(200), // daily same-day deliveries
+  lastMileVehicles: integer("last_mile_vehicles").default(5), // delivery vehicles
+  avgDeliveryTime: integer("avg_delivery_time").default(90), // minutes
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -781,6 +785,88 @@ export const spiralCenterInventory = pgTable("spiral_center_inventory", {
   storageLocation: text("storage_location"), // "A1", "B2", etc.
   expiryDate: timestamp("expiry_date"), // For perishable items
   notes: text("notes"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Advanced Logistics Tables for Same-Day and Last-Mile Delivery
+
+// Delivery Zones for Advanced Logistics
+export const spiralDeliveryZones = pgTable("spiral_delivery_zones", {
+  id: serial("id").primaryKey(),
+  centerId: integer("center_id").references(() => spiralCenters.id).notNull(),
+  zoneName: text("zone_name").notNull(), // "Zone A", "Premium Zone", "Express Zone"
+  zipCodes: text("zip_codes").array().notNull(), // Array of zip codes in this zone
+  deliveryType: text("delivery_type").notNull(), // 'same-day', '2-hour', '4-hour', 'next-day'
+  basePrice: decimal("base_price", { precision: 8, scale: 2 }).default("4.99"),
+  maxDistance: integer("max_distance").default(10), // miles from center
+  estimatedTime: integer("estimated_time").notNull(), // minutes
+  priority: integer("priority").default(1), // 1=highest, 5=lowest
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Delivery Drivers Management
+export const spiralDrivers = pgTable("spiral_drivers", {
+  id: serial("id").primaryKey(),
+  centerId: integer("center_id").references(() => spiralCenters.id).notNull(),
+  driverName: text("driver_name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  vehicleType: text("vehicle_type").notNull(), // 'bike', 'scooter', 'car', 'van'
+  vehiclePlate: text("vehicle_plate"),
+  status: text("status").default("available"), // 'available', 'busy', 'off-duty', 'break'
+  currentLocation: text("current_location"), // JSON: {lat, lng, timestamp}
+  todayDeliveries: integer("today_deliveries").default(0),
+  totalDeliveries: integer("total_deliveries").default(0),
+  rating: decimal("rating", { precision: 3, scale: 2 }).default("5.00"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Advanced Delivery Tracking
+export const spiralDeliveries = pgTable("spiral_deliveries", {
+  id: serial("id").primaryKey(),
+  trackingNumber: text("tracking_number").unique().notNull(),
+  centerId: integer("center_id").references(() => spiralCenters.id).notNull(),
+  driverId: integer("driver_id").references(() => spiralDrivers.id),
+  zoneId: integer("zone_id").references(() => spiralDeliveryZones.id).notNull(),
+  customerName: text("customer_name").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  deliveryAddress: text("delivery_address").notNull(),
+  deliveryZipCode: text("delivery_zip_code").notNull(),
+  deliveryType: text("delivery_type").notNull(), // 'same-day', '2-hour', '4-hour'
+  packageCount: integer("package_count").default(1),
+  totalWeight: decimal("total_weight", { precision: 8, scale: 2 }), // pounds
+  deliveryFee: decimal("delivery_fee", { precision: 8, scale: 2 }).notNull(),
+  status: text("status").default("scheduled"), // 'scheduled', 'picked-up', 'in-transit', 'delivered', 'failed'
+  scheduledTime: timestamp("scheduled_time").notNull(),
+  pickedUpTime: timestamp("picked_up_time"),
+  deliveredTime: timestamp("delivered_time"),
+  estimatedTime: timestamp("estimated_time").notNull(),
+  deliveryInstructions: text("delivery_instructions"),
+  photoProof: text("photo_proof"), // URL to delivery photo
+  customerSignature: text("customer_signature"), // Digital signature data
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Real-time Delivery Route Optimization
+export const spiralDeliveryRoutes = pgTable("spiral_delivery_routes", {
+  id: serial("id").primaryKey(),
+  driverId: integer("driver_id").references(() => spiralDrivers.id).notNull(),
+  routeName: text("route_name").notNull(), // "Route A - Morning", "Express Route 1"
+  deliveryIds: text("delivery_ids").array().notNull(), // Array of delivery IDs in optimized order
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time"),
+  totalDistance: decimal("total_distance", { precision: 8, scale: 2 }), // miles
+  totalDuration: integer("total_duration"), // minutes
+  status: text("status").default("planned"), // 'planned', 'active', 'completed', 'cancelled'
+  waypoints: text("waypoints"), // JSON array of lat/lng coordinates
+  currentStop: integer("current_stop").default(0),
+  completedDeliveries: integer("completed_deliveries").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 

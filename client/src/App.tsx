@@ -193,6 +193,7 @@ import EnhancedFeaturesDemo from "@/pages/enhanced-features-demo";
 import Subscriptions from "@/pages/subscriptions";
 import SpiralCenters from "@/pages/spiral-centers";
 import SpiralCentersSubscriptionDemo from "@/pages/spiral-centers-subscription-demo";
+import AdvancedLogistics from "@/pages/advanced-logistics";
 
 function Router() {
   return (
@@ -388,6 +389,7 @@ function Router() {
       <Route path="/subscriptions" component={Subscriptions} />
       <Route path="/spiral-centers" component={SpiralCenters} />
       <Route path="/spiral-centers-subscription-demo" component={SpiralCentersSubscriptionDemo} />
+      <Route path="/advanced-logistics" component={AdvancedLogistics} />
       <Route component={NotFound} />
     </Switch>
   );

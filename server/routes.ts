@@ -990,6 +990,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load subscription routes:', err.message);
   }
 
+  // Advanced Logistics routes for same-day and last-mile delivery
+  try {
+    const advancedLogisticsRoutes = await import("./routes/advancedLogisticsRoutes.js");
+    app.use('/api/advanced-logistics', advancedLogisticsRoutes.default);
+    console.log('✅ Advanced logistics routes loaded successfully');
+  } catch (err: any) {
+    console.error('❌ Failed to load advanced logistics routes:', err.message);
+  }
+
   // Business calculator routes
   registerBusinessCalculatorRoutes(app);
 
