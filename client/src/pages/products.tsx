@@ -12,6 +12,7 @@ import {
   ShoppingCart, Heart, Package, ArrowUpDown
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { SocialPixelManager } from '@/utils/socialPixels';
 
 interface Product {
   id: number;
@@ -78,6 +79,14 @@ const ProductsPage = () => {
       category: product.category,
       store: product.store
     });
+
+    // Track add to cart across all social platforms
+    SocialPixelManager.trackAddToCart(
+      product.id.toString(),
+      product.name,
+      product.price,
+      1
+    );
     
     toast({
       title: "Added to Cart",

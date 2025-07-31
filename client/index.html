@@ -30,6 +30,32 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     
+    <!-- ✅ Facebook/Meta Pixel -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'SPIRAL_FB_PIXEL_ID');
+    fbq('track', 'PageView');
+    </script>
+
+    <!-- ✅ Instagram Business SDK -->
+    <script async defer crossorigin="anonymous" 
+    src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0&appId=SPIRAL_FB_APP_ID"></script>
+
+    <!-- ✅ X (Twitter) Pixel -->
+    <script>
+    !function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+    },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+    a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+    twq('config','SPIRAL_TWITTER_PIXEL_ID');
+    </script>
+
     <!-- ✅ TikTok Pixel -->
     <script>
     !function (w, d, t) {
@@ -62,12 +88,36 @@
         var a = document.getElementsByTagName("script")[0];
         a.parentNode.insertBefore(o, a)
       };
-      ttq.load('SPIRAL_PIXEL_ID');
+      ttq.load('SPIRAL_TIKTOK_PIXEL_ID');
       ttq.page();
     }(window, document, 'ttq');
     </script>
+
+    <!-- ✅ Truth Social Integration -->
+    <script>
+    window.truthSocialConfig = {
+      shareUrl: 'https://spiralshops.com',
+      socialId: 'SPIRAL_TRUTH_SOCIAL_ID'
+    };
+    
+    // Truth Social tracking
+    function trackTruthSocialEvent(action, data) {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', action, {
+          'custom_parameter_1': 'truth_social',
+          'custom_parameter_2': data || 'page_view'
+        });
+      }
+    }
+    trackTruthSocialEvent('page_view', window.location.pathname);
+    </script>
   </head>
   <body>
+    <!-- Facebook Pixel Noscript -->
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=SPIRAL_FB_PIXEL_ID&ev=PageView&noscript=1"
+    /></noscript>
+    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->

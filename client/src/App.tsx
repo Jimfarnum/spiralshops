@@ -6,6 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { updateMetaTags } from "@/utils/metaTags";
+import { SocialPixelManager } from "@/utils/socialPixels";
 import Home from "@/pages/home";
 import Store from "@/pages/store";
 import NotFound from "@/pages/not-found";
@@ -209,9 +210,10 @@ import ProductsPage from "@/pages/products";
 function Router() {
   const [location] = useLocation();
   
-  // Update meta tags when route changes
+  // Update meta tags and track page views when route changes
   useEffect(() => {
     updateMetaTags(location);
+    SocialPixelManager.trackUniversalEvent('page_view');
   }, [location]);
 
   return (
