@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-07-31T17:31:52.412Z",
+  "timestamp": "2025-07-31T17:46:18.974Z",
   "summary": {
     "total": 15,
-    "passed": 1,
-    "failed": 14,
-    "successRate": "6.7"
+    "passed": 7,
+    "failed": 8,
+    "successRate": "46.7"
   },
   "details": [
     {
@@ -24,63 +24,63 @@
     },
     {
       "name": "AI Retailer Review API",
-      "status": "FAIL",
-      "error": "fetch failed"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "AI Application Submission",
-      "status": "FAIL",
-      "error": "fetch failed"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "SPIRAL Centers API",
       "status": "FAIL",
-      "error": "fetch failed"
+      "error": "Invalid centers data format"
     },
     {
       "name": "Advanced Logistics API",
       "status": "FAIL",
-      "error": "fetch failed"
+      "error": "Invalid logistics zones data"
     },
     {
       "name": "Subscription Services API",
       "status": "FAIL",
-      "error": "fetch failed"
+      "error": "Invalid subscription services data"
     },
     {
       "name": "Enhanced Features API",
-      "status": "FAIL",
-      "error": "fetch failed"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "Smart Search API",
-      "status": "FAIL",
-      "error": "fetch failed"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "Enhanced Wallet API",
       "status": "FAIL",
-      "error": "fetch failed"
+      "error": "Invalid wallet balance format"
     },
     {
       "name": "GPT Integration Health",
-      "status": "FAIL",
-      "error": "fetch failed"
+      "status": "PASS",
+      "error": null
     },
     {
       "name": "Security Verification",
       "status": "FAIL",
-      "error": "fetch failed"
+      "error": "Security verification incomplete"
     },
     {
       "name": "Admin Test Routes",
       "status": "FAIL",
-      "error": "fetch failed"
+      "error": "HTTP 401: Unauthorized"
     },
     {
       "name": "SPIRAL 100% Compatibility",
-      "status": "FAIL",
-      "error": "fetch failed"
+      "status": "PASS",
+      "error": null
     }
   ]
 }

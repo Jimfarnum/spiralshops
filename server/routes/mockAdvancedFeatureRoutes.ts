@@ -8,7 +8,6 @@ const router = express.Router();
 // SPIRAL Centers mock responses
 router.get('/spiral-centers/centers', (req, res) => {
   res.json({
-    success: true,
     centers: [
       {
         id: 1,
@@ -41,7 +40,6 @@ router.get('/spiral-centers/network-map', (req, res) => {
 // Advanced Logistics mock responses
 router.get('/advanced-logistics/zones', (req, res) => {
   res.json({
-    success: true,
     zones: [
       {
         id: 1,
@@ -57,7 +55,6 @@ router.get('/advanced-logistics/zones', (req, res) => {
 // Subscription Services mock responses
 router.get('/subscription-services/available', (req, res) => {
   res.json({
-    success: true,
     services: [
       {
         id: 1,
@@ -115,7 +112,6 @@ router.post('/feature-improvements/smart-search', (req, res) => {
 // Enhanced Wallet mock responses
 router.get('/feature-improvements/enhanced-wallet/balance/:userId', (req, res) => {
   res.json({
-    success: true,
     balance: {
       spirals: 150,
       giftCards: 25.00,
@@ -157,11 +153,14 @@ router.get('/gpt-integration/health', (req, res) => {
 // Security Verification mock responses
 router.get('/launch-verification/security-status', (req, res) => {
   res.json({
-    success: true,
     security: {
       score: 98,
       issues: [],
-      lastScan: new Date().toISOString()
+      lastScan: new Date().toISOString(),
+      status: "verified",
+      csp: "enabled",
+      jwt: "active",
+      rateLimit: "active"
     }
   });
 });

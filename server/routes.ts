@@ -1438,6 +1438,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load mock advanced routes:', err.message);
   }
 
+  // Authentication routes for admin testing
+  try {
+    const { default: authRoutes } = await import('./routes/authenticationRoutes.js');
+    app.use('/api', authRoutes);
+    console.log('✅ Authentication routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load authentication routes:', err.message);
+  }
+
   // AI Retailer Onboarding routes
   try {
     const { default: aiRetailerOnboardingRoutes } = await import('./routes/aiRetailerOnboardingRoutes.js');
