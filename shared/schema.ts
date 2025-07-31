@@ -265,6 +265,14 @@ export type InsertFulfillmentGroup = typeof fulfillmentGroups.$inferInsert;
 export type InsertUserFollow = z.infer<typeof insertUserFollowSchema>;
 export type UserFollow = typeof userFollows.$inferSelect;
 
+// Subscription types
+export type Subscription = typeof subscriptions.$inferSelect;
+export type SubscriptionItem = typeof subscriptionItems.$inferSelect;
+export type SubscriptionOrder = typeof subscriptionOrders.$inferSelect;
+export type InsertSubscription = typeof subscriptions.$inferInsert;
+export type InsertSubscriptionItem = typeof subscriptionItems.$inferInsert;
+export type InsertSubscriptionOrder = typeof subscriptionOrders.$inferInsert;
+
 // Invite codes table for friend referral system
 export const inviteCodes = pgTable("invite_codes", {
   id: serial("id").primaryKey(),
@@ -643,10 +651,50 @@ export const cartItemsRelations = relations(cartItems, ({ one }) => ({
   }),
 }));
 
+
+
 // Insert schemas for cart items
 export const insertCartItemSchema = createInsertSchema(cartItems).omit({
   id: true,
   addedAt: true,
+});
+
+// Subscription Services Tables for competitive parity with Amazon Subscribe & Save
+export const subscriptions = pgTable("subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  title: text("title").notNull(), // "Weekly Farmers Market Box", "Monthly Coffee Subscription"
+  description: text("description"),
+  frequency: text("frequency").notNull(), // 'weekly', 'biweekly', 'monthly', 'quarterly'
+  nextDelivery: timestamp("next_delivery").notNull(),
+  status: text("status").notNull().default("active"), // 'active', 'paused', 'cancelled'
+  totalPrice: decimal("total_price", { precision: 10, scale: 2 }).notNull(),
+  discountPercentage: integer("discount_percentage").default(0), // 5% recurring subscription discount
+  spiralBonusMultiplier: decimal("spiral_bonus_multiplier", { precision: 3, scale: 2 }).default("1.5"), // 1.5x SPIRAL points for subscriptions
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const subscriptionItems = pgTable("subscription_items", {
+  id: serial("id").primaryKey(),
+  subscriptionId: integer("subscription_id").notNull().references(() => subscriptions.id),
+  productId: text("product_id").notNull(),
+  productName: text("product_name").notNull(),
+  storeId: integer("store_id").notNull().references(() => stores.id),
+  storeName: text("store_name").notNull(),
+  quantity: integer("quantity").notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  fulfillmentMethod: text("fulfillment_method").notNull(), // 'ship-to-me', 'in-store-pickup', 'ship-to-mall'
+});
+
+export const subscriptionOrders = pgTable("subscription_orders", {
+  id: serial("id").primaryKey(),
+  subscriptionId: integer("subscription_id").notNull().references(() => subscriptions.id),
+  orderId: integer("order_id").notNull().references(() => orders.id),
+  deliveryDate: timestamp("delivery_date").notNull(),
+  status: text("status").notNull().default("pending"), // 'pending', 'processed', 'delivered', 'failed'
+  spiralsEarned: integer("spirals_earned").default(0), // Bonus SPIRAL points for subscription orders
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Product and Store Reviews table

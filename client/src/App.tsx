@@ -190,6 +190,7 @@ import SpiralAdminLogin from "@/pages/spiral-admin-login";
 import UserAuthDemo from "@/pages/user-auth-demo";
 import ProductCategoryTest from "@/pages/product-category-test";
 import EnhancedFeaturesDemo from "@/pages/enhanced-features-demo";
+import Subscriptions from "@/pages/subscriptions";
 
 function Router() {
   return (
@@ -382,6 +383,7 @@ function Router() {
       <Route path="/gpt-integration-demo" component={GPTIntegrationDemo} />
       <Route path="/vercel-ibm-integration" component={VercelIBMIntegration} />
       <Route path="/enhanced-features-demo" component={EnhancedFeaturesDemo} />
+      <Route path="/subscriptions" component={Subscriptions} />
       <Route component={NotFound} />
     </Switch>
   );

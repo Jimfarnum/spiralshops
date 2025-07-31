@@ -24,7 +24,7 @@ import followRoutes from "./followRoutes";
 import { registerFeature17Routes } from "./feature17Routes";
 import paymentRoutes from "./paymentRoutes";
 import aiAnalyticsRoutes from "./aiAnalyticsRoutes";
-import subscriptionRoutes from "./subscriptionRoutes";
+// Subscription routes will be imported dynamically
 import { 
   registerSmartSearchRoutes,
   registerEnhancedWalletRoutes,
@@ -981,6 +981,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // SPIRAL Wallet routes
   app.use("/api/spiral-wallet", spiralWalletRoutes);
 
+  // Subscription services routes for competitive parity with Amazon Subscribe & Save
+  try {
+    const subscriptionRoutes = await import("./routes/subscriptionRoutes.js");
+    app.use('/api/subscriptions', subscriptionRoutes.default);
+    console.log('✅ Subscription services routes loaded successfully');
+  } catch (err: any) {
+    console.error('❌ Failed to load subscription routes:', err.message);
+  }
+
   // Business calculator routes
   registerBusinessCalculatorRoutes(app);
 
@@ -1360,7 +1369,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register payment, AI analytics, subscription, and invite routes
   app.use("/api/payment", paymentRoutes);
   app.use("/api/ai", aiAnalyticsRoutes);
-  app.use("/api/subscription", subscriptionRoutes);
+  // Subscription routes already loaded above
   app.use("/api/invite", inviteRoutes);
 
   return httpServer;
