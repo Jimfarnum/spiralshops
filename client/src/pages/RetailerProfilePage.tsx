@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -30,12 +29,19 @@ interface RetailerProfile {
 
 export default function RetailerProfilePage() {
   const [location] = useLocation();
-  const storeId = location.split('/')[2] || '1';
+  const storeSlug = location.split('/')[2];
+  const [store, setStore] = useState<RetailerProfile | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
-  
-  // Mock data - would be replaced with actual API call
-  const retailerData: RetailerProfile = {
-    id: storeId,
+
+  useEffect(() => {
+    // Fetch store data from API
+    fetch(`/api/stores/${storeSlug}`)
+      .then(res => res.json())
+      .then(data => setStore(data))
+      .catch(() => {
+        // Fallback to mock data if API fails
+        setStore({
+    id: storeSlug || '1',
     name: "Bella's Boutique",
     description: "A charming local boutique specializing in women's fashion, accessories, and unique gifts. Family-owned for over 15 years.",
     category: "Fashion & Apparel",
@@ -72,7 +78,78 @@ export default function RetailerProfilePage() {
     ],
     followers: 245,
     isFollowing: false
+        });
+      });
+  }, [storeSlug]);
+
+  const renderProductGrid = () => {
+    const sampleProducts = [
+      {
+        id: 1,
+        name: "Summer Floral Dress",
+        price: 89.99,
+        image: "https://via.placeholder.com/300x300/f8bbd9/4a4a4a?text=Dress",
+        category: "Dresses"
+      },
+      {
+        id: 2,
+        name: "Designer Handbag",
+        price: 129.99,
+        image: "https://via.placeholder.com/300x300/c8e6c9/4a4a4a?text=Handbag",
+        category: "Accessories"
+      },
+      {
+        id: 3,
+        name: "Gold Jewelry Set",
+        price: 199.99,
+        image: "https://via.placeholder.com/300x300/fff3e0/4a4a4a?text=Jewelry",
+        category: "Jewelry"
+      },
+      {
+        id: 4,
+        name: "Casual Blouse",
+        price: 49.99,
+        image: "https://via.placeholder.com/300x300/e1f5fe/4a4a4a?text=Blouse",
+        category: "Tops"
+      }
+    ];
+
+    return (
+      <div className="grid md:grid-cols-2 gap-4">
+        {sampleProducts.map((product) => (
+          <div key={product.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+            <img 
+              src={product.image} 
+              alt={product.name} 
+              className="h-32 object-cover w-full mb-2 rounded-md"
+            />
+            <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
+            <p className="text-xl font-bold text-teal-600">${product.price}</p>
+            <p className="text-sm text-gray-500 mb-3">{product.category}</p>
+            <div className="flex gap-2">
+              <button className="flex-1 bg-teal-600 text-white px-3 py-2 rounded-md text-sm hover:bg-teal-700">
+                Add to Cart
+              </button>
+              <button className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
+                ♡
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   };
+
+  if (!store) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading store information...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleFollow = () => {
     setIsFollowing(!isFollowing);
@@ -119,8 +196,8 @@ export default function RetailerProfilePage() {
       <div className="relative">
         <div className="h-64 bg-gradient-to-r from-teal-500 to-blue-600">
           <img
-            src={retailerData.images[0]}
-            alt={retailerData.name}
+            src={store.images[0]}
+            alt={store.name}
             className="w-full h-full object-cover opacity-80"
           />
         </div>
@@ -132,24 +209,24 @@ export default function RetailerProfilePage() {
             <div className="flex flex-col md:flex-row md:items-end gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-3xl font-bold">{retailerData.name}</h1>
-                  {retailerData.isVerified && getVerificationBadge(retailerData.verificationLevel)}
-                  {retailerData.spiralPartner && (
+                  <h1 className="text-3xl font-bold">{store.name}</h1>
+                  {store.isVerified && getVerificationBadge(store.verificationLevel)}
+                  {store.spiralPartner && (
                     <Badge className="bg-teal-600 text-white">
                       <Award className="w-3 h-3 mr-1" />
                       SPIRAL Partner
                     </Badge>
                   )}
                 </div>
-                <p className="text-lg opacity-90 mb-2">{retailerData.category}</p>
+                <p className="text-lg opacity-90 mb-2">{store.category}</p>
                 <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-1">
-                    {renderStars(retailerData.rating)}
-                    <span className="ml-1">{retailerData.rating} ({retailerData.reviewCount} reviews)</span>
+                    {renderStars(store.rating)}
+                    <span className="ml-1">{store.rating} ({store.reviewCount} reviews)</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
-                    {retailerData.followers} followers
+                    {store.followers} followers
                   </div>
                 </div>
               </div>
@@ -196,7 +273,7 @@ export default function RetailerProfilePage() {
                     <CardTitle>About This Store</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600 leading-relaxed">{retailerData.description}</p>
+                    <p className="text-gray-600 leading-relaxed">{store.description}</p>
                   </CardContent>
                 </Card>
 
@@ -209,7 +286,7 @@ export default function RetailerProfilePage() {
                       <MapPin className="w-5 h-5 text-gray-400 mt-1" />
                       <div>
                         <p className="font-medium">Address</p>
-                        <p className="text-gray-600">{retailerData.address}</p>
+                        <p className="text-gray-600">{store.address}</p>
                       </div>
                     </div>
                     
@@ -217,7 +294,7 @@ export default function RetailerProfilePage() {
                       <Phone className="w-5 h-5 text-gray-400 mt-1" />
                       <div>
                         <p className="font-medium">Phone</p>
-                        <p className="text-gray-600">{retailerData.phone}</p>
+                        <p className="text-gray-600">{store.phone}</p>
                       </div>
                     </div>
                     
@@ -225,8 +302,8 @@ export default function RetailerProfilePage() {
                       <Globe className="w-5 h-5 text-gray-400 mt-1" />
                       <div>
                         <p className="font-medium">Website</p>
-                        <a href={`https://${retailerData.website}`} className="text-teal-600 hover:underline">
-                          {retailerData.website}
+                        <a href={`https://${store.website}`} className="text-teal-600 hover:underline">
+                          {store.website}
                         </a>
                       </div>
                     </div>
@@ -235,7 +312,7 @@ export default function RetailerProfilePage() {
                       <Clock className="w-5 h-5 text-gray-400 mt-1" />
                       <div>
                         <p className="font-medium">Hours</p>
-                        <p className="text-gray-600">{retailerData.hours}</p>
+                        <p className="text-gray-600">{store.hours}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -248,13 +325,13 @@ export default function RetailerProfilePage() {
                     <CardTitle>Featured Products</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-500">Product catalog coming soon...</p>
+                    {renderProductGrid()}
                   </CardContent>
                 </Card>
               </TabsContent>
               
               <TabsContent value="reviews" className="space-y-4">
-                {retailerData.reviews.map((review) => (
+                {store.reviews.map((review) => (
                   <Card key={review.id}>
                     <CardContent className="pt-6">
                       <div className="flex items-center justify-between mb-3">
@@ -274,11 +351,11 @@ export default function RetailerProfilePage() {
               
               <TabsContent value="photos">
                 <div className="grid md:grid-cols-2 gap-4">
-                  {retailerData.images.map((image, index) => (
+                  {store.images.map((image, index) => (
                     <img
                       key={index}
                       src={image}
-                      alt={`${retailerData.name} ${index + 1}`}
+                      alt={`${store.name} ${index + 1}`}
                       className="rounded-lg w-full h-48 object-cover"
                     />
                   ))}
@@ -311,15 +388,22 @@ export default function RetailerProfilePage() {
                 <CardTitle>SPIRAL Rewards</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-teal-600 mb-2">
-                    10 SPIRALs
+                <div className="text-center space-y-4">
+                  <div className="bg-teal-50 rounded-lg p-4">
+                    <div className="text-2xl font-bold text-teal-600 mb-1">
+                      10 SPIRALs
+                    </div>
+                    <p className="text-sm text-gray-600">per $100 spent in-store</p>
                   </div>
-                  <p className="text-sm text-gray-600">per $100 spent in-store</p>
-                  <div className="text-xl font-bold text-blue-600 mb-2 mt-3">
-                    5 SPIRALs
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <div className="text-xl font-bold text-blue-600 mb-1">
+                      5 SPIRALs
+                    </div>
+                    <p className="text-sm text-gray-600">per $100 spent online</p>
                   </div>
-                  <p className="text-sm text-gray-600">per $100 spent online</p>
+                  <div className="text-xs text-gray-500 mt-3">
+                    SPIRAL Partner Store - Earn bonus rewards on every purchase!
+                  </div>
                 </div>
               </CardContent>
             </Card>
