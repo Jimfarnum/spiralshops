@@ -98,7 +98,7 @@ export default function MobileNav({ className }: MobileNavProps) {
             {/* Quick Actions */}
             <div className="border-t border-gray-200 pt-6 space-y-3">
               {/* Cart */}
-              <Link href="/cart" onClick={handleNavClick}>
+              <Link to="/cart" onClick={handleNavClick}>
                 <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--spiral-cream)] hover:bg-[var(--spiral-coral)]/10 transition-colors cursor-pointer">
                   <div className="flex items-center gap-3">
                     <ShoppingCart className="h-5 w-5 text-[var(--spiral-coral)]" />
@@ -115,7 +115,7 @@ export default function MobileNav({ className }: MobileNavProps) {
               {/* User Actions */}
               {isAuthenticated ? (
                 <div className="space-y-2">
-                  <Link href="/account" onClick={handleNavClick}>
+                  <Link to="/account" onClick={handleNavClick}>
                     <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--spiral-cream)] transition-colors cursor-pointer">
                       <User className="h-5 w-5 text-[var(--spiral-sage)]" />
                       <span className="font-semibold text-[var(--spiral-navy)]">My Account</span>
@@ -131,12 +131,12 @@ export default function MobileNav({ className }: MobileNavProps) {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <Link href="/login" onClick={handleNavClick}>
+                  <Link to="/login" onClick={handleNavClick}>
                     <Button className="w-full bg-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/90 text-white">
                       Sign In
                     </Button>
                   </Link>
-                  <Link href="/signup" onClick={handleNavClick}>
+                  <Link to="/signup" onClick={handleNavClick}>
                     <Button variant="outline" className="w-full border-[var(--spiral-navy)] text-[var(--spiral-navy)]">
                       Create Account
                     </Button>

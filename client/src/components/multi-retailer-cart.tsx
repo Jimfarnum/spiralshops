@@ -222,7 +222,7 @@ export default function MultiRetailerCart() {
           <ShoppingCart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
           <p className="text-gray-600 mb-6">Discover amazing products from local retailers</p>
-          <Link href="/products">
+          <Link to="/products">
             <Button className="button-primary">
               Start Shopping
             </Button>

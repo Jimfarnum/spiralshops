@@ -88,7 +88,7 @@ export default function AccessibilityToggle({
           <DropdownMenuSeparator />
           
           <DropdownMenuItem asChild>
-            <Link href="/accessibility-settings">
+            <Link to="/accessibility-settings">
               <Settings className="mr-2 h-4 w-4" />
               <div>
                 <div className="font-medium">Detailed Settings</div>
@@ -142,7 +142,7 @@ export default function AccessibilityToggle({
         </Button>
       )}
       
-      <Link href="/accessibility-settings">
+      <Link to="/accessibility-settings">
         <Button variant="ghost" size="sm" className="h-8">
           <Settings className="h-3 w-3" />
         </Button>

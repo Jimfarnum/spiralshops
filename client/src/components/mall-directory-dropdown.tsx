@@ -281,7 +281,7 @@ export default function MallDirectoryDropdown({ onMallSelect, showLocator = true
                   </div>
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <Link href={`/mall/${selectedMall.id}`}>
+                  <Link to={`/mall/${selectedMall.id}`}>
                     <Button size="sm" className="button-primary">
                       Visit Mall Page
                     </Button>

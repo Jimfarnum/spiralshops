@@ -13,12 +13,12 @@ export default function HeroSection() {
           SPIRAL connects shoppers with real local stores, rewarding every purchase that supports a real place and real people.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto">
-          <Link href="/shopper-dashboard">
+          <Link to="/shopper-dashboard">
             <button className="w-full sm:w-auto bg-black text-white px-6 py-3 rounded-full text-base sm:text-lg hover:bg-gray-800 transition-colors">
               Shopper Dashboard
             </button>
           </Link>
-          <Link href="/retailer-dashboard-new">
+          <Link to="/retailer-dashboard-new">
             <button className="w-full sm:w-auto border border-black px-6 py-3 rounded-full text-base sm:text-lg hover:bg-gray-200 transition-colors">
               Retailer Dashboard
             </button>

@@ -56,7 +56,7 @@ export default function StoreCard({ store }: StoreCardProps) {
           <span>{store.address}</span>
         </div>
         
-        <Link href={`/store/${store.id}`}>
+        <Link to={`/store/${store.id}`}>
           <Button className="w-full bg-spiral-blue text-white hover:bg-spiral-blue-dark">
             View Store
           </Button>

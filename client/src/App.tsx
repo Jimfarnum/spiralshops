@@ -271,6 +271,7 @@ function Router() {
       <Route path="/retailer-insights" component={RetailerInsights} />
       <Route path="/test-flow" component={TestFlow} />
       <Route path="/about" component={About} />
+      <Route path="/about-spiral" component={About} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/inventory-dashboard" component={InventoryDashboard} />
       <Route path="/wallet" component={WalletPage} />
