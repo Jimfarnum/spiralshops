@@ -133,29 +133,31 @@ export default function Home() {
       {/* Hero Section with Main Street Revival Messaging */}
       <HeroSection />
 
-      {/* Press Release Section */}
-      <section id="press-release" className="bg-gray-100 px-6 py-12 rounded-2xl shadow-lg text-center max-w-5xl mx-auto my-8">
-        <h2 className="text-4xl font-bold text-gray-800 mb-4">SPIRAL: The Local Shopping Platform</h2>
-        <p className="text-lg text-gray-600 mb-6">
+      {/* Press Release Section - Mobile Optimized */}
+      <section id="press-release" className="bg-gradient-to-r from-gray-50 to-gray-100 px-4 sm:px-6 py-8 sm:py-12 rounded-xl sm:rounded-2xl shadow-lg text-center max-w-5xl mx-auto my-6 sm:my-8">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">SPIRAL: The Local Shopping Platform</h2>
+        <p className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6 leading-relaxed">
           SPIRAL connects shoppers with real local stores across the U.S., rewarding every purchase that supports a real place, real jobs, and real communities.
         </p>
-        <p className="text-md text-gray-700 italic mb-4">
+        <p className="text-sm sm:text-md text-gray-700 italic mb-4 sm:mb-6">
           Our mission is simple: empower small retailers, reinvigorate malls, and make local shopping easier and more rewarding than ever.
         </p>
-        <a href="/about-spiral" className="inline-block px-6 py-3 bg-black text-white rounded-xl shadow hover:bg-gray-900">
+        <a href="/about-spiral" className="inline-block px-6 py-3 bg-black text-white rounded-xl shadow hover:bg-gray-900 transition-colors text-sm sm:text-base">
           Learn More About SPIRAL
         </a>
       </section>
 
-      {/* Grid Layout Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4 py-8">
-        <div className="col-span-1">
+      {/* Grid Layout Section - Mobile Optimized */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 px-4 py-6 sm:py-8">
+        <div className="lg:col-span-1 order-2 lg:order-1">
           <RetailerCategoryMenu />
         </div>
-        <div className="col-span-2">
+        <div className="lg:col-span-2 order-1 lg:order-2 space-y-6">
           <EnhancedFeaturedProducts />
-          <MallEvents />
-          <LocalPromotions />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <MallEvents />
+            <LocalPromotions />
+          </div>
         </div>
       </div>
 

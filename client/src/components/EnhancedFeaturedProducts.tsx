@@ -114,7 +114,7 @@ export default function EnhancedFeaturedProducts() {
         </Link>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {products.map((product) => (
           <div 
             key={product.id} 
@@ -125,7 +125,7 @@ export default function EnhancedFeaturedProducts() {
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "/api/placeholder/300/200";
                 }}

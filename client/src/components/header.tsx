@@ -5,6 +5,7 @@ import { useCartStore } from "@/lib/cartStore";
 import { useAuthStore } from "@/lib/authStore";
 import SpiralBalance from "./spiral-balance";
 import MobileNav from "./mobile-nav";
+import MobileHeader from "./MobileHeader";
 import LanguageSelector from "./language-selector";
 import AccessibilityToggle from "./accessibility-toggle";
 import { useToast } from "@/hooks/use-toast";
@@ -26,9 +27,14 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <>
+      {/* Mobile Header */}
+      <MobileHeader />
+      
+      {/* Desktop Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100 hidden md:block">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
           {/* Logo Section */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0">
             <img 
@@ -241,5 +247,6 @@ export default function Header() {
         </div>
       </div>
     </header>
+    </>
   );
 }
