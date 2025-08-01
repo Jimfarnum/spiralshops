@@ -1089,6 +1089,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const verificationRoutes = await import("./verificationRoutes");
   app.use(verificationRoutes.default);
 
+  // Retailer Profile API
+  app.get("/api/retailers/:storeSlug", async (req, res) => {
+    try {
+      const { storeSlug } = req.params;
+      
+      // Mock retailer data for demo purposes
+      const retailerData = {
+        store: {
+          name: `${storeSlug.charAt(0).toUpperCase() + storeSlug.slice(1).replace('-', ' ')} Store`,
+          address: "123 Main Street, Springfield, IL 62701",
+          hours: "Mon-Sat: 9AM-9PM, Sun: 11AM-7PM",
+          description: "A trusted local retailer offering quality products and exceptional customer service."
+        },
+        products: [
+          {
+            image: "https://via.placeholder.com/300x200/4A90E2/FFFFFF?text=Product+1",
+            name: "Premium Quality Item",
+            price: 49.99
+          },
+          {
+            image: "https://via.placeholder.com/300x200/7ED321/FFFFFF?text=Product+2", 
+            name: "Best Seller Product",
+            price: 29.99
+          },
+          {
+            image: "https://via.placeholder.com/300x200/F5A623/FFFFFF?text=Product+3",
+            name: "Featured Special",
+            price: 89.99
+          }
+        ]
+      };
+
+      res.json(retailerData);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch retailer data" });
+    }
+  });
+
   // Product Catalog API Routes (Data Loaded from DataService)
   app.get("/api/products", async (req, res) => {
     try {
