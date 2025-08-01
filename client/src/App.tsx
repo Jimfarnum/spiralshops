@@ -103,6 +103,7 @@ import GiftCardBalanceChecker from "@/pages/gift-card-balance-checker";
 import PushNotificationSettings from "@/pages/push-notification-settings";
 import AdminTestDashboard from "@/pages/admin-test-dashboard";
 import MobileAppBase from "@/pages/mobile-app-base";
+import RetailerDataManagement from "@/pages/RetailerDataManagement";
 import GPTIntegrationDemo from "@/pages/gpt-integration-demo";
 import VercelIBMIntegration from "@/pages/vercel-ibm-integration";
 import EnhancedCheckout from "@/pages/checkout-enhanced";
@@ -330,6 +331,7 @@ function Router() {
       <Route path="/retailers/login" component={RetailersLoginPage} />
       <Route path="/retailers/dashboard" component={RetailersDashboardPage} />
       <Route path="/admin/retailers" component={AdminRetailersPage} />
+      <Route path="/retailer/data-management" component={RetailerDataManagement} />
       <Route path="/retailer-feature-demo" component={RetailerFeatureDemoPage} />
       <Route path="/wishlist/settings" component={WishlistSettingsPage} />
       <Route path="/admin/wishlist-alerts" component={AdminWishlistAlertsPage} />

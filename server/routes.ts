@@ -40,6 +40,7 @@ import { giftCardsStorage } from "./giftCardsStorage";
 import { z } from "zod";
 import authSystem from "./authSystem.js";
 import { getProgressData } from "../spiral-progress.js";
+import { registerRetailerDataRoutes } from "./retailerDataIntegration";
 // Admin panel will be added separately
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -1096,6 +1097,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register store verification routes
   const verificationRoutes = await import("./verificationRoutes");
   app.use(verificationRoutes.default);
+
+  // Register Retailer Data Integration Routes
+  try {
+    registerRetailerDataRoutes(app);
+    console.log('✅ Retailer data integration routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load retailer data integration routes:', err.message);
+  }
 
   // Retailer Store Profile API (using different path to avoid conflicts)
   app.get("/api/stores/profile/:storeSlug", async (req, res) => {
