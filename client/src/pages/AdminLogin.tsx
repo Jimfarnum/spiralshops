@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { Shield, Eye, EyeOff } from 'lucide-react';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
 
   const handleLogin = async () => {
@@ -23,44 +27,26 @@ export default function AdminLogin() {
 
     setIsLoading(true);
     
-    try {
-      const response = await fetch('/api/admin-login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Store admin token
-        localStorage.setItem('spiral_admin_token', data.token);
-        
-        toast({
-          title: "Login Successful",
-          description: "Welcome to SPIRAL Admin Dashboard",
-        });
-
-        // Redirect to admin dashboard
-        window.location.href = '/admin-dashboard';
-      } else {
-        toast({
-          title: "Login Failed",
-          description: data.message || "Invalid credentials",
-          variant: "destructive"
-        });
-      }
-    } catch (error) {
+    // Simple credential check - in production this would be server-side
+    if (email === 'admin@spiral.com' && password === 'Spiral2025!') {
+      localStorage.setItem('adminLoggedIn', 'true');
+      localStorage.setItem('spiral_admin_token', 'admin_token_' + Date.now());
+      
       toast({
-        title: "Login Error",
-        description: "Unable to connect to admin server",
+        title: "Login Successful",
+        description: "Welcome to SPIRAL Admin Dashboard",
+      });
+      
+      setLocation('/admin-dashboard');
+    } else {
+      toast({
+        title: "Invalid Credentials",
+        description: "Please check your email and password",
         variant: "destructive"
       });
-    } finally {
-      setIsLoading(false);
     }
+    
+    setIsLoading(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
