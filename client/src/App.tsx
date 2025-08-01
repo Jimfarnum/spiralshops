@@ -73,6 +73,7 @@ import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
 import MallContextSync from "@/components/mall-context-sync";
 import MallEventsDemo from "@/pages/mall-events-demo";
+import Diagnostics from "@/components/Diagnostics";
 import P1FeaturesDemo from "@/pages/p1-features-demo";
 import P1TestSuite from "@/pages/p1-test-suite";
 
@@ -450,6 +451,7 @@ function App() {
         <ShareReminder />
         <Toaster />
         <Router />
+        <Diagnostics />
       </TooltipProvider>
     </QueryClientProvider>
   );
