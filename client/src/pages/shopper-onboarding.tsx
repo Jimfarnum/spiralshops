@@ -322,7 +322,7 @@ export default function ShopperOnboarding() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             {steps.map((step, index) => (
-              <React.Fragment key={step.id}>
+              <div key={step.id} className="flex items-center flex-1">
                 <div className={`flex items-center space-x-2 ${
                   currentStep >= step.id ? 'text-[var(--spiral-coral)]' : 'text-gray-400'
                 }`}>
@@ -343,7 +343,7 @@ export default function ShopperOnboarding() {
                     currentStep > step.id ? 'bg-[var(--spiral-coral)]' : 'bg-gray-300'
                   }`} />
                 )}
-              </React.Fragment>
+              </div>
             ))}
           </div>
         </div>
