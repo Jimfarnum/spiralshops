@@ -63,9 +63,9 @@ export default function EventsPage() {
   const queryClient = useQueryClient();
   
   const [filters, setFilters] = useState({
-    eventType: '',
+    eventType: 'all',
     mallId: '',
-    location: '',
+    location: 'all',
     sort: 'date',
     search: ''
   });
@@ -74,9 +74,9 @@ export default function EventsPage() {
     queryKey: ['/api/events', filters],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (filters.eventType) params.append('eventType', filters.eventType);
+      if (filters.eventType && filters.eventType !== 'all') params.append('eventType', filters.eventType);
       if (filters.mallId) params.append('mallId', filters.mallId);
-      if (filters.location) params.append('location', filters.location);
+      if (filters.location && filters.location !== 'all') params.append('location', filters.location);
       if (filters.sort) params.append('sort', filters.sort);
       if (filters.search) params.append('search', filters.search);
       
@@ -255,7 +255,7 @@ export default function EventsPage() {
                     <SelectValue placeholder="Event Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Types</SelectItem>
+                    <SelectItem value="all">All Types</SelectItem>
                     <SelectItem value="Fashion">Fashion</SelectItem>
                     <SelectItem value="Kids">Kids & Family</SelectItem>
                     <SelectItem value="Technology">Technology</SelectItem>
@@ -268,7 +268,7 @@ export default function EventsPage() {
                     <SelectValue placeholder="Location" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Locations</SelectItem>
+                    <SelectItem value="all">All Locations</SelectItem>
                     <SelectItem value="Downtown">Downtown District</SelectItem>
                     <SelectItem value="Suburbs">Suburbs</SelectItem>
                     <SelectItem value="West End">West End</SelectItem>

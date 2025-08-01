@@ -75,8 +75,8 @@ export default function ShowcasePage() {
   const queryClient = useQueryClient();
   
   const [filters, setFilters] = useState({
-    category: '',
-    location: '',
+    category: 'all',
+    location: 'all',
     featured: false,
     search: ''
   });
@@ -89,8 +89,8 @@ export default function ShowcasePage() {
     queryKey: ['/api/testimonials', filters],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (filters.category) params.append('category', filters.category);
-      if (filters.location) params.append('location', filters.location);
+      if (filters.category && filters.category !== 'all') params.append('category', filters.category);
+      if (filters.location && filters.location !== 'all') params.append('location', filters.location);
       if (filters.featured) params.append('featured', 'true');
       
       const response = await fetch(`/api/testimonials?${params.toString()}`);
@@ -306,7 +306,7 @@ export default function ShowcasePage() {
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                    <SelectItem value="all">All Categories</SelectItem>
                     <SelectItem value="food">Food & Beverage</SelectItem>
                     <SelectItem value="arts">Arts & Crafts</SelectItem>
                     <SelectItem value="health">Health & Wellness</SelectItem>
@@ -318,7 +318,7 @@ export default function ShowcasePage() {
                     <SelectValue placeholder="All Locations" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Locations</SelectItem>
+                    <SelectItem value="all">All Locations</SelectItem>
                     <SelectItem value="downtown">Downtown District</SelectItem>
                     <SelectItem value="arts">Arts Quarter</SelectItem>
                     <SelectItem value="wellness">Wellness District</SelectItem>

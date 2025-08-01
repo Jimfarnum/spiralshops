@@ -44,7 +44,7 @@ interface NetworkStats {
 
 export default function SpiralCenters() {
   const [filters, setFilters] = useState({
-    type: '',
+    type: 'all',
     city: '',
     state: '',
     status: 'active'
@@ -56,7 +56,7 @@ export default function SpiralCenters() {
     queryFn: async () => {
       const params = new URLSearchParams();
       Object.entries(filters).forEach(([key, value]) => {
-        if (value) params.append(key, value);
+        if (value && value !== 'all') params.append(key, value);
       });
       const response = await fetch(`/api/spiral-centers?${params}`);
       return response.json();
@@ -234,7 +234,7 @@ export default function SpiralCenters() {
                     <SelectValue placeholder="Center Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Types</SelectItem>
+                    <SelectItem value="all">All Types</SelectItem>
                     <SelectItem value="mall">Mall Centers</SelectItem>
                     <SelectItem value="mainstreet">Main Street</SelectItem>
                     <SelectItem value="hub">Hubs</SelectItem>
@@ -260,7 +260,7 @@ export default function SpiralCenters() {
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Status</SelectItem>
+                    <SelectItem value="all">All Status</SelectItem>
                     <SelectItem value="active">Active</SelectItem>
                     <SelectItem value="maintenance">Maintenance</SelectItem>
                     <SelectItem value="planned">Planned</SelectItem>

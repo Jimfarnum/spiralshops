@@ -23,7 +23,7 @@ interface SearchResult {
 
 export default function SmartSearchDemo() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState('all');
   const [location, setLocation] = useState('');
   const [fuzzyEnabled, setFuzzyEnabled] = useState(true);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -111,7 +111,7 @@ export default function SmartSearchDemo() {
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="Electronics">Electronics</SelectItem>
                   <SelectItem value="Clothing">Clothing</SelectItem>
                   <SelectItem value="Food & Beverage">Food & Beverage</SelectItem>
