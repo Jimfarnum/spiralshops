@@ -173,7 +173,7 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
             {/* Trusted Local Stores */}
-            <Link href="/trusted-local-stores" className="group">
+            <Link to="/trusted-local-stores" className="group">
               <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-green-600 to-green-400 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🛡️</div>
@@ -186,7 +186,7 @@ export default function Home() {
             </Link>
 
             {/* Explore SPIRALs */}
-            <Link href="/explore-spirals" className="group">
+            <Link to="/explore-spirals" className="group">
               <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-gold)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🌟</div>
@@ -199,7 +199,7 @@ export default function Home() {
             </Link>
 
             {/* Verify Store */}
-            <Link href="/verified-lookup" className="group">
+            <Link to="/verified-lookup" className="group">
               <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🔍</div>
@@ -212,7 +212,7 @@ export default function Home() {
             </Link>
 
             {/* Discover New Finds */}
-            <Link href="/products?category=featured" className="group">
+            <Link to="/products?category=featured" className="group">
               <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-gold)] to-[var(--spiral-coral)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">💎</div>
@@ -225,7 +225,7 @@ export default function Home() {
             </Link>
 
             {/* Loyalty Program */}
-            <Link href="/redeem-spirals" className="group">
+            <Link to="/redeem-spirals" className="group">
               <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-sage)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🎁</div>
@@ -238,7 +238,7 @@ export default function Home() {
             </Link>
 
             {/* Delivery Options */}
-            <Link href="/delivery-options" className="group">
+            <Link to="/delivery-options" className="group">
               <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-gold)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🚚</div>
@@ -286,7 +286,7 @@ export default function Home() {
             {categories.map((category) => (
               <Link 
                 key={category.name} 
-                href={`/products?category=${category.name.toLowerCase().replace(' ', '-')}`}
+                to={`/products?category=${category.name.toLowerCase().replace(' ', '-')}`}
                 className="group"
               >
                 <div className="flex flex-col items-center p-6 rounded-full bg-gradient-to-br hover:scale-105 transition-all duration-300 cursor-pointer shadow-md hover:shadow-lg">

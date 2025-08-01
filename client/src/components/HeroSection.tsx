@@ -30,21 +30,27 @@ export default function HeroSection() {
       <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 text-center w-full max-w-5xl">
         <h2 className="text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 md:mb-10">How SPIRAL Works</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <div className="text-3xl mb-3">🛍️</div>
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">Shop Local</h3>
-            <p className="section-description text-sm sm:text-base">Discover and shop from local retailers near you or across the country.</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <div className="text-3xl mb-3">⭐</div>
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">Earn SPIRALs</h3>
-            <p className="section-description text-sm sm:text-base">Earn rewards on every purchase—doubled when redeemed in person.</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm border sm:col-span-2 md:col-span-1">
-            <div className="text-3xl mb-3">🏘️</div>
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">Fuel Community</h3>
-            <p className="section-description text-sm sm:text-base">Your purchases power real jobs, local places, and Main Street revival.</p>
-          </div>
+          <Link to="/products" className="group">
+            <div className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer">
+              <div className="text-3xl mb-3">🛍️</div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 group-hover:text-[var(--spiral-coral)] transition-colors">Shop Local</h3>
+              <p className="section-description text-sm sm:text-base">Discover and shop from local retailers near you or across the country.</p>
+            </div>
+          </Link>
+          <Link to="/loyalty" className="group">
+            <div className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer">
+              <div className="text-3xl mb-3">⭐</div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 group-hover:text-[var(--spiral-coral)] transition-colors">Earn SPIRALs</h3>
+              <p className="section-description text-sm sm:text-base">Earn rewards on every purchase—doubled when redeemed in person.</p>
+            </div>
+          </Link>
+          <Link to="/about-spiral" className="group sm:col-span-2 md:col-span-1">
+            <div className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer">
+              <div className="text-3xl mb-3">🏘️</div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 group-hover:text-[var(--spiral-coral)] transition-colors">Fuel Community</h3>
+              <p className="section-description text-sm sm:text-base">Your purchases power real jobs, local places, and Main Street revival.</p>
+            </div>
+          </Link>
         </div>
       </section>
 
