@@ -255,6 +255,15 @@ export class MemStorage implements IStorage {
         rating: "4.8",
         reviewCount: 124,
         isOpen: true,
+        isVerified: true,
+        verificationStatus: "approved",
+        verificationTier: "tier_1",
+        verificationDocumentPath: null,
+        businessLicense: null,
+        taxId: null,
+        complianceStatus: "compliant",
+        lastInspectionDate: null,
+        isLargeRetailer: false,
         hours: "Mon-Fri: 9AM-7PM, Sat: 10AM-6PM, Sun: 12PM-5PM",
         imageUrl: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
         perks: ["15% off first purchase", "Free alterations"],
@@ -468,6 +477,43 @@ export class MemStorage implements IStorage {
   }
 
   async getUserOrders(userId: number): Promise<Order[]> {
+    return [];
+  }
+
+  // Additional API methods required by IStorage interface
+  async getUsers(): Promise<User[]> {
+    // Mock implementation - return empty array
+    return [];
+  }
+
+  async getWishlist(userId: number): Promise<any[]> {
+    // Mock wishlist data
+    return [];
+  }
+
+  async getSocialShares(): Promise<any[]> {
+    // Mock social shares data
+    return [];
+  }
+
+  async getInviteCodes(userId: string): Promise<any[]> {
+    // Mock invite codes data
+    return [];
+  }
+
+  async getAnalyticsDashboard(): Promise<any> {
+    // Mock analytics dashboard data
+    return {
+      totalUsers: 0,
+      totalOrders: 0,
+      totalRevenue: 0,
+      spiralsCirculated: 0,
+      topCategories: []
+    };
+  }
+
+  async getAllTransactions(): Promise<any[]> {
+    // Mock transactions data
     return [];
   }
 }
