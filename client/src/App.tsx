@@ -214,6 +214,8 @@ import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import RetailerInventoryDashboard from "@/components/RetailerInventoryDashboard";
 import ProductsPage from "@/pages/products";
+import ProductsPageNew from "@/pages/ProductsPage";
+import MallsPageNew from "@/pages/MallsPage";
 
 
 function Router() {
@@ -230,7 +232,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/store/:id" component={Store} />
       <Route path="/retailers/:storeSlug" component={RetailerProfilePage} />
-      <Route path="/products" component={ProductsPage} />
+      <Route path="/products" component={ProductsPageNew} />
       <Route path="/product/:id" component={EnhancedProductDetail} />
       <Route path="/search" component={ProductSearch} />
       <Route path="/search/:id" component={ProductDetailOld} />
@@ -243,7 +245,7 @@ function Router() {
       <Route path="/spirals" component={Spirals} />
       <Route path="/profile" component={ProfileSettings} />
       <Route path="/mall-directory" component={MallDirectory} />
-      <Route path="/malls" component={MallsPage} />
+      <Route path="/malls" component={MallsPageNew} />
       <Route path="/account" component={Account} />
       <Route path="/retailer-login" component={RetailerLogin} />
       <Route path="/retailer-dashboard" component={RetailerDashboard} />

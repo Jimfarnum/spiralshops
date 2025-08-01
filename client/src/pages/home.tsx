@@ -44,14 +44,8 @@ export default function Home() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
 
-  // Show onboarding for new users
-  useState(() => {
-    const hasSeenOnboarding = localStorage.getItem('spiralOnboardingComplete');
-    if (!hasSeenOnboarding) {
-      // Redirect to onboarding using navigate
-      navigate('/onboarding');
-    }
-  });
+  // Show onboarding for new users (disabled automatic redirect)
+  // Users can manually access onboarding via menu or header button
 
   const handleOnboardingClose = () => {
     setShowOnboarding(false);

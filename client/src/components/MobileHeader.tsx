@@ -77,21 +77,25 @@ export default function MobileHeader() {
             <nav className="py-4">
               {/* Main Navigation */}
               <div className="space-y-1 px-4">
-                <Link href="/" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <Link href="/" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg" onClick={toggleMenu}>
                   <Home className="w-5 h-5" />
                   <span>Home</span>
                 </Link>
-                <Link href="/products" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <Link href="/products" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg" onClick={toggleMenu}>
                   <Package className="w-5 h-5" />
                   <span>Products</span>
                 </Link>
-                <Link href="/malls" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <Link href="/malls" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg" onClick={toggleMenu}>
                   <MapPin className="w-5 h-5" />
                   <span>Malls</span>
                 </Link>
-                <Link href="/spiral-centers" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <Link href="/spiral-centers" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg" onClick={toggleMenu}>
                   <MapPin className="w-5 h-5" />
                   <span>SPIRAL Centers</span>
+                </Link>
+                <Link href="/search" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg" onClick={toggleMenu}>
+                  <Search className="w-5 h-5" />
+                  <span>Search</span>
                 </Link>
               </div>
 
@@ -99,15 +103,15 @@ export default function MobileHeader() {
               <div className="border-t border-gray-200 mt-4 pt-4 px-4">
                 {isAuthenticated ? (
                   <div className="space-y-1">
-                    <Link href="/profile" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <Link href="/profile" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg" onClick={toggleMenu}>
                       <User className="w-5 h-5" />
                       <span>Profile</span>
                     </Link>
-                    <Link href="/spirals" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <Link href="/spirals" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg" onClick={toggleMenu}>
                       <span className="w-5 h-5 text-center">⭐</span>
                       <span>My SPIRALs</span>
                     </Link>
-                    <Link href="/wishlist" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <Link href="/wishlist" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg" onClick={toggleMenu}>
                       <span className="w-5 h-5 text-center">❤️</span>
                       <span>Wishlist</span>
                     </Link>
@@ -132,10 +136,10 @@ export default function MobileHeader() {
               <div className="border-t border-gray-200 mt-4 pt-4 px-4">
                 <p className="text-sm font-medium text-gray-500 mb-2">For Retailers</p>
                 <div className="space-y-1">
-                  <Link href="/retailer-login" className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm">
+                  <Link href="/retailer-login" className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm" onClick={toggleMenu}>
                     <span>Retailer Login</span>
                   </Link>
-                  <Link href="/ai-retailer-signup" className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm">
+                  <Link href="/ai-retailer-signup" className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm" onClick={toggleMenu}>
                     <span>Join SPIRAL</span>
                   </Link>
                 </div>
