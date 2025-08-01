@@ -2,55 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 
 const steps = [
-  { title: "Welcome to SPIRAL", message: "Shop local. Earn rewards. Support real stores." },
-  { title: "Browse & Discover", message: "Explore nearby shops, search by zip, or find hidden gems." },
-  { title: "Earn SPIRALS", message: "Earn loyalty points at every store. Redeem for perks." },
-  { title: "One Cart. All Stores.", message: "Shop across stores with one simple checkout." },
+  { title: "Welcome to SPIRAL", message: "Shop local. Earn SPIRALS. Support real stores near you." },
+  { title: "Explore Easily", message: "Browse by ZIP code, store category, or product keywords." },
+  { title: "Unified Cart", message: "Add items from different retailers and checkout in one go." },
+  { title: "Perks & Rewards", message: "Earn SPIRALS with every purchase. Redeem for exclusive perks." },
 ];
 
 export default function ShopperOnboardingSimple() {
   const [step, setStep] = useState(0);
-  const [, setLocation] = useLocation();
+  const [, navigate] = useLocation();
 
   useEffect(() => {
-    if (localStorage.getItem("onboardingComplete")) {
-      setLocation('/');
+    if (localStorage.getItem("spiralOnboardingComplete")) {
+      navigate('/shopper-dashboard');
     }
-  }, [setLocation]);
+  }, [navigate]);
 
   const nextStep = () => {
     if (step < steps.length - 1) {
-      setStep(step + 1);
+      setStep(prev => prev + 1);
     } else {
-      localStorage.setItem("onboardingComplete", "true");
-      setLocation('/');
+      localStorage.setItem("spiralOnboardingComplete", "true");
+      navigate('/shopper-dashboard');
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen p-4 bg-gradient-to-br from-teal-50 to-blue-50 text-center">
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
-        <div className="mb-6">
-          <div className="w-16 h-16 bg-gradient-to-r from-teal-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-white text-2xl font-bold">{step + 1}</span>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">{steps[step].title}</h1>
-          <p className="text-lg text-gray-600 mb-8">{steps[step].message}</p>
-        </div>
-        
-        <div className="mb-6">
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-teal-600 to-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${((step + 1) / steps.length) * 100}%` }}
-            ></div>
-          </div>
-          <p className="text-sm text-gray-500 mt-2">Step {step + 1} of {steps.length}</p>
-        </div>
-
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-white to-gray-100 p-6 text-center">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8">
+        <h1 className="text-2xl font-bold mb-3">{steps[step].title}</h1>
+        <p className="text-gray-700 mb-6">{steps[step].message}</p>
         <button
-          className="w-full px-6 py-3 bg-gradient-to-r from-teal-600 to-blue-600 text-white rounded-lg font-semibold hover:from-teal-700 hover:to-blue-700 transition-all duration-200"
           onClick={nextStep}
+          className="bg-black text-white py-2 px-6 rounded-xl hover:bg-gray-800 transition"
         >
           {step === steps.length - 1 ? 'Start Shopping' : 'Next'}
         </button>

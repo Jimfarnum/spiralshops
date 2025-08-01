@@ -397,6 +397,7 @@ function Router() {
       <Route path="/shopper-onboarding" component={ShopperOnboarding} />
       <Route path="/shopper-onboarding-simple" component={ShopperOnboardingSimple} />
       <Route path="/onboarding" component={ShopperOnboardingSimple} />
+      <Route path="/shopper-dashboard" component={ShopperDashboard} />
       <Route path="/enhanced-profile-settings" component={EnhancedProfileSettings} />
       <Route path="/mall-gift-card-system" component={MallGiftCardSystem} />
       <Route path="/multi-mall-cart" component={MultiMallCart} />
