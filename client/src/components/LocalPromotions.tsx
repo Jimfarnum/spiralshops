@@ -24,6 +24,10 @@ export default function LocalPromotions() {
       if (!response.ok) throw new Error("Failed to fetch promotions");
       return response.json();
     },
+    staleTime: 15 * 60 * 1000, // 15 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   if (isLoading) {

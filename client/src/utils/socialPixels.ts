@@ -42,7 +42,10 @@ export class SocialPixelManager {
     if (typeof window !== 'undefined' && window.fbq) {
       try {
         window.fbq('track', eventName, parameters);
-        console.log(`Facebook pixel tracked: ${eventName}`, parameters);
+        // Only log in production or when debugging is enabled
+        if (process.env.NODE_ENV === 'production' || localStorage.getItem('spiral-debug-pixels') === 'true') {
+          console.log(`Facebook pixel tracked: ${eventName}`, parameters);
+        }
       } catch (error) {
         console.warn('Facebook pixel tracking failed:', error);
       }
@@ -54,7 +57,10 @@ export class SocialPixelManager {
     if (typeof window !== 'undefined' && window.twq) {
       try {
         window.twq('event', eventName, parameters);
-        console.log(`Twitter pixel tracked: ${eventName}`, parameters);
+        // Only log in production or when debugging is enabled
+        if (process.env.NODE_ENV === 'production' || localStorage.getItem('spiral-debug-pixels') === 'true') {
+          console.log(`Twitter pixel tracked: ${eventName}`, parameters);
+        }
       } catch (error) {
         console.warn('Twitter pixel tracking failed:', error);
       }
@@ -66,7 +72,10 @@ export class SocialPixelManager {
     if (typeof window !== 'undefined' && window.ttq) {
       try {
         window.ttq.track(eventName, parameters);
-        console.log(`TikTok pixel tracked: ${eventName}`, parameters);
+        // Only log in production or when debugging is enabled
+        if (process.env.NODE_ENV === 'production' || localStorage.getItem('spiral-debug-pixels') === 'true') {
+          console.log(`TikTok pixel tracked: ${eventName}`, parameters);
+        }
       } catch (error) {
         console.warn('TikTok pixel tracking failed:', error);
       }
@@ -82,7 +91,10 @@ export class SocialPixelManager {
           'custom_parameter_2': data || 'interaction',
           'custom_parameter_3': window.location.pathname
         });
-        console.log(`Truth Social tracked: ${action}`, data);
+        // Only log in production or when debugging is enabled
+        if (process.env.NODE_ENV === 'production' || localStorage.getItem('spiral-debug-pixels') === 'true') {
+          console.log(`Truth Social tracked: ${action}`, data);
+        }
       } catch (error) {
         console.warn('Truth Social tracking failed:', error);
       }

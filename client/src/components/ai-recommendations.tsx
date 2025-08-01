@@ -57,7 +57,10 @@ export default function AIRecommendations({
       if (!response.ok) throw new Error('Failed to fetch recommendations');
       return response.json() as RecommendationItem[];
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 20 * 60 * 1000, // 20 minutes
+    gcTime: 60 * 60 * 1000, // 1 hour
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const formatPrice = (price: number) => {

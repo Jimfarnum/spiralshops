@@ -23,6 +23,10 @@ export default function MallEvents() {
       if (!response.ok) throw new Error("Failed to fetch mall events");
       return response.json();
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   if (isLoading) {
