@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -41,14 +41,15 @@ export default function Home() {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [, navigate] = useLocation();
   const { toast } = useToast();
 
   // Show onboarding for new users
   useState(() => {
-    const hasSeenOnboarding = localStorage.getItem('onboardingComplete');
+    const hasSeenOnboarding = localStorage.getItem('spiralOnboardingComplete');
     if (!hasSeenOnboarding) {
-      // Redirect to onboarding instead of showing modal
-      window.location.href = '/onboarding';
+      // Redirect to onboarding using navigate
+      navigate('/onboarding');
     }
   });
 

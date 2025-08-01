@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { ShoppingCart, User, LogOut, Package, Star, Wallet } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
 import { useAuthStore } from "@/lib/authStore";
@@ -14,6 +14,7 @@ export default function Header() {
   const cartItemCount = getTotalItems();
   const { user, isAuthenticated, logout } = useAuthStore();
   const { toast } = useToast();
+  const [, navigate] = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -214,6 +215,14 @@ export default function Header() {
               </div>
             ) : (
               <div className="flex items-center space-x-1">
+                <Button 
+                  onClick={() => navigate('/onboarding')}
+                  variant="outline"
+                  size="sm"
+                  className="text-[var(--spiral-coral)] border-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)] hover:text-white text-sm"
+                >
+                  Get Started
+                </Button>
                 <Link href="/login">
                   <Button variant="ghost" size="sm" className="hover:bg-gray-100 text-sm">
                     Sign In
