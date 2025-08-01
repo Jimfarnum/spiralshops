@@ -65,6 +65,7 @@ import ExploreSPIRALsPage from "@/pages/ExploreSPIRALsPage";
 import RedeemSPIRALsPage from "@/pages/RedeemSPIRALsPage";
 import LoyaltyProgramPage from "@/pages/LoyaltyProgramPage";
 import DeliveryOptionsPage from "@/pages/DeliveryOptionsPage";
+import RetailerProfilePage from "@/pages/RetailerProfilePage";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
 import MallContextSync from "@/components/mall-context-sync";
@@ -225,6 +226,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/store/:id" component={Store} />
+      <Route path="/retailer/:id" component={RetailerProfilePage} />
       <Route path="/products" component={ProductsPage} />
       <Route path="/product/:id" component={ProductDetailOld} />
       <Route path="/search" component={ProductSearch} />
@@ -399,6 +401,7 @@ function Router() {
       <Route path="/mall-gift-card-system" component={MallGiftCardSystem} />
       <Route path="/multi-mall-cart" component={MultiMallCart} />
       <Route path="/mobile-responsive-test" component={MobileResponsiveTest} />
+      <Route path="/mobile-test" component={MobileResponsiveTest} />
       <Route path="/spiral-todo-progress" component={SpiralTodoProgress} />
       <Route path="/comprehensive-feature-testing" component={ComprehensiveFeatureTesting} />
       <Route path="/admin/spiral-agent/deep-test" component={AdminDeepTest} />

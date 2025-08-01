@@ -3,7 +3,11 @@
 ## Overview
 SPIRAL is a modern local business directory connecting shoppers with local businesses. It enables users to discover stores by location and provides retailers a platform to showcase their businesses. Key capabilities include an AI-powered retailer onboarding system, comprehensive logistics for same-day delivery, and advanced e-commerce features. The project aims to revitalize local commerce by providing a robust platform that integrates shopping, loyalty programs, and community engagement, positioning itself as a competitive solution in the local retail market.
 
-## Recent Changes (July 31, 2025)
+## Recent Changes (August 1, 2025)
+- **Shopper Onboarding System**: Implemented 4-step walkthrough with clean design, progress tracking, and localStorage completion detection
+- **Retailer Profile Pages**: Created comprehensive public-facing store pages with ratings, reviews, following system, verification badges, and SPIRAL rewards display
+- **Mobile Responsiveness Testing**: Built comprehensive device testing suite covering 11 devices across mobile, tablet, and desktop categories
+- **Route Enhancements**: Added /onboarding and /retailer/:id routes for improved user experience
 - **Product Categories Enhancement**: Implemented comprehensive Amazon-inspired categorization with 18 major categories and 144+ subcategories
 - **Enhanced Retailer Dashboard**: Complete overhaul of inventory management system with category/subcategory selection, CSV upload/download, and real-time statistics
 - **SEO Optimization**: Added comprehensive meta tags, Open Graph properties, and social media optimization
