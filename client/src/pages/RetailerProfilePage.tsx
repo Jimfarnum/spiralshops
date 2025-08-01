@@ -3,15 +3,17 @@ import { useParams } from 'wouter';
 
 interface StoreData {
   name: string;
+  slug?: string;
   address: string;
   hours: string;
   description: string;
+  acceptsSpirals?: boolean;
 }
 
 interface Product {
   image: string;
   name: string;
-  price: number;
+  price: string | number;
 }
 
 export default function RetailerProfilePage() {
@@ -36,7 +38,8 @@ export default function RetailerProfilePage() {
           name: "Sample Store",
           address: "123 Main St",
           hours: "9AM - 9PM",
-          description: "A great local store"
+          description: "A great local store",
+          acceptsSpirals: true
         });
         setProducts([
           {
@@ -54,7 +57,9 @@ export default function RetailerProfilePage() {
     <div className="p-6 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-2">{storeData.name}</h1>
       <p className="text-gray-600">{storeData.address} — {storeData.hours}</p>
-      <p className="mt-1 text-green-600 font-medium">SPIRALS Accepted ✓</p>
+      {storeData?.acceptsSpirals && (
+        <p className="mt-1 text-green-600 font-medium">SPIRALS Accepted ✓</p>
+      )}
       <p className="mt-2 italic">{storeData.description}</p>
 
       <h2 className="mt-6 text-2xl font-semibold">Products</h2>

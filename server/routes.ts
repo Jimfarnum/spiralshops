@@ -1094,13 +1094,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { storeSlug } = req.params;
       
-      // Mock retailer data for demo purposes
+      // Red Wing Shoes authentic data
+      if (storeSlug === 'red-wing-shoes') {
+        const retailerData = {
+          store: {
+            name: "Red Wing Shoes",
+            slug: "red-wing-shoes",
+            address: "123 Main St, Minneapolis, MN",
+            hours: "Mon-Sat 10AM–6PM",
+            description: "America's most trusted work boot brand.",
+            acceptsSpirals: true
+          },
+          products: [
+            {
+              name: "Classic Moc Boot",
+              price: "289.99",
+              image: "https://spiralshops.com/images/classic-moc.jpg"
+            },
+            {
+              name: "Iron Ranger",
+              price: "319.99",
+              image: "https://spiralshops.com/images/iron-ranger.jpg"
+            }
+          ]
+        };
+        return res.json(retailerData);
+      }
+      
+      // Generic demo data for other stores
       const retailerData = {
         store: {
           name: `${storeSlug.charAt(0).toUpperCase() + storeSlug.slice(1).replace('-', ' ')} Store`,
           address: "123 Main Street, Springfield, IL 62701",
           hours: "Mon-Sat: 9AM-9PM, Sun: 11AM-7PM",
-          description: "A trusted local retailer offering quality products and exceptional customer service."
+          description: "A trusted local retailer offering quality products and exceptional customer service.",
+          acceptsSpirals: true
         },
         products: [
           {
