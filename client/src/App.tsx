@@ -108,6 +108,7 @@ import CheckoutPage from "@/pages/CheckoutPage";
 import PaymentSuccessPage from "@/pages/PaymentSuccessPage";
 import PaymentDemo from "@/pages/PaymentDemo";
 import PaymentSystemDemo from "@/pages/PaymentSystemDemo";
+import FunctionalityTestPage from "@/pages/FunctionalityTestPage";
 import GPTIntegrationDemo from "@/pages/gpt-integration-demo";
 import VercelIBMIntegration from "@/pages/vercel-ibm-integration";
 import EnhancedCheckout from "@/pages/checkout-enhanced";
@@ -340,6 +341,7 @@ function Router() {
       <Route path="/payment-success" component={PaymentSuccessPage} />
       <Route path="/payment-demo" component={PaymentDemo} />
       <Route path="/payment-system" component={PaymentSystemDemo} />
+      <Route path="/functionality-test" component={FunctionalityTestPage} />
       <Route path="/retailer-feature-demo" component={RetailerFeatureDemoPage} />
       <Route path="/wishlist/settings" component={WishlistSettingsPage} />
       <Route path="/admin/wishlist-alerts" component={AdminWishlistAlertsPage} />
