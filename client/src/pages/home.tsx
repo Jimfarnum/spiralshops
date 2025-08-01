@@ -33,6 +33,7 @@ import RetailerCategoryMenu from "@/components/RetailerCategoryMenu";
 import EnhancedFeaturedProducts from "@/components/EnhancedFeaturedProducts";
 import MallEvents from "@/components/MallEvents";
 import LocalPromotions from "@/components/LocalPromotions";
+import { SharePopupWrapper, useSpiralshopsOnboarding } from "@/components/SpiralshopsCorrection";
 
 export default function Home() {
   const [spiralStoryModalOpen, setSpiralStoryModalOpen] = useState(false);
@@ -43,6 +44,9 @@ export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  
+  // SPIRALSHOPS CORRECTION: Onboarding state management
+  const { isOnboarding } = useSpiralshopsOnboarding();
 
   // Show onboarding for new users (disabled automatic redirect)
   // Users can manually access onboarding via menu or header button

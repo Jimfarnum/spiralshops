@@ -468,3 +468,19 @@ button, .btn {
     border-color: black !important;
   }
 }
+
+/* SPIRALSHOPS CORRECTION: Modal and Onboarding Z-Index Management */
+.modal-popup {
+  z-index: 10; /* lower than the onboarding container */
+}
+
+.onboarding-step {
+  z-index: 50;
+}
+
+.share-on-x {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+}
