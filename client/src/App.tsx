@@ -82,6 +82,7 @@ import ExternalServicesDemo from "@/pages/ExternalServicesDemo";
 import AdminExternalServices from "@/pages/AdminExternalServices";
 import AdminVerification from "@/pages/AdminVerification";
 import ShopperOnboarding from "@/pages/shopper-onboarding";
+import ShopperOnboardingSimple from "@/pages/ShopperOnboardingSimple";
 import EnhancedProfileSettings from "@/pages/enhanced-profile-settings";
 import MallGiftCardSystem from "@/pages/mall-gift-card-system";
 import MultiMallCart from "@/pages/multi-mall-cart";
@@ -392,6 +393,7 @@ function Router() {
       <Route path="/admin/external-services" component={AdminExternalServices} />
       <Route path="/admin/verification" component={AdminVerification} />
       <Route path="/shopper-onboarding" component={ShopperOnboarding} />
+      <Route path="/shopper-onboarding-simple" component={ShopperOnboardingSimple} />
       <Route path="/enhanced-profile-settings" component={EnhancedProfileSettings} />
       <Route path="/mall-gift-card-system" component={MallGiftCardSystem} />
       <Route path="/multi-mall-cart" component={MultiMallCart} />
