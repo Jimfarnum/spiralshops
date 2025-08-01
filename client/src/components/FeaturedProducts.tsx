@@ -15,7 +15,7 @@ interface Product {
 }
 
 export default function FeaturedProducts() {
-  const { data: products, isLoading } = useQuery<Product[]>({
+  const { data: apiResponse, isLoading, error } = useQuery<{success: boolean, products: Product[], total: number}>({
     queryKey: ["/api/products/featured"],
     queryFn: async () => {
       const response = await fetch("/api/products/featured");
@@ -23,6 +23,8 @@ export default function FeaturedProducts() {
       return response.json();
     },
   });
+
+  const products = apiResponse?.products;
 
   if (isLoading) {
     return (

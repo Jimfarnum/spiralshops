@@ -1155,6 +1155,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Featured Products API - CRITICAL FIX
+  app.get("/api/products/featured", async (req, res) => {
+    try {
+      const allProducts = await getProducts();
+      const featuredProducts = allProducts.slice(0, 6).map(product => ({
+        ...product,
+        featured: true,
+        discount: Math.floor(Math.random() * 30) + 10, // 10-40% discount
+        originalPrice: (product.price * 1.2).toFixed(2)
+      }));
+      
+      res.json({
+        success: true,
+        products: featuredProducts,
+        total: featuredProducts.length
+      });
+    } catch (error) {
+      console.error('Featured products error:', error);
+      res.status(500).json({ error: "Failed to fetch featured products" });
+    }
+  });
+
+  // Product Search API - CRITICAL FIX
+  app.get("/api/products/search", async (req, res) => {
+    try {
+      const { q, limit = 20, offset = 0 } = req.query;
+      const allProducts = await getProducts();
+      
+      if (!q) {
+        return res.json({
+          success: true,
+          products: allProducts.slice(0, parseInt(limit as string)),
+          total: allProducts.length,
+          query: ""
+        });
+      }
+      
+      const searchTerm = (q as string).toLowerCase();
+      const filteredProducts = allProducts.filter(product =>
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.description.toLowerCase().includes(searchTerm) ||
+        product.category.toLowerCase().includes(searchTerm)
+      );
+      
+      const startIndex = parseInt(offset as string);
+      const endIndex = startIndex + parseInt(limit as string);
+      const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+      
+      res.json({
+        success: true,
+        products: paginatedProducts,
+        total: filteredProducts.length,
+        query: searchTerm,
+        hasMore: endIndex < filteredProducts.length
+      });
+    } catch (error) {
+      console.error('Product search error:', error);
+      res.status(500).json({ error: "Failed to search products" });
+    }
+  });
+
   // Product Catalog API Routes (Data Loaded from DataService)
   app.get("/api/products", async (req, res) => {
     try {

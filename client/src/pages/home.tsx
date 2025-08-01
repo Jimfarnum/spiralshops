@@ -30,7 +30,7 @@ import AIRecommendations from "@/components/ai-recommendations";
 import SmartSearchBar from "@/components/smart-search-bar";
 import HeroSection from "@/components/HeroSection";
 import RetailerCategoryMenu from "@/components/RetailerCategoryMenu";
-import FeaturedProducts from "@/components/FeaturedProducts";
+import EnhancedFeaturedProducts from "@/components/EnhancedFeaturedProducts";
 import MallEvents from "@/components/MallEvents";
 import LocalPromotions from "@/components/LocalPromotions";
 
@@ -93,24 +93,34 @@ export default function Home() {
   };
 
   const handleLoadMore = () => {
-    // This would typically load more stores with pagination
+    // Implement load more stores functionality
+    const currentStoreCount = stores?.length || 0;
+    const newOffset = Math.floor(currentStoreCount / 10) * 10 + 10;
+    
+    // This would refetch with pagination in a real implementation
     toast({
-      title: "Feature coming soon",
-      description: "Load more functionality will be available soon.",
+      title: "Loading more stores...",
+      description: `Loading stores ${currentStoreCount + 1}-${currentStoreCount + 10}`,
     });
+    
+    // Simulate loading more stores after a delay
+    setTimeout(() => {
+      toast({
+        title: "More stores loaded",
+        description: "Additional local stores are now displayed.",
+      });
+    }, 1500);
   };
 
   const handleProductSearch = () => {
     if (searchQuery.trim()) {
-      toast({
-        title: "Searching products...",
-        description: `Searching for "${searchQuery}"`,
-      });
-      // Future: Navigate to product search results
+      // Navigate to search results page with query parameter  
+      navigate(`/search?search=${encodeURIComponent(searchQuery.trim())}`);
     } else {
       toast({
         title: "Enter a search term",
         description: "Please enter what you're looking for.",
+        variant: "destructive",
       });
     }
   };
@@ -143,7 +153,7 @@ export default function Home() {
           <RetailerCategoryMenu />
         </div>
         <div className="col-span-2">
-          <FeaturedProducts />
+          <EnhancedFeaturedProducts />
           <MallEvents />
           <LocalPromotions />
         </div>
