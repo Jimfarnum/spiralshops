@@ -55,6 +55,7 @@ import DynamicFeatureTesting from "@/pages/dynamic-feature-testing";
 import MallTemplate from "@/pages/mall-template";
 import MallStorePage from "@/pages/mall-store";
 import ProductDetailNew from "@/pages/product-detail";
+import EnhancedProductDetail from "@/pages/EnhancedProductDetail";
 import GiftCards from "@/pages/gift-cards";
 import AccountGiftCards from "@/pages/account-gift-cards";
 import AdminGiftCards from "@/pages/admin-gift-cards";
@@ -230,7 +231,7 @@ function Router() {
       <Route path="/store/:id" component={Store} />
       <Route path="/retailers/:storeSlug" component={RetailerProfilePage} />
       <Route path="/products" component={ProductsPage} />
-      <Route path="/product/:id" component={ProductDetailOld} />
+      <Route path="/product/:id" component={EnhancedProductDetail} />
       <Route path="/search" component={ProductSearch} />
       <Route path="/search/:id" component={ProductDetailOld} />
       <Route path="/cart" component={Cart} />

@@ -150,6 +150,48 @@ const Checkout = () => {
     }
   };
 
+  const handleOrderProcessing = async () => {
+    try {
+      // Generate order number
+      const newOrderNumber = 'SPR-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+      
+      // Add SPIRAL transaction
+      addTransaction({
+        amount: total,
+        type: "earned",
+        description: `Order ${newOrderNumber}`,
+        spiralsEarned
+      });
+
+      // Clear cart
+      clearCart();
+      
+      // Set order completion
+      setOrderNumber(newOrderNumber);
+      setOrderComplete(true);
+
+      toast({
+        title: "Order Placed Successfully!",
+        description: `Order ${newOrderNumber} has been placed. You earned ${spiralsEarned} SPIRALs!`,
+      });
+
+      // Navigate to confirmation page after delay
+      setTimeout(() => {
+        setLocation(`/order-confirmation/${newOrderNumber}`);
+      }, 2000);
+
+    } catch (error) {
+      console.error('Order processing error:', error);
+      toast({
+        title: "Order Processing Failed",
+        description: "There was an issue processing your order. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const handlePaymentSuccess = (paymentIntent: any) => {
     console.log('Payment successful:', paymentIntent);
     handleOrderProcessing();
