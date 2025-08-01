@@ -22,7 +22,7 @@ import { registerReturnRoutes } from "./returnRoutes";
 import { recommendationEngine } from "./smartRecommendation";
 import followRoutes from "./followRoutes";
 import { registerFeature17Routes } from "./feature17Routes";
-import paymentRoutes from "./paymentRoutes";
+// Payment routes will be imported dynamically
 import aiAnalyticsRoutes from "./aiAnalyticsRoutes";
 // Subscription routes will be imported dynamically
 import { 
@@ -1106,6 +1106,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load retailer data integration routes:', err.message);
   }
 
+  // Register Stripe Payment Routes
+  try {
+    const { registerPaymentRoutes } = await import("./paymentRoutes");
+    registerPaymentRoutes(app);
+    console.log('✅ Stripe payment routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load payment routes:', err.message);
+  }
+
   // Retailer Store Profile API (using different path to avoid conflicts)
   app.get("/api/stores/profile/:storeSlug", async (req, res) => {
     try {
@@ -1657,7 +1666,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Register payment, AI analytics, subscription, and invite routes
-  app.use("/api/payment", paymentRoutes);
+  // Payment routes are registered separately above
   app.use("/api/ai", aiAnalyticsRoutes);
   // Subscription routes already loaded above
   app.use("/api/invite", inviteRoutes);
