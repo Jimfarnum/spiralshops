@@ -66,6 +66,7 @@ import RedeemSPIRALsPage from "@/pages/RedeemSPIRALsPage";
 import LoyaltyProgramPage from "@/pages/LoyaltyProgramPage";
 import DeliveryOptionsPage from "@/pages/DeliveryOptionsPage";
 import RetailerProfilePage from "@/pages/RetailerProfilePage";
+import SEOLandingRoute from "@/pages/SEOLandingRoute";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
 import MallContextSync from "@/components/mall-context-sync";
