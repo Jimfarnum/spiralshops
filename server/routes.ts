@@ -1089,8 +1089,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const verificationRoutes = await import("./verificationRoutes");
   app.use(verificationRoutes.default);
 
-  // Retailer Profile API
-  app.get("/api/retailers/:storeSlug", async (req, res) => {
+  // Retailer Store Profile API (using different path to avoid conflicts)
+  app.get("/api/stores/profile/:storeSlug", async (req, res) => {
     try {
       const { storeSlug } = req.params;
       

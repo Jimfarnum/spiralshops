@@ -23,7 +23,7 @@ export default function RetailerProfilePage() {
   useEffect(() => {
     if (!storeSlug) return;
     
-    fetch(`/api/retailers/${storeSlug}`)
+    fetch(`/api/stores/profile/${storeSlug}`)
       .then(res => res.json())
       .then(data => {
         setStoreData(data.store);
