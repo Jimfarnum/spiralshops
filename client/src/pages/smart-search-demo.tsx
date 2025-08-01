@@ -23,7 +23,7 @@ interface SearchResult {
 
 export default function SmartSearchDemo() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [category, setCategory] = useState('all');
+  const [category, setCategory] = useState('');
   const [location, setLocation] = useState('');
   const [fuzzyEnabled, setFuzzyEnabled] = useState(true);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);

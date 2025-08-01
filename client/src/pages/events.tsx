@@ -63,9 +63,9 @@ export default function EventsPage() {
   const queryClient = useQueryClient();
   
   const [filters, setFilters] = useState({
-    eventType: 'all',
+    eventType: '',
     mallId: '',
-    location: 'all',
+    location: '',
     sort: 'date',
     search: ''
   });
@@ -74,9 +74,9 @@ export default function EventsPage() {
     queryKey: ['/api/events', filters],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (filters.eventType && filters.eventType !== 'all') params.append('eventType', filters.eventType);
+      if (filters.eventType) params.append('eventType', filters.eventType);
       if (filters.mallId) params.append('mallId', filters.mallId);
-      if (filters.location && filters.location !== 'all') params.append('location', filters.location);
+      if (filters.location) params.append('location', filters.location);
       if (filters.sort) params.append('sort', filters.sort);
       if (filters.search) params.append('search', filters.search);
       

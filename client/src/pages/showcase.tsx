@@ -75,8 +75,8 @@ export default function ShowcasePage() {
   const queryClient = useQueryClient();
   
   const [filters, setFilters] = useState({
-    category: 'all',
-    location: 'all',
+    category: '',
+    location: '',
     featured: false,
     search: ''
   });
@@ -89,8 +89,8 @@ export default function ShowcasePage() {
     queryKey: ['/api/testimonials', filters],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (filters.category && filters.category !== 'all') params.append('category', filters.category);
-      if (filters.location && filters.location !== 'all') params.append('location', filters.location);
+      if (filters.category) params.append('category', filters.category);
+      if (filters.location) params.append('location', filters.location);
       if (filters.featured) params.append('featured', 'true');
       
       const response = await fetch(`/api/testimonials?${params.toString()}`);
