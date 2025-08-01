@@ -45,9 +45,10 @@ export default function Home() {
 
   // Show onboarding for new users
   useState(() => {
-    const hasSeenOnboarding = localStorage.getItem('spiral-onboarding-seen');
+    const hasSeenOnboarding = localStorage.getItem('onboardingComplete');
     if (!hasSeenOnboarding) {
-      setTimeout(() => setShowOnboarding(true), 2000);
+      // Redirect to onboarding instead of showing modal
+      window.location.href = '/onboarding';
     }
   });
 
