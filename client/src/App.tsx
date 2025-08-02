@@ -225,6 +225,7 @@ import ProductsPageNew from "@/pages/ProductsPage";
 import MallsPageNew from "@/pages/MallsPage";
 import NavigationTest from "@/pages/navigation-test";
 import CompleteFunctionalityTest from "@/pages/complete-functionality-test";
+import CodeContinuityTest from "@/pages/code-continuity-test";
 
 
 function Router() {
@@ -453,6 +454,7 @@ function Router() {
       <Route path="/admin-test-dashboard" component={AdminTestDashboardExisting} />
       <Route path="/navigation-test" component={NavigationTest} />
       <Route path="/complete-functionality-test" component={CompleteFunctionalityTest} />
+      <Route path="/code-continuity-test" component={CodeContinuityTest} />
       <Route component={NotFound} />
     </Switch>
   );
