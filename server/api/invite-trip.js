@@ -4,6 +4,11 @@ const router = express.Router();
 // In-memory storage for invite trips (in production, use database)
 const inviteTrips = new Map();
 
+// Export trips data for sharing with other modules
+export function getTripsData() {
+  return inviteTrips;
+}
+
 // Create a new invite trip
 router.post('/invite-trip', (req, res) => {
   try {
@@ -30,6 +35,8 @@ router.post('/invite-trip', (req, res) => {
       createdAt: new Date().toISOString(),
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
       inviteLink: `https://spiralshops.com/invite/${tripId}`,
+      mallId: req.body.mallId || 'mall_1', // Default mall for testing
+      storeId: req.body.storeId || 'store_1', // Default store for testing
       rewards: {
         spiralsPerInvite: 5,
         totalEarned: 0

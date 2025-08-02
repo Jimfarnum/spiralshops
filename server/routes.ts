@@ -1083,6 +1083,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load invite trip routes:', err.message);
   }
 
+  // Trips by Location API Routes for retailer dashboard
+  try {
+    const { default: tripsByLocation } = await import("./api/trips-by-location.js");
+    app.use("/api", tripsByLocation);
+    console.log('✅ Trips by location routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load trips by location routes:', err.message);
+  }
+
   // Register return & refund system routes
   registerReturnRoutes(app);
 
