@@ -40,10 +40,10 @@ export default function InviteResponse() {
 
   const loadTripData = async (tripId: string) => {
     try {
-      const response = await fetch(`/api/invite/trip/${tripId}`);
+      const response = await fetch(`/api/invite-trip/${tripId}`);
       if (response.ok) {
         const data = await response.json();
-        setTripData(data);
+        setTripData(data.trip);
       } else {
         toast({
           title: "Trip Not Found",
@@ -77,15 +77,14 @@ export default function InviteResponse() {
     setIsSubmitting(true);
 
     try {
-      const submitResponse = await fetch(`/api/invite/respond-invite/${params?.tripId}`, {
+      const submitResponse = await fetch(`/api/invite-trip/${params?.tripId}/join`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          guestName: guestName || "Guest",
-          guestEmail,
-          response,
+          userId: guestEmail,
+          userName: guestName || "Guest",
           message,
         }),
       });

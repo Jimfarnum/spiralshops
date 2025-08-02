@@ -65,18 +65,19 @@ export default function InviteToShop() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/invite/invite-trip", {
+      const response = await fetch("/api/invite-trip", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: "user_123", // In real app, get from auth
-          shopperName: "SPIRAL Shopper", // In real app, get from user profile
-          date: format(date, "yyyy-MM-dd"),
-          location,
-          invitees: invitees.filter(email => email.trim()),
-          personalMessage,
+          userId: "demo_shopper", 
+          cartItems: [
+            { id: 1, name: "Sample Product", price: 49.99, quantity: 1 }
+          ],
+          tripName: `Shopping Trip - ${format(date, "PPP")}`,
+          mallId: "mall_1",
+          storeId: "store_1",
         }),
       });
 
