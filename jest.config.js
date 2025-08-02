@@ -1,20 +1,25 @@
 export default {
+  preset: 'ts-jest',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/client/src/$1',
     '^@assets/(.*)$': '<rootDir>/attached_assets/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', {
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(js|jsx)$': ['babel-jest', {
       presets: [
         ['@babel/preset-env', { targets: { node: 'current' } }],
         ['@babel/preset-react', { runtime: 'automatic' }],
-        '@babel/preset-typescript'
       ]
     }]
   },
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(wouter|@tanstack|lucide-react)/)'
+  ],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   testMatch: [
     '<rootDir>/__tests__/**/*.(test|spec).(js|jsx|ts|tsx)',
     '<rootDir>/client/src/**/*.(test|spec).(js|jsx|ts|tsx)'
