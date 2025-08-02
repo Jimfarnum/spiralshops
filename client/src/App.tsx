@@ -120,6 +120,7 @@ import RealTimeMonitoring from "@/pages/real-time-monitoring";
 import InviteToShop from "@/pages/invite-to-shop";
 import InviteResponse from "@/pages/invite-response";
 import MyTrips from "@/pages/my-trips";
+import RetailerIncentiveScheduler from "@/pages/retailer-incentive-scheduler";
 import AccessibilityInitialization from "@/components/accessibility-initialization";
 import PerformanceOptimization from "@/pages/performance-optimization";
 import FeatureShowcase from "@/pages/feature-showcase";
@@ -408,6 +409,7 @@ function Router() {
       <Route path="/invite-to-shop" component={InviteToShop} />
       <Route path="/invite/:tripId" component={InviteResponse} />
       <Route path="/my-trips" component={MyTrips} />
+      <Route path="/retailer-incentive-scheduler" component={RetailerIncentiveScheduler} />
       <Route path="/advanced-payment-hub" component={AdvancedPaymentHub} />
       <Route path="/ai-business-intelligence" component={AIBusinessIntelligence} />
       <Route path="/mobile-payments" component={MobilePayments} />

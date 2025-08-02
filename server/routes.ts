@@ -1092,6 +1092,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load trips by location routes:', err.message);
   }
 
+  // Retailer Perks/Incentives API Routes
+  try {
+    const { default: retailerPerks } = await import('./api/retailer-perks.js');
+    app.use('/api/retailer-perks', retailerPerks);
+    console.log('✅ Retailer perks routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load retailer perks routes:', err.message);
+  }
+
   // Register return & refund system routes
   registerReturnRoutes(app);
 
