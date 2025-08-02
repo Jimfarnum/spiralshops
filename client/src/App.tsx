@@ -224,6 +224,7 @@ import ProductsPage from "@/pages/products";
 import ProductsPageNew from "@/pages/ProductsPage";
 import MallsPageNew from "@/pages/MallsPage";
 import NavigationTest from "@/pages/navigation-test";
+import CompleteFunctionalityTest from "@/pages/complete-functionality-test";
 
 
 function Router() {
@@ -451,6 +452,7 @@ function Router() {
       <Route path="/retailer-dashboard" component={RetailerInventoryDashboard} />
       <Route path="/admin-test-dashboard" component={AdminTestDashboardExisting} />
       <Route path="/navigation-test" component={NavigationTest} />
+      <Route path="/complete-functionality-test" component={CompleteFunctionalityTest} />
       <Route component={NotFound} />
     </Switch>
   );
