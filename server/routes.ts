@@ -1073,6 +1073,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Feature 15: Invite leaderboard routes
   // Invite routes are registered below with other API routes
+  
+  // Invite Trip API Routes for social shopping
+  try {
+    const { default: inviteTrip } = await import("./api/invite-trip.js");
+    app.use("/api", inviteTrip);
+    console.log('✅ Invite trip routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load invite trip routes:', err.message);
+  }
 
   // Register return & refund system routes
   registerReturnRoutes(app);
