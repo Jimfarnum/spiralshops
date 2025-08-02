@@ -46,9 +46,9 @@ export default function HeroSection() {
           </Link>
           <Link to="/about-spiral" className="group sm:col-span-2 md:col-span-1">
             <div className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer">
-              <div className="text-3xl mb-3">🏘️</div>
-              <h3 className="text-lg sm:text-xl font-semibold mb-3 group-hover:text-[var(--spiral-coral)] transition-colors">Fuel Community</h3>
-              <p className="section-description text-sm sm:text-base">Your purchases power real jobs, local places, and Main Street revival.</p>
+              <div className="text-3xl mb-3">📖</div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 group-hover:text-[var(--spiral-coral)] transition-colors">More About SPIRAL</h3>
+              <p className="section-description text-sm sm:text-base">Learn how SPIRAL powers local commerce and community connections.</p>
             </div>
           </Link>
         </div>
@@ -60,7 +60,7 @@ export default function HeroSection() {
         <p className="section-description mb-6 max-w-xl mx-auto">
           Track your earnings, see your impact, and redeem rewards easily—all in one place.
         </p>
-        <Link href="/shopper-dashboard" className="text-blue-600 underline text-lg">
+        <Link to="/shopper-dashboard" className="text-blue-600 underline text-lg">
           Access Your Wallet
         </Link>
       </section>
@@ -72,12 +72,12 @@ export default function HeroSection() {
           Whether you're a shopper or a retailer—SPIRAL makes every local connection count.
         </p>
         <div className="flex justify-center gap-4">
-          <Link href="/shopper-dashboard">
+          <Link to="/shopper-dashboard">
             <button className="bg-black text-white px-6 py-3 rounded-full text-lg hover:bg-gray-800">
               Start Your SPIRAL Journey
             </button>
           </Link>
-          <Link href="/retailer-dashboard-new">
+          <Link to="/retailer-dashboard-new">
             <button className="bg-white text-black border border-black px-6 py-3 rounded-full text-lg hover:bg-gray-100">
               Join as Retailer
             </button>
