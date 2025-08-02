@@ -1,32 +1,5 @@
 User-agent: *
-Allow: /
-
-# Main sitemap
-Sitemap: https://spiralshops.com/sitemap.xml
-
-# Disallow admin and testing pages
+Disallow: /admin-login
 Disallow: /admin/
-Disallow: /test-*
-Disallow: /spiral-admin/
 Disallow: /api/
-Disallow: /_*
-
-# Allow specific important pages
-Allow: /products
-Allow: /search
-Allow: /mall-directory
-Allow: /malls
-Allow: /login
-Allow: /signup
-Allow: /about
-Allow: /gift-cards
-Allow: /events
-Allow: /spiral-centers
-Allow: /advanced-logistics
-Allow: /ai-retailer-signup
-Allow: /retailer-login
-Allow: /spirals
-Allow: /loyalty-program
-
-# Crawl delay (optional)
-Crawl-delay: 1
+Allow: /
