@@ -223,6 +223,7 @@ import RetailerInventoryDashboard from "@/components/RetailerInventoryDashboard"
 import ProductsPage from "@/pages/products";
 import ProductsPageNew from "@/pages/ProductsPage";
 import MallsPageNew from "@/pages/MallsPage";
+import NavigationTest from "@/pages/navigation-test";
 
 
 function Router() {
@@ -449,6 +450,7 @@ function Router() {
       <Route path="/retailer-inventory" component={RetailerInventoryDashboard} />
       <Route path="/retailer-dashboard" component={RetailerInventoryDashboard} />
       <Route path="/admin-test-dashboard" component={AdminTestDashboardExisting} />
+      <Route path="/navigation-test" component={NavigationTest} />
       <Route component={NotFound} />
     </Switch>
   );
