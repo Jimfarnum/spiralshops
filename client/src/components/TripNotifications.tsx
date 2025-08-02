@@ -233,17 +233,17 @@ export default function TripNotifications({ storeId = 'store_1', mallId = 'mall_
                 <CardContent>
                   <div className="space-y-3">
                     <div>
-                      <h5 className="font-medium mb-2">Cart Items ({trip.cartItems.length})</h5>
+                      <h5 className="font-medium mb-2">Cart Items ({Object.keys(trip.cartItems || {}).length})</h5>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {trip.cartItems.slice(0, 4).map((item, index) => (
+                        {Object.values(trip.cartItems || {}).slice(0, 4).map((item: any, index) => (
                           <div key={index} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
                             <span className="text-sm">{item.name}</span>
                             <span className="text-sm font-medium">{formatCurrency(item.price)}</span>
                           </div>
                         ))}
-                        {trip.cartItems.length > 4 && (
+                        {Object.keys(trip.cartItems || {}).length > 4 && (
                           <div className="text-sm text-gray-500 dark:text-gray-400 p-2">
-                            +{trip.cartItems.length - 4} more items
+                            +{Object.keys(trip.cartItems || {}).length - 4} more items
                           </div>
                         )}
                       </div>
