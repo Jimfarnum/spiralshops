@@ -374,7 +374,7 @@ export default function Home() {
           </div>
           
           <div className="text-center">
-            <Link href="/products">
+            <Link to="/products">
               <Button className="button-secondary px-8 py-4 text-lg">
                 View All Products
               </Button>
@@ -443,7 +443,7 @@ export default function Home() {
           </div>
           
           <div className="text-center">
-            <Link href="/mall-directory">
+            <Link to="/mall-directory">
               <Button className="button-secondary px-8 py-4 text-lg">
                 View All Malls
               </Button>
@@ -534,7 +534,7 @@ export default function Home() {
           </div>
           
           <div className="text-center">
-            <Link href="/products?category=featured">
+            <Link to="/products?category=featured">
               <Button className="button-secondary px-8 py-4 text-lg">
                 View All Local Picks
               </Button>
