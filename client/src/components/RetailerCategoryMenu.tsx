@@ -63,7 +63,7 @@ export default function RetailerCategoryMenu() {
           const IconComponent = category.icon;
           return (
             <div key={category.name} className="group">
-              <Link href={category.href}>
+              <Link to={category.href}>
                 <div className={`flex items-center p-3 rounded-lg bg-gradient-to-r ${category.color} text-white hover:shadow-lg transition-all duration-200 cursor-pointer group-hover:scale-102`}>
                   <IconComponent className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
                   <span className="font-medium text-sm">{category.name}</span>

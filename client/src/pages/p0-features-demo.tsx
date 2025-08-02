@@ -226,12 +226,12 @@ export default function P0FeaturesDemo() {
                   Reviews System
                 </h4>
                 <div className="space-y-2 text-sm">
-                  <Link href="/product/1">
+                  <Link to="/product/1">
                     <Button variant="ghost" size="sm" className="w-full justify-start">
                       Product Detail with Reviews
                     </Button>
                   </Link>
-                  <Link href="/store/1/reviews">
+                  <Link to="/store/1/reviews">
                     <Button variant="ghost" size="sm" className="w-full justify-start">
                       Store Reviews Page
                     </Button>

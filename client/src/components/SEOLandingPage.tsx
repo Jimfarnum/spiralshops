@@ -61,12 +61,12 @@ export default function SEOLandingPage({ showAsLanding = false }: SEOLandingPage
             Support Real Places, Earn Real Benefits
           </h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/onboarding">
+            <Link to="/onboarding">
               <Button size="lg" className="bg-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/90 text-white px-8 py-3">
                 Start Shopping & Earning
               </Button>
             </Link>
-            <Link href="/retailers/red-wing-shoes">
+            <Link to="/retailers/red-wing-shoes">
               <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-[var(--spiral-navy)] px-8 py-3">
                 View Store Example
               </Button>
@@ -130,7 +130,7 @@ export default function SEOLandingPage({ showAsLanding = false }: SEOLandingPage
           <div className="text-center bg-[var(--spiral-cream)] p-8 rounded-lg">
             <h3 className="text-2xl font-bold mb-4">Ready to Start Supporting Local?</h3>
             <p className="text-gray-700 mb-6">Join thousands of shoppers earning rewards while supporting their communities</p>
-            <Link href="/onboarding">
+            <Link to="/onboarding">
               <Button size="lg" className="bg-[var(--spiral-navy)] hover:bg-[var(--spiral-navy)]/90 text-white px-8 py-3">
                 Sign Up Free Today
               </Button>
@@ -146,16 +146,16 @@ export default function SEOLandingPage({ showAsLanding = false }: SEOLandingPage
             <div>
               <h4 className="font-bold mb-4">For Shoppers</h4>
               <nav className="space-y-2">
-                <Link href="/onboarding" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/onboarding" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Get Started
                 </Link>
-                <Link href="/products" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/products" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Browse Products
                 </Link>
-                <Link href="/spirals" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/spirals" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Loyalty Program
                 </Link>
-                <Link href="/shopper-dashboard" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/shopper-dashboard" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Shopper Dashboard
                 </Link>
               </nav>
@@ -164,13 +164,13 @@ export default function SEOLandingPage({ showAsLanding = false }: SEOLandingPage
             <div>
               <h4 className="font-bold mb-4">For Retailers</h4>
               <nav className="space-y-2">
-                <Link href="/retailer-onboarding" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/retailer-onboarding" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Join SPIRAL
                 </Link>
-                <Link href="/retailer-login" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/retailer-login" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Retailer Login
                 </Link>
-                <Link href="/retailer-portal" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/retailer-portal" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Retailer Portal
                 </Link>
               </nav>
@@ -179,13 +179,13 @@ export default function SEOLandingPage({ showAsLanding = false }: SEOLandingPage
             <div>
               <h4 className="font-bold mb-4">Platform</h4>
               <nav className="space-y-2">
-                <Link href="/about" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/about" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   About SPIRAL
                 </Link>
-                <Link href="/mall-directory" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/mall-directory" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Mall Directory
                 </Link>
-                <Link href="/social-feed" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/social-feed" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Community
                 </Link>
               </nav>
@@ -194,13 +194,13 @@ export default function SEOLandingPage({ showAsLanding = false }: SEOLandingPage
             <div>
               <h4 className="font-bold mb-4">Support</h4>
               <nav className="space-y-2">
-                <Link href="/help" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/help" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Help Center
                 </Link>
-                <Link href="/contact" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/contact" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Contact Us
                 </Link>
-                <Link href="/privacy" className="block hover:text-[var(--spiral-coral)] transition-colors">
+                <Link to="/privacy" className="block hover:text-[var(--spiral-coral)] transition-colors">
                   Privacy Policy
                 </Link>
               </nav>
