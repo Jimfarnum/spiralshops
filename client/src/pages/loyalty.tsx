@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-import type { Store } from '@shared/schema';
 import { 
   Award, 
   Star, 
@@ -28,7 +27,8 @@ import {
   Filter,
   ExternalLink,
   CheckCircle,
-  Building2
+  Building2,
+  Store
 } from 'lucide-react';
 
 interface LoyaltyData {
