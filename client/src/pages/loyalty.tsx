@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'wouter';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import type { Store } from '@shared/schema';
 import { 
   Award, 
   Star, 
@@ -25,7 +27,8 @@ import {
   Calendar,
   Filter,
   ExternalLink,
-  CheckCircle
+  CheckCircle,
+  Building2
 } from 'lucide-react';
 
 interface LoyaltyData {
@@ -567,13 +570,13 @@ export default function LoyaltyDashboard() {
                   <CardTitle className="text-base">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Link href="/loyalty/retailers" className="block">
+                  <Link to="/loyalty/retailers" className="block">
                     <Button className="w-full justify-start" variant="outline">
                       <Store className="mr-2 h-4 w-4" />
                       Retailer Loyalty Dashboard
                     </Button>
                   </Link>
-                  <Link href="/loyalty/mall-perks" className="block">
+                  <Link to="/loyalty/mall-perks" className="block">
                     <Button className="w-full justify-start" variant="outline">
                       <Building2 className="mr-2 h-4 w-4" />
                       Mall Bonus Perks
