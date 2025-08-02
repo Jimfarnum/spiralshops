@@ -6,6 +6,7 @@ import { ArrowLeft, Plus, Minus, Trash2, ShoppingBag, CreditCard } from 'lucide-
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import InviteToShop from '@/components/InviteToShop';
 
 const Cart = () => {
   const { items, updateQuantity, removeItem, clearCart, getTotalPrice, getTotalItems } = useCartStore();
@@ -39,7 +40,7 @@ const Cart = () => {
             <ShoppingBag className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h1 className="text-3xl font-bold text-[var(--spiral-navy)] mb-4 font-['Poppins']">Your cart is empty</h1>
             <p className="text-gray-600 mb-8 font-['Inter']">Start shopping to add items to your cart.</p>
-            <Link href="/products">
+            <Link to="/products">
               <Button className="bg-[var(--spiral-navy)] hover:bg-[var(--spiral-sage)] text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300">
                 Continue Shopping
               </Button>
@@ -58,16 +59,16 @@ const Cart = () => {
         {/* Breadcrumb */}
         <nav className="mb-6">
           <ol className="flex items-center space-x-2 text-sm text-gray-600 font-['Inter']">
-            <li><Link href="/" className="hover:text-[var(--spiral-coral)]">Home</Link></li>
+            <li><Link to="/" className="hover:text-[var(--spiral-coral)]">Home</Link></li>
             <li>/</li>
-            <li><Link href="/products" className="hover:text-[var(--spiral-coral)]">Products</Link></li>
+            <li><Link to="/products" className="hover:text-[var(--spiral-coral)]">Products</Link></li>
             <li>/</li>
             <li className="text-[var(--spiral-navy)] font-semibold">Shopping Cart</li>
           </ol>
         </nav>
 
         <div className="mb-8">
-          <Link href="/products">
+          <Link to="/products">
             <Button variant="ghost" className="mb-4 hover:bg-gray-100 rounded-xl">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Continue Shopping
@@ -181,7 +182,7 @@ const Cart = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <Link href="/checkout" className="block">
+                  <Link to="/checkout" className="block">
                     <Button 
                       size="lg" 
                       className="w-full bg-[var(--spiral-navy)] hover:bg-[var(--spiral-coral)] text-white h-14 text-lg font-semibold rounded-xl transition-all duration-300"
@@ -192,7 +193,7 @@ const Cart = () => {
                     </Button>
                   </Link>
                   
-                  <Link href="/guest-checkout" className="block">
+                  <Link to="/guest-checkout" className="block">
                     <Button 
                       variant="outline"
                       size="lg" 
@@ -203,7 +204,7 @@ const Cart = () => {
                     </Button>
                   </Link>
                   
-                  <Link href="/split-fulfillment" className="block">
+                  <Link to="/split-fulfillment" className="block">
                     <Button 
                       variant="outline" 
                       size="lg" 
@@ -213,7 +214,7 @@ const Cart = () => {
                     </Button>
                   </Link>
                   
-                  <Link href="/products" className="block">
+                  <Link to="/products" className="block">
                     <Button 
                       variant="outline" 
                       size="lg" 
@@ -235,6 +236,9 @@ const Cart = () => {
                 </div>
               </div>
             </div>
+            
+            {/* Invite to Shop Feature */}
+            <InviteToShop tripId={`cart-${Date.now()}`} />
           </div>
         </div>
       </div>

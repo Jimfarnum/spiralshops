@@ -226,6 +226,7 @@ import MallsPageNew from "@/pages/MallsPage";
 import NavigationTest from "@/pages/navigation-test";
 import CompleteFunctionalityTest from "@/pages/complete-functionality-test";
 import CodeContinuityTest from "@/pages/code-continuity-test";
+import InviteFriends from "@/pages/invite-friends";
 
 
 function Router() {
@@ -267,6 +268,7 @@ function Router() {
       <Route path="/spiral-videos" component={SpiralVideos} />
       <Route path="/spiral-features" component={SpiralFeatures} />
       <Route path="/invite-friend" component={InviteFriend} />
+      <Route path="/invite-friends" component={InviteFriends} />
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/retailer-testimonials" component={RetailerTestimonials} />
       <Route path="/retailer-analytics" component={RetailerAnalytics} />
