@@ -1149,6 +1149,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load payment routes:', err.message);
   }
 
+  // Register Stripe Connect routes
+  try {
+    const stripeConnect = require("./api/stripe-connect");
+    app.use("/api", stripeConnect);
+    console.log('✅ Stripe Connect marketplace routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load Stripe Connect routes:', err?.message);
+  }
+
   // Retailer Store Profile API (using different path to avoid conflicts)
   app.get("/api/stores/profile/:storeSlug", async (req, res) => {
     try {
