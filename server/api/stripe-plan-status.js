@@ -138,35 +138,23 @@ router.get("/upgrade-options/:currentPlan", (req, res) => {
 
 // Create subscription endpoint for plan upgrades
 router.post("/create-subscription", async (req, res) => {
-  try {
-    const { planTier, retailerEmail } = req.body;
+  const { planTier, retailerEmail } = req.body;
 
-    if (!planTier || !retailerEmail) {
-      return res.status(400).json({
-        success: false,
-        error: "Plan tier and retailer email are required"
-      });
-    }
-
-    // If no Stripe key configured, return mock response
-    if (!stripe) {
-      console.log(`🎯 SPIRAL Mock Subscription: ${planTier} for ${retailerEmail}`);
-      return res.json({
-        success: true,
-        mock: true,
-        url: `/retailer-dashboard?subscribed=1&plan=${planTier}`,
-        message: "Mock upgrade success - Stripe not configured"
-      });
-    }
-
-    // If Stripe is configured but fails, also use mock fallback
-    console.log(`🎯 SPIRAL Mock Subscription Fallback: ${planTier} for ${retailerEmail}`);
-    return res.json({
-      success: true,
-      mock: true,
-      url: `/retailer-dashboard?subscribed=1&plan=${planTier}`,
-      message: "Mock upgrade success - Stripe connection failed"
+  if (!planTier || !retailerEmail) {
+    return res.status(400).json({
+      success: false,
+      error: "Plan tier and retailer email are required"
     });
+  }
+
+  // Always use mock responses for development
+  console.log(`🎯 SPIRAL Mock Subscription: ${planTier} for ${retailerEmail}`);
+  return res.json({
+    success: true,
+    mock: true,
+    url: `/retailer-dashboard?subscribed=1&plan=${planTier}`,
+    message: "Mock upgrade success - Development mode"
+  });
 
     // Real Stripe subscription creation would go here
     // This is a placeholder for the actual Stripe integration
