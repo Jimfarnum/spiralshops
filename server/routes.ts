@@ -1158,6 +1158,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load Stripe plan status routes:', err.message);
   }
 
+  // Register SPIRAL Order Management Routes
+  try {
+    const ordersRoutes = await import("./api/orders.js");
+    app.use('/api', ordersRoutes.default);
+    console.log('✅ SPIRAL order management routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load order management routes:', err.message);
+  }
+
   // Register Stripe Connect routes
   try {
     const { default: stripeConnect } = await import("./api/stripe-connect.js");
