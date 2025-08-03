@@ -1,20 +1,24 @@
-const express = require('express');
-const Stripe = require('stripe');
+import express from 'express';
+import Stripe from 'stripe';
 const router = express.Router();
 
-// Check for Stripe key and validate format
+// Check for Stripe key and validate format - Initialize only if key is valid
 let stripe = null;
-if (process.env.STRIPE_SECRET_KEY && process.env.STRIPE_SECRET_KEY.startsWith('sk_')) {
+const STRIPE_KEY = process.env.STRIPE_SECRET_KEY;
+const MOCK_MODE = !STRIPE_KEY || !STRIPE_KEY.startsWith('sk_') || STRIPE_KEY.length < 20;
+
+if (!MOCK_MODE) {
   try {
-    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    stripe = new Stripe(STRIPE_KEY, {
       apiVersion: "2025-07-30.basil",
     });
     console.log('✅ Stripe Connect initialized successfully');
   } catch (error) {
     console.error('❌ Stripe initialization failed:', error.message);
+    console.log('🔄 Falling back to mock mode');
   }
 } else {
-  console.warn('⚠️ Stripe Secret Key not configured or invalid format. Stripe Connect features will use mock responses.');
+  console.warn('⚠️ Stripe Secret Key not configured. Stripe Connect features will use mock responses.');
 }
 
 // 🏪 STRIPE CONNECT: Create Express Account for Retailers
@@ -30,7 +34,7 @@ router.post("/stripe/create-connect-account", async (req, res) => {
     }
 
     // If Stripe is not available, return mock response
-    if (!stripe) {
+    if (MOCK_MODE || !stripe) {
       const mockAccountId = `acct_mock_${Date.now()}`;
       const YOUR_DOMAIN = process.env.NODE_ENV === 'production' 
         ? "https://spiralshops.com" 
@@ -99,7 +103,7 @@ router.get("/stripe/account-status/:accountId", async (req, res) => {
     const { accountId } = req.params;
     
     // If Stripe is not available or mock account, return mock status
-    if (!stripe || accountId.includes('mock')) {
+    if (MOCK_MODE || !stripe || accountId.includes('mock')) {
       return res.json({
         success: true,
         account: {
@@ -179,7 +183,7 @@ router.post("/create-marketplace-payment", async (req, res) => {
     const applicationFeeAmount = Math.round(amount * 100 * (applicationFeePercent / 100));
 
     // If Stripe is not available, return mock response
-    if (!stripe) {
+    if (MOCK_MODE || !stripe) {
       const mockPaymentIntentId = `pi_mock_${Date.now()}`;
       return res.json({ 
         success: true,
@@ -337,4 +341,4 @@ router.post("/stripe/create-payout", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1151,7 +1151,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register Stripe Connect routes
   try {
-    const stripeConnect = require("./api/stripe-connect");
+    const { default: stripeConnect } = await import("./api/stripe-connect.js");
     app.use("/api", stripeConnect);
     console.log('✅ Stripe Connect marketplace routes loaded successfully');
   } catch (err) {
