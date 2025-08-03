@@ -8,7 +8,15 @@ export default {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      tsconfig: {
+        module: 'esnext',
+        target: 'es2020',
+        moduleResolution: 'node',
+        allowSyntheticDefaultImports: true,
+        esModuleInterop: true
+      }
+    }],
     '^.+\\.(js|jsx)$': ['babel-jest', {
       presets: [
         ['@babel/preset-env', { targets: { node: 'current' } }],
@@ -33,7 +41,14 @@ export default {
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   testTimeout: 10000,
-  verbose: true
+  verbose: true,
+  globals: {
+    'import.meta': {
+      env: {
+        VITE_STRIPE_PUBLIC_KEY: 'pk_test_mock_key_for_testing'
+      }
+    }
+  }
 };
 
 // Alternatively, use .cjs extension for CommonJS
