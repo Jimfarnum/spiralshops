@@ -270,6 +270,8 @@ export function registerPaymentRoutes(app: Express) {
   });
 
   // Create subscription for recurring payments
+  // DISABLED - Using new tiered access system instead
+  /*
   app.post("/api/create-subscription", async (req, res) => {
     try {
       // Authentication check would be added when user system is integrated
@@ -310,6 +312,7 @@ export function registerPaymentRoutes(app: Express) {
       });
     }
   });
+  */
 
   // Handle Stripe webhooks
   app.post("/api/webhooks/stripe", async (req, res) => {

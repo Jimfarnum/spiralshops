@@ -4,6 +4,8 @@ import { storage } from "./storage";
 const router = Router();
 
 // Subscription Management System
+// DISABLED - Using new tiered access system instead  
+/*
 router.post("/create-subscription", async (req, res) => {
   try {
     const { planType, storeId, features, billing } = req.body;
@@ -40,6 +42,7 @@ router.post("/create-subscription", async (req, res) => {
     });
   }
 });
+*/
 
 // Multi-Currency Support
 router.get("/exchange-rates", async (req, res) => {

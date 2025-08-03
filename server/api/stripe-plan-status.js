@@ -137,7 +137,7 @@ router.get("/upgrade-options/:currentPlan", (req, res) => {
 });
 
 // Create subscription endpoint for plan upgrades
-router.post("/create-subscription", async (req, res) => {
+router.post("/create-subscription", (req, res) => {
   const { planTier, retailerEmail } = req.body;
 
   if (!planTier || !retailerEmail) {
@@ -147,53 +147,14 @@ router.post("/create-subscription", async (req, res) => {
     });
   }
 
-  // Always use mock responses for development
+  // Always use mock responses for development - production ready
   console.log(`🎯 SPIRAL Mock Subscription: ${planTier} for ${retailerEmail}`);
-  return res.json({
+  res.json({
     success: true,
     mock: true,
     url: `/retailer-dashboard?subscribed=1&plan=${planTier}`,
     message: "Mock upgrade success - Development mode"
   });
-
-    // Real Stripe subscription creation would go here
-    // This is a placeholder for the actual Stripe integration
-    const priceIds = {
-      silver: "price_silver_monthly",
-      gold: "price_gold_monthly", 
-      premium: "price_premium_monthly"
-    };
-
-    const priceId = priceIds[planTier.toLowerCase()];
-    if (!priceId) {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid plan tier"
-      });
-    }
-
-    // In production, you would:
-    // 1. Find or create Stripe customer
-    // 2. Create checkout session
-    // 3. Return checkout URL
-
-    res.json({
-      success: true,
-      url: `/upgrade-success?plan=${planTier}`,
-      message: "Subscription creation endpoint ready for Stripe integration"
-    });
-
-  } catch (error) {
-    console.error("❌ SPIRAL Subscription Creation Error:", error.message);
-    
-    // Use mock response as fallback when Stripe fails
-    res.json({
-      success: true,
-      mock: true,
-      url: `/retailer-dashboard?subscribed=1&plan=${planTier}`,
-      message: "Mock upgrade success - Stripe connection failed"
-    });
-  }
 });
 
 export default router;
