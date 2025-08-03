@@ -249,6 +249,20 @@ export default function Home() {
                 </div>
               </div>
             </Link>
+
+            {/* Social Rewards - NEW */}
+            <Link to="/social-rewards" className="group">
+              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-purple-600 to-pink-500 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer relative overflow-hidden">
+                <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-bold">NEW</div>
+                <div className="flex items-center gap-4 text-left">
+                  <div className="text-3xl">🏆</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Social Rewards</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Earn badges and SPIRALs by sharing</p>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </section>

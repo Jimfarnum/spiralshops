@@ -1097,6 +1097,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { default: retailerPerks } = await import('./api/retailer-perks.js');
     app.use('/api/retailer-perks', retailerPerks);
     console.log('✅ Retailer perks routes loaded successfully');
+
+    // Social achievements routes
+    const { default: socialAchievements } = await import('./api/social-achievements.js');
+    app.use('/api/social-achievements', socialAchievements);
+    app.use('/api/social-stats', socialAchievements);
+    app.use('/api/social-share', socialAchievements);
+    console.log('✅ Social achievements routes loaded successfully');
   } catch (err) {
     console.error('❌ Failed to load retailer perks routes:', err.message);
   }

@@ -83,6 +83,7 @@ import InventoryAlertsDemo from "@/pages/inventory-alerts-demo";
 import LanguageDemo from "@/pages/language-demo";
 import AccessibilitySettings from "@/pages/accessibility-settings";
 import AccessibilityDemo from "@/pages/accessibility-demo";
+import SocialRewards from "@/pages/social-rewards";
 import ExternalServicesDemo from "@/pages/ExternalServicesDemo";
 import AdminExternalServices from "@/pages/AdminExternalServices";
 import AdminVerification from "@/pages/AdminVerification";
@@ -410,6 +411,7 @@ function Router() {
       <Route path="/invite/:tripId" component={InviteResponse} />
       <Route path="/my-trips" component={MyTrips} />
       <Route path="/retailer-incentive-scheduler" component={RetailerIncentiveScheduler} />
+      <Route path="/social-rewards" component={SocialRewards} />
       <Route path="/advanced-payment-hub" component={AdvancedPaymentHub} />
       <Route path="/ai-business-intelligence" component={AIBusinessIntelligence} />
       <Route path="/mobile-payments" component={MobilePayments} />
