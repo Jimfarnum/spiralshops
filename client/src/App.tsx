@@ -103,6 +103,7 @@ import TieredSpiralsEngine from "@/pages/tiered-spirals-engine";
 import QRPickupSystem from "@/pages/qr-pickup-system";
 import RetailerAutomationFlow from "@/pages/retailer-automation-flow";
 import GiftCardBalanceChecker from "@/pages/gift-card-balance-checker";
+import RetailerStripeSetup from "@/pages/retailer-stripe-setup";
 import PushNotificationSettings from "@/pages/push-notification-settings";
 import AdminTestDashboard from "@/pages/admin-test-dashboard";
 import MobileAppBase from "@/pages/mobile-app-base";
@@ -265,6 +266,7 @@ function Router() {
       <Route path="/retailer-login" component={RetailerLogin} />
       <Route path="/retailer-dashboard" component={RetailerDashboard} />
       <Route path="/retailer-portal" component={RetailerDashboardNew} />
+      <Route path="/retailer-stripe-setup" component={RetailerStripeSetup} />
       <Route path="/marketing-center" component={MarketingCenter} />
       <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
       <Route path="/social-feed" component={SocialFeed} />
