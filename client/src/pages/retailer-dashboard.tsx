@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import TripNotifications from '@/components/TripNotifications';
+import RetailerPlanStatus from '@/components/RetailerPlanStatus';
 import { Store, Users, ShoppingCart, TrendingUp, Bell, Settings } from 'lucide-react';
 
 export default function RetailerDashboard() {
@@ -16,7 +17,8 @@ export default function RetailerDashboard() {
     status: "Verified",
     todaySales: 1247.50,
     weekSales: 8932.75,
-    monthSales: 42156.30
+    monthSales: 42156.30,
+    stripeCustomerId: "cus_demo_gold" // Demo customer ID for plan status
   };
 
   return (
@@ -52,6 +54,9 @@ export default function RetailerDashboard() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Plan Status Section */}
+        <RetailerPlanStatus stripeCustomerId={retailerData.stripeCustomerId} />
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>

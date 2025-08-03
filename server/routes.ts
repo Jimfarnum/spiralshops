@@ -1149,6 +1149,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load payment routes:', err.message);
   }
 
+  // Register Stripe Plan Status Routes for Tiered Access
+  try {
+    const stripePlanRoutes = await import("./api/stripe-plan-status.js");
+    app.use('/api', stripePlanRoutes.default);
+    console.log('✅ SPIRAL tiered access plan status routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load Stripe plan status routes:', err.message);
+  }
+
   // Register Stripe Connect routes
   try {
     const { default: stripeConnect } = await import("./api/stripe-connect.js");
