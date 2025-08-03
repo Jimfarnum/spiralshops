@@ -25,6 +25,9 @@ export default function RetailerDashboard() {
       const url = new URL(window.location.href);
       url.searchParams.delete('subscribed');
       window.history.replaceState({}, document.title, url.pathname);
+      
+      // Refresh plan status to show updated features
+      window.location.reload();
     }
   }, []);
 

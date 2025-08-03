@@ -150,11 +150,12 @@ router.post("/create-subscription", async (req, res) => {
 
     // If no Stripe key configured, return mock response
     if (!stripe) {
+      console.log(`🎯 SPIRAL Mock Subscription: ${planTier} for ${retailerEmail}`);
       return res.json({
         success: true,
         mock: true,
-        url: `/upgrade-success?plan=${planTier}&email=${retailerEmail}`,
-        message: "Mock upgrade - Stripe not configured"
+        url: `/retailer-dashboard?subscribed=1&plan=${planTier}`,
+        message: "Mock upgrade success - Stripe not configured"
       });
     }
 
