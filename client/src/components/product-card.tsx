@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Star } from 'lucide-react';
 import { useCartStore } from '@/lib/cartStore';
 import { useToast } from '@/hooks/use-toast';
+import WishlistButton from './WishlistButton';
 
 interface Product {
   id: number;
@@ -76,13 +77,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         </div>
         
-        <Button
-          onClick={handleAddToCart}
-          className="w-full bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white font-medium py-2 text-sm"
-        >
-          <ShoppingCart className="h-4 w-4 mr-2" />
-          Add to Cart
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleAddToCart}
+            className="flex-1 bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white font-medium py-2 text-sm"
+          >
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            Add to Cart
+          </Button>
+          <WishlistButton 
+            productId={product.id.toString()} 
+            shopperId="shopper_123" 
+          />
+        </div>
       </CardContent>
     </Card>
   );

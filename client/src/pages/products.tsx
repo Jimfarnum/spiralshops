@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { SocialPixelManager } from '@/utils/socialPixels';
+import WishlistButton from '@/components/WishlistButton';
 
 interface Product {
   id: number;
@@ -130,9 +131,10 @@ const ProductsPage = () => {
             ${product.price.toFixed(2)}
           </span>
           <div className="flex gap-2">
-            <Button size="sm" variant="outline">
-              <Heart className="w-4 h-4" />
-            </Button>
+            <WishlistButton 
+              productId={product.id.toString()} 
+              shopperId="shopper_123" 
+            />
             <Button 
               size="sm" 
               onClick={() => handleAddToCart(product)}
@@ -181,9 +183,10 @@ const ProductsPage = () => {
               ${product.price.toFixed(2)}
             </div>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline">
-                <Heart className="w-4 h-4" />
-              </Button>
+              <WishlistButton 
+                productId={product.id.toString()} 
+                shopperId="shopper_123" 
+              />
               <Button 
                 size="sm" 
                 onClick={() => handleAddToCart(product)}
