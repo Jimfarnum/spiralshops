@@ -224,6 +224,20 @@ export default function Home() {
               </div>
             </Link>
 
+            {/* Wishlist & Price Alerts */}
+            <Link to="/wishlist-demo" className="group">
+              <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-red-500 to-pink-400 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="text-3xl">❤️</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Wishlist Alerts</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Track prices and get notified of drops</p>
+                    <span className="inline-block px-2 py-1 text-xs bg-white/20 rounded-full mt-1">NEW</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+
             {/* Loyalty Program */}
             <Link to="/redeem-spirals" className="group">
               <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-sage)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target">

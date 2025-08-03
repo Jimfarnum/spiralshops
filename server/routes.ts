@@ -1167,6 +1167,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load order management routes:', err.message);
   }
 
+  // SPIRAL Wishlist Alert Routes
+  try {
+    const { wishlistAlertRoutes } = await import("./api/wishlist-alerts.js");
+    
+    // Wishlist management endpoints
+    app.post('/api/wishlist/add', wishlistAlertRoutes.addWishlistItem);
+    app.get('/api/wishlist/:shopperId', wishlistAlertRoutes.getWishlistItems);
+    app.put('/api/wishlist/:itemId/alerts', wishlistAlertRoutes.updateAlertPreferences);
+    app.delete('/api/wishlist/:itemId', wishlistAlertRoutes.removeWishlistItem);
+    
+    // Price alert endpoints
+    app.get('/api/alerts/:shopperId', wishlistAlertRoutes.getPendingAlerts);
+    app.post('/api/alerts/mark-sent', wishlistAlertRoutes.markAlertsSent);
+    
+    // Testing endpoints
+    app.post('/api/products/simulate-price-change', wishlistAlertRoutes.simulatePriceChange);
+    app.get('/api/products/prices', wishlistAlertRoutes.getProductPrices);
+    
+    console.log('✅ SPIRAL wishlist alert routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load wishlist alert routes:', err.message);
+  }
+
   // Register Stripe Connect routes
   try {
     const { default: stripeConnect } = await import("./api/stripe-connect.js");

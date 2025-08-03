@@ -99,6 +99,8 @@ import SpiralTodoProgress from "@/pages/spiral-todo-progress";
 import ComprehensiveFeatureTesting from "@/pages/comprehensive-feature-testing";
 import AdminDeepTest from "@/pages/admin-deep-test";
 import WishlistAlertsSystem from "@/pages/wishlist-alerts-system";
+import WishlistAlerts from "./components/WishlistAlerts";
+import WishlistDemo from "@/pages/wishlist-demo";
 import TieredSpiralsEngine from "@/pages/tiered-spirals-engine";
 import QRPickupSystem from "@/pages/qr-pickup-system";
 import RetailerAutomationFlow from "@/pages/retailer-automation-flow";
@@ -443,6 +445,8 @@ function Router() {
       <Route path="/comprehensive-feature-testing" component={ComprehensiveFeatureTesting} />
       <Route path="/admin/spiral-agent/deep-test" component={AdminDeepTest} />
       <Route path="/wishlist-alerts-system" component={WishlistAlertsSystem} />
+      <Route path="/wishlist-alerts" component={WishlistAlerts} />
+      <Route path="/wishlist-demo" component={WishlistDemo} />
       <Route path="/tiered-spirals-engine" component={TieredSpiralsEngine} />
       <Route path="/qr-pickup-system" component={QRPickupSystem} />
       <Route path="/retailer-automation-flow" component={RetailerAutomationFlow} />

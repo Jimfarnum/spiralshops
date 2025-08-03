@@ -196,6 +196,35 @@ export const userFollows = pgTable("user_follows", {
   followedAt: timestamp("followed_at").defaultNow(),
 });
 
+// Wishlist items with alert preferences
+export const wishlistItems = pgTable("wishlist_items", {
+  id: serial("id").primaryKey(),
+  shopperId: text("shopper_id").notNull(),
+  productId: text("product_id").notNull(),
+  addedAt: timestamp("added_at").defaultNow(),
+  alertPreferences: jsonb("alert_preferences").$type<{
+    priceDrop: boolean;
+    restock: boolean;
+  }>().notNull().default({ priceDrop: true, restock: true }),
+  lastPrice: decimal("last_price", { precision: 10, scale: 2 }),
+  isActive: boolean("is_active").default(true),
+});
+
+// Price alerts tracking
+export const priceAlerts = pgTable("price_alerts", {
+  id: serial("id").primaryKey(),
+  wishlistItemId: integer("wishlist_item_id").references(() => wishlistItems.id),
+  shopperId: text("shopper_id").notNull(),
+  productId: text("product_id").notNull(),
+  originalPrice: decimal("original_price", { precision: 10, scale: 2 }).notNull(),
+  currentPrice: decimal("current_price", { precision: 10, scale: 2 }).notNull(),
+  percentageChange: decimal("percentage_change", { precision: 5, scale: 2 }),
+  alertType: text("alert_type").notNull(), // 'price_drop', 'restock', 'price_increase'
+  alertSent: boolean("alert_sent").default(false),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   spiralTransactions: many(spiralTransactions),
@@ -294,6 +323,17 @@ export const insertUserFollowSchema = createInsertSchema(userFollows).omit({
   followedAt: true,
 });
 
+export const insertWishlistItemSchema = createInsertSchema(wishlistItems).omit({
+  id: true,
+  addedAt: true,
+});
+
+export const insertPriceAlertSchema = createInsertSchema(priceAlerts).omit({
+  id: true,
+  createdAt: true,
+  sentAt: true,
+});
+
 export type InsertStore = z.infer<typeof insertStoreSchema>;
 export type Store = typeof stores.$inferSelect;
 export type InsertRetailer = z.infer<typeof insertRetailerSchema>;
@@ -310,6 +350,10 @@ export type InsertOrderItem = typeof orderItems.$inferInsert;
 export type InsertFulfillmentGroup = typeof fulfillmentGroups.$inferInsert;
 export type InsertUserFollow = z.infer<typeof insertUserFollowSchema>;
 export type UserFollow = typeof userFollows.$inferSelect;
+export type InsertWishlistItem = z.infer<typeof insertWishlistItemSchema>;
+export type WishlistItem = typeof wishlistItems.$inferSelect;
+export type InsertPriceAlert = z.infer<typeof insertPriceAlertSchema>;
+export type PriceAlert = typeof priceAlerts.$inferSelect;
 
 // Subscription types
 export type Subscription = typeof subscriptions.$inferSelect;
