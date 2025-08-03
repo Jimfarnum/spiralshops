@@ -133,14 +133,14 @@ export default function Home() {
 
       {/* Press Release Section - Mobile Optimized */}
       <section id="press-release" className="bg-gradient-to-r from-gray-50 to-gray-100 px-4 sm:px-6 py-8 sm:py-12 rounded-xl sm:rounded-2xl shadow-lg text-center max-w-5xl mx-auto my-6 sm:my-8">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">SPIRAL: The Local Shopping Platform</h2>
-        <p className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6 leading-relaxed">
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">SPIRAL: The Local Shopping Platform</h2>
+        <p className="text-sm sm:text-base lg:text-lg text-gray-600 mb-4 sm:mb-6 leading-relaxed">
           SPIRAL connects shoppers with real local stores across the U.S., rewarding every purchase that supports a real place, real jobs, and real communities.
         </p>
-        <p className="text-sm sm:text-md text-gray-700 italic mb-4 sm:mb-6">
+        <p className="text-xs sm:text-sm md:text-base text-gray-700 italic mb-4 sm:mb-6">
           Our mission is simple: empower small retailers, reinvigorate malls, and make local shopping easier and more rewarding than ever.
         </p>
-        <a href="/about-spiral" className="inline-block px-6 py-3 bg-black text-white rounded-xl shadow hover:bg-gray-900 transition-colors text-sm sm:text-base">
+        <a href="/about-spiral" className="inline-block px-4 py-3 sm:px-6 bg-black text-white rounded-lg sm:rounded-xl shadow hover:bg-gray-900 transition-colors text-sm sm:text-base touch-target">
           Learn More About SPIRAL
         </a>
       </section>
@@ -171,10 +171,10 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4">
             {/* Trusted Local Stores */}
             <Link to="/trusted-local-stores" className="group">
-              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-green-600 to-green-400 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+              <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-green-600 to-green-400 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🛡️</div>
                   <div>
@@ -187,7 +187,7 @@ export default function Home() {
 
             {/* Explore SPIRALs */}
             <Link to="/explore-spirals" className="group">
-              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-gold)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+              <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-gold)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🌟</div>
                   <div>
@@ -200,7 +200,7 @@ export default function Home() {
 
             {/* Verify Store */}
             <Link to="/verified-lookup" className="group">
-              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+              <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🔍</div>
                   <div>
@@ -213,7 +213,7 @@ export default function Home() {
 
             {/* Discover New Finds */}
             <Link to="/products?category=featured" className="group">
-              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-gold)] to-[var(--spiral-coral)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+              <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-gold)] to-[var(--spiral-coral)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">💎</div>
                   <div>
@@ -226,7 +226,7 @@ export default function Home() {
 
             {/* Loyalty Program */}
             <Link to="/redeem-spirals" className="group">
-              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-sage)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+              <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-sage)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🎁</div>
                   <div>
@@ -239,7 +239,7 @@ export default function Home() {
 
             {/* Delivery Options */}
             <Link to="/delivery-options" className="group">
-              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-gold)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+              <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-gold)] text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target">
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🚚</div>
                   <div>
@@ -252,7 +252,7 @@ export default function Home() {
 
             {/* Social Rewards - NEW */}
             <Link to="/social-rewards" className="group">
-              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-purple-600 to-pink-500 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer relative overflow-hidden">
+              <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-purple-600 to-pink-500 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target relative overflow-hidden">
                 <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-bold">NEW</div>
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🏆</div>
@@ -266,7 +266,7 @@ export default function Home() {
 
             {/* Shopper Onboarding - NEW */}
             <Link to="/shopper-onboarding-walkthrough" className="group">
-              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-green-500 to-teal-600 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer relative overflow-hidden">
+              <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-green-500 to-teal-600 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target relative overflow-hidden">
                 <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-bold">NEW</div>
                 <div className="flex items-center gap-4 text-left">
                   <div className="text-3xl">🚀</div>
