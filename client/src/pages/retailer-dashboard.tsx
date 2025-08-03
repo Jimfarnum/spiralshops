@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import TripNotifications from '@/components/TripNotifications';
 import RetailerPlanStatus from '@/components/RetailerPlanStatus';
+import RetailerOrderDashboard from '@/components/RetailerOrderDashboard';
 import { Store, Users, ShoppingCart, TrendingUp, Bell, Settings, CheckCircle } from 'lucide-react';
 
 export default function RetailerDashboard() {
@@ -143,8 +144,9 @@ export default function RetailerDashboard() {
 
         {/* Dashboard Tabs */}
         <Tabs defaultValue="trips" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="trips">Live Shopping Trips</TabsTrigger>
+            <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="inventory">Inventory</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="customers">Customers</TabsTrigger>
@@ -156,6 +158,10 @@ export default function RetailerDashboard() {
               storeId={retailerData.storeId} 
               mallId={retailerData.mallId} 
             />
+          </TabsContent>
+
+          <TabsContent value="orders" className="space-y-6">
+            <RetailerOrderDashboard retailerId={retailerData.storeId} />
           </TabsContent>
 
           <TabsContent value="inventory" className="space-y-6">
