@@ -84,6 +84,7 @@ import LanguageDemo from "@/pages/language-demo";
 import AccessibilitySettings from "@/pages/accessibility-settings";
 import AccessibilityDemo from "@/pages/accessibility-demo";
 import SocialRewards from "@/pages/social-rewards";
+import ShopperOnboardingWalkthrough from "@/pages/shopper-onboarding-walkthrough";
 import ExternalServicesDemo from "@/pages/ExternalServicesDemo";
 import AdminExternalServices from "@/pages/AdminExternalServices";
 import AdminVerification from "@/pages/AdminVerification";
@@ -412,6 +413,7 @@ function Router() {
       <Route path="/my-trips" component={MyTrips} />
       <Route path="/retailer-incentive-scheduler" component={RetailerIncentiveScheduler} />
       <Route path="/social-rewards" component={SocialRewards} />
+      <Route path="/shopper-onboarding-walkthrough" component={ShopperOnboardingWalkthrough} />
       <Route path="/advanced-payment-hub" component={AdvancedPaymentHub} />
       <Route path="/ai-business-intelligence" component={AIBusinessIntelligence} />
       <Route path="/mobile-payments" component={MobilePayments} />

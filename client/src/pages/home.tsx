@@ -263,6 +263,20 @@ export default function Home() {
                 </div>
               </div>
             </Link>
+
+            {/* Shopper Onboarding - NEW */}
+            <Link to="/shopper-onboarding-walkthrough" className="group">
+              <div className="max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-green-500 to-teal-600 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer relative overflow-hidden">
+                <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-bold">NEW</div>
+                <div className="flex items-center gap-4 text-left">
+                  <div className="text-3xl">🚀</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Get Started</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Personalize your shopping experience</p>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </section>
