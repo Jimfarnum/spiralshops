@@ -1,207 +1,349 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { 
-  ShoppingBag, 
+  User, 
+  Package, 
   Star, 
-  MapPin, 
   Gift, 
-  Heart,
+  Heart, 
+  Settings,
+  ShoppingBag,
   TrendingUp,
-  Award,
-  Compass
-} from 'lucide-react';
+  MapPin,
+  Bell
+} from "lucide-react";
+import ShopperOrderHistory from "@/components/ShopperOrderHistory";
 
 export default function ShopperDashboard() {
-  const [spiralBalance, setSpiralBalance] = useState(247);
-  const [recentOrders] = useState([
-    { id: 1, store: "Bella's Boutique", total: 89.99, status: "Delivered", spirals: 4 },
-    { id: 2, store: "Tech Corner", total: 199.99, status: "Processing", spirals: 10 },
-  ]);
-
-  const [nearbyStores] = useState([
-    { id: 1, name: "Fresh Market", category: "Groceries", distance: "0.3 mi", rating: 4.8 },
-    { id: 2, name: "Style Studio", category: "Fashion", distance: "0.5 mi", rating: 4.6 },
-    { id: 3, name: "Book Nook", category: "Books", distance: "0.7 mi", rating: 4.9 },
-  ]);
+  const [activeTab, setActiveTab] = useState("overview");
+  
+  // Mock user data - in real app, this would come from authentication
+  const shopper = {
+    id: "demo_shopper_123",
+    name: "Alex Johnson",
+    email: "alex@example.com",
+    spiralBalance: 2450,
+    totalEarned: 8750,
+    totalRedeemed: 6300,
+    memberSince: "January 2024",
+    tier: "Gold",
+    favoriteStores: 12,
+    totalOrders: 47
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Welcome Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, Shopper!
-          </h1>
-          <p className="text-gray-600">
-            Discover local stores and earn SPIRALS with every purchase
-          </p>
+    <div className="container mx-auto p-6 max-w-7xl">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Welcome back, {shopper.name}!</h1>
+            <p className="text-gray-600 mt-1">Manage your SPIRAL shopping experience</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Badge variant="outline" className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0">
+              {shopper.tier} Member
+            </Badge>
+            <Button variant="outline" size="sm">
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
+            </Button>
+          </div>
         </div>
+      </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* SPIRAL Balance */}
-            <Card className="bg-gradient-to-r from-teal-600 to-blue-600 text-white">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="w-6 h-6" />
-                  Your SPIRAL Balance
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-4xl font-bold mb-2">{spiralBalance}</div>
-                    <p className="text-teal-100">SPIRALs earned</p>
-                  </div>
-                  <Button className="bg-white text-teal-600 hover:bg-gray-100">
-                    Redeem Rewards
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <Star className="h-8 w-8 text-orange-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">SPIRAL Balance</p>
+                <p className="text-2xl font-bold text-orange-600">{shopper.spiralBalance.toLocaleString()}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <Package className="h-8 w-8 text-blue-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Orders</p>
+                <p className="text-2xl font-bold">{shopper.totalOrders}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <Heart className="h-8 w-8 text-red-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Favorite Stores</p>
+                <p className="text-2xl font-bold">{shopper.favoriteStores}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center">
+              <TrendingUp className="h-8 w-8 text-green-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Earned</p>
+                <p className="text-2xl font-bold text-green-600">{shopper.totalEarned.toLocaleString()}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-            {/* Recent Orders */}
+      {/* Main Content Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="rewards">Rewards</TabsTrigger>
+          <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
+          <TabsTrigger value="stores">Stores</TabsTrigger>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5" />
-                  Recent Orders
+                  <ShoppingBag className="h-5 w-5" />
+                  Recent Activity
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentOrders.map((order) => (
-                    <div key={order.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <h3 className="font-semibold">{order.store}</h3>
-                        <p className="text-sm text-gray-600">${order.total}</p>
-                      </div>
-                      <div className="text-right">
-                        <Badge variant={order.status === 'Delivered' ? 'default' : 'secondary'}>
-                          {order.status}
-                        </Badge>
-                        <p className="text-sm text-teal-600 mt-1">+{order.spirals} SPIRALs</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Discover Stores */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Compass className="w-5 h-5" />
-                  Discover Nearby Stores
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {nearbyStores.map((store) => (
-                    <div key={store.id} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold">{store.name}</h3>
-                        <div className="flex items-center gap-1 text-sm">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          {store.rating}
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-2">{store.category}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1 text-sm text-gray-500">
-                          <MapPin className="w-4 h-4" />
-                          {store.distance}
-                        </div>
-                        <Button size="sm" variant="outline">
-                          Visit Store
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
-                  <ShoppingBag className="w-4 h-4 mr-2" />
-                  Browse Products
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  Find Stores
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Heart className="w-4 h-4 mr-2" />
-                  My Wishlist
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Gift className="w-4 h-4 mr-2" />
-                  Gift Cards
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* SPIRAL Tier */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Your SPIRAL Tier</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Award className="w-8 h-8 text-white" />
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <p className="text-sm">Earned 150 SPIRALs from Target purchase</p>
+                    <span className="text-xs text-gray-500 ml-auto">2 hours ago</span>
                   </div>
-                  <h3 className="font-bold text-lg">Gold Member</h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {spiralBalance} / 500 SPIRALs to Platinum
-                  </p>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-yellow-500 h-2 rounded-full"
-                      style={{ width: `${(spiralBalance / 500) * 100}%` }}
-                    ></div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <p className="text-sm">Added Best Buy to favorites</p>
+                    <span className="text-xs text-gray-500 ml-auto">1 day ago</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    <p className="text-sm">Redeemed 500 SPIRALs at Whole Foods</p>
+                    <span className="text-xs text-gray-500 ml-auto">3 days ago</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Special Offers */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" />
-                  Special Offers
+                  <Gift className="h-5 w-5" />
+                  Available Rewards
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-                    <h4 className="font-medium text-green-800">Double SPIRALs Weekend</h4>
-                    <p className="text-sm text-green-600">Earn 2x SPIRALs at participating stores</p>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium">$5 Off Next Purchase</p>
+                      <p className="text-sm text-gray-600">500 SPIRALs</p>
+                    </div>
+                    <Button size="sm">Redeem</Button>
                   </div>
-                  <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <h4 className="font-medium text-blue-800">New Store Bonus</h4>
-                    <p className="text-sm text-blue-600">+50 SPIRALs for first purchase at new stores</p>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium">Free Shipping</p>
+                      <p className="text-sm text-gray-600">750 SPIRALs</p>
+                    </div>
+                    <Button size="sm">Redeem</Button>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium">10% Store Discount</p>
+                      <p className="text-sm text-gray-600">1,000 SPIRALs</p>
+                    </div>
+                    <Button size="sm">Redeem</Button>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
-        </div>
-      </div>
+        </TabsContent>
+
+        <TabsContent value="orders" className="mt-6">
+          <ShopperOrderHistory shopperId={shopper.id} />
+        </TabsContent>
+
+        <TabsContent value="rewards" className="mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>SPIRAL Points Summary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span>Current Balance</span>
+                    <span className="text-2xl font-bold text-orange-600">{shopper.spiralBalance.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Total Earned</span>
+                    <span className="text-green-600">{shopper.totalEarned.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Total Redeemed</span>
+                    <span className="text-red-600">{shopper.totalRedeemed.toLocaleString()}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Earning Opportunities</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="p-3 bg-blue-50 rounded-lg">
+                    <p className="font-medium">Shop In-Store</p>
+                    <p className="text-sm text-gray-600">Earn 2x SPIRALs (10 per $100)</p>
+                  </div>
+                  <div className="p-3 bg-green-50 rounded-lg">
+                    <p className="font-medium">Refer Friends</p>
+                    <p className="text-sm text-gray-600">Earn 500 SPIRALs per referral</p>
+                  </div>
+                  <div className="p-3 bg-purple-50 rounded-lg">
+                    <p className="font-medium">Write Reviews</p>
+                    <p className="text-sm text-gray-600">Earn 25 SPIRALs per review</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="wishlist" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Heart className="h-5 w-5" />
+                Your Wishlist
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600">Your wishlist is empty</p>
+                <p className="text-sm text-gray-500 mt-2">Save items you love to your wishlist</p>
+                <Button className="mt-4">Browse Products</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="stores" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                Favorite Stores
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {["Target", "Best Buy", "Whole Foods", "Apple Store", "Nike", "Home Depot"].map((store, idx) => (
+                  <div key={idx} className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                        {store.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-medium">{store}</p>
+                        <p className="text-sm text-gray-600">12 orders</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="profile" className="mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="h-5 w-5" />
+                  Profile Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Name</label>
+                  <p className="text-gray-900">{shopper.name}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Email</label>
+                  <p className="text-gray-900">{shopper.email}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Member Since</label>
+                  <p className="text-gray-900">{shopper.memberSince}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Membership Tier</label>
+                  <Badge variant="outline" className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0">
+                    {shopper.tier}
+                  </Badge>
+                </div>
+                <Button className="w-full">Edit Profile</Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="h-5 w-5" />
+                  Notification Preferences
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span>Order Updates</span>
+                  <input type="checkbox" defaultChecked className="rounded" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>SPIRAL Rewards</span>
+                  <input type="checkbox" defaultChecked className="rounded" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>New Store Openings</span>
+                  <input type="checkbox" className="rounded" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Promotional Offers</span>
+                  <input type="checkbox" defaultChecked className="rounded" />
+                </div>
+                <Button className="w-full">Save Preferences</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

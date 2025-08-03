@@ -266,6 +266,7 @@ function Router() {
       <Route path="/account" component={Account} />
       <Route path="/retailer-login" component={RetailerLogin} />
       <Route path="/retailer-dashboard" component={RetailerDashboard} />
+      <Route path="/shopper-dashboard" component={ShopperDashboard} />
       <Route path="/retailer-portal" component={RetailerDashboardNew} />
       <Route path="/retailer-stripe-setup" component={RetailerStripeSetup} />
       <Route path="/marketing-center" component={MarketingCenter} />
