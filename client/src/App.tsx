@@ -232,6 +232,7 @@ import NavigationTest from "@/pages/navigation-test";
 import CompleteFunctionalityTest from "@/pages/complete-functionality-test";
 import CodeContinuityTest from "@/pages/code-continuity-test";
 import InviteFriends from "@/pages/invite-friends";
+import UpgradeSuccess from "@/pages/upgrade-success";
 
 
 function Router() {
@@ -467,6 +468,7 @@ function Router() {
       <Route path="/navigation-test" component={NavigationTest} />
       <Route path="/complete-functionality-test" component={CompleteFunctionalityTest} />
       <Route path="/code-continuity-test" component={CodeContinuityTest} />
+      <Route path="/upgrade-success" component={UpgradeSuccess} />
       <Route component={NotFound} />
     </Switch>
   );

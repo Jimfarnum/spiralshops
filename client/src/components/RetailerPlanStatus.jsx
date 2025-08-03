@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Zap, Star, Gift } from "lucide-react";
+import PlanUpgradeButton from "./PlanUpgradeButton";
 
 const RetailerPlanStatus = ({ stripeCustomerId }) => {
   const [planData, setPlanData] = useState(null);
@@ -119,14 +120,10 @@ const RetailerPlanStatus = ({ stripeCustomerId }) => {
         </div>
 
         {plan !== "Premium" && (
-          <div className="flex space-x-2">
-            <Button variant="default" size="sm">
-              Upgrade Plan
-            </Button>
-            <Button variant="outline" size="sm">
-              View All Plans
-            </Button>
-          </div>
+          <PlanUpgradeButton 
+            currentPlan={plan} 
+            stripeCustomerEmail="demo@retailer.com" 
+          />
         )}
 
         {plan === "Free" && (

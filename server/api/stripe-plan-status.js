@@ -125,4 +125,62 @@ router.get("/upgrade-options/:currentPlan", (req, res) => {
   });
 });
 
+// Create subscription endpoint for plan upgrades
+router.post("/create-subscription", async (req, res) => {
+  try {
+    const { planTier, retailerEmail } = req.body;
+
+    if (!planTier || !retailerEmail) {
+      return res.status(400).json({
+        success: false,
+        error: "Plan tier and retailer email are required"
+      });
+    }
+
+    // If no Stripe key configured, return mock response
+    if (!stripe) {
+      return res.json({
+        success: true,
+        mock: true,
+        url: `/upgrade-success?plan=${planTier}&email=${retailerEmail}`,
+        message: "Mock upgrade - Stripe not configured"
+      });
+    }
+
+    // Real Stripe subscription creation would go here
+    // This is a placeholder for the actual Stripe integration
+    const priceIds = {
+      silver: "price_silver_monthly",
+      gold: "price_gold_monthly", 
+      premium: "price_premium_monthly"
+    };
+
+    const priceId = priceIds[planTier.toLowerCase()];
+    if (!priceId) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid plan tier"
+      });
+    }
+
+    // In production, you would:
+    // 1. Find or create Stripe customer
+    // 2. Create checkout session
+    // 3. Return checkout URL
+
+    res.json({
+      success: true,
+      url: `/upgrade-success?plan=${planTier}`,
+      message: "Subscription creation endpoint ready for Stripe integration"
+    });
+
+  } catch (error) {
+    console.error("❌ SPIRAL Subscription Creation Error:", error.message);
+    res.status(500).json({
+      success: false,
+      error: "Failed to create subscription"
+    });
+  }
+});
+
 export default router;
