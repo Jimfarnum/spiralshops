@@ -1,13 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import TripNotifications from '@/components/TripNotifications';
 import RetailerPlanStatus from '@/components/RetailerPlanStatus';
-import { Store, Users, ShoppingCart, TrendingUp, Bell, Settings } from 'lucide-react';
+import { Store, Users, ShoppingCart, TrendingUp, Bell, Settings, CheckCircle } from 'lucide-react';
 
 export default function RetailerDashboard() {
+  const [showSubscriptionAlert, setShowSubscriptionAlert] = useState(false);
+  
+  // Check for subscription confirmation in URL params
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const subscribed = urlParams.get('subscribed');
+    
+    if (subscribed === '1') {
+      setShowSubscriptionAlert(true);
+      // Auto-hide alert after 5 seconds
+      setTimeout(() => setShowSubscriptionAlert(false), 5000);
+      
+      // Clean URL by removing the parameter
+      const url = new URL(window.location.href);
+      url.searchParams.delete('subscribed');
+      window.history.replaceState({}, document.title, url.pathname);
+    }
+  }, []);
+
   // Mock retailer data (in production, this would come from auth/API)
   const retailerData = {
     storeName: "Local Electronics Store",
@@ -54,6 +74,16 @@ export default function RetailerDashboard() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Subscription Success Alert */}
+        {showSubscriptionAlert && (
+          <Alert className="mb-6 border-green-200 bg-green-50">
+            <CheckCircle className="h-4 w-4 text-green-600" />
+            <AlertDescription className="text-green-800">
+              <strong>Subscription Activated!</strong> Your plan upgrade is now active and all premium features are available.
+            </AlertDescription>
+          </Alert>
+        )}
         
         {/* Plan Status Section */}
         <RetailerPlanStatus stripeCustomerId={retailerData.stripeCustomerId} />
