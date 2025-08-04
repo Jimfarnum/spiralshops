@@ -144,6 +144,7 @@ import SystemAudit from "@/pages/system-audit";
 import LoyaltyDashboard from "@/pages/loyalty";
 import OrdersPage from "@/pages/orders";
 import OrdersTestPage from "@/pages/orders-test";
+import OrdersSimplePage from "@/pages/orders-simple";
 import OrderDetailPage from "@/pages/order-detail";
 import RetailerLoyaltyPage from "@/pages/loyalty-retailers";
 import MallPerksPage from "@/pages/loyalty-mall-perks";
@@ -290,8 +291,8 @@ function Router() {
 
       <Route path="/retailer-insights" component={RetailerInsights} />
       <Route path="/test-flow" component={TestFlow} />
-      <Route path="/orders" component={OrdersTestPage} />
       <Route path="/about" component={About} />
+      <Route path="/orders" component={OrdersSimplePage} />
       <Route path="/about-spiral" component={About} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/intelligent-wishlist" component={IntelligentWishlistPage} />

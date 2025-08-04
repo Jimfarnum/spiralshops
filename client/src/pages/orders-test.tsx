@@ -39,7 +39,8 @@ export default function OrdersTestPage() {
       if (!response.ok) {
         throw new Error('Failed to fetch orders');
       }
-      return response.json() as OrderSummary[];
+      const data = await response.json();
+      return data as OrderSummary[];
     },
   });
 
