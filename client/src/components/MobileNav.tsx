@@ -187,7 +187,10 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onToggle, onClose }) => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  onClick={onClose}
+                  onClick={(e) => {
+                    console.log(`MobileNav: Navigating to ${item.path} (${item.label})`);
+                    onClose();
+                  }}
                   className={`
                     flex items-center gap-3 p-3 rounded-lg mb-1 transition-all duration-200 touch-target
                     ${isActive 
