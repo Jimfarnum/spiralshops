@@ -41,6 +41,7 @@ class SpiralAutomatedTestingSystem {
       '/',
       '/products',
       '/stores',
+      '/orders',
       '/cart',
       '/wishlist',
       '/ai-wishlist-intelligence',

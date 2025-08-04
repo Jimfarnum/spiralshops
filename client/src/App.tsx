@@ -26,6 +26,7 @@ import RetailerLogin from "@/pages/retailer-login";
 import RetailerDashboard from "@/pages/retailer-dashboard";
 import RetailerDashboardNew from "@/components/RetailerDashboard";
 import ShopperDashboardComponent from "@/components/ShopperDashboard";
+import ShopperDashboardNew from "@/components/ShopperDashboardNew";
 import ShopperDashboard from "@/pages/shopper-dashboard";
 import Following from "@/pages/following";
 import MarketingCenter from "@/pages/marketing-center";
@@ -271,7 +272,7 @@ function Router() {
       <Route path="/account" component={Account} />
       <Route path="/retailer-login" component={RetailerLogin} />
       <Route path="/retailer-dashboard" component={RetailerDashboard} />
-      <Route path="/shopper-dashboard" component={ShopperDashboard} />
+      <Route path="/shopper-dashboard" component={ShopperDashboardNew} />
       <Route path="/retailer-portal" component={RetailerDashboardNew} />
       <Route path="/retailer-stripe-setup" component={RetailerStripeSetup} />
       <Route path="/marketing-center" component={MarketingCenter} />
