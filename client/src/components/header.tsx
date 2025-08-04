@@ -94,16 +94,16 @@ export default function Header() {
               </button>
               <div className="absolute top-full left-0 mt-1 w-64 bg-white shadow-lg border border-gray-200 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                 <div className="p-2 space-y-1">
-                  <Link href="/shopper-onboarding" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/shopper-onboarding" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🎯 Shopper Onboarding
                   </Link>
-                  <Link href="/enhanced-profile-settings" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/enhanced-profile-settings" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     ⚙️ Enhanced Profile Settings
                   </Link>
-                  <Link href="/mall-gift-card-system" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/mall-gift-card-system" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🎁 Mall Gift Card System
                   </Link>
-                  <Link href="/multi-mall-cart" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/multi-mall-cart" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🛒 Multi-Mall Cart
                   </Link>
                   <Link href="/mobile-responsive-test" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
@@ -148,10 +148,10 @@ export default function Header() {
                 </div>
               </div>
             </div>
-            <Link href="/trusted-local-stores" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
+            <Link to="/trusted-local-stores" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
               Trusted Local
             </Link>
-            <Link href="/social-feed" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
+            <Link to="/social-feed" className="text-gray-600 hover:text-[var(--spiral-coral)] px-2 py-1 rounded-md text-sm font-medium transition-colors">
               Community
             </Link>
           </nav>
@@ -177,7 +177,7 @@ export default function Header() {
             <MobileNav className="lg:hidden" />
             
             {/* Cart - Desktop */}
-            <Link href="/cart" className="hidden lg:block">
+            <Link to="/cart" className="hidden lg:block">
               <Button variant="outline" size="sm" className="relative border-[var(--spiral-coral)] text-[var(--spiral-coral)] hover:bg-[var(--spiral-coral)]/10">
                 <ShoppingCart className="h-4 w-4" />
                 {cartItemCount > 0 && (
@@ -190,25 +190,25 @@ export default function Header() {
             
             {isAuthenticated ? (
               <div className="hidden lg:flex items-center space-x-1">
-                <Link href="/orders">
+                <Link to="/orders">
                   <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 text-gray-600 hover:text-gray-800">
                     <Package className="h-4 w-4" />
                     <span className="hidden lg:inline text-sm">Orders</span>
                   </Button>
                 </Link>
-                <Link href="/loyalty">
+                <Link to="/loyalty">
                   <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 text-[var(--spiral-coral)] hover:text-[var(--spiral-coral)]/80">
                     <Star className="h-4 w-4" />
                     <span className="hidden lg:inline text-sm">Loyalty</span>
                   </Button>
                 </Link>
-                <Link href="/wallet">
+                <Link to="/wallet">
                   <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 text-purple-600 hover:text-purple-800">
                     <Wallet className="h-4 w-4" />
                     <span className="hidden lg:inline text-sm">Wallet</span>
                   </Button>
                 </Link>
-                <Link href="/profile">
+                <Link to="/profile">
                   <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 text-gray-600 hover:text-gray-800">
                     <User className="h-4 w-4" />
                     <span className="hidden lg:inline text-sm">{user?.name}</span>
