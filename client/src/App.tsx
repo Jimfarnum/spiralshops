@@ -203,6 +203,7 @@ import NotificationsDemo from "@/pages/notifications-demo";
 import LiveSupportDemo from "@/pages/live-support-demo";
 import EnhancedFunctionalityTest from "@/pages/enhanced-functionality-test";
 import CompetitiveAnalysis from "@/pages/competitive-analysis";
+import IntelligentWishlistPage from "@/pages/intelligent-wishlist";
 import CompleteSystemValidation from "@/pages/complete-system-validation";
 import ProductCatalogDemo from "@/pages/product-catalog-demo";
 import ProductCatalogTest from "@/pages/product-catalog-test";
@@ -288,6 +289,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/about-spiral" component={About} />
       <Route path="/wishlist" component={Wishlist} />
+      <Route path="/intelligent-wishlist" component={IntelligentWishlistPage} />
       <Route path="/inventory-dashboard" component={InventoryDashboard} />
       <Route path="/wallet" component={WalletPage} />
       <Route path="/wallet/mall-credits" component={WalletMallCredits} />
