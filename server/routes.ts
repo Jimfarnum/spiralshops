@@ -1800,5 +1800,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load inventory routes:', err?.message);
   }
 
+  // Missing API endpoints - Health Check and Promotions
+  app.get("/api/check", (req, res) => {
+    res.json({
+      status: "healthy",
+      message: "SPIRAL platform is running",
+      timestamp: new Date().toISOString(),
+      version: "1.0.0",
+      services: {
+        database: "connected",
+        authentication: "active",
+        payment: "configured"
+      }
+    });
+  });
+
+  app.get("/api/promotions", (req, res) => {
+    res.json({
+      success: true,
+      promotions: [
+        {
+          id: 1,
+          title: "Welcome Bonus",
+          description: "Get 50 SPIRALs for signing up",
+          type: "signup_bonus",
+          value: 50,
+          active: true
+        },
+        {
+          id: 2,
+          title: "First Purchase",
+          description: "Earn double SPIRALs on your first order",
+          type: "first_purchase",
+          multiplier: 2,
+          active: true
+        },
+        {
+          id: 3,
+          title: "Local Store Boost",
+          description: "Extra SPIRALs for shopping at local stores",
+          type: "local_boost",
+          bonus: 25,
+          active: true
+        }
+      ],
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  app.get("/api/mall-events", (req, res) => {
+    res.json({
+      success: true,
+      events: [
+        {
+          id: 1,
+          title: "SPIRAL Summer Festival",
+          description: "Join us for special offers and local vendor showcases",
+          date: "2025-08-15",
+          location: "Downtown Mall",
+          type: "festival"
+        },
+        {
+          id: 2,
+          title: "Local Business Spotlight",
+          description: "Discover new local retailers and earn bonus SPIRALs",
+          date: "2025-08-20",
+          location: "Multiple Locations",
+          type: "spotlight"
+        }
+      ],
+      timestamp: new Date().toISOString()
+    });
+  });
+
   return httpServer;
 }

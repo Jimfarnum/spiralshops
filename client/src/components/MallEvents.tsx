@@ -16,7 +16,7 @@ interface MallEvent {
 }
 
 export default function MallEvents() {
-  const { data: events, isLoading } = useQuery<MallEvent[]>({
+  const { data: eventsResponse, isLoading } = useQuery<{events: MallEvent[]}>({
     queryKey: ["/api/mall-events"],
     queryFn: async () => {
       const response = await fetch("/api/mall-events");
@@ -46,8 +46,8 @@ export default function MallEvents() {
     );
   }
 
-  // Fallback to sample data if API fails
-  const mallEvents = events || [
+  // Extract events array from API response or use fallback data
+  const mallEvents = eventsResponse?.events || [
     {
       id: 1,
       title: "Holiday Market & Craft Fair",

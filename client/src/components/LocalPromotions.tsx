@@ -17,7 +17,7 @@ interface Promotion {
 }
 
 export default function LocalPromotions() {
-  const { data: promotions, isLoading } = useQuery<Promotion[]>({
+  const { data: promotionsResponse, isLoading } = useQuery<{promotions: Promotion[]}>({
     queryKey: ["/api/promotions"],
     queryFn: async () => {
       const response = await fetch("/api/promotions");
@@ -47,8 +47,23 @@ export default function LocalPromotions() {
     );
   }
 
-  // Fallback to sample data if API fails
-  const localPromotions = promotions || [
+  // Convert API promotions to component format or use fallback data
+  const apiPromotions = promotionsResponse?.promotions?.map((promo: any, index: number) => ({
+    id: promo.id,
+    title: promo.title,
+    store: "SPIRAL Store",
+    discount: promo.type === 'signup_bonus' ? `${promo.value} SPIRALs` : 
+              promo.type === 'first_purchase' ? `${promo.multiplier}x SPIRALs` : 
+              `+${promo.bonus} SPIRALs`,
+    description: promo.description,
+    validUntil: "2025-12-31",
+    category: "SPIRAL Rewards",
+    location: "Platform Wide",
+    rating: 4.9,
+    image: "/api/placeholder/300/150"
+  })) || [];
+
+  const localPromotions = apiPromotions.length > 0 ? apiPromotions : [
     {
       id: 1,
       title: "20% Off Winter Collection",
@@ -115,31 +130,31 @@ export default function LocalPromotions() {
       </div>
       <div className="space-y-4">
         {localPromotions.slice(0, 4).map((promo) => (
-          <Link key={promo.id} href={`/store/${promo.store.toLowerCase().replace(/\s+/g, '-')}`}>
+          <Link key={promo.id} href={`/store/${promo.store?.toLowerCase().replace(/\s+/g, '-') || 'spiral-store'}`}>
             <div className="border rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer relative">
               <div className="flex justify-between items-start mb-2">
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-800 text-sm mb-1">{promo.title}</h4>
-                  <p className="text-sm text-gray-600 font-medium">{promo.store}</p>
+                  <p className="text-sm text-gray-600 font-medium">{promo.store || "SPIRAL Platform"}</p>
                 </div>
-                <div className={`${getDiscountColor(promo.discount)} text-white text-xs px-2 py-1 rounded-full font-bold`}>
-                  {promo.discount}
+                <div className={`${getDiscountColor(promo.discount || '10% OFF')} text-white text-xs px-2 py-1 rounded-full font-bold`}>
+                  {promo.discount || "SPIRAL Bonus"}
                 </div>
               </div>
               
-              <p className="text-xs text-gray-500 mb-3 line-clamp-2">{promo.description}</p>
+              <p className="text-xs text-gray-500 mb-3 line-clamp-2">{promo.description || "Special offer available now"}</p>
               
               <div className="flex items-center justify-between text-xs text-gray-600">
                 <div className="flex items-center">
                   <Star className="w-3 h-3 text-yellow-400 mr-1" />
-                  <span>{promo.rating}</span>
+                  <span>{promo.rating || 4.5}</span>
                   <MapPin className="w-3 h-3 ml-3 mr-1" />
-                  <span>{promo.location}</span>
+                  <span>{promo.location || "Platform Wide"}</span>
                 </div>
                 
                 <div className="flex items-center text-orange-600">
                   <Clock className="w-3 h-3 mr-1" />
-                  <span>Until {new Date(promo.validUntil).toLocaleDateString()}</span>
+                  <span>Until {new Date(promo.validUntil || "2025-12-31").toLocaleDateString()}</span>
                 </div>
               </div>
               
