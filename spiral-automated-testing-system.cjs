@@ -40,6 +40,7 @@ class SpiralAutomatedTestingSystem {
     this.pages = [
       '/',
       '/products',
+      '/stores',
       '/cart',
       '/wishlist',
       '/ai-wishlist-intelligence',

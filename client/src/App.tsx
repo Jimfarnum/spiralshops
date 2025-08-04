@@ -223,6 +223,7 @@ import AdvancedLogistics from "@/pages/advanced-logistics";
 import Spiral100CompatibilityTest from "@/pages/spiral-100-compatibility-test";
 import AiRetailerSignup from "@/pages/ai-retailer-signup";
 import PendingApplication from "@/pages/pending-application";
+import StoresPage from "@/pages/stores";
 import AdminRetailerApplications from "@/pages/admin-retailer-applications";
 import AiRetailerDemo from "@/pages/ai-retailer-demo";
 import AdminLogin from "@/pages/AdminLogin";
@@ -251,6 +252,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/store/:id" component={Store} />
+      <Route path="/stores" component={StoresPage} />
       <Route path="/retailers/:storeSlug" component={RetailerProfilePage} />
       <Route path="/products" component={ProductsPageNew} />
       <Route path="/product/:id" component={EnhancedProductDetail} />
