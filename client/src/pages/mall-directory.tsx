@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Link } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Store, Search, Filter, Star, Users, ShoppingBag } from 'lucide-react';
+import { MapPin, Store, Search, Filter, Star, Users, ShoppingBag, Navigation } from 'lucide-react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import LocationPermissionRequest from '@/components/LocationPermissionRequest';
+import { locationService, type LocationData } from '@/services/locationService';
 
 interface Mall {
   id: string;
@@ -83,32 +86,76 @@ const mallsData: Mall[] = [
   }
 ];
 
-const MallDirectory = () => {
+export default function MallDirectoryPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('distance');
+  const [sortBy, setSortBy] = useState('featured');
+  const [userLocation, setUserLocation] = useState<LocationData | null>(null);
+  const [showLocationRequest, setShowLocationRequest] = useState(true);
 
-  const filteredMalls = mallsData
+  // Mall location search query
+  const { data: mallSearchResults, isLoading: mallsLoading, error: mallsError, refetch: refetchMalls } = useQuery({
+    queryKey: ['/api/mall-location-search', userLocation, selectedCategory],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      
+      if (selectedCategory !== 'all') params.append('category', selectedCategory);
+      
+      if (userLocation?.coordinates) {
+        params.append('latitude', userLocation.coordinates.latitude.toString());
+        params.append('longitude', userLocation.coordinates.longitude.toString());
+        params.append('radius', '25'); // 25 mile radius for malls
+      }
+      
+      if (userLocation?.city) params.append('city', userLocation.city);
+      if (userLocation?.state) params.append('state', userLocation.state);
+      
+      const response = await fetch(`/api/mall-location-search?${params}`);
+      if (!response.ok) {
+        throw new Error('Failed to search malls');
+      }
+      return response.json();
+    },
+    enabled: !!userLocation || selectedCategory !== 'all'
+  });
+
+  const handleLocationGranted = (location: LocationData) => {
+    setUserLocation(location);
+    setShowLocationRequest(false);
+    refetchMalls();
+  };
+
+  const handleLocationDenied = () => {
+    setShowLocationRequest(false);
+  };
+
+  // Use API results or fallback to static data
+  const apiMalls = mallSearchResults?.malls || [];
+  const displayMalls = apiMalls.length > 0 ? apiMalls : mallsData;
+
+  const filteredMalls = displayMalls
     .filter(mall => {
       const matchesSearch = mall.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            mall.location.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' || mall.categories.includes(selectedCategory);
+      const matchesCategory = selectedCategory === 'all' || mall.categories?.includes(selectedCategory);
       return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
       switch (sortBy) {
         case 'distance':
-          return a.distance - b.distance;
+          return (a.distance || Infinity) - (b.distance || Infinity);
         case 'rating':
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
         case 'tenants':
-          return b.tenantCount - a.tenantCount;
+          return (b.tenantCount || 0) - (a.tenantCount || 0);
+        case 'featured':
+          return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
         default:
           return 0;
       }
     });
 
-  const allCategories = Array.from(new Set(mallsData.flatMap(mall => mall.categories)));
+  const allCategories = Array.from(new Set(displayMalls.flatMap(mall => mall.categories || [])));
 
   return (
     <div className="min-h-screen bg-[var(--spiral-cream)]">
@@ -126,6 +173,30 @@ const MallDirectory = () => {
             Everything Local. Just for You.
           </p>
         </div>
+
+        {/* Location Permission Request */}
+        {showLocationRequest && !userLocation && (
+          <div className="mb-8">
+            <LocationPermissionRequest
+              onLocationGranted={handleLocationGranted}
+              onLocationDenied={handleLocationDenied}
+            />
+          </div>
+        )}
+
+        {/* Location Status */}
+        {userLocation && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-8">
+            <div className="flex items-center gap-2 text-green-800">
+              <Navigation className="h-4 w-4" />
+              <span className="font-medium">Your Location:</span>
+              <span>{userLocation.city && userLocation.state ? `${userLocation.city}, ${userLocation.state}` : 'Location detected'}</span>
+              <Badge variant="secondary" className="ml-auto">
+                {displayMalls.length} malls found nearby
+              </Badge>
+            </div>
+          </div>
+        )}
 
         {/* Search and Filters */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
@@ -160,6 +231,7 @@ const MallDirectory = () => {
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="featured">Featured</SelectItem>
                 <SelectItem value="distance">Distance</SelectItem>
                 <SelectItem value="rating">Rating</SelectItem>
                 <SelectItem value="tenants">Number of Stores</SelectItem>
@@ -265,7 +337,7 @@ const MallDirectory = () => {
                   <CardDescription className="font-['Inter'] text-sm">
                     <div className="flex items-center">
                       <MapPin className="h-3 w-3 mr-1" />
-                      {mall.distance} miles • {mall.tenantCount} stores
+                      {mall.distance ? `${mall.distance} mi` : mall.location} • {mall.tenantCount} stores
                     </div>
                   </CardDescription>
                 </CardHeader>
@@ -321,5 +393,3 @@ const MallDirectory = () => {
     </div>
   );
 };
-
-export default MallDirectory;

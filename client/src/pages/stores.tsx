@@ -9,6 +9,9 @@ import { Search, MapPin, Store, Star, Filter, SortAsc } from "lucide-react";
 import { Link } from "wouter";
 import StoreCard from "@/components/store-card";
 import VerifiedBadge from "@/components/VerifiedBadge";
+import LocationBasedStoreSearch from "@/components/LocationBasedStoreSearch";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 interface Store {
   id: number;
@@ -26,6 +29,34 @@ interface Store {
 
 export default function StoresPage() {
   const { toast } = useToast();
+  const [useLocationSearch, setUseLocationSearch] = useState(true);
+
+  if (useLocationSearch) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Find Local Stores</h1>
+            <p className="text-gray-600">Discover amazing local businesses near you</p>
+            <div className="mt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => setUseLocationSearch(false)}
+                className="text-sm"
+              >
+                Use Simple Search Instead
+              </Button>
+            </div>
+          </div>
+          <LocationBasedStoreSearch />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Legacy store search fallback
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');

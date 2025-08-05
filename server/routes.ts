@@ -1873,5 +1873,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Location Search API Routes
+  try {
+    const { searchStoresByLocation, searchMallsByLocation } = await import('./api/location-search.js');
+    app.get("/api/location-search", searchStoresByLocation);
+    app.get("/api/mall-location-search", searchMallsByLocation);
+    console.log('✅ Location search API routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load location search routes:', err.message);
+  }
+
   return httpServer;
 }
