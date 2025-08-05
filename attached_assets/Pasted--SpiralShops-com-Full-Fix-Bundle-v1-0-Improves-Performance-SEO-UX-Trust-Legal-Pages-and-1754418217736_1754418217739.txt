@@ -1,0 +1,78 @@
+// SpiralShops.com Full Fix Bundle – v1.0
+// Improves: Performance, SEO, UX, Trust, Legal Pages, and Analytics
+
+try {
+  // 1. ✅ Lazy Load Images
+  document.querySelectorAll("img").forEach(img => {
+    img.setAttribute("loading", "lazy");
+  });
+
+  // 2. ✅ Preconnect to Fonts and CDN
+  const linkFont = document.createElement("link");
+  linkFont.rel = "preconnect";
+  linkFont.href = "https://fonts.googleapis.com";
+  document.head.appendChild(linkFont);
+
+  // 3. ✅ SEO Title and Meta Description
+  document.title = "Shop Local & Earn Rewards | SpiralShops";
+  const metaDesc = document.createElement("meta");
+  metaDesc.name = "description";
+  metaDesc.content = "Discover local stores, earn rewards, and support your community with SpiralShops.";
+  document.head.appendChild(metaDesc);
+
+  // 4. ✅ Structured Data for LocalBusiness
+  const schemaScript = document.createElement("script");
+  schemaScript.type = "application/ld+json";
+  schemaScript.text = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "SpiralShops",
+    "url": "https://www.spiralshops.com",
+    "logo": "https://www.spiralshops.com/logo.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+1-800-SPIRAL",
+      "contactType": "Customer Support"
+    }
+  });
+  document.head.appendChild(schemaScript);
+
+  // 5. ✅ Highlight Active Navigation Link
+  const currentPath = window.location.pathname;
+  document.querySelectorAll('nav a').forEach(link => {
+    if (link.getAttribute('href') === currentPath) {
+      link.classList.add('active-link');
+    }
+  });
+
+  // 6. ✅ Add Contact Info to Footer
+  const footer = document.querySelector("footer");
+  if (footer) {
+    footer.innerHTML += '<p>📞 Contact: <a href="mailto:support@spiralshops.com">support@spiralshops.com</a></p>';
+  }
+
+  // 7. ✅ Inject Google Analytics
+  const gaScript = document.createElement("script");
+  gaScript.async = true;
+  gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"; // ← Replace with your actual GA ID
+  document.head.appendChild(gaScript);
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag("js", new Date());
+  gtag("config", "G-XXXXXXXXXX"); // ← Replace this too
+
+  // 8. ✅ Add Legal Pages (Only if running server-side with Express)
+  if (typeof app !== 'undefined') {
+    app.get("/privacy-policy", (req, res) => {
+      res.send("<h1>Privacy Policy</h1><p>This is your privacy policy.</p>");
+    });
+    app.get("/terms", (req, res) => {
+      res.send("<h1>Terms of Service</h1><p>This is your terms of service.</p>");
+    });
+  }
+
+  console.log("✅ SPIRALSHOPS.COM FIX PACKAGE APPLIED SUCCESSFULLY");
+} catch (err) {
+  console.error("❌ Error applying SpiralShops fixes:", err);
+}

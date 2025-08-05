@@ -55,10 +55,25 @@ export default function Footer() {
               <li><a href="#" className="hover:text-[var(--spiral-coral)] transition-colors">Contact</a></li>
               <li><a href="#" className="hover:text-[var(--spiral-coral)] transition-colors">Help</a></li>
             </ul>
+            <div className="mt-6">
+              <h4 className="text-sm font-semibold text-[var(--spiral-navy)] mb-2">Contact Info</h4>
+              <p className="text-sm text-gray-600 mb-1">
+                📞 <a href="tel:+1-800-SPIRAL" className="hover:text-[var(--spiral-coral)] transition-colors">1-800-SPIRAL</a>
+              </p>
+              <p className="text-sm text-gray-600">
+                ✉️ <a href="mailto:support@spiralshops.com" className="hover:text-[var(--spiral-coral)] transition-colors">support@spiralshops.com</a>
+              </p>
+            </div>
           </div>
         </div>
         
         <div className="border-t border-gray-300 mt-12 pt-8 text-center text-gray-500">
+          <div className="flex flex-wrap justify-center gap-6 mb-4 text-sm">
+            <a href="/privacy-policy" className="hover:text-[var(--spiral-coral)] transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-[var(--spiral-coral)] transition-colors">Terms of Service</a>
+            <a href="/accessibility" className="hover:text-[var(--spiral-coral)] transition-colors">Accessibility</a>
+            <a href="/sitemap" className="hover:text-[var(--spiral-coral)] transition-colors">Sitemap</a>
+          </div>
           <p className="mb-2">&copy; 2025 SPIRAL. All rights reserved.</p>
           <p className="text-sm">Powered by SPIRAL. Supporting Local Stores Nationwide.</p>
         </div>

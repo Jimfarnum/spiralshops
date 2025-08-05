@@ -7,6 +7,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { updateMetaTags } from "@/utils/metaTags";
 import { SocialPixelManager } from "@/utils/socialPixels";
+import SEOHead from "@/components/SEOHead";
+import PerformanceOptimizer from "@/components/PerformanceOptimizer";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Home from "@/pages/home";
 import Store from "@/pages/store";
 import NotFound from "@/pages/not-found";
@@ -145,6 +148,8 @@ import LoyaltyDashboard from "@/pages/loyalty";
 import OrdersPage from "@/pages/orders";
 import OrdersTestPage from "@/pages/orders-test";
 import OrdersSimplePage from "@/pages/orders-simple";
+import PrivacyPolicy from "@/pages/privacy-policy";
+import TermsOfService from "@/pages/terms";
 import OrderDetailPage from "@/pages/order-detail";
 import RetailerLoyaltyPage from "@/pages/loyalty-retailers";
 import MallPerksPage from "@/pages/loyalty-mall-perks";
@@ -293,6 +298,8 @@ function Router() {
       <Route path="/test-flow" component={TestFlow} />
       <Route path="/about" component={About} />
       <Route path="/orders" component={OrdersSimplePage} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms" component={TermsOfService} />
       <Route path="/about-spiral" component={About} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/intelligent-wishlist" component={IntelligentWishlistPage} />
@@ -494,6 +501,12 @@ function MainRouter() {
         <MallContextSync />
         <CartRestoreNotification />
         <ShareReminder />
+        
+        {/* SPIRAL Platform Optimization Components */}
+        <SEOHead />
+        <PerformanceOptimizer />
+        <GoogleAnalytics />
+        
         <Toaster />
         <Router />
       </TooltipProvider>
