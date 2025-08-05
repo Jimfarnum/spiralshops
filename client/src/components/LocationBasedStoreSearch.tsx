@@ -43,15 +43,16 @@ export default function LocationBasedStoreSearch() {
   const [filters, setFilters] = useState<SearchFilters>({
     query: '',
     category: 'all',
-    radius: 10,
+    radius: 25,
     sortBy: 'distance',
     city: '',
     state: ''
   });
+  const [searchScope, setSearchScope] = useState<'radius' | 'city' | 'state' | 'all'>('radius');
 
-  // Search stores using location API
+  // Search stores using Continental US location API
   const { data: searchResults, isLoading, error, refetch } = useQuery({
-    queryKey: ['/api/location-search', userLocation, filters],
+    queryKey: ['/api/location-search-continental-us', userLocation, filters, searchScope],
     queryFn: async () => {
       const params = new URLSearchParams();
       
@@ -59,8 +60,9 @@ export default function LocationBasedStoreSearch() {
       if (filters.category !== 'all') params.append('category', filters.category);
       if (filters.city) params.append('city', filters.city);
       if (filters.state) params.append('state', filters.state);
+      params.append('scope', searchScope);
       
-      if (userLocation?.coordinates) {
+      if (userLocation?.coordinates && (searchScope === 'radius' || searchScope === 'all')) {
         params.append('latitude', userLocation.coordinates.latitude.toString());
         params.append('longitude', userLocation.coordinates.longitude.toString());
         params.append('radius', filters.radius.toString());
@@ -68,9 +70,9 @@ export default function LocationBasedStoreSearch() {
       
       params.append('sortBy', filters.sortBy);
       
-      const response = await fetch(`/api/location-search?${params}`);
+      const response = await fetch(`/api/location-search-continental-us?${params}`);
       if (!response.ok) {
-        throw new Error('Failed to search stores');
+        throw new Error('Failed to search continental US stores');
       }
       return response.json();
     },
@@ -84,7 +86,7 @@ export default function LocationBasedStoreSearch() {
     if (userLocation || filters.city || filters.state || filters.query) {
       refetch();
     }
-  }, [userLocation, filters, refetch]);
+  }, [userLocation, filters, searchScope, refetch]);
 
   const handleLocationGranted = (location: LocationData) => {
     setUserLocation(location);

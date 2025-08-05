@@ -1878,7 +1878,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { searchStoresByLocation, searchMallsByLocation } = await import('./api/location-search.js');
     app.get("/api/location-search", searchStoresByLocation);
     app.get("/api/mall-location-search", searchMallsByLocation);
-    console.log('✅ Location search API routes loaded successfully');
+    
+    // Continental US comprehensive search with distance options: city, state, all
+    const { searchContinentalUSStores } = await import('./api/location-search-continental-us.js');
+    app.get('/api/location-search-continental-us', searchContinentalUSStores);
+    
+    console.log('✅ Location search API routes loaded successfully (including Continental US coverage)');
   } catch (err) {
     console.error('❌ Failed to load location search routes:', err.message);
   }
