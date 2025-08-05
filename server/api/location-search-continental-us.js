@@ -652,7 +652,7 @@ export const searchContinentalUSStores = async (req, res) => {
 
   } catch (error) {
     console.error('Continental US search error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Search failed',
       message: error.message,
