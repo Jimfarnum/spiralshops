@@ -709,3 +709,6 @@ Respond with a JSON object containing:
     };
   }
 }
+
+// Export the search function for Continental US stores
+export { searchContinentalUSStores };
