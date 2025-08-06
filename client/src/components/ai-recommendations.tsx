@@ -44,7 +44,7 @@ export default function AIRecommendations({
 }: AIRecommendationsProps) {
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
 
-  const { data: recommendations, isLoading } = useQuery({
+  const { data: recommendationsResponse, isLoading } = useQuery({
     queryKey: ['/api/recommend', userId, productId, context, limit],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -55,7 +55,7 @@ export default function AIRecommendations({
 
       const response = await fetch(`/api/recommend?${params}`);
       if (!response.ok) throw new Error('Failed to fetch recommendations');
-      return response.json() as RecommendationItem[];
+      return response.json();
     },
     staleTime: 20 * 60 * 1000, // 20 minutes
     gcTime: 60 * 60 * 1000, // 1 hour
@@ -97,6 +97,9 @@ export default function AIRecommendations({
     );
   }
 
+  // Handle both legacy and new standardized response formats
+  const recommendations = recommendationsResponse?.data?.recommendations || recommendationsResponse || [];
+  
   if (!recommendations || recommendations.length === 0) {
     return null;
   }

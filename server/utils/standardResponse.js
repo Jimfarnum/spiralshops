@@ -1,21 +1,43 @@
 // SPIRAL Standard API Response Format Utility
 // Based on most effective code analysis - implements consistent response structure
 
-export function createSuccessResponse(data, startTime = Date.now()) {
+export function createSuccessResponse(data, startTime = Date.now(), metadata = {}) {
   return {
     success: true,
     data,
     duration: `${Date.now() - startTime}ms`,
-    error: null
+    timestamp: Date.now(),
+    error: null,
+    ...metadata
   };
 }
 
-export function createErrorResponse(error, startTime = Date.now()) {
+export function createErrorResponse(error, startTime = Date.now(), statusCode = 500) {
   return {
     success: false,
     data: null,
     duration: `${Date.now() - startTime}ms`,
-    error: typeof error === 'string' ? error : error.message
+    timestamp: Date.now(),
+    error: typeof error === 'string' ? error : error.message,
+    statusCode
+  };
+}
+
+export function createPaginatedResponse(items, total, page = 1, limit = 50, startTime = Date.now()) {
+  return {
+    success: true,
+    data: {
+      items,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit)
+      }
+    },
+    duration: `${Date.now() - startTime}ms`,
+    timestamp: Date.now(),
+    error: null
   };
 }
 

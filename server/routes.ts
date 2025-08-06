@@ -303,33 +303,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // SPIRAL USER AUTHENTICATION ROUTES
   // ========================================
 
-  // Check username availability
+  // Check username availability - SPIRAL Standard Response Format
   app.get('/api/auth/check-username', async (req, res) => {
+    const startTime = Date.now();
     try {
       const { username } = req.query;
       if (!username || typeof username !== 'string') {
-        return res.status(400).json({ error: 'Username is required' });
+        return res.status(400).json({
+          success: false,
+          data: null,
+          duration: `${Date.now() - startTime}ms`,
+          timestamp: Date.now(),
+          error: 'Username is required'
+        });
       }
 
       const available = await authSystem.isUsernameAvailable(username);
-      res.json({ available });
+      res.json({
+        success: true,
+        data: { available, username },
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: null
+      });
     } catch (error) {
-      res.status(500).json({ error: 'Could not check username availability' });
+      res.status(500).json({
+        success: false,
+        data: null,
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: 'Could not check username availability'
+      });
     }
   });
 
-  // Check email availability
+  // Check email availability - SPIRAL Standard Response Format
   app.get('/api/auth/check-email', async (req, res) => {
+    const startTime = Date.now();
     try {
       const { email } = req.query;
       if (!email || typeof email !== 'string') {
-        return res.status(400).json({ error: 'Email is required' });
+        return res.status(400).json({
+          success: false,
+          data: null,
+          duration: `${Date.now() - startTime}ms`,
+          timestamp: Date.now(),
+          error: 'Email is required'
+        });
       }
 
       const available = await authSystem.isEmailAvailable(email);
-      res.json({ available });
+      res.json({
+        success: true,
+        data: { available, email },
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: null
+      });
     } catch (error) {
-      res.status(500).json({ error: 'Could not check email availability' });
+      res.status(500).json({
+        success: false,
+        data: null,
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: 'Could not check email availability'
+      });
     }
   });
 
@@ -623,47 +661,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/stores/search", async (req, res) => {
+    const startTime = Date.now();
     try {
       const { zipCode } = req.query;
       if (!zipCode || typeof zipCode !== "string") {
-        return res.status(400).json({ message: "ZIP code is required" });
+        return res.status(400).json({
+          success: false,
+          data: null,
+          duration: `${Date.now() - startTime}ms`,
+          timestamp: Date.now(),
+          error: "ZIP code is required"
+        });
       }
       
       const stores = await storage.getStoresByZipCode(zipCode);
-      res.json(stores);
+      res.json({
+        success: true,
+        data: { stores, zipCode, total: stores.length },
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: null
+      });
     } catch (error) {
-      res.status(500).json({ message: "Failed to search stores" });
+      res.status(500).json({
+        success: false,
+        data: null,
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: "Failed to search stores"
+      });
     }
   });
 
   app.get("/api/stores/:id", async (req, res) => {
+    const startTime = Date.now();
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid store ID" });
+        return res.status(400).json({
+          success: false,
+          data: null,
+          duration: `${Date.now() - startTime}ms`,
+          timestamp: Date.now(),
+          error: "Invalid store ID"
+        });
       }
       
       const store = await storage.getStore(id);
       if (!store) {
-        return res.status(404).json({ message: "Store not found" });
+        return res.status(404).json({
+          success: false,
+          data: null,
+          duration: `${Date.now() - startTime}ms`,
+          timestamp: Date.now(),
+          error: "Store not found"
+        });
       }
       
-      res.json(store);
+      res.json({
+        success: true,
+        data: { store },
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: null
+      });
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch store" });
+      res.status(500).json({
+        success: false,
+        data: null,
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: "Failed to fetch store"
+      });
     }
   });
 
   app.post("/api/stores", async (req, res) => {
+    const startTime = Date.now();
     try {
       const validatedData = insertStoreSchema.parse(req.body);
       const store = await storage.createStore(validatedData);
-      res.status(201).json(store);
+      res.status(201).json({
+        success: true,
+        data: { store },
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: null
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid store data", errors: error.errors });
+        return res.status(400).json({
+          success: false,
+          data: null,
+          duration: `${Date.now() - startTime}ms`,
+          timestamp: Date.now(),
+          error: "Invalid store data",
+          validationErrors: error.errors
+        });
       }
-      res.status(500).json({ message: "Failed to create store" });
+      res.status(500).json({
+        success: false,
+        data: null,
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: "Failed to create store"
+      });
     }
   });
 
@@ -708,13 +810,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Retailer routes
+  // Retailer routes - SPIRAL Standard Response Format
   app.get("/api/retailers", async (req, res) => {
+    const startTime = Date.now();
     try {
       const retailers = await storage.getRetailers();
-      res.json(retailers);
+      res.json({
+        success: true,
+        data: { retailers, total: retailers.length },
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: null
+      });
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch retailers" });
+      res.status(500).json({
+        success: false,
+        data: null,
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: "Failed to fetch retailers"
+      });
     }
   });
 
@@ -1458,6 +1573,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/categories", async (req, res) => {
+    const startTime = Date.now();
     try {
       const allCategories = await getCategories();
       const categoryList = Object.values(allCategories);
@@ -1466,12 +1582,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (categoryList.length === 0) {
         const { dataService } = await import('./dataService.js');
         const fallbackCategories = await dataService.getCategories();
-        return res.json(fallbackCategories);
+        return res.json({
+          success: true,
+          data: { categories: fallbackCategories, total: fallbackCategories.length },
+          duration: `${Date.now() - startTime}ms`,
+          timestamp: Date.now(),
+          error: null
+        });
       }
 
       res.json({
-        categories: categoryList,
-        total: Object.keys(allCategories).length
+        success: true,
+        data: { categories: categoryList, total: Object.keys(allCategories).length },
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: null
       });
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -1479,16 +1604,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const { dataService } = await import('./dataService.js');
         const fallbackCategories = await dataService.getCategories();
-        res.json(fallbackCategories);
+        res.json({
+          success: true,
+          data: { categories: fallbackCategories, total: fallbackCategories.length },
+          duration: `${Date.now() - startTime}ms`,
+          timestamp: Date.now(),
+          error: null
+        });
       } catch (fallbackError) {
-        res.status(500).json({ error: "Failed to fetch categories" });
+        res.status(500).json({
+          success: false,
+          data: null,
+          duration: `${Date.now() - startTime}ms`,
+          timestamp: Date.now(),
+          error: "Failed to fetch categories"
+        });
       }
     }
   });
 
   const httpServer = createServer(app);
-  // AI Recommendations API
+  // AI Recommendations API - SPIRAL Standard Response Format
   app.get("/api/recommend", async (req: any, res) => {
+    const startTime = Date.now();
     try {
       const { userId, productId, context, limit } = req.query;
       
@@ -1499,10 +1637,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         limit: parseInt(limit) || 5
       });
 
-      res.json(recommendations);
+      res.json({
+        success: true,
+        data: { recommendations, total: recommendations.length, context: context || 'homepage' },
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: null
+      });
     } catch (error) {
       console.error("Recommendation error:", error);
-      res.status(500).json({ message: "Failed to get recommendations" });
+      res.status(500).json({
+        success: false,
+        data: null,
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: "Failed to get recommendations"
+      });
     }
   });
 

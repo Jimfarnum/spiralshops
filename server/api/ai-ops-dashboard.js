@@ -23,9 +23,13 @@ export const agents = {
       const recommendations = await recommendRes.json();
       const stores = await storesRes.json();
       
+      // Handle both legacy and standard response formats
+      const recommendationCount = recommendations.data ? recommendations.data.recommendations?.length || recommendations.data.total || 0 : recommendations.length || 0;
+      const storeCount = stores.data ? stores.data.retailers?.length || stores.data.total || 0 : stores.length || 0;
+      
       return { 
         status: "OK", 
-        detail: `Shopper UX flow completed: ${products.products?.length || 0} products, ${featured.products?.length || 0} featured, ${recommendations.length || 0} recommendations, ${stores.length || 0} stores`
+        detail: `Shopper UX flow completed: ${products.products?.length || 0} products, ${featured.products?.length || 0} featured, ${recommendationCount} recommendations, ${storeCount} stores`
       };
     } catch (error) {
       return { status: "FAIL", detail: `Shopper flow error: ${error.message}` };
