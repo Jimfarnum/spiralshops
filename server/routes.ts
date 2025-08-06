@@ -609,9 +609,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get stores list - SPIRAL Standard Response Format
+  // Get stores list - SPIRAL Standard Response Format with Category Filtering
   app.get("/api/stores", asyncHandler(async (req, res) => {
-    const { largeRetailer } = req.query;
+    const { largeRetailer, category } = req.query;
     
     // Add caching and performance optimization
     res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
@@ -625,13 +625,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       stores = stores.filter(store => store.isLargeRetailer !== true);
     }
     
+    // Filter by category if requested (jewelry, electronics, fashion, etc.)
+    if (category && typeof category === 'string') {
+      const categoryLower = category.toLowerCase();
+      stores = stores.filter(store => {
+        // Check if store has categories and if any match the requested category
+        if (store.categories && Array.isArray(store.categories)) {
+          return store.categories.some(cat => cat.toLowerCase().includes(categoryLower));
+        }
+        // Also check store name and description for category matches
+        const storeName = (store.name || '').toLowerCase();
+        const storeDesc = (store.description || '').toLowerCase();
+        return storeName.includes(categoryLower) || storeDesc.includes(categoryLower);
+      });
+    }
+    
     // Limit response size for better performance
     const limitedStores = stores.slice(0, 20);
+    
+    // Get total count before filtering for comparison
+    const totalStoresCount = await storage.getStores().then(s => s.length);
     
     res.standard({
       stores: limitedStores,
       total: limitedStores.length,
-      filtered: !!largeRetailer
+      totalUnfiltered: totalStoresCount,
+      filtered: !!(largeRetailer || category),
+      filters: {
+        category: category || null,
+        largeRetailer: largeRetailer || null
+      }
     });
   }));
 
