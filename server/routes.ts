@@ -1878,126 +1878,141 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { scope = 'all', category = '', query = '', city = '', state = '' } = req.query;
     
     const continentalStores = [
-      {
-        id: 1,
-        name: "Golden Gate Electronics",
-        description: "Premium electronics and tech accessories in San Francisco",
-        category: "Electronics",
-        address: "123 Market St, San Francisco, CA 94102",
-        coordinates: { latitude: 37.7749, longitude: -122.4194 },
-        city: "San Francisco",
-        state: "CA",
-        zipCode: "94102",
-        rating: 4.6,
-        reviewCount: 2340,
-        isVerified: true,
-        verificationTier: "Gold"
-      },
-      {
-        id: 2,
-        name: "Venice Beach Boutique", 
-        description: "Trendy beachware and California lifestyle clothing",
-        category: "Fashion",
-        address: "456 Ocean Front Walk, Venice, CA 90291",
-        coordinates: { latitude: 34.0522, longitude: -118.2437 },
-        city: "Venice",
-        state: "CA", 
-        zipCode: "90291",
-        rating: 4.3,
-        reviewCount: 892,
-        isVerified: true,
-        verificationTier: "Silver"
-      },
-      {
-        id: 3,
-        name: "NYC Coffee Roasters",
-        description: "Artisan coffee in the heart of Manhattan", 
-        category: "Coffee",
-        address: "789 Broadway, New York, NY 10003",
-        coordinates: { latitude: 40.7128, longitude: -74.0060 },
-        city: "New York",
-        state: "NY",
-        zipCode: "10003", 
-        rating: 4.8,
-        reviewCount: 1234,
-        isVerified: true,
-        verificationTier: "Gold"
-      },
-      {
-        id: 4,
-        name: "Austin Music Store",
-        description: "Vinyl records and musical instruments",
-        category: "Music", 
-        address: "456 South Lamar, Austin, TX 78704",
-        coordinates: { latitude: 30.2672, longitude: -97.7431 },
-        city: "Austin",
-        state: "TX",
-        zipCode: "78704",
-        rating: 4.5,
-        reviewCount: 567,
-        isVerified: true,
-        verificationTier: "Silver"
-      },
-      {
-        id: 5,
-        name: "Miami Beach Sports",
-        description: "Sporting goods and beach equipment",
-        category: "Sports",
-        address: "789 Ocean Drive, Miami Beach, FL 33139",
-        coordinates: { latitude: 25.7617, longitude: -80.1918 },
-        city: "Miami Beach", 
-        state: "FL",
-        zipCode: "33139",
-        rating: 4.2,
-        reviewCount: 432,
-        isVerified: true,
-        verificationTier: "Silver"
-      },
-      {
-        id: 6,
-        name: "Minneapolis Electronics Hub",
-        description: "Leading electronics store in Plymouth, Minnesota",
-        category: "Electronics",
-        address: "3200 Vicksburg Ln, Plymouth, MN 55447",
-        coordinates: { latitude: 45.0293, longitude: -93.4555 },
-        city: "Plymouth",
-        state: "MN",
-        zipCode: "55447",
-        rating: 4.4,
-        reviewCount: 1156,
-        isVerified: true,
-        verificationTier: "Gold"
-      },
-      {
-        id: 7,
-        name: "Twin Cities Fashion",
-        description: "Contemporary clothing and accessories in Brooklyn Park",
-        category: "Fashion",
-        address: "8200 Brooklyn Blvd, Brooklyn Park, MN 55445",
-        coordinates: { latitude: 45.1094, longitude: -93.3527 },
-        city: "Brooklyn Park",
-        state: "MN",
-        zipCode: "55445",
-        rating: 4.1,
-        reviewCount: 743,
-        isVerified: true,
-        verificationTier: "Silver"
-      },
-      {
-        id: 8,
-        name: "Minnesota Coffee Co",
-        description: "Local roasted coffee and pastries in Plymouth",
-        category: "Coffee",
-        address: "13600 Industrial Park Blvd, Plymouth, MN 55441",
-        coordinates: { latitude: 45.0541, longitude: -93.4919 },
-        city: "Plymouth",
-        state: "MN",
-        zipCode: "55441",
-        rating: 4.7,
-        reviewCount: 892,
-        isVerified: true,
-        verificationTier: "Gold"
-      }
+      // California
+      { id: 1, name: "Golden Gate Electronics", description: "Premium electronics and tech accessories", category: "Electronics", address: "123 Market St, San Francisco, CA", coordinates: { latitude: 37.7749, longitude: -122.4194 }, city: "San Francisco", state: "CA", zipCode: "94102", rating: 4.6, reviewCount: 2340, isVerified: true, verificationTier: "Gold" },
+      { id: 2, name: "Venice Beach Boutique", description: "Trendy beachware and lifestyle clothing", category: "Fashion", address: "456 Ocean Front Walk, Venice, CA", coordinates: { latitude: 34.0522, longitude: -118.2437 }, city: "Venice", state: "CA", zipCode: "90291", rating: 4.3, reviewCount: 892, isVerified: true, verificationTier: "Silver" },
+      { id: 3, name: "LA Coffee Culture", description: "Artisan coffee in downtown Los Angeles", category: "Coffee", address: "789 Spring St, Los Angeles, CA", coordinates: { latitude: 34.0522, longitude: -118.2437 }, city: "Los Angeles", state: "CA", zipCode: "90013", rating: 4.4, reviewCount: 1567, isVerified: true, verificationTier: "Gold" },
+      { id: 4, name: "San Diego Surf Shop", description: "Surfboards and beach gear", category: "Sports", address: "321 Pacific Beach Dr, San Diego, CA", coordinates: { latitude: 32.7157, longitude: -117.1611 }, city: "San Diego", state: "CA", zipCode: "92109", rating: 4.2, reviewCount: 743, isVerified: true, verificationTier: "Silver" },
+      
+      // New York
+      { id: 5, name: "NYC Coffee Roasters", description: "Artisan coffee in Manhattan", category: "Coffee", address: "789 Broadway, New York, NY", coordinates: { latitude: 40.7128, longitude: -74.0060 }, city: "New York", state: "NY", zipCode: "10003", rating: 4.8, reviewCount: 1234, isVerified: true, verificationTier: "Gold" },
+      { id: 6, name: "Brooklyn Tech Store", description: "Latest electronics and gadgets", category: "Electronics", address: "456 Flatbush Ave, Brooklyn, NY", coordinates: { latitude: 40.6782, longitude: -73.9442 }, city: "Brooklyn", state: "NY", zipCode: "11238", rating: 4.5, reviewCount: 987, isVerified: true, verificationTier: "Gold" },
+      { id: 7, name: "Queens Fashion District", description: "Designer clothing and accessories", category: "Fashion", address: "123 Northern Blvd, Queens, NY", coordinates: { latitude: 40.7282, longitude: -73.7949 }, city: "Queens", state: "NY", zipCode: "11372", rating: 4.1, reviewCount: 654, isVerified: true, verificationTier: "Silver" },
+      { id: 8, name: "Albany Music Emporium", description: "Musical instruments and vinyl records", category: "Music", address: "890 State St, Albany, NY", coordinates: { latitude: 42.6526, longitude: -73.7562 }, city: "Albany", state: "NY", zipCode: "12207", rating: 4.3, reviewCount: 432, isVerified: true, verificationTier: "Silver" },
+      
+      // Texas
+      { id: 9, name: "Austin Music Store", description: "Vinyl records and musical instruments", category: "Music", address: "456 South Lamar, Austin, TX", coordinates: { latitude: 30.2672, longitude: -97.7431 }, city: "Austin", state: "TX", zipCode: "78704", rating: 4.5, reviewCount: 567, isVerified: true, verificationTier: "Silver" },
+      { id: 10, name: "Dallas Electronics Hub", description: "Complete electronics superstore", category: "Electronics", address: "1234 Commerce St, Dallas, TX", coordinates: { latitude: 32.7767, longitude: -96.7970 }, city: "Dallas", state: "TX", zipCode: "75201", rating: 4.4, reviewCount: 1876, isVerified: true, verificationTier: "Gold" },
+      { id: 11, name: "Houston Fashion Central", description: "Contemporary fashion and accessories", category: "Fashion", address: "567 Main St, Houston, TX", coordinates: { latitude: 29.7604, longitude: -95.3698 }, city: "Houston", state: "TX", zipCode: "77002", rating: 4.2, reviewCount: 1123, isVerified: true, verificationTier: "Gold" },
+      { id: 12, name: "San Antonio Sports Zone", description: "Athletic gear and sporting goods", category: "Sports", address: "789 Riverwalk, San Antonio, TX", coordinates: { latitude: 29.4241, longitude: -98.4936 }, city: "San Antonio", state: "TX", zipCode: "78205", rating: 4.3, reviewCount: 892, isVerified: true, verificationTier: "Silver" },
+      
+      // Florida
+      { id: 13, name: "Miami Beach Sports", description: "Sporting goods and beach equipment", category: "Sports", address: "789 Ocean Drive, Miami Beach, FL", coordinates: { latitude: 25.7617, longitude: -80.1918 }, city: "Miami Beach", state: "FL", zipCode: "33139", rating: 4.2, reviewCount: 432, isVerified: true, verificationTier: "Silver" },
+      { id: 14, name: "Orlando Electronics World", description: "Tech gadgets and accessories", category: "Electronics", address: "456 International Dr, Orlando, FL", coordinates: { latitude: 28.5383, longitude: -81.3792 }, city: "Orlando", state: "FL", zipCode: "32819", rating: 4.1, reviewCount: 765, isVerified: true, verificationTier: "Silver" },
+      { id: 15, name: "Tampa Coffee Collective", description: "Locally roasted coffee and pastries", category: "Coffee", address: "321 Ybor City, Tampa, FL", coordinates: { latitude: 27.9506, longitude: -82.4572 }, city: "Tampa", state: "FL", zipCode: "33605", rating: 4.6, reviewCount: 634, isVerified: true, verificationTier: "Gold" },
+      { id: 16, name: "Jacksonville Fashion House", description: "Trendy clothing and footwear", category: "Fashion", address: "987 Beach Blvd, Jacksonville, FL", coordinates: { latitude: 30.3322, longitude: -81.6557 }, city: "Jacksonville", state: "FL", zipCode: "32250", rating: 4.0, reviewCount: 543, isVerified: true, verificationTier: "Silver" },
+      
+      // Minnesota
+      { id: 17, name: "Minneapolis Electronics Hub", description: "Leading electronics store in Plymouth", category: "Electronics", address: "3200 Vicksburg Ln, Plymouth, MN", coordinates: { latitude: 45.0293, longitude: -93.4555 }, city: "Plymouth", state: "MN", zipCode: "55447", rating: 4.4, reviewCount: 1156, isVerified: true, verificationTier: "Gold" },
+      { id: 18, name: "Twin Cities Fashion", description: "Contemporary clothing and accessories", category: "Fashion", address: "8200 Brooklyn Blvd, Brooklyn Park, MN", coordinates: { latitude: 45.1094, longitude: -93.3527 }, city: "Brooklyn Park", state: "MN", zipCode: "55445", rating: 4.1, reviewCount: 743, isVerified: true, verificationTier: "Silver" },
+      { id: 19, name: "Minnesota Coffee Co", description: "Local roasted coffee and pastries", category: "Coffee", address: "13600 Industrial Park Blvd, Plymouth, MN", coordinates: { latitude: 45.0541, longitude: -93.4919 }, city: "Plymouth", state: "MN", zipCode: "55441", rating: 4.7, reviewCount: 892, isVerified: true, verificationTier: "Gold" },
+      { id: 20, name: "Duluth Music Store", description: "Musical instruments and equipment", category: "Music", address: "567 Superior St, Duluth, MN", coordinates: { latitude: 46.7867, longitude: -92.1005 }, city: "Duluth", state: "MN", zipCode: "55802", rating: 4.3, reviewCount: 287, isVerified: true, verificationTier: "Silver" },
+      
+      // Illinois
+      { id: 21, name: "Chicago Electronics Plaza", description: "Multi-level electronics superstore", category: "Electronics", address: "123 Michigan Ave, Chicago, IL", coordinates: { latitude: 41.8781, longitude: -87.6298 }, city: "Chicago", state: "IL", zipCode: "60601", rating: 4.5, reviewCount: 2134, isVerified: true, verificationTier: "Gold" },
+      { id: 22, name: "Windy City Coffee", description: "Premium coffee beans and brewing equipment", category: "Coffee", address: "456 State St, Chicago, IL", coordinates: { latitude: 41.8781, longitude: -87.6298 }, city: "Chicago", state: "IL", zipCode: "60654", rating: 4.7, reviewCount: 1567, isVerified: true, verificationTier: "Gold" },
+      { id: 23, name: "Springfield Fashion Gallery", description: "Designer clothing boutique", category: "Fashion", address: "789 Capitol Ave, Springfield, IL", coordinates: { latitude: 39.7817, longitude: -89.6501 }, city: "Springfield", state: "IL", zipCode: "62701", rating: 4.2, reviewCount: 432, isVerified: true, verificationTier: "Silver" },
+      { id: 24, name: "Rockford Sports Center", description: "Complete sporting goods store", category: "Sports", address: "321 Alpine Rd, Rockford, IL", coordinates: { latitude: 42.2711, longitude: -89.0940 }, city: "Rockford", state: "IL", zipCode: "61108", rating: 4.1, reviewCount: 654, isVerified: true, verificationTier: "Silver" },
+      
+      // Ohio
+      { id: 25, name: "Cleveland Tech Solutions", description: "Business and consumer electronics", category: "Electronics", address: "567 Euclid Ave, Cleveland, OH", coordinates: { latitude: 41.4993, longitude: -81.6944 }, city: "Cleveland", state: "OH", zipCode: "44115", rating: 4.3, reviewCount: 987, isVerified: true, verificationTier: "Gold" },
+      { id: 26, name: "Columbus Coffee Roasters", description: "Artisan coffee and cafe", category: "Coffee", address: "890 High St, Columbus, OH", coordinates: { latitude: 39.9612, longitude: -82.9988 }, city: "Columbus", state: "OH", zipCode: "43215", rating: 4.6, reviewCount: 743, isVerified: true, verificationTier: "Gold" },
+      { id: 27, name: "Cincinnati Fashion District", description: "Trendy clothing and accessories", category: "Fashion", address: "234 Vine St, Cincinnati, OH", coordinates: { latitude: 39.1012, longitude: -84.5120 }, city: "Cincinnati", state: "OH", zipCode: "45202", rating: 4.0, reviewCount: 565, isVerified: true, verificationTier: "Silver" },
+      { id: 28, name: "Toledo Music House", description: "Musical instruments and sound equipment", category: "Music", address: "456 Madison Ave, Toledo, OH", coordinates: { latitude: 41.6528, longitude: -83.5379 }, city: "Toledo", state: "OH", zipCode: "43604", rating: 4.4, reviewCount: 321, isVerified: true, verificationTier: "Silver" },
+      
+      // Pennsylvania
+      { id: 29, name: "Philadelphia Electronics Depot", description: "Wide selection of consumer electronics", category: "Electronics", address: "123 Market St, Philadelphia, PA", coordinates: { latitude: 39.9526, longitude: -75.1652 }, city: "Philadelphia", state: "PA", zipCode: "19107", rating: 4.2, reviewCount: 1432, isVerified: true, verificationTier: "Gold" },
+      { id: 30, name: "Pittsburgh Coffee Culture", description: "Local coffee roastery and cafe", category: "Coffee", address: "567 Liberty Ave, Pittsburgh, PA", coordinates: { latitude: 40.4406, longitude: -79.9959 }, city: "Pittsburgh", state: "PA", zipCode: "15222", rating: 4.5, reviewCount: 876, isVerified: true, verificationTier: "Gold" },
+      
+      // Georgia
+      { id: 31, name: "Atlanta Fashion Forward", description: "Contemporary fashion boutique", category: "Fashion", address: "789 Peachtree St, Atlanta, GA", coordinates: { latitude: 33.7490, longitude: -84.3880 }, city: "Atlanta", state: "GA", zipCode: "30309", rating: 4.3, reviewCount: 1098, isVerified: true, verificationTier: "Gold" },
+      { id: 32, name: "Savannah Music Shop", description: "Musical instruments and vinyl records", category: "Music", address: "234 Bull St, Savannah, GA", coordinates: { latitude: 32.0835, longitude: -81.0998 }, city: "Savannah", state: "GA", zipCode: "31401", rating: 4.1, reviewCount: 543, isVerified: true, verificationTier: "Silver" },
+      
+      // North Carolina
+      { id: 33, name: "Charlotte Electronics Express", description: "Fast electronics and tech support", category: "Electronics", address: "456 Trade St, Charlotte, NC", coordinates: { latitude: 35.2271, longitude: -80.8431 }, city: "Charlotte", state: "NC", zipCode: "28202", rating: 4.4, reviewCount: 765, isVerified: true, verificationTier: "Gold" },
+      { id: 34, name: "Raleigh Coffee Corner", description: "Specialty coffee and pastries", category: "Coffee", address: "890 Glenwood Ave, Raleigh, NC", coordinates: { latitude: 35.7796, longitude: -78.6382 }, city: "Raleigh", state: "NC", zipCode: "27603", rating: 4.6, reviewCount: 432, isVerified: true, verificationTier: "Gold" },
+      
+      // Michigan
+      { id: 35, name: "Detroit Auto Electronics", description: "Car audio and electronics specialists", category: "Electronics", address: "123 Woodward Ave, Detroit, MI", coordinates: { latitude: 42.3314, longitude: -83.0458 }, city: "Detroit", state: "MI", zipCode: "48226", rating: 4.2, reviewCount: 654, isVerified: true, verificationTier: "Silver" },
+      { id: 36, name: "Grand Rapids Fashion Hub", description: "Modern clothing and accessories", category: "Fashion", address: "567 Monroe Ave, Grand Rapids, MI", coordinates: { latitude: 42.9634, longitude: -85.6681 }, city: "Grand Rapids", state: "MI", zipCode: "49503", rating: 4.1, reviewCount: 432, isVerified: true, verificationTier: "Silver" },
+      
+      // Washington
+      { id: 37, name: "Seattle Tech Central", description: "Latest technology and gadgets", category: "Electronics", address: "789 Pine St, Seattle, WA", coordinates: { latitude: 47.6062, longitude: -122.3321 }, city: "Seattle", state: "WA", zipCode: "98101", rating: 4.7, reviewCount: 1876, isVerified: true, verificationTier: "Gold" },
+      { id: 38, name: "Pike Place Coffee Co", description: "Fresh roasted coffee near Pike Place Market", category: "Coffee", address: "234 1st Ave, Seattle, WA", coordinates: { latitude: 47.6062, longitude: -122.3321 }, city: "Seattle", state: "WA", zipCode: "98104", rating: 4.8, reviewCount: 2134, isVerified: true, verificationTier: "Gold" },
+      { id: 39, name: "Spokane Sports Gear", description: "Outdoor and sporting equipment", category: "Sports", address: "456 Riverside Ave, Spokane, WA", coordinates: { latitude: 47.6587, longitude: -117.4260 }, city: "Spokane", state: "WA", zipCode: "99201", rating: 4.3, reviewCount: 567, isVerified: true, verificationTier: "Silver" },
+      
+      // Oregon
+      { id: 40, name: "Portland Music Collective", description: "Independent music store and venue", category: "Music", address: "890 Burnside St, Portland, OR", coordinates: { latitude: 45.5152, longitude: -122.6784 }, city: "Portland", state: "OR", zipCode: "97209", rating: 4.5, reviewCount: 743, isVerified: true, verificationTier: "Gold" },
+      { id: 41, name: "Eugene Fashion Boutique", description: "Sustainable and ethical fashion", category: "Fashion", address: "321 Willamette St, Eugene, OR", coordinates: { latitude: 44.0521, longitude: -123.0868 }, city: "Eugene", state: "OR", zipCode: "97401", rating: 4.2, reviewCount: 321, isVerified: true, verificationTier: "Silver" },
+      
+      // Colorado
+      { id: 42, name: "Denver Electronics Outlet", description: "Discounted electronics and tech gear", category: "Electronics", address: "567 16th St, Denver, CO", coordinates: { latitude: 39.7392, longitude: -104.9903 }, city: "Denver", state: "CO", zipCode: "80202", rating: 4.1, reviewCount: 876, isVerified: true, verificationTier: "Silver" },
+      { id: 43, name: "Boulder Coffee Works", description: "Mountain-inspired coffee roastery", category: "Coffee", address: "234 Pearl St, Boulder, CO", coordinates: { latitude: 40.0150, longitude: -105.2705 }, city: "Boulder", state: "CO", zipCode: "80302", rating: 4.6, reviewCount: 654, isVerified: true, verificationTier: "Gold" },
+      { id: 44, name: "Colorado Springs Sports", description: "Outdoor adventure gear", category: "Sports", address: "789 Tejon St, Colorado Springs, CO", coordinates: { latitude: 38.8339, longitude: -104.8214 }, city: "Colorado Springs", state: "CO", zipCode: "80903", rating: 4.4, reviewCount: 432, isVerified: true, verificationTier: "Silver" },
+      
+      // Arizona
+      { id: 45, name: "Phoenix Electronics Plaza", description: "Southwest's largest electronics store", category: "Electronics", address: "456 Central Ave, Phoenix, AZ", coordinates: { latitude: 33.4484, longitude: -112.0740 }, city: "Phoenix", state: "AZ", zipCode: "85004", rating: 4.3, reviewCount: 1234, isVerified: true, verificationTier: "Gold" },
+      { id: 46, name: "Tucson Fashion Gallery", description: "Desert-inspired fashion and accessories", category: "Fashion", address: "890 4th Ave, Tucson, AZ", coordinates: { latitude: 32.2226, longitude: -110.9747 }, city: "Tucson", state: "AZ", zipCode: "85701", rating: 4.0, reviewCount: 543, isVerified: true, verificationTier: "Silver" },
+      
+      // Nevada
+      { id: 47, name: "Las Vegas Electronics Emporium", description: "24/7 electronics and gaming gear", category: "Electronics", address: "123 Las Vegas Blvd, Las Vegas, NV", coordinates: { latitude: 36.1699, longitude: -115.1398 }, city: "Las Vegas", state: "NV", zipCode: "89101", rating: 4.2, reviewCount: 987, isVerified: true, verificationTier: "Gold" },
+      { id: 48, name: "Reno Music Store", description: "Musical instruments and equipment", category: "Music", address: "567 Virginia St, Reno, NV", coordinates: { latitude: 39.5296, longitude: -119.8138 }, city: "Reno", state: "NV", zipCode: "89501", rating: 4.1, reviewCount: 321, isVerified: true, verificationTier: "Silver" },
+      
+      // Utah
+      { id: 49, name: "Salt Lake Electronics", description: "Complete electronics and tech solutions", category: "Electronics", address: "234 State St, Salt Lake City, UT", coordinates: { latitude: 40.7608, longitude: -111.8910 }, city: "Salt Lake City", state: "UT", zipCode: "84111", rating: 4.4, reviewCount: 765, isVerified: true, verificationTier: "Gold" },
+      { id: 50, name: "Park City Coffee House", description: "Mountain coffee roastery and cafe", category: "Coffee", address: "789 Main St, Park City, UT", coordinates: { latitude: 40.6461, longitude: -111.4980 }, city: "Park City", state: "UT", zipCode: "84060", rating: 4.7, reviewCount: 432, isVerified: true, verificationTier: "Gold" },
+      
+      // Additional stores for states not yet covered
+      { id: 51, name: "Boston Tech Hub", description: "Innovation district electronics store", category: "Electronics", address: "456 Seaport Blvd, Boston, MA", coordinates: { latitude: 42.3601, longitude: -71.0589 }, city: "Boston", state: "MA", zipCode: "02210", rating: 4.6, reviewCount: 1543, isVerified: true, verificationTier: "Gold" },
+      { id: 52, name: "Portland Coffee Culture", description: "Maine's premier coffee roastery", category: "Coffee", address: "123 Commercial St, Portland, ME", coordinates: { latitude: 43.6591, longitude: -70.2568 }, city: "Portland", state: "ME", zipCode: "04101", rating: 4.5, reviewCount: 876, isVerified: true, verificationTier: "Gold" },
+      { id: 53, name: "Nashville Music Row", description: "Country music instruments and gear", category: "Music", address: "567 Music Square, Nashville, TN", coordinates: { latitude: 36.1627, longitude: -86.7816 }, city: "Nashville", state: "TN", zipCode: "37203", rating: 4.8, reviewCount: 2134, isVerified: true, verificationTier: "Gold" },
+      { id: 54, name: "Memphis Fashion District", description: "Southern style clothing and accessories", category: "Fashion", address: "890 Beale St, Memphis, TN", coordinates: { latitude: 35.1495, longitude: -90.0490 }, city: "Memphis", state: "TN", zipCode: "38103", rating: 4.2, reviewCount: 654, isVerified: true, verificationTier: "Silver" },
+      { id: 55, name: "Louisville Sports Central", description: "Derby city sporting goods", category: "Sports", address: "234 Fourth St, Louisville, KY", coordinates: { latitude: 38.2527, longitude: -85.7585 }, city: "Louisville", state: "KY", zipCode: "40202", rating: 4.3, reviewCount: 543, isVerified: true, verificationTier: "Silver" },
+      { id: 56, name: "Charleston Fashion House", description: "Southern charm meets modern style", category: "Fashion", address: "789 King St, Charleston, SC", coordinates: { latitude: 32.7765, longitude: -79.9311 }, city: "Charleston", state: "SC", zipCode: "29401", rating: 4.4, reviewCount: 432, isVerified: true, verificationTier: "Gold" },
+      { id: 57, name: "Birmingham Electronics", description: "Alabama's electronics headquarters", category: "Electronics", address: "456 20th St, Birmingham, AL", coordinates: { latitude: 33.5186, longitude: -86.8104 }, city: "Birmingham", state: "AL", zipCode: "35203", rating: 4.1, reviewCount: 765, isVerified: true, verificationTier: "Silver" },
+      { id: 58, name: "Mobile Coffee Company", description: "Gulf coast coffee roasters", category: "Coffee", address: "123 Government St, Mobile, AL", coordinates: { latitude: 30.6954, longitude: -88.0399 }, city: "Mobile", state: "AL", zipCode: "36602", rating: 4.3, reviewCount: 321, isVerified: true, verificationTier: "Silver" },
+      { id: 59, name: "Jackson Music Store", description: "Mississippi's music headquarters", category: "Music", address: "567 State St, Jackson, MS", coordinates: { latitude: 32.2988, longitude: -90.1848 }, city: "Jackson", state: "MS", zipCode: "39201", rating: 4.0, reviewCount: 287, isVerified: true, verificationTier: "Silver" },
+      { id: 60, name: "Little Rock Fashion", description: "Arkansas style and fashion", category: "Fashion", address: "890 Main St, Little Rock, AR", coordinates: { latitude: 34.7465, longitude: -92.2896 }, city: "Little Rock", state: "AR", zipCode: "72201", rating: 3.9, reviewCount: 234, isVerified: true, verificationTier: "Silver" },
+      { id: 61, name: "Oklahoma City Electronics", description: "Plains electronics and tech store", category: "Electronics", address: "234 Robinson Ave, Oklahoma City, OK", coordinates: { latitude: 35.4676, longitude: -97.5164 }, city: "Oklahoma City", state: "OK", zipCode: "73102", rating: 4.2, reviewCount: 654, isVerified: true, verificationTier: "Silver" },
+      { id: 62, name: "Tulsa Coffee Works", description: "Oklahoma coffee culture", category: "Coffee", address: "789 Cherry St, Tulsa, OK", coordinates: { latitude: 36.1540, longitude: -95.9928 }, city: "Tulsa", state: "OK", zipCode: "74119", rating: 4.4, reviewCount: 432, isVerified: true, verificationTier: "Silver" },
+      { id: 63, name: "Kansas City Sports", description: "Midwest sporting goods store", category: "Sports", address: "456 Main St, Kansas City, KS", coordinates: { latitude: 39.0997, longitude: -94.5786 }, city: "Kansas City", state: "KS", zipCode: "66101", rating: 4.1, reviewCount: 543, isVerified: true, verificationTier: "Silver" },
+      { id: 64, name: "Wichita Music Hall", description: "Kansas music instruments and gear", category: "Music", address: "123 Douglas Ave, Wichita, KS", coordinates: { latitude: 37.6872, longitude: -97.3301 }, city: "Wichita", state: "KS", zipCode: "67202", rating: 4.0, reviewCount: 321, isVerified: true, verificationTier: "Silver" },
+      { id: 65, name: "Omaha Electronics Hub", description: "Nebraska's tech headquarters", category: "Electronics", address: "567 Dodge St, Omaha, NE", coordinates: { latitude: 41.2565, longitude: -95.9345 }, city: "Omaha", state: "NE", zipCode: "68102", rating: 4.3, reviewCount: 765, isVerified: true, verificationTier: "Silver" },
+      { id: 66, name: "Lincoln Coffee Co", description: "Prairie coffee roasters", category: "Coffee", address: "890 O St, Lincoln, NE", coordinates: { latitude: 40.8136, longitude: -96.7026 }, city: "Lincoln", state: "NE", zipCode: "68508", rating: 4.5, reviewCount: 432, isVerified: true, verificationTier: "Gold" },
+      { id: 67, name: "Des Moines Fashion", description: "Iowa style and clothing", category: "Fashion", address: "234 Locust St, Des Moines, IA", coordinates: { latitude: 41.5868, longitude: -93.6250 }, city: "Des Moines", state: "IA", zipCode: "50309", rating: 4.2, reviewCount: 543, isVerified: true, verificationTier: "Silver" },
+      { id: 68, name: "Cedar Rapids Music", description: "Iowa's music store", category: "Music", address: "789 1st Ave, Cedar Rapids, IA", coordinates: { latitude: 41.9779, longitude: -91.6656 }, city: "Cedar Rapids", state: "IA", zipCode: "52401", rating: 4.1, reviewCount: 287, isVerified: true, verificationTier: "Silver" },
+      { id: 69, name: "Milwaukee Electronics", description: "Wisconsin tech and electronics", category: "Electronics", address: "456 Water St, Milwaukee, WI", coordinates: { latitude: 43.0389, longitude: -87.9065 }, city: "Milwaukee", state: "WI", zipCode: "53202", rating: 4.4, reviewCount: 876, isVerified: true, verificationTier: "Gold" },
+      { id: 70, name: "Madison Coffee Culture", description: "University town coffee scene", category: "Coffee", address: "123 State St, Madison, WI", coordinates: { latitude: 43.0731, longitude: -89.4012 }, city: "Madison", state: "WI", zipCode: "53703", rating: 4.6, reviewCount: 654, isVerified: true, verificationTier: "Gold" },
+      { id: 71, name: "Indianapolis Sports Zone", description: "Racing capital sporting goods", category: "Sports", address: "567 Monument Cir, Indianapolis, IN", coordinates: { latitude: 39.7684, longitude: -86.1581 }, city: "Indianapolis", state: "IN", zipCode: "46204", rating: 4.3, reviewCount: 765, isVerified: true, verificationTier: "Silver" },
+      { id: 72, name: "Fort Wayne Fashion", description: "Indiana style and accessories", category: "Fashion", address: "890 Calhoun St, Fort Wayne, IN", coordinates: { latitude: 41.0793, longitude: -85.1394 }, city: "Fort Wayne", state: "IN", zipCode: "46802", rating: 4.0, reviewCount: 432, isVerified: true, verificationTier: "Silver" },
+      { id: 73, name: "Richmond Electronics", description: "Virginia's electronics destination", category: "Electronics", address: "234 Broad St, Richmond, VA", coordinates: { latitude: 37.5407, longitude: -77.4360 }, city: "Richmond", state: "VA", zipCode: "23219", rating: 4.2, reviewCount: 654, isVerified: true, verificationTier: "Silver" },
+      { id: 74, name: "Virginia Beach Sports", description: "Coastal sporting goods", category: "Sports", address: "789 Atlantic Ave, Virginia Beach, VA", coordinates: { latitude: 36.8529, longitude: -75.9780 }, city: "Virginia Beach", state: "VA", zipCode: "23451", rating: 4.1, reviewCount: 543, isVerified: true, verificationTier: "Silver" },
+      { id: 75, name: "Baltimore Coffee Works", description: "Charm city coffee culture", category: "Coffee", address: "456 Light St, Baltimore, MD", coordinates: { latitude: 39.2904, longitude: -76.6122 }, city: "Baltimore", state: "MD", zipCode: "21202", rating: 4.4, reviewCount: 432, isVerified: true, verificationTier: "Gold" },
+      { id: 76, name: "Annapolis Music", description: "Maryland's music headquarters", category: "Music", address: "123 State Cir, Annapolis, MD", coordinates: { latitude: 38.9784, longitude: -76.5051 }, city: "Annapolis", state: "MD", zipCode: "21401", rating: 4.3, reviewCount: 321, isVerified: true, verificationTier: "Silver" },
+      { id: 77, name: "Wilmington Electronics", description: "Delaware's tech center", category: "Electronics", address: "567 Market St, Wilmington, DE", coordinates: { latitude: 39.7391, longitude: -75.5398 }, city: "Wilmington", state: "DE", zipCode: "19801", rating: 4.1, reviewCount: 234, isVerified: true, verificationTier: "Silver" },
+      { id: 78, name: "Dover Fashion", description: "Delaware style boutique", category: "Fashion", address: "890 State St, Dover, DE", coordinates: { latitude: 39.1612, longitude: -75.5264 }, city: "Dover", state: "DE", zipCode: "19901", rating: 3.9, reviewCount: 187, isVerified: true, verificationTier: "Bronze" },
+      { id: 79, name: "Manchester Coffee Co", description: "New Hampshire mountain coffee", category: "Coffee", address: "234 Elm St, Manchester, NH", coordinates: { latitude: 42.9956, longitude: -71.4548 }, city: "Manchester", state: "NH", zipCode: "03101", rating: 4.5, reviewCount: 432, isVerified: true, verificationTier: "Gold" },
+      { id: 80, name: "Concord Music Store", description: "Capital city music shop", category: "Music", address: "789 Main St, Concord, NH", coordinates: { latitude: 43.2081, longitude: -71.5376 }, city: "Concord", state: "NH", zipCode: "03301", rating: 4.2, reviewCount: 287, isVerified: true, verificationTier: "Silver" },
+      { id: 81, name: "Burlington Electronics", description: "Vermont's tech hub", category: "Electronics", address: "456 Church St, Burlington, VT", coordinates: { latitude: 44.4759, longitude: -73.2121 }, city: "Burlington", state: "VT", zipCode: "05401", rating: 4.3, reviewCount: 543, isVerified: true, verificationTier: "Silver" },
+      { id: 82, name: "Montpelier Fashion", description: "Vermont style and sustainable fashion", category: "Fashion", address: "123 State St, Montpelier, VT", coordinates: { latitude: 44.2601, longitude: -72.5806 }, city: "Montpelier", state: "VT", zipCode: "05602", rating: 4.1, reviewCount: 234, isVerified: true, verificationTier: "Silver" },
+      { id: 83, name: "Providence Coffee Culture", description: "Rhode Island's coffee scene", category: "Coffee", address: "567 Federal Hill, Providence, RI", coordinates: { latitude: 41.8240, longitude: -71.4128 }, city: "Providence", state: "RI", zipCode: "02903", rating: 4.4, reviewCount: 432, isVerified: true, verificationTier: "Gold" },
+      { id: 84, name: "Newport Music Hall", description: "Coastal music store", category: "Music", address: "890 Thames St, Newport, RI", coordinates: { latitude: 41.4901, longitude: -71.3128 }, city: "Newport", state: "RI", zipCode: "02840", rating: 4.2, reviewCount: 321, isVerified: true, verificationTier: "Silver" },
+      { id: 85, name: "Hartford Electronics", description: "Connecticut's electronics center", category: "Electronics", address: "234 Asylum St, Hartford, CT", coordinates: { latitude: 41.7658, longitude: -72.6734 }, city: "Hartford", state: "CT", zipCode: "06103", rating: 4.2, reviewCount: 654, isVerified: true, verificationTier: "Silver" },
+      { id: 86, name: "New Haven Fashion", description: "Elm city style boutique", category: "Fashion", address: "789 Chapel St, New Haven, CT", coordinates: { latitude: 41.3083, longitude: -72.9279 }, city: "New Haven", state: "CT", zipCode: "06510", rating: 4.0, reviewCount: 432, isVerified: true, verificationTier: "Silver" },
+      { id: 87, name: "Trenton Sports", description: "New Jersey sporting goods", category: "Sports", address: "456 State St, Trenton, NJ", coordinates: { latitude: 40.2206, longitude: -74.7562 }, city: "Trenton", state: "NJ", zipCode: "08608", rating: 4.1, reviewCount: 543, isVerified: true, verificationTier: "Silver" },
+      { id: 88, name: "Newark Electronics", description: "Garden state electronics", category: "Electronics", address: "123 Broad St, Newark, NJ", coordinates: { latitude: 40.7357, longitude: -74.1724 }, city: "Newark", state: "NJ", zipCode: "07102", rating: 4.0, reviewCount: 765, isVerified: true, verificationTier: "Silver" },
+      { id: 89, name: "Albuquerque Coffee Works", description: "New Mexico high desert coffee", category: "Coffee", address: "567 Central Ave, Albuquerque, NM", coordinates: { latitude: 35.0844, longitude: -106.6504 }, city: "Albuquerque", state: "NM", zipCode: "87102", rating: 4.3, reviewCount: 432, isVerified: true, verificationTier: "Silver" },
+      { id: 90, name: "Santa Fe Fashion", description: "Southwestern style and art", category: "Fashion", address: "890 Palace Ave, Santa Fe, NM", coordinates: { latitude: 35.6870, longitude: -105.9378 }, city: "Santa Fe", state: "NM", zipCode: "87501", rating: 4.2, reviewCount: 321, isVerified: true, verificationTier: "Silver" },
+      { id: 91, name: "Boise Electronics", description: "Idaho's tech headquarters", category: "Electronics", address: "234 Main St, Boise, ID", coordinates: { latitude: 43.6150, longitude: -116.2023 }, city: "Boise", state: "ID", zipCode: "83702", rating: 4.2, reviewCount: 543, isVerified: true, verificationTier: "Silver" },
+      { id: 92, name: "Sun Valley Sports", description: "Mountain sporting goods", category: "Sports", address: "789 Sun Valley Rd, Sun Valley, ID", coordinates: { latitude: 43.6963, longitude: -114.3575 }, city: "Sun Valley", state: "ID", zipCode: "83353", rating: 4.4, reviewCount: 287, isVerified: true, verificationTier: "Silver" },
+      { id: 93, name: "Helena Music Store", description: "Montana's music headquarters", category: "Music", address: "456 Last Chance Gulch, Helena, MT", coordinates: { latitude: 46.5997, longitude: -112.0362 }, city: "Helena", state: "MT", zipCode: "59601", rating: 4.1, reviewCount: 234, isVerified: true, verificationTier: "Silver" },
+      { id: 94, name: "Billings Coffee Culture", description: "Big sky coffee roasters", category: "Coffee", address: "123 Montana Ave, Billings, MT", coordinates: { latitude: 45.7833, longitude: -108.5007 }, city: "Billings", state: "MT", zipCode: "59101", rating: 4.3, reviewCount: 321, isVerified: true, verificationTier: "Silver" },
+      { id: 95, name: "Cheyenne Electronics", description: "Wyoming's electronics store", category: "Electronics", address: "567 Capitol Ave, Cheyenne, WY", coordinates: { latitude: 41.1400, longitude: -104.8197 }, city: "Cheyenne", state: "WY", zipCode: "82001", rating: 4.0, reviewCount: 187, isVerified: true, verificationTier: "Bronze" },
+      { id: 96, name: "Jackson Sports", description: "Teton mountain sports gear", category: "Sports", address: "890 Broadway, Jackson, WY", coordinates: { latitude: 43.4799, longitude: -110.7624 }, city: "Jackson", state: "WY", zipCode: "83001", rating: 4.5, reviewCount: 432, isVerified: true, verificationTier: "Gold" },
+      { id: 97, name: "Fargo Electronics", description: "North Dakota tech center", category: "Electronics", address: "234 Broadway, Fargo, ND", coordinates: { latitude: 46.8772, longitude: -96.7898 }, city: "Fargo", state: "ND", zipCode: "58102", rating: 4.1, reviewCount: 321, isVerified: true, verificationTier: "Silver" },
+      { id: 98, name: "Bismarck Fashion", description: "Capitol city style", category: "Fashion", address: "789 Main Ave, Bismarck, ND", coordinates: { latitude: 46.8083, longitude: -100.7837 }, city: "Bismarck", state: "ND", zipCode: "58501", rating: 3.9, reviewCount: 234, isVerified: true, verificationTier: "Bronze" },
+      { id: 99, name: "Sioux Falls Coffee", description: "South Dakota's coffee culture", category: "Coffee", address: "456 Phillips Ave, Sioux Falls, SD", coordinates: { latitude: 43.5446, longitude: -96.7311 }, city: "Sioux Falls", state: "SD", zipCode: "57104", rating: 4.2, reviewCount: 287, isVerified: true, verificationTier: "Silver" },
+      { id: 100, name: "Rapid City Music", description: "Black Hills music store", category: "Music", address: "123 Main St, Rapid City, SD", coordinates: { latitude: 44.0805, longitude: -103.2310 }, city: "Rapid City", state: "SD", zipCode: "57701", rating: 4.0, reviewCount: 234, isVerified: true, verificationTier: "Silver" }
     ];
 
     let filteredStores = [...continentalStores];
@@ -2010,6 +2025,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } else if (scope === 'state' && state) {
       filteredStores = filteredStores.filter(store => 
         store.state.toLowerCase() === state.toLowerCase()
+      );
+    }
+    
+    // State filtering regardless of scope
+    if (state && scope !== 'city') {
+      filteredStores = filteredStores.filter(store => 
+        store.state.toLowerCase() === state.toLowerCase()
+      );
+    }
+    
+    // City filtering regardless of scope  
+    if (city && scope !== 'state') {
+      filteredStores = filteredStores.filter(store => 
+        store.city.toLowerCase().includes(city.toLowerCase())
       );
     }
     
