@@ -609,9 +609,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get stores list - SPIRAL Standard Response Format with Category Filtering
+  // Get stores list - SPIRAL Standard Response Format with Category and Mall Filtering
   app.get("/api/stores", asyncHandler(async (req, res) => {
-    const { largeRetailer, category } = req.query;
+    const { largeRetailer, category, mall } = req.query;
     
     // Add caching and performance optimization
     res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
@@ -629,14 +629,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (category && typeof category === 'string') {
       const categoryLower = category.toLowerCase();
       stores = stores.filter(store => {
-        // Check if store has categories and if any match the requested category
-        if (store.categories && Array.isArray(store.categories)) {
-          return store.categories.some(cat => cat.toLowerCase().includes(categoryLower));
+        // Check primary category field first
+        const storeCategory = (store.category || '').toLowerCase();
+        if (storeCategory.includes(categoryLower)) {
+          return true;
         }
+        
+        // Check if store has categories array and if any match the requested category
+        if (store.categories && Array.isArray(store.categories)) {
+          const hasMatchingCategory = store.categories.some(cat => cat.toLowerCase().includes(categoryLower));
+          if (hasMatchingCategory) {
+            return true;
+          }
+        }
+        
         // Also check store name and description for category matches
         const storeName = (store.name || '').toLowerCase();
         const storeDesc = (store.description || '').toLowerCase();
         return storeName.includes(categoryLower) || storeDesc.includes(categoryLower);
+      });
+    }
+    
+    // Filter by mall if requested (mall-of-america, westfield-century-city, etc.)
+    if (mall && typeof mall === 'string') {
+      const mallLower = mall.toLowerCase().replace(/-/g, ' ');
+      stores = stores.filter(store => {
+        // Check if store has mall location data
+        if (store.mall && typeof store.mall === 'string') {
+          return store.mall.toLowerCase().includes(mallLower);
+        }
+        // Also check address for mall name matches
+        const storeAddress = (store.address || '').toLowerCase();
+        return storeAddress.includes(mallLower) || 
+               storeAddress.includes(mall.toLowerCase()) ||
+               storeAddress.includes(mall.toLowerCase().replace(/-/g, ' '));
       });
     }
     
@@ -650,10 +676,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       stores: limitedStores,
       total: limitedStores.length,
       totalUnfiltered: totalStoresCount,
-      filtered: !!(largeRetailer || category),
+      filtered: !!(largeRetailer || category || mall),
       filters: {
         category: category || null,
-        largeRetailer: largeRetailer || null
+        largeRetailer: largeRetailer || null,
+        mall: mall || null
       }
     });
   }));
