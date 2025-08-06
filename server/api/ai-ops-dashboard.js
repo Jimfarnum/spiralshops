@@ -24,8 +24,12 @@ export const agents = {
       const stores = await storesRes.json();
       
       // Handle both legacy and standard response formats
-      const recommendationCount = recommendations.data ? recommendations.data.recommendations?.length || recommendations.data.total || 0 : recommendations.length || 0;
-      const storeCount = stores.data ? stores.data.retailers?.length || stores.data.total || 0 : stores.length || 0;
+      const recommendationCount = recommendations.data ? 
+        (recommendations.data.recommendations?.length || recommendations.data.total || 0) : 
+        (Array.isArray(recommendations) ? recommendations.length : 0);
+      const storeCount = stores.data ? 
+        (stores.data.retailers?.length || stores.data.total || 0) : 
+        (Array.isArray(stores) ? stores.length : 0);
       
       return { 
         status: "OK", 

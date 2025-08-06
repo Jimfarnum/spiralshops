@@ -122,7 +122,7 @@ export default function AIRecommendations({
 
       {/* Recommendations Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-        {recommendations.map((item, index) => (
+        {recommendations.map((item: any, index: number) => (
           <Card 
             key={item.productId}
             className={`hover:shadow-lg transition-all duration-200 relative ${
