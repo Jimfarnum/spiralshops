@@ -107,10 +107,22 @@ export function registerLoyaltyRoutes(app: Express) {
         progressToNextTier,
       };
 
-      res.json(dashboardData);
+      res.json({
+        success: true,
+        data: dashboardData,
+        duration: `${Date.now() - Date.now()}ms`,
+        timestamp: Date.now(),
+        error: null
+      });
     } catch (error) {
       console.error('Error fetching loyalty dashboard:', error);
-      res.status(500).json({ error: 'Failed to fetch loyalty data' });
+      res.status(500).json({
+        success: false,
+        data: null,
+        duration: `${Date.now() - Date.now()}ms`,
+        timestamp: Date.now(),
+        error: 'Failed to fetch loyalty data'
+      });
     }
   });
 

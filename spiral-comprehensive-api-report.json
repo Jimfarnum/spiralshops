@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-08-06T17:05:18.001Z",
+  "timestamp": "2025-08-06T17:35:35.723Z",
   "summary": {
     "totalEndpoints": 12,
-    "totalStandardized": 6,
+    "totalStandardized": 8,
     "totalWorking": 8,
-    "standardizationPercentage": 50,
+    "standardizationPercentage": 67,
     "workingPercentage": 67
   },
   "categories": {
@@ -25,7 +25,7 @@
     },
     "Wishlist": {
       "total": 1,
-      "standardized": 0,
+      "standardized": 1,
       "working": 1
     },
     "Notifications": {
@@ -45,7 +45,7 @@
     },
     "Stores": {
       "total": 1,
-      "standardized": 0,
+      "standardized": 1,
       "working": 1
     }
   },
@@ -59,7 +59,7 @@
       "success": true,
       "hasStandardFormat": true,
       "duration": "0ms",
-      "timestamp": 1754499917499,
+      "timestamp": 1754501735166,
       "responseKeys": [
         "success",
         "data",
@@ -78,8 +78,8 @@
       "status": 200,
       "success": true,
       "hasStandardFormat": true,
-      "duration": "0ms",
-      "timestamp": 1754499917529,
+      "duration": "1ms",
+      "timestamp": 1754501735202,
       "responseKeys": [
         "success",
         "data",
@@ -98,8 +98,8 @@
       "status": 200,
       "success": true,
       "hasStandardFormat": true,
-      "duration": "1ms",
-      "timestamp": 1754499917534,
+      "duration": "6ms",
+      "timestamp": 1754501735211,
       "responseKeys": [
         "success",
         "data",
@@ -118,8 +118,8 @@
       "status": 200,
       "success": true,
       "hasStandardFormat": true,
-      "duration": "222ms",
-      "timestamp": 1754499917766,
+      "duration": "229ms",
+      "timestamp": 1754501735444,
       "responseKeys": [
         "success",
         "data",
@@ -179,16 +179,18 @@
       "description": "User wishlist items",
       "status": 200,
       "success": true,
-      "hasStandardFormat": false,
-      "duration": "N/A",
-      "timestamp": "N/A",
+      "hasStandardFormat": true,
+      "duration": "0ms",
+      "timestamp": 1754501735498,
       "responseKeys": [
         "success",
-        "wishlistItems",
-        "totalItems"
+        "data",
+        "duration",
+        "timestamp",
+        "error"
       ],
-      "dataType": "null",
-      "errorPresent": false
+      "dataType": "object",
+      "errorPresent": true
     },
     {
       "endpoint": "/api/notifications?userId=1",
@@ -211,8 +213,8 @@
       "status": 200,
       "success": true,
       "hasStandardFormat": true,
-      "duration": "73ms",
-      "timestamp": 1754499917901,
+      "duration": "77ms",
+      "timestamp": 1754501735601,
       "responseKeys": [
         "success",
         "data",
@@ -232,7 +234,7 @@
       "success": true,
       "hasStandardFormat": true,
       "duration": "0ms",
-      "timestamp": 1754499917906,
+      "timestamp": 1754501735612,
       "responseKeys": [
         "success",
         "data",
@@ -249,30 +251,23 @@
       "category": "Stores",
       "description": "Store listings",
       "status": 200,
-      "success": false,
-      "hasStandardFormat": false,
-      "duration": "N/A",
-      "timestamp": "N/A",
+      "success": true,
+      "hasStandardFormat": true,
+      "duration": "75ms",
+      "timestamp": 1754501735704,
       "responseKeys": [
-        "0",
-        "1",
-        "2"
+        "success",
+        "data",
+        "duration",
+        "timestamp",
+        "error"
       ],
-      "dataType": "null",
-      "errorPresent": false
+      "dataType": "object",
+      "errorPresent": true
     }
   ],
   "recommendations": {
-    "needsStandardization": [
-      {
-        "endpoint": "/api/wishlist/items?userId=1",
-        "category": "Wishlist"
-      },
-      {
-        "endpoint": "/api/stores",
-        "category": "Stores"
-      }
-    ],
+    "needsStandardization": [],
     "needsFixes": [
       {
         "endpoint": "/api/retailers/search?query=electronics",

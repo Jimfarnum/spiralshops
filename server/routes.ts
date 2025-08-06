@@ -1268,6 +1268,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Wishlist management endpoints
     app.post('/api/wishlist/add', wishlistAlertRoutes.addWishlistItem);
     app.get('/api/wishlist/:shopperId', wishlistAlertRoutes.getWishlistItems);
+    app.get('/api/wishlist/items', wishlistAlertRoutes.getWishlistItems); // Additional route for compatibility
     app.put('/api/wishlist/:itemId/alerts', wishlistAlertRoutes.updateAlertPreferences);
     app.delete('/api/wishlist/:itemId', wishlistAlertRoutes.removeWishlistItem);
     
@@ -1282,6 +1283,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log('✅ SPIRAL wishlist alert routes loaded successfully');
   } catch (err) {
     console.error('❌ Failed to load wishlist alert routes:', err.message);
+  }
+
+  // SPIRAL Notifications Routes
+  try {
+    const { notificationRoutes } = await import("./api/notifications.js");
+    
+    // User notification endpoints - standardized format
+    app.get('/api/notifications', notificationRoutes.getUserNotifications);
+    app.post('/api/notifications/:notificationId/read', notificationRoutes.markAsRead);
+    
+    console.log('✅ SPIRAL notifications routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load notifications routes:', err.message);
+  }
+
+  // SPIRAL Admin Panel Routes  
+  try {
+    const { adminPanelRoutes } = await import("./api/admin-panel.js");
+    
+    // Admin monitoring endpoints - standardized format
+    app.get('/api/admin/platform-stats', adminPanelRoutes.getPlatformStats);
+    app.get('/api/admin/api-health', adminPanelRoutes.getAPIHealth);
+    app.get('/api/admin/user-analytics', adminPanelRoutes.getUserAnalytics);
+    
+    console.log('✅ SPIRAL admin panel routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load admin panel routes:', err.message);
   }
 
   // Register Stripe Connect routes

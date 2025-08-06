@@ -56,7 +56,7 @@ export default function Home() {
     localStorage.setItem('spiral-onboarding-seen', 'true');
   };
 
-  const { data: stores, isLoading, error } = useQuery<Store[]>({
+  const { data: storesData, isLoading, error } = useQuery<any>({
     queryKey: activeZip ? ["/api/stores/search", activeZip] : ["/api/stores"],
     queryFn: async () => {
       const url = activeZip ? `/api/stores/search?zipCode=${activeZip}` : "/api/stores";
@@ -67,6 +67,9 @@ export default function Home() {
       return response.json();
     },
   });
+
+  // Extract stores array from the response data
+  const stores = storesData?.success ? storesData.data?.stores || [] : storesData?.stores || [];
 
   const handleZipSearch = () => {
     if (!searchZip.trim()) {
@@ -893,7 +896,7 @@ export default function Home() {
               <p className="text-red-600 mb-4">Failed to load stores. Please try again.</p>
               <Button onClick={() => window.location.reload()}>Retry</Button>
             </div>
-          ) : !stores || stores.length === 0 ? (
+          ) : !Array.isArray(stores) || stores.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-600 mb-4">
                 {activeZip 
@@ -910,12 +913,12 @@ export default function Home() {
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                {(showVerifiedOnly ? stores.filter(store => store.isVerified) : stores).map((store) => (
+                {(Array.isArray(stores) ? (showVerifiedOnly ? stores.filter(store => store.isVerified) : stores) : []).map((store) => (
                   <StoreCard key={store.id} store={store} />
                 ))}
               </div>
 
-              {stores.length >= 6 && (
+              {Array.isArray(stores) && stores.length >= 6 && (
                 <div className="text-center mt-16">
                   <Button 
                     onClick={handleLoadMore}
