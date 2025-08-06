@@ -153,8 +153,9 @@ export function getLogs() {
   return aiLogs;
 }
 
-// API Routes
+// API Routes - Using SPIRAL Standard Response Format
 router.get('/ai-ops/dashboard/status', (req, res) => {
+  const startTime = Date.now();
   try {
     const recentLogs = aiLogs.slice(-10);
     const successRate = recentLogs.length > 0 ? 
@@ -162,51 +163,68 @@ router.get('/ai-ops/dashboard/status', (req, res) => {
     
     res.json({
       success: true,
-      totalAgents: Object.keys(agents).length,
-      agentNames: Object.keys(agents),
-      recentLogs,
-      successRate: Math.round(successRate),
-      lastTestRun: aiLogs.length > 0 ? aiLogs[aiLogs.length - 1].timestamp : null
+      data: {
+        totalAgents: Object.keys(agents).length,
+        agentNames: Object.keys(agents),
+        recentLogs,
+        successRate: Math.round(successRate),
+        lastTestRun: aiLogs.length > 0 ? aiLogs[aiLogs.length - 1].timestamp : null
+      },
+      duration: `${Date.now() - startTime}ms`,
+      error: null
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error retrieving dashboard status",
+      data: null,
+      duration: `${Date.now() - startTime}ms`,
       error: error.message
     });
   }
 });
 
 router.get('/ai-ops/dashboard/logs', (req, res) => {
+  const startTime = Date.now();
   try {
     res.json({
       success: true,
-      logs: aiLogs,
-      totalLogs: aiLogs.length
+      data: {
+        logs: aiLogs,
+        totalLogs: aiLogs.length
+      },
+      duration: `${Date.now() - startTime}ms`,
+      error: null
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error retrieving logs",
+      data: null,
+      duration: `${Date.now() - startTime}ms`,
       error: error.message
     });
   }
 });
 
 router.post('/ai-ops/dashboard/run-tests', async (req, res) => {
+  const startTime = Date.now();
   try {
     console.log("🔄 Running dashboard AI Ops test cycle...");
     const results = await runAllTests();
     res.json({
       success: true,
-      message: "AI Ops test cycle completed",
-      results,
-      totalTests: results.length
+      data: {
+        message: "AI Ops test cycle completed",
+        results,
+        totalTests: results.length
+      },
+      duration: `${Date.now() - startTime}ms`,
+      error: null
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error running tests",
+      data: null,
+      duration: `${Date.now() - startTime}ms`,
       error: error.message
     });
   }
