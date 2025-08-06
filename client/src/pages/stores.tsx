@@ -29,7 +29,7 @@ interface Store {
 
 export default function StoresPage() {
   const { toast } = useToast();
-  const [useLocationSearch, setUseLocationSearch] = useState(true);
+  const [useLocationSearch, setUseLocationSearch] = useState(false);
 
   if (useLocationSearch) {
     return (
