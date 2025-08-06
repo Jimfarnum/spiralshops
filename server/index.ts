@@ -5,6 +5,8 @@ import wishlistRoutes from "./api/wishlist";
 import intelligentWishlistRoutes from "./api/intelligent-wishlist";
 import aiOpsStatusRoutes from "./api/ai-ops-status";
 import businessCategoriesRoutes from "./api/business-categories";
+import aiRetailerOnboardingRoutes from "./api/ai-retailer-onboarding";
+import inventoryCategoriesRoutes from "./api/inventory-categories";
 
 const app = express();
 app.use(express.json());
@@ -52,6 +54,12 @@ app.use((req, res, next) => {
   
   // Register business categories routes
   app.use("/api", businessCategoriesRoutes);
+  
+  // Register AI retailer onboarding routes
+  app.use("/api", aiRetailerOnboardingRoutes);
+  
+  // Register inventory categories routes
+  app.use("/api", inventoryCategoriesRoutes);
   
   const server = await registerRoutes(app);
 

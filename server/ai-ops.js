@@ -64,6 +64,15 @@ class AIOpsGPT {
     setInterval(() => this.runTests(), this.testInterval);
   }
 
+  getStatus() {
+    return {
+      totalAgents: Object.keys(this.agents).length,
+      agentNames: Object.keys(this.agents),
+      recentResults: this.logs.slice(-10),
+      lastTestRun: this.logs.length > 0 ? this.logs[this.logs.length - 1].timestamp : null
+    };
+  }
+
   stop() {
     console.log("🛑 Stopping AI Ops system...");
     clearInterval(this.testInterval);
@@ -263,5 +272,8 @@ global.runAIOpsTests = async () => {
   console.log("🔄 Running manual AI Ops test cycle...");
   return await spiralAI.runTests();
 };
+
+// 📝 Optional Log Access (as per your instructions)
+globalThis.getAIOpsLogs = () => console.table(spiralAI.getLogs());
 
 export default spiralAI;
