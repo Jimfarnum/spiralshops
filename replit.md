@@ -15,10 +15,11 @@ Preferred communication style: Simple, everyday language.
 - **State Management**: TanStack Query for server state, Zustand for global cart state and authentication.
 - **Build Tool**: Vite.
 - **UI/UX Decisions**: Clean, responsive design; 6 interactive CTA tiles on homepage; loyalty program preview; integrated logistics options; professional blue SPIRAL logo; enhanced feature boxes with 3-column layout; consistent design for coming soon pages; security indicators for trust.
+- **AI-First Design**: Conversational interfaces for complex workflows, AI-powered onboarding and assistance, intelligent automation for retailer and shopper tasks.
 - **Core Features**:
     - **Shopping**: Product grid, filter sidebar, sorting, product detail pages, cart integration, multi-mall cart support, 18 major product categories with 144+ subcategories.
     - **Loyalty**: SPIRALs earning system, double redemption value in physical stores, sharing/referral bonuses, real-time balance display, loyalty dashboard with tiers and transaction history.
-    - **Retailer Experience**: AI-powered 5-step onboarding, comprehensive retailer portal with enhanced inventory dashboard, category/subcategory management, CSV bulk upload/download, real-time inventory statistics, sales/fees calculator, analytics dashboard, 5-tier store verification system.
+    - **Retailer Experience**: AI-powered 5-step onboarding with RetailerOnboardAgent, comprehensive retailer portal with enhanced inventory dashboard, ProductEntryAgent for intelligent inventory management, category/subcategory management, CSV bulk upload/download with AI validation, real-time inventory statistics, sales/fees calculator, analytics dashboard, 5-tier store verification system.
     - **User Experience**: Shopper onboarding, enhanced profile settings, mall gift card system, mobile responsiveness, nationwide smart search, advanced mall directory, wishlist system with priority management and alerts.
     - **Logistics**: Advanced logistics platform with delivery zone management, driver tracking, route optimization, SPIRAL Centers network for hub-based shipping, split shipping functionality (Ship to Me, In-Store Pickup, Ship to Mall SPIRAL Center).
     - **Social & Community**: Comprehensive social media integration with advanced pixel tracking, universal event system, social sharing with SPIRAL rewards, social feed page, "Invite to Shop" feature with group bonuses.
@@ -33,6 +34,7 @@ Preferred communication style: Simple, everyday language.
 - **Session Management**: PostgreSQL-backed sessions.
 - **API Style**: REST endpoints.
 - **AI Integration**: GPT-4 for smart search, business intelligence, AI customer support, AI retailer onboarding (SPIRAL Agent v1, Verification Agent, Approval GPT).
+- **AI Agents System**: Comprehensive AI-powered assistance framework with specialized agents for RetailerOnboarding, ProductEntry, MallDirectory, Wishlist, ImageSearch, ShopperAssist, AdminAudit, and unified AI Ops GPT supervisor.
 - **Cloud Services**: Vercel deployment, IBM Cloud services (Watson Assistant, Watson Discovery, Cloudant Database, Redis Cache, Kubernetes).
 - **Security**: JWT authentication, 3-tier API rate limiting, CSP, XSS protection, input sanitization, CORS.
 - **System Design Choices**: Centralized external service router, intelligent fallback for OpenAI API, production-ready architecture for scalability, modular design for feature expansion.

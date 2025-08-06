@@ -82,7 +82,7 @@ import Diagnostics from "./components/Diagnostics";
 import P1FeaturesDemo from "@/pages/p1-features-demo";
 import P1TestSuite from "@/pages/p1-test-suite";
 
-import RetailerOnboarding from "@/components/retailer-onboarding";
+import RetailerOnboarding from "@/pages/retailer-onboarding";
 import WishlistNotifications from "@/components/wishlist-notifications";
 import InventoryAlertsDemo from "@/pages/inventory-alerts-demo";
 import LanguageDemo from "@/pages/language-demo";

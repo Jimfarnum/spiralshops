@@ -35,6 +35,7 @@ import {
   registerLiveSupportRoutes
 } from "./enhancedRoutes";
 import { registerEnhancedFeaturesRoutes } from "./routes/enhancedFeatures";
+import aiAgentsRouter from './routes/ai-agents.js';
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -50,6 +51,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Apply global response middleware for all API routes
   app.use('/api', globalResponseMiddleware);
+  
+  // AI Agents routes
+  app.use('/api/ai-agents', aiAgentsRouter);
   
   // Admin Test Routes Integration
   try {
