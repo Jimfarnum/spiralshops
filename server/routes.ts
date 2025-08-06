@@ -2672,5 +2672,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   console.log('✅ Continental US location search route registered successfully');
 
+  // Google Maps integration routes - implemented directly for better storage access
+  const mapsCoordinates = {
+    'Apple Store': { lat: 44.8548, lng: -93.2422 },
+    'Nike Store': { lat: 44.8548, lng: -93.2422 },
+    'Target Store': { lat: 44.9537, lng: -93.0900 },
+    'Best Buy Electronics': { lat: 44.9537, lng: -93.0900 },
+    'Diamond Palace Jewelry': { lat: 44.9778, lng: -93.2650 },
+    'Silver & Gold Gallery': { lat: 44.9778, lng: -93.2650 },
+    'Local Coffee Shop': { lat: 44.9537, lng: -93.0900 }
+  };
+
+  // Get store location with Google Maps data
+  app.get("/api/maps/store-location/:storeId", asyncHandler(async (req, res) => {
+    const startTime = Date.now();
+    const { storeId } = req.params;
+    
+    try {
+      const store = await storage.getStore(parseInt(storeId));
+      
+      if (!store) {
+        return res.standard({
+          store: null,
+          error: "Store not found"
+        });
+      }
+
+      // Add Google Maps coordinates if available
+      const coordinates = mapsCoordinates[store.name];
+      const enhancedStore = {
+        ...store,
+        lat: coordinates?.lat || null,
+        lng: coordinates?.lng || null,
+        mapsUrl: coordinates ? 
+          `https://www.google.com/maps/search/?api=1&query=${coordinates.lat},${coordinates.lng}` :
+          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.address)}`,
+        directionsUrl: coordinates ?
+          `https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lng}` :
+          `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(store.address)}`
+      };
+
+      res.standard({
+        store: enhancedStore,
+        duration: `${Date.now() - startTime}ms`
+      });
+
+    } catch (error) {
+      console.error('Maps store location error:', error);
+      res.standard({
+        store: null,
+        error: "Failed to fetch store location data"
+      });
+    }
+  }));
+
+  // Generate directions with user coordinates
+  app.post("/api/maps/directions", asyncHandler(async (req, res) => {
+    const startTime = Date.now();
+    const { storeId, userLat, userLng, mallId } = req.body;
+    
+    try {
+      let destinationLat, destinationLng, destinationName;
+      
+      if (storeId) {
+        const store = await storage.getStore(parseInt(storeId));
+        if (!store) {
+          return res.standard({
+            directionsUrl: null,
+            error: "Store not found"
+          });
+        }
+        
+        const coordinates = mapsCoordinates[store.name];
+        destinationLat = coordinates?.lat;
+        destinationLng = coordinates?.lng;
+        destinationName = store.name;
+      }
+      
+      // Generate directions URL
+      let directionsUrl;
+      if (userLat && userLng && destinationLat && destinationLng) {
+        directionsUrl = `https://www.google.com/maps/dir/${userLat},${userLng}/${destinationLat},${destinationLng}`;
+      } else if (destinationLat && destinationLng) {
+        directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destinationLat},${destinationLng}`;
+      }
+
+      res.standard({
+        directionsUrl,
+        destination: destinationName,
+        coordinates: destinationLat && destinationLng ? {
+          lat: destinationLat,
+          lng: destinationLng
+        } : null,
+        duration: `${Date.now() - startTime}ms`
+      });
+
+    } catch (error) {
+      console.error('Maps directions error:', error);
+      res.standard({
+        directionsUrl: null,
+        error: "Failed to generate directions"
+      });
+    }
+  }));
+
+  console.log('✅ Google Maps integration routes loaded successfully');
+
   return httpServer;
 }
