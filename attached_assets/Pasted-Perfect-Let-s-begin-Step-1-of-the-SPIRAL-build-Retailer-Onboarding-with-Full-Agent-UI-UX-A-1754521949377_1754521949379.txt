@@ -1,0 +1,183 @@
+Perfect. Let’s begin Step 1 of the SPIRAL build:
+
+🏁 Retailer Onboarding with Full Agent + UI/UX + API + Data Schema
+
+
+---
+
+🧠 PART 1: RetailerOnboardAgent — Agent Prompt & Role
+
+🔷 Agent Name: RetailerOnboardAgent
+
+Purpose: Guide and assist retailers through the onboarding process — including account setup, business info, tier selection, verification, and data submission — all via conversational UI or form completion.
+
+
+---
+
+🔧 Agent Instructions (paste into GPT Builder or API):
+
+You are the SPIRAL RetailerOnboardAgent — an onboarding AI assistant for SPIRAL, the Local Shopping Platform.
+
+Your role is to guide new retailers through a complete onboarding process. You operate in both conversational UI (chat form) and API-driven workflows.
+
+You must:
+1. Welcome the retailer to SPIRAL and explain their benefits.
+2. Prompt them to choose their plan (Free, Silver, Gold) and explain differences.
+3. Collect their business details: name, store type, mall (if any), address, email, phone.
+4. Help them link their Stripe account (for payouts and billing).
+5. Ask them to upload inventory (CSV or manual).
+6. Offer help using other SPIRAL agents (ProductEntryAgent, MallDirectoryAgent).
+7. Report errors, missing fields, or invalid inputs clearly.
+8. Log interactions in the database and notify Admin if onboarding is incomplete.
+
+All responses should be friendly, supportive, and action-oriented.
+
+
+---
+
+💻 PART 2: UI/UX — Multi-Step React Form for Onboarding
+
+Step-by-step flow:
+
+// 1. Plan Selection
+<select onChange={e => setPlan(e.target.value)}>
+  <option value="free">Free</option>
+  <option value="silver">Silver - $29/mo</option>
+  <option value="gold">Gold - $99/mo</option>
+</select>
+
+// 2. Business Info
+<input type="text" placeholder="Store Name" onChange={...} />
+<input type="text" placeholder="Category (e.g., Jewelry, Apparel)" />
+<input type="text" placeholder="Mall (optional)" />
+<input type="text" placeholder="Street Address" />
+<input type="email" placeholder="Contact Email" />
+<input type="tel" placeholder="Phone" />
+
+// 3. Stripe Connect Button
+<a href="https://connect.stripe.com/oauth/authorize?...">
+  Connect Stripe Account
+</a>
+
+// 4. Inventory Upload Prompt
+<input type="file" accept=".csv" onChange={handleCSVUpload} />
+<button onClick={openManualEntry}>Add Products Manually</button>
+
+// 5. Confirm + Submit
+<button onClick={handleSubmit}>Submit & Verify</button>
+
+Use tabs or progress bar for steps (Plan → Info → Payments → Inventory → Submit).
+
+
+---
+
+🔙 PART 3: Backend API — /api/retailers/onboard.js
+
+// server/api/retailers/onboard.js
+export default async function handler(req, res) {
+  try {
+    const { plan, storeName, category, mall, address, email, phone, stripeId } = req.body;
+
+    if (!plan || !storeName || !email) {
+      return res.status(400).json({ success: false, data: null, error: "Missing required fields" });
+    }
+
+    const newRetailer = await db.collection("retailers").add({
+      plan,
+      storeName,
+      category,
+      mall,
+      address,
+      email,
+      phone,
+      stripeId,
+      status: "pending",
+      createdAt: Date.now()
+    });
+
+    return res.status(200).json({ success: true, data: { id: newRetailer.id }, error: null });
+  } catch (error) {
+    return res.status(500).json({ success: false, data: null, error: error.message });
+  }
+}
+
+
+---
+
+🧾 PART 4: Data Schema for Retailer Onboarding (Cloudant / Firestore)
+
+{
+  "plan": "gold",
+  "storeName": "Diamond Jewelers",
+  "category": "Jewelry",
+  "mall": "Rosedale Center",
+  "address": "123 Main St, Roseville, MN",
+  "email": "owner@diamondjewelers.com",
+  "phone": "555-123-4567",
+  "stripeId": "acct_1ABCXYZ",
+  "status": "pending",
+  "createdAt": 1691369400000
+}
+
+
+---
+
+💬 PART 5: Sample Agent Response
+
+> 👋 Welcome to SPIRAL, the Local Shopping Platform that connects you directly with shoppers in your area and across the country.
+Let’s get you set up.
+
+
+
+✅ Step 1: Choose your plan:
+
+Free: Basic listing + 1 product
+
+Silver: Full listing, analytics, 50 products — $29/month
+
+Gold: Unlimited listings, premium placement, perks — $99/month
+
+
+Please reply with your preferred plan.
+
+
+---
+
+📦 BONUS: Connect to Next Agent
+
+Once onboarding is complete, RetailerOnboardAgent can call:
+
+ProductEntryAgent → for uploading/managing inventory
+
+MallDirectoryAgent → for assigning to correct mall or map
+
+
+
+---
+
+✅ Summary
+
+Component	Status
+
+Agent logic	✅ Done
+UI form scaffold	✅ Done
+Backend API	✅ Done
+DB schema	✅ Done
+Stripe Connect	🔄 In progress (OAuth step next)
+Agent-to-agent handoff	🔄 In progress (ProductEntryAgent next)
+
+
+
+---
+
+Would you like to:
+
+Proceed with building the Stripe Connect OAuth redirect logic?
+
+Move into Step 2 (Mall Directory Pages with MallDirectoryAgent)?
+
+Begin testing RetailerOnboardAgent in live mode?
+
+
+Just say the word — and I’ll deliver.
+
