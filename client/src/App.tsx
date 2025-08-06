@@ -163,6 +163,7 @@ import SpiralLoggingDemo from "@/pages/spiral-logging-demo";
 import ButtonTestingSuite from "@/pages/button-testing-suite";
 import SpiralAdminDashboard from "@/pages/spiral-admin-dashboard";
 import SpiralTodoDashboard from "@/pages/spiral-todo-dashboard";
+import AIOpsPage from "@/pages/ai-ops";
 import AdminTestDashboardExisting from "@/pages/admin-test-dashboard";
 import ShowcasePage from "@/pages/showcase";
 import TestimonialsDemoPage from "@/pages/testimonials-demo";
@@ -443,6 +444,7 @@ function Router() {
       <Route path="/spiral-admin" component={SpiralAdminDashboard} />
       <Route path="/spiral-admin/button-testing" component={ButtonTestingSuite} />
       <Route path="/spiral-todo" component={SpiralTodoDashboard} />
+      <Route path="/ai-ops" component={AIOpsPage} />
       <Route path="/external-services" component={ExternalServicesDemo} />
       <Route path="/admin/external-services" component={AdminExternalServices} />
       <Route path="/admin/verification" component={AdminVerification} />

@@ -3,6 +3,8 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import wishlistRoutes from "./api/wishlist";
 import intelligentWishlistRoutes from "./api/intelligent-wishlist";
+import aiOpsStatusRoutes from "./api/ai-ops-status";
+import businessCategoriesRoutes from "./api/business-categories";
 
 const app = express();
 app.use(express.json());
@@ -45,7 +47,21 @@ app.use((req, res, next) => {
   // Register intelligent wishlist routes
   app.use("/api", intelligentWishlistRoutes);
   
+  // Register AI Ops status routes
+  app.use("/api", aiOpsStatusRoutes);
+  
+  // Register business categories routes
+  app.use("/api", businessCategoriesRoutes);
+  
   const server = await registerRoutes(app);
+
+  // Initialize AI Ops GPT System
+  try {
+    const { default: aiOps } = await import('./ai-ops.js');
+    console.log("✅ SPIRAL AI Ops GPT system initialized successfully");
+  } catch (error: any) {
+    console.log("⚠️ AI Ops initialization error:", error.message);
+  }
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
