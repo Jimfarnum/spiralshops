@@ -33,6 +33,7 @@ import RetailerCategoryMenu from "@/components/RetailerCategoryMenu";
 import EnhancedFeaturedProducts from "@/components/EnhancedFeaturedProducts";
 import MallEvents from "@/components/MallEvents";
 import LocalPromotions from "@/components/LocalPromotions";
+import HomeVisualSearchBanner from "@/components/HomeVisualSearchBanner";
 import { SharePopupWrapper, useSpiralshopsOnboarding } from "@/components/SpiralshopsCorrection";
 
 export default function Home() {
@@ -133,6 +134,11 @@ export default function Home() {
       
       {/* Hero Section with Main Street Revival Messaging */}
       <HeroSection />
+
+      {/* Visual Search Feature Banner */}
+      <div className="px-4 sm:px-6 py-4">
+        <HomeVisualSearchBanner />
+      </div>
 
       {/* Press Release Section - Mobile Optimized */}
       <section id="press-release" className="bg-gradient-to-r from-gray-50 to-gray-100 px-4 sm:px-6 py-8 sm:py-12 rounded-xl sm:rounded-2xl shadow-lg text-center max-w-5xl mx-auto my-6 sm:my-8">

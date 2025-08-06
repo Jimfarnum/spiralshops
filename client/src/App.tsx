@@ -53,6 +53,7 @@ import RetailerInsights from "@/pages/retailer-insights";
 import TestFlow from "@/pages/test-flow";
 import About from "@/pages/about";
 import Wishlist from "@/pages/wishlist";
+import VisualSearchPage from "@/pages/visual-search";
 import InventoryDashboard from "@/pages/inventory-dashboard";
 import FeatureTesting from "@/pages/feature-testing";
 import DynamicFeatureTesting from "@/pages/dynamic-feature-testing";
@@ -303,6 +304,7 @@ function Router() {
       <Route path="/terms" component={TermsOfService} />
       <Route path="/about-spiral" component={About} />
       <Route path="/wishlist" component={Wishlist} />
+      <Route path="/visual-search" component={VisualSearchPage} />
       <Route path="/intelligent-wishlist" component={IntelligentWishlistPage} />
       <Route path="/inventory-dashboard" component={InventoryDashboard} />
       <Route path="/wallet" component={WalletPage} />

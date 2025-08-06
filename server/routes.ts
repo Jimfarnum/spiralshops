@@ -2938,5 +2938,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   console.log('✅ Google Maps integration routes loaded successfully');
   console.log('✅ Near Me proximity search routes loaded successfully');
 
+  // Visual Search integration routes
+  try {
+    const { default: visualSearchRoutes } = await import('./api/visual-search.js');
+    app.use("/api/visual-search", visualSearchRoutes);
+    console.log('✅ Visual search routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load visual search routes:', err.message);
+  }
+
   return httpServer;
 }
