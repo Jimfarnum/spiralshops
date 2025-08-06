@@ -230,18 +230,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // SPIRAL Progress Tracker API
-  app.get('/api/admin/progress', spiralProtection.spiralAdminAuth, (req, res) => {
+  // SPIRAL Progress Tracker API - SPIRAL Standard Response Format
+  app.get('/api/admin/progress', spiralProtection.spiralAdminAuth, async (req, res) => {
     try {
-      const progressData = getProgressData();
+      const progressData = await getProgressData();
       res.json({
         success: true,
-        data: progressData,
-        timestamp: new Date().toISOString()
+        data: {
+          progress: progressData,
+          timestamp: new Date().toISOString()
+        },
+        error: null
       });
     } catch (error) {
       res.status(500).json({
         success: false,
+        data: null,
         error: 'Failed to get progress data'
       });
     }
@@ -251,8 +255,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // SPIRAL ADMIN AUTHENTICATION ROUTES
   // ========================================
 
-  // Admin login endpoint
-  app.post('/api/admin-login', (req, res) => {
+  // Admin login endpoint - SPIRAL Standard Response Format
+  app.post('/api/admin-login', async (req, res) => {
     try {
       const { email, password } = req.body;
       
@@ -263,7 +267,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!email || !password) {
         return res.status(400).json({
           success: false,
-          message: 'Email and password are required'
+          data: null,
+          error: 'Email and password are required'
         });
       }
 
@@ -273,24 +278,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         console.log(`[SPIRAL ADMIN] Successful login: ${email} at ${new Date().toISOString()}`);
         
-        res.json({
-          success: true,
-          token: token,
-          message: 'Admin authentication successful',
-          user: { email: email, role: 'admin' }
+        res.json({ 
+          success: true, 
+          data: { token, message: 'Admin login successful', email }, 
+          error: null 
         });
       } else {
-        console.log(`[SPIRAL ADMIN] Failed login attempt: ${email} at ${new Date().toISOString()}`);
-        res.status(401).json({
-          success: false,
-          message: 'Invalid admin credentials'
+        res.status(401).json({ 
+          success: false, 
+          data: null, 
+          error: 'Invalid admin credentials' 
         });
       }
-    } catch (error) {
-      console.error('Admin login error:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Internal server error during authentication'
+    } catch (err) {
+      res.status(500).json({ 
+        success: false, 
+        data: null, 
+        error: err.message 
       });
     }
   });
