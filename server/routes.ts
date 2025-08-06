@@ -1952,6 +1952,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
         reviewCount: 432,
         isVerified: true,
         verificationTier: "Silver"
+      },
+      {
+        id: 6,
+        name: "Minneapolis Electronics Hub",
+        description: "Leading electronics store in Plymouth, Minnesota",
+        category: "Electronics",
+        address: "3200 Vicksburg Ln, Plymouth, MN 55447",
+        coordinates: { latitude: 45.0293, longitude: -93.4555 },
+        city: "Plymouth",
+        state: "MN",
+        zipCode: "55447",
+        rating: 4.4,
+        reviewCount: 1156,
+        isVerified: true,
+        verificationTier: "Gold"
+      },
+      {
+        id: 7,
+        name: "Twin Cities Fashion",
+        description: "Contemporary clothing and accessories in Brooklyn Park",
+        category: "Fashion",
+        address: "8200 Brooklyn Blvd, Brooklyn Park, MN 55445",
+        coordinates: { latitude: 45.1094, longitude: -93.3527 },
+        city: "Brooklyn Park",
+        state: "MN",
+        zipCode: "55445",
+        rating: 4.1,
+        reviewCount: 743,
+        isVerified: true,
+        verificationTier: "Silver"
+      },
+      {
+        id: 8,
+        name: "Minnesota Coffee Co",
+        description: "Local roasted coffee and pastries in Plymouth",
+        category: "Coffee",
+        address: "13600 Industrial Park Blvd, Plymouth, MN 55441",
+        coordinates: { latitude: 45.0541, longitude: -93.4919 },
+        city: "Plymouth",
+        state: "MN",
+        zipCode: "55441",
+        rating: 4.7,
+        reviewCount: 892,
+        isVerified: true,
+        verificationTier: "Gold"
       }
     ];
 
@@ -1966,6 +2011,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       filteredStores = filteredStores.filter(store => 
         store.state.toLowerCase() === state.toLowerCase()
       );
+    }
+    
+    // Zip code filtering for precise location matching
+    const zipCode = req.query.zipCode || req.query.zip;
+    if (zipCode) {
+      const zip = zipCode.toString();
+      // First try exact match
+      let zipMatches = filteredStores.filter(store => store.zipCode === zip);
+      
+      // If no exact match, try nearby zip codes (within 10 mile radius approximation)
+      if (zipMatches.length === 0 && zip.length === 5) {
+        const zipPrefix = zip.substring(0, 3);
+        zipMatches = filteredStores.filter(store => 
+          store.zipCode.substring(0, 3) === zipPrefix
+        );
+      }
+      
+      if (zipMatches.length > 0) {
+        filteredStores = zipMatches;
+      }
     }
 
     if (category && category !== 'all') {
