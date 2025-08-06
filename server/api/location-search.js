@@ -839,8 +839,7 @@ const continentalUSStores = [
     reviewCount: 3456,
     isVerified: true,
     verificationTier: "Platinum"
-  }
-];
+  },
   {
     id: 3,
     name: "Green Valley Grocery",
