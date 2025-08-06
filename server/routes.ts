@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { calculateShippingOptions, validateDeliveryAddress, calculateDeliveryDate } from "./shippingRoutes.js";
 import spiralProtection from "./middleware/spiralProtection.js";
+import { globalResponseMiddleware, asyncHandler } from "./middleware/globalResponseFormatter.js";
 import { storage } from "./storage";
 import { getProducts, getCategories } from "./productData";
 import { registerLoyaltyRoutes } from "./loyaltyRoutes";
@@ -46,6 +47,9 @@ import { registerRetailerDataRoutes } from "./retailerDataIntegration";
 export async function registerRoutes(app: Express): Promise<Server> {
   // Enable trust proxy for Replit environment
   app.set('trust proxy', 1);
+  
+  // Apply global response middleware for all API routes
+  app.use('/api', globalResponseMiddleware);
   
   // Admin Test Routes Integration
   try {
@@ -371,159 +375,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Check social handle availability
-  app.get('/api/auth/check-social-handle', async (req, res) => {
-    try {
-      const { handle } = req.query;
-      if (!handle || typeof handle !== 'string') {
-        return res.status(400).json({ error: 'Social handle is required' });
-      }
-
-      const available = await authSystem.isSocialHandleAvailable(handle);
-      res.json({ available });
-    } catch (error) {
-      res.status(500).json({ error: 'Could not check social handle availability' });
+  // Check social handle availability - SPIRAL Standard Response Format
+  app.get('/api/auth/check-social-handle', asyncHandler(async (req, res) => {
+    const { handle } = req.query;
+    if (!handle || typeof handle !== 'string') {
+      return res.error('Social handle is required', 400);
     }
-  });
 
-  // User registration
-  app.post('/api/auth/register', async (req, res) => {
-    try {
-      // Validate request body
-      const validatedData = authSystem.userRegistrationSchema.parse(req.body);
+    const available = await authSystem.isSocialHandleAvailable(handle);
+    res.standard({ available, handle });
+  }));
 
-      // Check if username and email are available
-      const [usernameAvailable, emailAvailable] = await Promise.all([
-        authSystem.isUsernameAvailable(validatedData.username),
-        authSystem.isEmailAvailable(validatedData.email)
-      ]);
+  // User registration - SPIRAL Standard Response Format
+  app.post('/api/auth/register', asyncHandler(async (req, res) => {
+    // Validate request body
+    const validatedData = authSystem.userRegistrationSchema.parse(req.body);
 
-      if (!usernameAvailable) {
-        return res.status(400).json({ error: 'Username is already taken' });
-      }
+    // Check if username and email are available
+    const [usernameAvailable, emailAvailable] = await Promise.all([
+      authSystem.isUsernameAvailable(validatedData.username),
+      authSystem.isEmailAvailable(validatedData.email)
+    ]);
 
-      if (!emailAvailable) {
-        return res.status(400).json({ error: 'Email is already registered' });
-      }
-
-      // Check social handle if provided
-      if (validatedData.socialHandle) {
-        const socialHandleAvailable = await authSystem.isSocialHandleAvailable(validatedData.socialHandle);
-        if (!socialHandleAvailable) {
-          return res.status(400).json({ error: 'Social handle is already taken' });
-        }
-      }
-
-      // Hash password
-      const passwordHash = await authSystem.hashPassword(validatedData.password);
-
-      // Create user
-      const userData = {
-        ...validatedData,
-        passwordHash,
-        name: `${validatedData.firstName} ${validatedData.lastName}`,
-        inviteCode: authSystem.generateInviteCode(validatedData.username)
-      };
-      delete userData.password; // Remove plain password
-
-      const newUser = await authSystem.createUser(userData);
-
-      // Generate JWT token
-      const token = authSystem.generateUserToken(newUser);
-
-      // Set secure cookie
-      res.cookie('spiralUserToken', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-      });
-
-      // Return user data (without password hash)
-      const userResponse = { ...newUser };
-      delete userResponse.passwordHash;
-
-      res.status(201).json({
-        message: 'Registration successful',
-        user: userResponse,
-        token
-      });
-    } catch (error) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({
-          error: 'Validation failed',
-          details: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
-        });
-      }
-
-      console.error('Registration error:', error);
-      res.status(500).json({ error: 'Registration failed. Please try again.' });
+    if (!usernameAvailable) {
+      return res.error('Username is already taken', 400);
     }
-  });
 
-  // User login
-  app.post('/api/auth/login', async (req, res) => {
-    try {
-      // Validate request body
-      const validatedData = authSystem.userLoginSchema.parse(req.body);
-
-      // Find user by email or username
-      const user = await authSystem.findUserByIdentifier(validatedData.identifier);
-      if (!user) {
-        return res.status(401).json({ error: 'Invalid email/username or password' });
-      }
-
-      // Verify password
-      const passwordValid = await authSystem.verifyPassword(validatedData.password, user.passwordHash);
-      if (!passwordValid) {
-        return res.status(401).json({ error: 'Invalid email/username or password' });
-      }
-
-      // Check if account is active
-      if (!user.isActive) {
-        return res.status(401).json({ error: 'Account is disabled. Please contact support.' });
-      }
-
-      // Generate JWT token
-      const token = authSystem.generateUserToken(user);
-
-      // Set secure cookie
-      res.cookie('spiralUserToken', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-      });
-
-      // Update last login (in real implementation)
-      // await updateUserLastLogin(user.id);
-
-      // Return user data (without password hash)
-      const userResponse = { ...user };
-      delete userResponse.passwordHash;
-
-      res.json({
-        message: 'Login successful',
-        user: userResponse,
-        token
-      });
-    } catch (error) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({
-          error: 'Validation failed',
-          details: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
-        });
-      }
-
-      console.error('Login error:', error);
-      res.status(500).json({ error: 'Login failed. Please try again.' });
+    if (!emailAvailable) {
+      return res.error('Email is already registered', 400);
     }
-  });
 
-  // Get current user
+    // Check social handle if provided
+    if (validatedData.socialHandle) {
+      const socialHandleAvailable = await authSystem.isSocialHandleAvailable(validatedData.socialHandle);
+      if (!socialHandleAvailable) {
+        return res.error('Social handle is already taken', 400);
+      }
+    }
+
+    // Hash password
+    const passwordHash = await authSystem.hashPassword(validatedData.password);
+
+    // Create user
+    const userData = {
+      ...validatedData,
+      passwordHash,
+      name: `${validatedData.firstName} ${validatedData.lastName}`,
+      inviteCode: authSystem.generateInviteCode(validatedData.username)
+    };
+    delete userData.password; // Remove plain password
+
+    const newUser = await authSystem.createUser(userData);
+
+    // Generate JWT token
+    const token = authSystem.generateUserToken(newUser);
+
+    // Set secure cookie
+    res.cookie('spiralUserToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    // Return user data (without password hash)
+    const userResponse = { ...newUser };
+    delete userResponse.passwordHash;
+
+    res.status(201);
+    res.standard({
+      message: 'Registration successful',
+      user: userResponse,
+      token
+    });
+  }));
+
+  // User login - SPIRAL Standard Response Format
+  app.post('/api/auth/login', asyncHandler(async (req, res) => {
+    // Validate request body
+    const validatedData = authSystem.userLoginSchema.parse(req.body);
+
+    // Find user by email or username
+    const user = await authSystem.findUserByIdentifier(validatedData.identifier);
+    if (!user) {
+      return res.error('Invalid email/username or password', 401);
+    }
+
+    // Verify password
+    const passwordValid = await authSystem.verifyPassword(validatedData.password, user.passwordHash);
+    if (!passwordValid) {
+      return res.error('Invalid email/username or password', 401);
+    }
+
+    // Check if account is active
+    if (!user.isActive) {
+      return res.error('Account is disabled. Please contact support.', 401);
+    }
+
+    // Generate JWT token
+    const token = authSystem.generateUserToken(user);
+
+    // Set secure cookie
+    res.cookie('spiralUserToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    // Return user data (without password hash)
+    const userResponse = { ...user };
+    delete userResponse.passwordHash;
+
+    res.standard({
+      message: 'Login successful',
+      user: userResponse,
+      token
+    });
+  }));
+
+  // Get current user - SPIRAL Standard Response Format
   app.get('/api/auth/me', authSystem.authenticateUser, (req, res) => {
+    const startTime = req.startTime;
     // Return user data from token (already validated by middleware)
-    res.json({
+    res.standard({
       user: {
         id: req.user.userId,
         email: req.user.email,
@@ -542,10 +517,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // User logout
+  // User logout - SPIRAL Standard Response Format  
   app.post('/api/auth/logout', (req, res) => {
     res.clearCookie('spiralUserToken');
-    res.json({ message: 'Logout successful' });
+    res.standard({ message: 'Logout successful' });
   });
 
   // Protected shopper-only endpoint example

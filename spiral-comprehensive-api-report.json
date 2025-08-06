@@ -1,0 +1,298 @@
+{
+  "timestamp": "2025-08-06T16:41:10.272Z",
+  "summary": {
+    "totalEndpoints": 12,
+    "totalStandardized": 5,
+    "totalWorking": 8,
+    "standardizationPercentage": 42,
+    "workingPercentage": 67
+  },
+  "categories": {
+    "Authentication": {
+      "total": 3,
+      "standardized": 2,
+      "working": 3
+    },
+    "Retailers": {
+      "total": 2,
+      "standardized": 1,
+      "working": 1
+    },
+    "Loyalty": {
+      "total": 2,
+      "standardized": 0,
+      "working": 0
+    },
+    "Wishlist": {
+      "total": 1,
+      "standardized": 0,
+      "working": 1
+    },
+    "Notifications": {
+      "total": 1,
+      "standardized": 0,
+      "working": 0
+    },
+    "AI Recommendations": {
+      "total": 1,
+      "standardized": 1,
+      "working": 1
+    },
+    "Products": {
+      "total": 1,
+      "standardized": 1,
+      "working": 1
+    },
+    "Stores": {
+      "total": 1,
+      "standardized": 0,
+      "working": 1
+    }
+  },
+  "results": [
+    {
+      "endpoint": "/api/auth/check-username?username=testuser",
+      "method": "GET",
+      "category": "Authentication",
+      "description": "Username availability check",
+      "status": 200,
+      "success": true,
+      "hasStandardFormat": true,
+      "duration": "0ms",
+      "timestamp": 1754498467392,
+      "responseKeys": [
+        "success",
+        "data",
+        "duration",
+        "timestamp",
+        "error"
+      ],
+      "dataType": "object",
+      "errorPresent": true
+    },
+    {
+      "endpoint": "/api/auth/check-email?email=test@example.com",
+      "method": "GET",
+      "category": "Authentication",
+      "description": "Email availability check",
+      "status": 200,
+      "success": true,
+      "hasStandardFormat": true,
+      "duration": "0ms",
+      "timestamp": 1754498467424,
+      "responseKeys": [
+        "success",
+        "data",
+        "duration",
+        "timestamp",
+        "error"
+      ],
+      "dataType": "object",
+      "errorPresent": true
+    },
+    {
+      "endpoint": "/api/auth/check-social-handle?handle=testhandle",
+      "method": "GET",
+      "category": "Authentication",
+      "description": "Social handle availability check",
+      "status": 200,
+      "success": false,
+      "hasStandardFormat": false,
+      "duration": "N/A",
+      "timestamp": "N/A",
+      "responseKeys": [
+        "available"
+      ],
+      "dataType": "null",
+      "errorPresent": false
+    },
+    {
+      "endpoint": "/api/retailers",
+      "method": "GET",
+      "category": "Retailers",
+      "description": "Retailer listings",
+      "status": 200,
+      "success": true,
+      "hasStandardFormat": true,
+      "duration": "2624ms",
+      "timestamp": 1754498470057,
+      "responseKeys": [
+        "success",
+        "data",
+        "duration",
+        "timestamp",
+        "error"
+      ],
+      "dataType": "object",
+      "errorPresent": true
+    },
+    {
+      "endpoint": "/api/retailers/search?query=electronics",
+      "method": "GET",
+      "category": "Retailers",
+      "description": "Retailer search",
+      "status": 400,
+      "success": false,
+      "hasStandardFormat": false,
+      "duration": "N/A",
+      "timestamp": "N/A",
+      "responseKeys": [
+        "message"
+      ],
+      "dataType": "null",
+      "errorPresent": false
+    },
+    {
+      "endpoint": "/api/spirals/balance?userId=1",
+      "method": "GET",
+      "category": "Loyalty",
+      "description": "User SPIRALS balance",
+      "status": "ERROR",
+      "success": false,
+      "hasStandardFormat": false,
+      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+      "responseKeys": [],
+      "dataType": "error",
+      "errorPresent": true
+    },
+    {
+      "endpoint": "/api/loyalty/tiers",
+      "method": "GET",
+      "category": "Loyalty",
+      "description": "Loyalty tier information",
+      "status": "ERROR",
+      "success": false,
+      "hasStandardFormat": false,
+      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+      "responseKeys": [],
+      "dataType": "error",
+      "errorPresent": true
+    },
+    {
+      "endpoint": "/api/wishlist/items?userId=1",
+      "method": "GET",
+      "category": "Wishlist",
+      "description": "User wishlist items",
+      "status": 200,
+      "success": true,
+      "hasStandardFormat": false,
+      "duration": "N/A",
+      "timestamp": "N/A",
+      "responseKeys": [
+        "success",
+        "wishlistItems",
+        "totalItems"
+      ],
+      "dataType": "null",
+      "errorPresent": false
+    },
+    {
+      "endpoint": "/api/notifications?userId=1",
+      "method": "GET",
+      "category": "Notifications",
+      "description": "User notifications",
+      "status": "ERROR",
+      "success": false,
+      "hasStandardFormat": false,
+      "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+      "responseKeys": [],
+      "dataType": "error",
+      "errorPresent": true
+    },
+    {
+      "endpoint": "/api/recommend?category=electronics",
+      "method": "GET",
+      "category": "AI Recommendations",
+      "description": "AI product recommendations",
+      "status": 200,
+      "success": true,
+      "hasStandardFormat": true,
+      "duration": "79ms",
+      "timestamp": 1754498470183,
+      "responseKeys": [
+        "success",
+        "data",
+        "duration",
+        "timestamp",
+        "error"
+      ],
+      "dataType": "object",
+      "errorPresent": true
+    },
+    {
+      "endpoint": "/api/categories",
+      "method": "GET",
+      "category": "Products",
+      "description": "Product categories",
+      "status": 200,
+      "success": true,
+      "hasStandardFormat": true,
+      "duration": "0ms",
+      "timestamp": 1754498470186,
+      "responseKeys": [
+        "success",
+        "data",
+        "duration",
+        "timestamp",
+        "error"
+      ],
+      "dataType": "object",
+      "errorPresent": true
+    },
+    {
+      "endpoint": "/api/stores",
+      "method": "GET",
+      "category": "Stores",
+      "description": "Store listings",
+      "status": 200,
+      "success": false,
+      "hasStandardFormat": false,
+      "duration": "N/A",
+      "timestamp": "N/A",
+      "responseKeys": [
+        "0",
+        "1",
+        "2"
+      ],
+      "dataType": "null",
+      "errorPresent": false
+    }
+  ],
+  "recommendations": {
+    "needsStandardization": [
+      {
+        "endpoint": "/api/auth/check-social-handle?handle=testhandle",
+        "category": "Authentication"
+      },
+      {
+        "endpoint": "/api/wishlist/items?userId=1",
+        "category": "Wishlist"
+      },
+      {
+        "endpoint": "/api/stores",
+        "category": "Stores"
+      }
+    ],
+    "needsFixes": [
+      {
+        "endpoint": "/api/retailers/search?query=electronics",
+        "category": "Retailers"
+      },
+      {
+        "endpoint": "/api/spirals/balance?userId=1",
+        "category": "Loyalty",
+        "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      },
+      {
+        "endpoint": "/api/loyalty/tiers",
+        "category": "Loyalty",
+        "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      },
+      {
+        "endpoint": "/api/notifications?userId=1",
+        "category": "Notifications",
+        "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      }
+    ]
+  }
+}
