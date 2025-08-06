@@ -2672,6 +2672,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   console.log('✅ Continental US location search route registered successfully');
 
+  // Distance calculation function using Haversine formula
+  function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    const R = 3959; // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLng/2) * Math.sin(dLng/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
   // Google Maps integration routes - implemented directly for better storage access
   const mapsCoordinates = {
     'Apple Store': { lat: 44.8548, lng: -93.2422 },
@@ -2776,7 +2789,154 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }));
 
+  // Near Me proximity search with radius filtering
+  app.get("/api/maps/near-me/:lat/:lng", asyncHandler(async (req, res) => {
+    const startTime = Date.now();
+    const { lat, lng } = req.params;
+    const { radius = 10, category, limit = 20 } = req.query;
+    
+    try {
+      const userLat = parseFloat(lat);
+      const userLng = parseFloat(lng);
+      const searchRadius = parseFloat(radius as string);
+      
+      if (isNaN(userLat) || isNaN(userLng)) {
+        return res.standard({
+          stores: [],
+          error: "Invalid coordinates provided"
+        });
+      }
+
+      const allStores = await storage.getStores();
+      
+      const storesWithDistance = allStores
+        .map(store => {
+          const coordinates = mapsCoordinates[store.name];
+          if (!coordinates) return null;
+          
+          const distance = calculateDistance(userLat, userLng, coordinates.lat, coordinates.lng);
+          
+          return {
+            ...store,
+            lat: coordinates.lat,
+            lng: coordinates.lng,
+            distance: parseFloat(distance.toFixed(2)),
+            mapsUrl: `https://www.google.com/maps/search/?api=1&query=${coordinates.lat},${coordinates.lng}`,
+            directionsUrl: `https://www.google.com/maps/dir/${userLat},${userLng}/${coordinates.lat},${coordinates.lng}`
+          };
+        })
+        .filter(store => store !== null && store.distance <= searchRadius)
+        .filter(store => !category || store.category.toLowerCase().includes(category.toLowerCase()))
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, parseInt(limit as string));
+
+      res.standard({
+        stores: storesWithDistance,
+        userLocation: { lat: userLat, lng: userLng },
+        radius: searchRadius,
+        total: storesWithDistance.length,
+        category: category || 'all',
+        duration: `${Date.now() - startTime}ms`
+      });
+
+    } catch (error) {
+      console.error('Near me search error:', error);
+      res.standard({
+        stores: [],
+        error: "Failed to search nearby stores"
+      });
+    }
+  }));
+
+  // Enhanced nearby search with category filtering and smart suggestions
+  app.post("/api/maps/smart-proximity", asyncHandler(async (req, res) => {
+    const startTime = Date.now();
+    const { userLat, userLng, preferences = {}, filters = {} } = req.body;
+    
+    try {
+      const {
+        radius = 15,
+        categories = [],
+        priceRange = null,
+        rating = null,
+        isVerified = null
+      } = filters;
+
+      const allStores = await storage.getStores();
+      
+      let filteredStores = allStores
+        .map(store => {
+          const coordinates = mapsCoordinates[store.name];
+          if (!coordinates) return null;
+          
+          const distance = calculateDistance(userLat, userLng, coordinates.lat, coordinates.lng);
+          
+          return {
+            ...store,
+            lat: coordinates.lat,
+            lng: coordinates.lng,
+            distance: parseFloat(distance.toFixed(2)),
+            mapsUrl: `https://www.google.com/maps/search/?api=1&query=${coordinates.lat},${coordinates.lng}`,
+            directionsUrl: `https://www.google.com/maps/dir/${userLat},${userLng}/${coordinates.lat},${coordinates.lng}`
+          };
+        })
+        .filter(store => store !== null && store.distance <= radius);
+
+      // Apply category filter
+      if (categories.length > 0) {
+        filteredStores = filteredStores.filter(store => 
+          categories.some(cat => store.category.toLowerCase().includes(cat.toLowerCase()))
+        );
+      }
+
+      // Apply verification filter
+      if (isVerified !== null) {
+        filteredStores = filteredStores.filter(store => store.isVerified === isVerified);
+      }
+
+      // Sort by distance and add smart suggestions
+      filteredStores.sort((a, b) => a.distance - b.distance);
+
+      // Generate smart suggestions
+      const suggestions = {
+        closestStore: filteredStores[0] || null,
+        categoryBreakdown: {},
+        recommendedRadius: filteredStores.length < 5 ? radius * 1.5 : radius,
+        popularNearby: filteredStores.filter(store => parseFloat(store.rating) > 4.0).slice(0, 3)
+      };
+
+      // Category breakdown
+      filteredStores.forEach(store => {
+        if (!suggestions.categoryBreakdown[store.category]) {
+          suggestions.categoryBreakdown[store.category] = 0;
+        }
+        suggestions.categoryBreakdown[store.category]++;
+      });
+
+      res.standard({
+        stores: filteredStores.slice(0, 25),
+        suggestions,
+        searchParams: {
+          userLocation: { lat: userLat, lng: userLng },
+          radius,
+          categories,
+          appliedFilters: Object.keys(filters).length
+        },
+        total: filteredStores.length,
+        duration: `${Date.now() - startTime}ms`
+      });
+
+    } catch (error) {
+      console.error('Smart proximity search error:', error);
+      res.standard({
+        stores: [],
+        error: "Failed to perform smart proximity search"
+      });
+    }
+  }));
+
   console.log('✅ Google Maps integration routes loaded successfully');
+  console.log('✅ Near Me proximity search routes loaded successfully');
 
   return httpServer;
 }

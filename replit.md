@@ -23,7 +23,7 @@ Preferred communication style: Simple, everyday language.
     - **Logistics**: Advanced logistics platform with delivery zone management, driver tracking, route optimization, SPIRAL Centers network for hub-based shipping, split shipping functionality (Ship to Me, In-Store Pickup, Ship to Mall SPIRAL Center).
     - **Social & Community**: Comprehensive social media integration with advanced pixel tracking, universal event system, social sharing with SPIRAL rewards, social feed page, "Invite to Shop" feature with group bonuses.
     - **Accessibility**: One-Click Accessibility Mode with vision, motor, cognitive, and hearing support.
-    - **Maps & Location**: Complete Google Maps integration with precise coordinates, one-click directions, store location display, mall navigation, user geolocation support, responsive maps components.
+    - **Maps & Location**: Complete Google Maps integration with precise coordinates, one-click directions, store location display, mall navigation, user geolocation support, responsive maps components, Near Me smart filter with radius-based proximity search, category filtering, and intelligent suggestions.
     - **Testing & Monitoring**: Comprehensive compatibility test system, dynamic auto-expanding test suite, system audit dashboard, real-time logging and performance monitoring, 100% functionality validation.
 
 ### Backend Architecture
