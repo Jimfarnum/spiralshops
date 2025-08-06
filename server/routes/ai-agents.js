@@ -2,12 +2,33 @@
 import express from 'express';
 import { RetailerOnboardAgent } from '../ai-agents/RetailerOnboardAgent.js';
 import { ProductEntryAgent } from '../ai-agents/ProductEntryAgent.js';
+import { ShopperAssistAgent } from '../ai-agents/ShopperAssistAgent.js';
+import { WishlistAgent } from '../ai-agents/WishlistAgent.js';
+import { ImageSearchAgent } from '../ai-agents/ImageSearchAgent.js';
+import { MallDirectoryAgent } from '../ai-agents/MallDirectoryAgent.js';
+import { AdminAuditAgent } from '../ai-agents/AdminAuditAgent.js';
+import { SpiralAIOpsSupervisor } from '../ai-agents/SpiralAIOpsSupervisor.js';
 
 const router = express.Router();
 
 // Initialize AI Agents
 const retailerAgent = new RetailerOnboardAgent();
 const productAgent = new ProductEntryAgent();
+const shopperAssistAgent = new ShopperAssistAgent();
+const wishlistAgent = new WishlistAgent();
+const imageSearchAgent = new ImageSearchAgent();
+const mallDirectoryAgent = new MallDirectoryAgent();
+const adminAuditAgent = new AdminAuditAgent();
+
+// Initialize AI Ops Supervisor and register all agents
+const aiOpsSupervisor = new SpiralAIOpsSupervisor();
+aiOpsSupervisor.registerAgent(retailerAgent);
+aiOpsSupervisor.registerAgent(productAgent);
+aiOpsSupervisor.registerAgent(shopperAssistAgent);
+aiOpsSupervisor.registerAgent(wishlistAgent);
+aiOpsSupervisor.registerAgent(imageSearchAgent);
+aiOpsSupervisor.registerAgent(mallDirectoryAgent);
+aiOpsSupervisor.registerAgent(adminAuditAgent);
 
 // Retailer Onboarding Agent Routes
 router.post('/retailer-onboard/chat', async (req, res) => {
@@ -232,6 +253,198 @@ router.get('/health', (req, res) => {
     },
     timestamp: new Date().toISOString()
   });
+});
+
+// Shopper Assist Agent Routes
+router.post('/shopper-assist/chat', async (req, res) => {
+  try {
+    const { query, context } = req.body;
+    const response = await shopperAssistAgent.assistShopper(query, context);
+    res.json({ success: true, data: response, agent: 'ShopperAssistAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Shopper assistance failed' });
+  }
+});
+
+router.post('/shopper-assist/find-products', async (req, res) => {
+  try {
+    const { searchQuery, filters } = req.body;
+    const response = await shopperAssistAgent.findProducts(searchQuery, filters);
+    res.json({ success: true, data: response, agent: 'ShopperAssistAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Product search failed' });
+  }
+});
+
+// Wishlist Agent Routes
+router.post('/wishlist/organize', async (req, res) => {
+  try {
+    const { items, preferences } = req.body;
+    const response = await wishlistAgent.organizeWishlist(items, preferences);
+    res.json({ success: true, data: response, agent: 'WishlistAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Wishlist organization failed' });
+  }
+});
+
+router.post('/wishlist/predict-prices', async (req, res) => {
+  try {
+    const { items } = req.body;
+    const response = await wishlistAgent.predictPriceDrops(items);
+    res.json({ success: true, data: response, agent: 'WishlistAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Price prediction failed' });
+  }
+});
+
+router.post('/wishlist/gift-suggestions', async (req, res) => {
+  try {
+    const { recipientProfile, occasion, budget } = req.body;
+    const response = await wishlistAgent.suggestGifts(recipientProfile, occasion, budget);
+    res.json({ success: true, data: response, agent: 'WishlistAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Gift suggestion failed' });
+  }
+});
+
+// Image Search Agent Routes
+router.post('/image-search/analyze', async (req, res) => {
+  try {
+    const { imageBase64, searchContext } = req.body;
+    const response = await imageSearchAgent.analyzeImage(imageBase64, searchContext);
+    res.json({ success: true, data: response, agent: 'ImageSearchAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Image analysis failed' });
+  }
+});
+
+router.post('/image-search/find-similar', async (req, res) => {
+  try {
+    const { productDescription, stylePreferences } = req.body;
+    const response = await imageSearchAgent.findSimilarProducts(productDescription, stylePreferences);
+    res.json({ success: true, data: response, agent: 'ImageSearchAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Similar product search failed' });
+  }
+});
+
+// Mall Directory Agent Routes
+router.post('/mall-directory/plan-route', async (req, res) => {
+  try {
+    const { stores, preferences } = req.body;
+    const response = await mallDirectoryAgent.planShoppingRoute(stores, preferences);
+    res.json({ success: true, data: response, agent: 'MallDirectoryAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Route planning failed' });
+  }
+});
+
+router.post('/mall-directory/discover-stores', async (req, res) => {
+  try {
+    const { interests, mallInfo } = req.body;
+    const response = await mallDirectoryAgent.discoverStores(interests, mallInfo);
+    res.json({ success: true, data: response, agent: 'MallDirectoryAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Store discovery failed' });
+  }
+});
+
+router.post('/mall-directory/find-events', async (req, res) => {
+  try {
+    const { mallId, dateRange } = req.body;
+    const response = await mallDirectoryAgent.findCurrentEvents(mallId, dateRange);
+    res.json({ success: true, data: response, agent: 'MallDirectoryAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Event discovery failed' });
+  }
+});
+
+// Admin Audit Agent Routes  
+router.post('/admin-audit/performance', async (req, res) => {
+  try {
+    const { metrics, timeframe } = req.body;
+    const response = await adminAuditAgent.analyzeSystemPerformance(metrics, timeframe);
+    res.json({ success: true, data: response, agent: 'AdminAuditAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Performance analysis failed' });
+  }
+});
+
+router.post('/admin-audit/user-insights', async (req, res) => {
+  try {
+    const { userData, behaviorPatterns } = req.body;
+    const response = await adminAuditAgent.generateUserInsights(userData, behaviorPatterns);
+    res.json({ success: true, data: response, agent: 'AdminAuditAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'User insights generation failed' });
+  }
+});
+
+router.post('/admin-audit/optimize-revenue', async (req, res) => {
+  try {
+    const { salesData, marketTrends } = req.body;
+    const response = await adminAuditAgent.optimizeRevenue(salesData, marketTrends);
+    res.json({ success: true, data: response, agent: 'AdminAuditAgent' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Revenue optimization failed' });
+  }
+});
+
+// AI Ops Supervisor Routes
+router.post('/ai-ops/coordinate', async (req, res) => {
+  try {
+    const { task, context } = req.body;
+    const response = await aiOpsSupervisor.coordinateAgents(task, context);
+    res.json({ success: true, data: response, supervisor: 'SpiralAIOpsSupervisor' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'AI coordination failed' });
+  }
+});
+
+router.get('/ai-ops/agents', async (req, res) => {
+  try {
+    const response = aiOpsSupervisor.getRegisteredAgents();
+    res.json({ success: true, data: response, supervisor: 'SpiralAIOpsSupervisor' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to get agents' });
+  }
+});
+
+router.post('/ai-ops/insights', async (req, res) => {
+  try {
+    const { metrics, timeframe } = req.body;
+    const response = await aiOpsSupervisor.generatePlatformInsights(metrics, timeframe);
+    res.json({ success: true, data: response, supervisor: 'SpiralAIOpsSupervisor' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Platform insights generation failed' });
+  }
+});
+
+// Agent capabilities endpoint
+router.get('/capabilities', async (req, res) => {
+  try {
+    const capabilities = {
+      supervisor: aiOpsSupervisor.getCapabilities(),
+      agents: {
+        retailerOnboard: retailerAgent.getCapabilities(),
+        productEntry: productAgent.getCapabilities(),
+        shopperAssist: shopperAssistAgent.getCapabilities(),
+        wishlist: wishlistAgent.getCapabilities(),
+        imageSearch: imageSearchAgent.getCapabilities(),
+        mallDirectory: mallDirectoryAgent.getCapabilities(),
+        adminAudit: adminAuditAgent.getCapabilities()
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: capabilities,
+      totalAgents: Object.keys(capabilities.agents).length,
+      platform: 'SPIRAL AI Ops System'
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to get capabilities' });
+  }
 });
 
 export default router;
