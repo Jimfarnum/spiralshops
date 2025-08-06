@@ -73,6 +73,7 @@ import LoyaltyProgramPage from "@/pages/LoyaltyProgramPage";
 import DeliveryOptionsPage from "@/pages/DeliveryOptionsPage";
 import RetailerProfilePage from "@/pages/RetailerProfilePage";
 import SEOLandingRoute from "@/pages/SEOLandingRoute";
+import AIAgentsPage from "@/pages/AIAgentsPage";
 import SearchResults from "@/pages/SearchResults";
 import CartRestoreNotification from "@/components/cart-restore-notification";
 import ShareReminder from "@/components/share-reminder";
@@ -492,6 +493,7 @@ function Router() {
       <Route path="/complete-functionality-test" component={CompleteFunctionalityTest} />
       <Route path="/code-continuity-test" component={CodeContinuityTest} />
       <Route path="/upgrade-success" component={UpgradeSuccess} />
+      <Route path="/ai-agents" component={AIAgentsPage} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -44,7 +44,7 @@ export class SpiralAIOpsSupervisor {
       Provide a coordination strategy and agent assignments.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Coordinate agents to accomplish: ${task}` }
@@ -100,7 +100,7 @@ export class SpiralAIOpsSupervisor {
       - Strategic growth suggestions`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "Generate strategic platform insights" }
@@ -144,7 +144,7 @@ export class SpiralAIOpsSupervisor {
       - Performance bottleneck resolution`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "How can we optimize AI agent performance?" }

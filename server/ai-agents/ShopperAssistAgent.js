@@ -34,7 +34,7 @@ export class ShopperAssistAgent {
       Context: ${JSON.stringify(context)}`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: query }
@@ -73,7 +73,7 @@ export class ShopperAssistAgent {
       Provide helpful product suggestions and shopping tips.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Help me find: ${searchQuery}` }

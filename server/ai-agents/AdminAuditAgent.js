@@ -31,7 +31,7 @@ export class AdminAuditAgent {
       Timeframe: ${timeframe}`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "Analyze the platform performance and provide insights" }
@@ -71,7 +71,7 @@ export class AdminAuditAgent {
       Provide insights on user engagement, preferences, and optimization opportunities.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "What insights can you derive from this user behavior data?" }
@@ -107,7 +107,7 @@ export class AdminAuditAgent {
       Suggest strategies to increase revenue and improve profitability.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "How can we optimize revenue based on this data?" }
@@ -143,7 +143,7 @@ export class AdminAuditAgent {
       Assess security posture and recommend improvements.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "Assess the security status and provide recommendations" }

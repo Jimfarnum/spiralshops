@@ -30,7 +30,7 @@ export class ImageSearchAgent {
       Context: ${JSON.stringify(searchContext)}`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4-vision-preview",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { 
@@ -81,7 +81,7 @@ export class ImageSearchAgent {
       Suggest similar items and where to find them locally.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Find similar products to: ${productDescription}` }
@@ -116,7 +116,7 @@ export class ImageSearchAgent {
       Provide 5-10 specific search terms that would help find this product.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "What search terms would help find this product?" }

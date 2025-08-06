@@ -31,7 +31,7 @@ export class WishlistAgent {
       Preferences: ${JSON.stringify(preferences)}`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "Help me organize my wishlist for optimal shopping" }
@@ -72,7 +72,7 @@ export class WishlistAgent {
       Items: ${JSON.stringify(items)}`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "When might these items go on sale?" }
@@ -107,7 +107,7 @@ export class WishlistAgent {
       Provide thoughtful gift suggestions with reasoning.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `What would make a great gift for this occasion?` }

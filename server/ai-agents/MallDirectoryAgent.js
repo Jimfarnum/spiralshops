@@ -31,7 +31,7 @@ export class MallDirectoryAgent {
       Preferences: ${JSON.stringify(preferences)}`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "Help me plan the most efficient shopping route" }
@@ -69,7 +69,7 @@ export class MallDirectoryAgent {
       Suggest stores that match their interests and explain why they'd enjoy each one.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "What stores should I check out based on my interests?" }
@@ -105,7 +105,7 @@ export class MallDirectoryAgent {
       Suggest events, sales, and special activities happening now or soon.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: "What events and promotions are happening at the mall?" }
@@ -142,7 +142,7 @@ export class MallDirectoryAgent {
       Give clear, simple directions with landmarks.`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `How do I get from ${from} to ${to}?` }
