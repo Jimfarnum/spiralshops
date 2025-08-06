@@ -65,8 +65,9 @@ export const wishlistAlertRoutes = {
     }
   },
 
-  // Get shopper's wishlist items
+  // Get shopper's wishlist items - SPIRAL Standard Response Format
   getWishlistItems: (req, res) => {
+    const startTime = Date.now();
     try {
       const { shopperId } = req.params;
       
@@ -83,13 +84,24 @@ export const wishlistAlertRoutes = {
 
       res.json({
         success: true,
-        wishlistItems: shopperWishlist,
-        totalItems: shopperWishlist.length
+        data: {
+          wishlistItems: shopperWishlist,
+          totalItems: shopperWishlist.length
+        },
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: null
       });
 
     } catch (error) {
       console.error('Get wishlist items error:', error);
-      res.status(500).json({ error: 'Failed to retrieve wishlist items' });
+      res.status(500).json({
+        success: false,
+        data: null,
+        duration: `${Date.now() - startTime}ms`,
+        timestamp: Date.now(),
+        error: 'Failed to retrieve wishlist items'
+      });
     }
   },
 

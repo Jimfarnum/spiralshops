@@ -609,31 +609,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/stores", async (req, res) => {
-    try {
-      const { largeRetailer } = req.query;
-      
-      // Add caching and performance optimization
-      res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
-      
-      let stores = await storage.getStores();
-      
-      // Filter by large retailer status if requested
-      if (largeRetailer === 'true') {
-        stores = stores.filter(store => store.isLargeRetailer === true);
-      } else if (largeRetailer === 'false') {
-        stores = stores.filter(store => store.isLargeRetailer !== true);
-      }
-      
-      // Limit response size for better performance
-      const limitedStores = stores.slice(0, 20);
-      
-      res.json(limitedStores);
-    } catch (error) {
-      console.error("Error fetching stores:", error);
-      res.status(500).json({ message: "Failed to fetch stores" });
+  // Get stores list - SPIRAL Standard Response Format
+  app.get("/api/stores", asyncHandler(async (req, res) => {
+    const { largeRetailer } = req.query;
+    
+    // Add caching and performance optimization
+    res.set('Cache-Control', 'public, max-age=300'); // 5 minute cache
+    
+    let stores = await storage.getStores();
+    
+    // Filter by large retailer status if requested
+    if (largeRetailer === 'true') {
+      stores = stores.filter(store => store.isLargeRetailer === true);
+    } else if (largeRetailer === 'false') {
+      stores = stores.filter(store => store.isLargeRetailer !== true);
     }
-  });
+    
+    // Limit response size for better performance
+    const limitedStores = stores.slice(0, 20);
+    
+    res.standard({
+      stores: limitedStores,
+      total: limitedStores.length,
+      filtered: !!largeRetailer
+    });
+  }));
 
   app.get("/api/stores/search", async (req, res) => {
     const startTime = Date.now();

@@ -1,16 +1,16 @@
 {
-  "timestamp": "2025-08-06T16:41:10.272Z",
+  "timestamp": "2025-08-06T17:05:18.001Z",
   "summary": {
     "totalEndpoints": 12,
-    "totalStandardized": 5,
+    "totalStandardized": 6,
     "totalWorking": 8,
-    "standardizationPercentage": 42,
+    "standardizationPercentage": 50,
     "workingPercentage": 67
   },
   "categories": {
     "Authentication": {
       "total": 3,
-      "standardized": 2,
+      "standardized": 3,
       "working": 3
     },
     "Retailers": {
@@ -59,7 +59,7 @@
       "success": true,
       "hasStandardFormat": true,
       "duration": "0ms",
-      "timestamp": 1754498467392,
+      "timestamp": 1754499917499,
       "responseKeys": [
         "success",
         "data",
@@ -79,7 +79,7 @@
       "success": true,
       "hasStandardFormat": true,
       "duration": "0ms",
-      "timestamp": 1754498467424,
+      "timestamp": 1754499917529,
       "responseKeys": [
         "success",
         "data",
@@ -96,15 +96,19 @@
       "category": "Authentication",
       "description": "Social handle availability check",
       "status": 200,
-      "success": false,
-      "hasStandardFormat": false,
-      "duration": "N/A",
-      "timestamp": "N/A",
+      "success": true,
+      "hasStandardFormat": true,
+      "duration": "1ms",
+      "timestamp": 1754499917534,
       "responseKeys": [
-        "available"
+        "success",
+        "data",
+        "duration",
+        "timestamp",
+        "error"
       ],
-      "dataType": "null",
-      "errorPresent": false
+      "dataType": "object",
+      "errorPresent": true
     },
     {
       "endpoint": "/api/retailers",
@@ -114,8 +118,8 @@
       "status": 200,
       "success": true,
       "hasStandardFormat": true,
-      "duration": "2624ms",
-      "timestamp": 1754498470057,
+      "duration": "222ms",
+      "timestamp": 1754499917766,
       "responseKeys": [
         "success",
         "data",
@@ -207,8 +211,8 @@
       "status": 200,
       "success": true,
       "hasStandardFormat": true,
-      "duration": "79ms",
-      "timestamp": 1754498470183,
+      "duration": "73ms",
+      "timestamp": 1754499917901,
       "responseKeys": [
         "success",
         "data",
@@ -228,7 +232,7 @@
       "success": true,
       "hasStandardFormat": true,
       "duration": "0ms",
-      "timestamp": 1754498470186,
+      "timestamp": 1754499917906,
       "responseKeys": [
         "success",
         "data",
@@ -260,10 +264,6 @@
   ],
   "recommendations": {
     "needsStandardization": [
-      {
-        "endpoint": "/api/auth/check-social-handle?handle=testhandle",
-        "category": "Authentication"
-      },
       {
         "endpoint": "/api/wishlist/items?userId=1",
         "category": "Wishlist"
