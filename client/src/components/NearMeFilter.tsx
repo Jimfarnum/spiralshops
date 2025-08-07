@@ -31,7 +31,8 @@ export default function NearMeFilter({
     { value: 10, label: '10 miles' },
     { value: 15, label: '15 miles' },
     { value: 25, label: '25 miles' },
-    { value: 50, label: '50 miles' }
+    { value: 50, label: '50 miles' },
+    { value: -1, label: 'All US Stores' }
   ];
 
   const handleLocationUpdate = (coordinates: { lat: number; lng: number }) => {
@@ -66,7 +67,7 @@ export default function NearMeFilter({
         {isActive ? (
           <div className="flex items-center gap-2">
             <Badge className="bg-teal-100 text-teal-800">
-              Within {radius} miles
+              {radius === -1 ? 'All US Stores' : `Within ${radius} miles`}
             </Badge>
             <Button size="sm" variant="ghost" onClick={clearFilter}>
               <X className="w-3 h-3" />
@@ -119,26 +120,28 @@ export default function NearMeFilter({
             <div className="space-y-3">
               <label className="text-sm font-medium">Search Radius</label>
               
-              {/* Slider for radius */}
-              <div className="space-y-2">
-                <Slider
-                  value={[radius]}
-                  onValueChange={(value) => handleRadiusChange(value[0])}
-                  max={50}
-                  min={1}
-                  step={1}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>1 mile</span>
-                  <span className="font-medium">{radius} miles</span>
-                  <span>50 miles</span>
+              {/* Slider for radius (only show if not "All" mode) */}
+              {radius !== -1 && (
+                <div className="space-y-2">
+                  <Slider
+                    value={[radius]}
+                    onValueChange={(value) => handleRadiusChange(value[0])}
+                    max={50}
+                    min={1}
+                    step={1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>1 mile</span>
+                    <span className="font-medium">{radius} miles</span>
+                    <span>50 miles</span>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Quick select buttons */}
-              <div className="grid grid-cols-3 gap-2">
-                {radiusOptions.slice(0, 6).map((option) => (
+              <div className="grid grid-cols-2 gap-2">
+                {radiusOptions.map((option) => (
                   <Button
                     key={option.value}
                     variant={radius === option.value ? 'default' : 'outline'}
@@ -154,7 +157,10 @@ export default function NearMeFilter({
 
             <div className="pt-2 border-t">
               <p className="text-xs text-gray-500">
-                Showing businesses within {radius} miles of your location
+                {radius === -1 
+                  ? 'Showing all brick-and-mortar stores across the continental US'
+                  : `Showing businesses within ${radius} miles of your location`
+                }
               </p>
             </div>
           </div>

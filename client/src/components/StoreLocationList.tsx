@@ -8,7 +8,7 @@ import { getDistance, formatDistance, getDirectionsUrl } from '@/utils/getDistan
 import { useLocation } from '@/hooks/useLocation';
 import NearMeFilter from '@/components/NearMeFilter';
 import LocationButton from '@/components/LocationButton';
-import { MapPin, Navigation, Search, Filter, Star, Clock, Phone } from 'lucide-react';
+import { MapPin, Navigation, Search, Filter, Star, Clock, Phone, Store } from 'lucide-react';
 
 interface Store {
   id: string;
@@ -75,8 +75,8 @@ export default function StoreLocationList({
       );
     }
 
-    // Apply radius filter if location is available
-    if (userLocation) {
+    // Apply radius filter if location is available and not "All" mode
+    if (userLocation && radiusFilter !== -1) {
       processedStores = processedStores.filter(store => 
         store.distance !== undefined && store.distance <= radiusFilter
       );
@@ -180,6 +180,16 @@ export default function StoreLocationList({
                   <option value="rating">Sort by Rating</option>
                   <option value="name">Sort by Name</option>
                 </select>
+                
+                {/* All US Stores Quick Toggle */}
+                <Button
+                  variant={radiusFilter === -1 ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setRadiusFilter(radiusFilter === -1 ? defaultRadius : -1)}
+                  className="text-xs"
+                >
+                  {radiusFilter === -1 ? 'All US Stores' : 'Show All US'}
+                </Button>
               </div>
             )}
           </CardContent>
@@ -315,7 +325,7 @@ export default function StoreLocationList({
       </div>
 
       {/* Location Permission Helper */}
-      {!userLocation && filteredAndSortedStores.length > 0 && (
+      {!userLocation && filteredAndSortedStores.length > 0 && radiusFilter !== -1 && (
         <Card className="bg-blue-50 border-blue-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -333,6 +343,32 @@ export default function StoreLocationList({
                 variant="default"
                 size="sm"
               />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* All US Stores Info */}
+      {radiusFilter === -1 && (
+        <Card className="bg-gradient-to-r from-teal-50 to-blue-50 border-teal-200">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Store className="w-5 h-5 text-teal-600" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-teal-900">
+                  Showing all brick-and-mortar retail stores across the continental US
+                </p>
+                <p className="text-xs text-teal-700">
+                  SPIRAL connects you with local businesses from coast to coast
+                </p>
+              </div>
+              {!userLocation && (
+                <LocationButton
+                  onLocationUpdate={setUserLocation}
+                  variant="outline"
+                  size="sm"
+                />
+              )}
             </div>
           </CardContent>
         </Card>

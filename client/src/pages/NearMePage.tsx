@@ -122,9 +122,9 @@ export default function NearMePage() {
           <CardContent className="p-4 text-center">
             <Navigation className="w-8 h-8 text-purple-500 mx-auto mb-2" />
             <p className="text-2xl font-bold">
-              {userLocation ? `${radius} mi` : '-'}
+              {radius === -1 ? 'All US' : userLocation ? `${radius} mi` : '-'}
             </p>
-            <p className="text-sm text-gray-600">Search Radius</p>
+            <p className="text-sm text-gray-600">Search Scope</p>
           </CardContent>
         </Card>
       </div>
