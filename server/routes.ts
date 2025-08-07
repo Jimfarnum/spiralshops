@@ -3604,6 +3604,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   try {
     const { default: visualSearchRoutes } = await import('./api/visual-search.js');
     app.use("/api/visual-search", visualSearchRoutes);
+    
+    // Live test routes for mobile and AI features
+    const { default: liveTestRoutes } = await import('./routes/live-test.js');
+    app.use("/api", liveTestRoutes);
     console.log('✅ Visual search routes loaded successfully');
   } catch (err) {
     console.error('❌ Failed to load visual search routes:', err.message);

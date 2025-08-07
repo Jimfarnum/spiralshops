@@ -86,6 +86,7 @@ import ReferralSystemPage from "@/pages/ReferralSystemPage";
 import NearMePage from "@/pages/NearMePage";
 import ImageSearchPage from "@/pages/ImageSearchPage";
 import AdvancedImageSearchPage from "./pages/AdvancedImageSearchPage";
+import ShopperAIImagePage from "@/pages/ShopperAIImagePage";
 import AIAgentsPage from "@/pages/AIAgentsPage";
 import SearchResults from "@/pages/SearchResults";
 import CartRestoreNotification from "@/components/cart-restore-notification";
@@ -439,6 +440,7 @@ function Router() {
       <Route path="/near-me" component={NearMePage} />
       <Route path="/image-search" component={ImageSearchPage} />
       <Route path="/advanced-image-search" component={AdvancedImageSearchPage} />
+      <Route path="/shopper-ai-image" component={ShopperAIImagePage} />
       <Route path="/ai-shopping" component={AIShoppingPage} />
       <Route path="/fulfillment-demo" component={FulfillmentDemo} />
       <Route path="/notifications-demo" component={NotificationsDemo} />
