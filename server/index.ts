@@ -65,6 +65,10 @@ app.use((req, res, next) => {
   // Register AI Ops dashboard routes
   app.use("/api", aiOpsDashboardRoutes);
   
+  // Register Beta Testing routes
+  const betaTestingRoutes = await import('./routes/betaTesting.js');
+  app.use("/api/beta", betaTestingRoutes.default);
+  
   const server = await registerRoutes(app);
 
   // Initialize AI Ops GPT System

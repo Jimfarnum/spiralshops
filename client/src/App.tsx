@@ -73,6 +73,7 @@ import LoyaltyProgramPage from "@/pages/LoyaltyProgramPage";
 import DeliveryOptionsPage from "@/pages/DeliveryOptionsPage";
 import RetailerProfilePage from "@/pages/RetailerProfilePage";
 import SEOLandingRoute from "@/pages/SEOLandingRoute";
+import BetaProgram from "@/pages/BetaProgram";
 import RetailerOnboardAgentDemo from "@/pages/RetailerOnboardAgentDemo";
 import StripeConnectSuccess from "@/pages/retailer/onboarding/success";
 import ProductEntryAgentDemo from "@/pages/ProductEntryAgentDemo";
