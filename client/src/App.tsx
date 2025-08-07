@@ -74,6 +74,7 @@ import DeliveryOptionsPage from "@/pages/DeliveryOptionsPage";
 import RetailerProfilePage from "@/pages/RetailerProfilePage";
 import SEOLandingRoute from "@/pages/SEOLandingRoute";
 import BetaProgram from "@/pages/BetaProgram";
+import StripeTestPage from "@/pages/StripeTestPage";
 import RetailerOnboardAgentDemo from "@/pages/RetailerOnboardAgentDemo";
 import StripeConnectSuccess from "@/pages/retailer/onboarding/success";
 import ProductEntryAgentDemo from "@/pages/ProductEntryAgentDemo";
@@ -525,6 +526,8 @@ function Router() {
       <Route path="/code-continuity-test" component={CodeContinuityTest} />
       <Route path="/upgrade-success" component={UpgradeSuccess} />
       <Route path="/ai-agents" component={AIAgentsPage} />
+      <Route path="/beta" component={BetaProgram} />
+      <Route path="/stripe-test" component={StripeTestPage} />
       <Route component={NotFound} />
     </Switch>
   );
