@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 
 if (!process.env.STRIPE_SECRET_KEY) {
-  console.warn('STRIPE_SECRET_KEY is not set, using placeholder');
+  console.warn('⚠️ STRIPE_SECRET_KEY is not set, payment processing will use mock responses');
 }
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {

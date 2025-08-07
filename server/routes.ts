@@ -23,7 +23,8 @@ import { registerReturnRoutes } from "./returnRoutes";
 import { recommendationEngine } from "./smartRecommendation";
 import followRoutes from "./followRoutes";
 import { registerFeature17Routes } from "./feature17Routes";
-// Payment routes will be imported dynamically
+// Payment routes and checkout fix
+import { registerCheckoutFixRoutes } from "./checkoutFix";
 import aiAnalyticsRoutes from "./aiAnalyticsRoutes";
 // Subscription routes will be imported dynamically
 import { 
@@ -1865,6 +1866,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log('✅ Retailer data integration routes loaded successfully');
   } catch (err) {
     console.error('❌ Failed to load retailer data integration routes:', err.message);
+  }
+
+  // Register Checkout Fix Routes (Priority - Fix payment processing error)
+  try {
+    registerCheckoutFixRoutes(app);
+    console.log('✅ Enhanced checkout fix routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load checkout fix routes:', err.message);
   }
 
   // Register Stripe Payment Routes
