@@ -66,7 +66,7 @@ export default function StripeConnectSuccess() {
                 <p className="text-sm text-gray-600 mb-4">
                   Add your products to start selling on SPIRAL
                 </p>
-                <Button className="w-full" onClick={() => window.location.href = '/inventory-dashboard'}>
+                <Button className="w-full" onClick={() => window.location.href = '/product-entry-agent'}>
                   Upload Products
                 </Button>
               </CardContent>

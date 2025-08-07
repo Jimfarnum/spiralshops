@@ -180,17 +180,40 @@ export default function RetailerOnboardAgent() {
   };
 
   const handleInventoryUpload = (method: string) => {
-    addAgentMessage(
-      `✅ Perfect! You've chosen to ${method}.\n\n` +
-      `🎉 Congratulations! Your SPIRAL onboarding is nearly complete.\n\n` +
-      `✅ Step 5: You're all set!\n\n` +
-      `Your store will be live on SPIRAL once our team completes the verification process (usually within 24 hours).\n\n` +
-      `Next steps:\n` +
-      `• Check your email for verification updates\n` +
-      `• Access your retailer dashboard\n` +
-      `• Start connecting with SPIRAL customers\n\n` +
-      `Welcome to the SPIRAL family! 🌟`
-    );
+    if (method === 'upload CSV file') {
+      addAgentMessage(
+        `✅ Great choice! CSV upload is perfect for adding multiple products quickly.\n\n` +
+        `🎉 Congratulations! Your SPIRAL onboarding is complete.\n\n` +
+        `Your store will be live on SPIRAL once our team completes the verification process (usually within 24 hours).\n\n` +
+        `Next steps:\n` +
+        `• Upload your product catalog\n` +
+        `• Access your retailer dashboard\n` +
+        `• Start connecting with SPIRAL customers\n\n` +
+        `Welcome to the SPIRAL family! 🌟`
+      );
+    } else if (method === 'add products manually with ProductEntryAgent') {
+      addAgentMessage(
+        `✅ Perfect! The ProductEntryAgent will help you create optimized product listings.\n\n` +
+        `🚀 Redirecting you to ProductEntryAgent...\n\n` +
+        `The AI will guide you through:\n` +
+        `• Creating detailed product descriptions\n` +
+        `• Optimizing categories and tags\n` +
+        `• Setting competitive pricing\n` +
+        `• Publishing to SPIRAL marketplace\n\n` +
+        `Your onboarding is complete! Let's add your first product.`
+      );
+      
+      setTimeout(() => {
+        window.location.href = '/product-entry-agent';
+      }, 3000);
+    } else {
+      addAgentMessage(
+        `✅ Excellent! We'll help you integrate your existing ${method} system.\n\n` +
+        `🎉 Your SPIRAL onboarding is complete!\n\n` +
+        `Our integration team will contact you within 24 hours to set up your ${method} sync.\n\n` +
+        `Welcome to the SPIRAL family! 🌟`
+      );
+    }
     setCurrentStep(5);
   };
 
@@ -475,19 +498,19 @@ export default function RetailerOnboardAgent() {
                 </CardContent>
               </Card>
               
-              <Card className="cursor-pointer hover:shadow-lg transition-all" onClick={() => handleInventoryUpload('add products manually')}>
+              <Card className="cursor-pointer hover:shadow-lg transition-all" onClick={() => handleInventoryUpload('add products manually with ProductEntryAgent')}>
                 <CardContent className="p-6 text-center">
                   <Store className="w-8 h-8 text-teal-500 mx-auto mb-3" />
-                  <h3 className="font-semibold mb-2">Manual Entry</h3>
-                  <p className="text-sm text-gray-600">Add products one by one with AI assistance</p>
+                  <h3 className="font-semibold mb-2">AI Product Entry</h3>
+                  <p className="text-sm text-gray-600">Add products with AI-powered assistance</p>
                 </CardContent>
               </Card>
               
-              <Card className="cursor-pointer hover:shadow-lg transition-all" onClick={() => handleInventoryUpload('connect existing systems')}>
+              <Card className="cursor-pointer hover:shadow-lg transition-all" onClick={() => handleInventoryUpload('connect existing Shopify store')}>
                 <CardContent className="p-6 text-center">
                   <Zap className="w-8 h-8 text-teal-500 mx-auto mb-3" />
-                  <h3 className="font-semibold mb-2">System Integration</h3>
-                  <p className="text-sm text-gray-600">Connect Shopify, Square, or other platforms</p>
+                  <h3 className="font-semibold mb-2">Shopify Integration</h3>
+                  <p className="text-sm text-gray-600">Connect your existing Shopify store</p>
                 </CardContent>
               </Card>
             </div>
