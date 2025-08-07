@@ -1,5 +1,6 @@
 import express from 'express';
 import { testStripePayment, validateStripeConfiguration, runCompletePaymentTest } from '../stripeTest.js';
+import { simpleStripeTest, createTestPaymentIntent } from '../stripeSimpleTest.js';
 
 const router = express.Router();
 
@@ -66,6 +67,52 @@ router.post('/complete-test', async (req, res) => {
     res.status(500).json({
       success: false,
       error: error.message
+    });
+  }
+});
+
+// Simple connectivity test
+router.get('/simple-test', async (req, res) => {
+  try {
+    const result = await simpleStripeTest();
+    
+    res.json({
+      success: result.success,
+      message: result.message,
+      data: result.data,
+      error: result.error,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'Test execution failed',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Create test payment intent
+router.post('/create-payment-intent', async (req, res) => {
+  try {
+    const result = await createTestPaymentIntent();
+    
+    res.json({
+      success: result.success,
+      payment_intent: result.paymentIntent,
+      client_secret: result.clientSecret,
+      error: result.error,
+      ready_for_frontend: result.success && !!result.clientSecret,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
     });
   }
 });

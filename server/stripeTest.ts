@@ -1,8 +1,14 @@
 import Stripe from 'stripe';
 
+// Validate Stripe secret key exists
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('STRIPE_SECRET_KEY environment variable is required');
+}
+
 // Initialize Stripe with secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
+  timeout: 10000, // 10 second timeout
 });
 
 export async function testStripePayment(amount: number = 100): Promise<{
@@ -51,26 +57,25 @@ export async function validateStripeConfiguration(): Promise<{
   try {
     console.log('🔍 Validating Stripe configuration...');
     
-    // Test account retrieval
-    const account = await stripe.accounts.retrieve();
+    // Test simple balance retrieval instead of account (more reliable)
+    const balance = await stripe.balance.retrieve();
     
     // Check publishable key availability
     const hasPublishableKey = !!process.env.STRIPE_PUBLISHABLE_KEY;
     const hasSecretKey = !!process.env.STRIPE_SECRET_KEY;
     
     const configuration = {
-      account_id: account.id,
-      charges_enabled: account.charges_enabled,
-      payouts_enabled: account.payouts_enabled,
-      details_submitted: account.details_submitted,
+      balance_available: balance.available,
+      balance_pending: balance.pending,
       has_publishable_key: hasPublishableKey,
       has_secret_key: hasSecretKey,
       publishable_key_prefix: hasPublishableKey ? 
         process.env.STRIPE_PUBLISHABLE_KEY!.substring(0, 12) + '...' : 
         'Not configured',
-      country: account.country,
-      default_currency: account.default_currency,
-      business_type: account.business_type
+      secret_key_prefix: hasSecretKey ?
+        process.env.STRIPE_SECRET_KEY!.substring(0, 12) + '...' :
+        'Not configured',
+      api_connection: 'successful'
     };
     
     console.log('✅ Stripe configuration validated:', configuration);
