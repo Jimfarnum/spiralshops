@@ -69,6 +69,10 @@ app.use((req, res, next) => {
   const betaTestingRoutes = await import('./routes/betaTesting.js');
   app.use("/api/beta", betaTestingRoutes.default);
   
+  // Register Stripe Testing routes
+  const stripeTestRoutes = await import('./routes/stripeTest.js');
+  app.use("/api/stripe-test", stripeTestRoutes.default);
+  
   const server = await registerRoutes(app);
 
   // Initialize AI Ops GPT System
