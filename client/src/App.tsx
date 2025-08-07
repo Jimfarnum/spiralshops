@@ -73,6 +73,7 @@ import LoyaltyProgramPage from "@/pages/LoyaltyProgramPage";
 import DeliveryOptionsPage from "@/pages/DeliveryOptionsPage";
 import RetailerProfilePage from "@/pages/RetailerProfilePage";
 import SEOLandingRoute from "@/pages/SEOLandingRoute";
+import RetailerOnboardAgentDemo from "@/pages/RetailerOnboardAgentDemo";
 import AIAgentsPage from "@/pages/AIAgentsPage";
 import SearchResults from "@/pages/SearchResults";
 import CartRestoreNotification from "@/components/cart-restore-notification";
@@ -412,6 +413,7 @@ function Router() {
       <Route path="/feature-improvement-hub" component={FeatureImprovementHub} />
       <Route path="/comprehensive-feature-test" component={ComprehensiveFeatureTest} />
       <Route path="/retailer-onboarding-demo" component={RetailerOnboardingDemo} />
+      <Route path="/retailer-onboard-agent" component={RetailerOnboardAgentDemo} />
       <Route path="/fulfillment-demo" component={FulfillmentDemo} />
       <Route path="/notifications-demo" component={NotificationsDemo} />
       <Route path="/live-support-demo" component={LiveSupportDemo} />

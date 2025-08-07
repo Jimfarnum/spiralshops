@@ -45,6 +45,13 @@ export const retailers = pgTable("retailers", {
   description: text("description"),
   zipCode: text("zip_code").notNull(),
   approved: boolean("approved").default(false),
+  // Enhanced onboarding fields
+  plan: text("plan").notNull().default("free"), // 'free', 'silver', 'gold'
+  mallName: text("mall_name"), // Optional mall association
+  stripeAccountId: text("stripe_account_id"), // Stripe Connect account
+  onboardingStatus: text("onboarding_status").default("pending"), // 'pending', 'info_collected', 'payment_setup', 'completed'
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // AI Retailer Applications table

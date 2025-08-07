@@ -2176,6 +2176,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load AI retailer onboarding routes:', err.message);
   }
 
+  // Enhanced Retailer Onboard API routes
+  try {
+    const { default: retailerOnboardRoutes } = await import('./api/retailer-onboard.js');
+    app.use('/api/retailer-onboard', retailerOnboardRoutes);
+    console.log('✅ Enhanced retailer onboard routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load retailer onboard routes:', err.message);
+  }
+
   // Inventory Management Routes
   try {
     const inventoryRoutes = await import('./routes/inventoryRoutes.js');
