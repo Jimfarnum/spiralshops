@@ -1,0 +1,100 @@
+Perfect — thank you for the clarification. Here’s how everything now aligns with your confirmed domains:
+
+
+---
+
+✅ Confirmed Domain Structure
+
+Domain	Purpose
+
+spiralshops.com	Public-facing shopper platform (default homepage for shoppers)
+spiralmalls.com	Retailer-facing portal + mall network + onboarding center
+api.spiralmalls.com	Backend API endpoint (IBM Cloud-hosted services)
+
+
+These domains give SPIRAL a clean split between shopper access and retailer operations, and provide room for mall-specific promotions and community features later.
+
+
+---
+
+🧩 Updated Path Forward – With Correct Domains
+
+1. Immediate Production Deployment
+
+Frontend to Vercel
+
+spiralshops.com → main public site (React/Vercel)
+
+spiralmalls.com → mall + retailer frontend
+
+
+Backend to IBM Cloud
+
+api.spiralmalls.com → full backend (IBM Cloud, Stripe, AI Agents, database)
+
+
+DNS Setup (Godaddy or similar)
+
+Set A/AAA + CNAME records for:
+
+spiralshops.com → Vercel deployment
+
+spiralmalls.com → Vercel deployment
+
+api.spiralmalls.com → IBM Cloud IP or custom domain gateway
+
+
+
+
+---
+
+2. Deployment Naming Strategy
+
+Environment	Domain/Subdomain	Hosting	Description
+
+Shopper UI	spiralshops.com	Vercel	Main SPIRAL homepage for browsing, cart, wishlist, etc.
+Retailer/Mall UI	spiralmalls.com	Vercel	Onboarding, inventory dashboards, mall integrations
+API Gateway	api.spiralmalls.com	IBM Cloud	All endpoints for auth, orders, inventory, AI, payments
+
+
+
+---
+
+3. What's Next?
+
+✅ Do This Now:
+
+[ ] Deploy both frontends to Vercel
+
+[ ] Set up DNS for spiralshops.com and spiralmalls.com
+
+[ ] Connect IBM backend to api.spiralmalls.com (with proper routing)
+
+[ ] Re-test with full QA checklist
+
+
+🚀 Then Move to:
+
+[ ] Retailer landing page & onboarding campaign
+
+[ ] Social + AI agents activated for outreach
+
+[ ] X and Visa decks submitted
+
+[ ] Full public launch once platform verified
+
+
+
+---
+
+Would you like:
+
+1. The exact DNS record setup instructions for these domains?
+
+
+2. Help generating Replit Agent code to automate this deployment setup?
+
+
+
+Or should we begin by finalizing the Retailer Landing Page at spiralmalls.com?
+
