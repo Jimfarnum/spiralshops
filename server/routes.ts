@@ -349,6 +349,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ success: true, data: logs });
   });
 
+  // Wishlist API Routes
+  app.get('/api/wishlist', (req, res) => {
+    const wishlistItems = [
+      {
+        id: '1',
+        productId: 'prod_1',
+        name: 'Wireless Bluetooth Headphones',
+        price: 89.99,
+        originalPrice: 129.99,
+        image: '/api/placeholder/300/300',
+        category: 'Electronics',
+        retailer: 'Tech Hub Electronics',
+        inStock: true,
+        priceDropAlert: true,
+        restockAlert: false,
+        spiralsBonus: 150,
+        addedAt: '2025-01-05T10:00:00Z',
+        lastPriceCheck: '2025-01-07T12:00:00Z',
+        alertsTriggered: 1
+      },
+      {
+        id: '2',
+        productId: 'prod_2',
+        name: 'Organic Coffee Beans - Dark Roast',
+        price: 24.99,
+        originalPrice: 24.99,
+        image: '/api/placeholder/300/300',
+        category: 'Food & Beverages',
+        retailer: 'Local Coffee Roasters',
+        inStock: false,
+        priceDropAlert: false,
+        restockAlert: true,
+        addedAt: '2025-01-06T14:30:00Z',
+        lastPriceCheck: '2025-01-07T11:45:00Z',
+        alertsTriggered: 0
+      },
+      {
+        id: '3',
+        productId: 'prod_3',
+        name: 'Summer Fashion Dress',
+        price: 79.99,
+        originalPrice: 99.99,
+        image: '/api/placeholder/300/300',
+        category: 'Fashion',
+        retailer: 'Fashion Forward Boutique',
+        inStock: true,
+        priceDropAlert: true,
+        restockAlert: true,
+        spiralsBonus: 200,
+        addedAt: '2025-01-04T16:20:00Z',
+        lastPriceCheck: '2025-01-07T13:00:00Z',
+        alertsTriggered: 2
+      }
+    ];
+    res.json({ success: true, data: wishlistItems });
+  });
+
+  app.post('/api/wishlist/toggle-alert', (req, res) => {
+    const { itemId, alertType, enabled } = req.body;
+    res.json({ 
+      success: true, 
+      message: `${alertType} ${enabled ? 'enabled' : 'disabled'} for item ${itemId}`,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  app.delete('/api/wishlist/:itemId', (req, res) => {
+    const { itemId } = req.params;
+    res.json({ 
+      success: true, 
+      message: `Item ${itemId} removed from wishlist`,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  app.post('/api/wishlist/add', (req, res) => {
+    const { productId, priceDropAlert = true, restockAlert = false } = req.body;
+    res.json({ 
+      success: true, 
+      message: `Product ${productId} added to wishlist`,
+      itemId: `wish_${Date.now()}`,
+      timestamp: new Date().toISOString()
+    });
+  });
+
   // SPIRAL Progress Tracker API - SPIRAL Standard Response Format
   app.get('/api/admin/progress', spiralProtection.spiralAdminAuth, async (req, res) => {
     try {

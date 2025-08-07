@@ -78,6 +78,8 @@ import StripeConnectSuccess from "@/pages/retailer/onboarding/success";
 import ProductEntryAgentDemo from "@/pages/ProductEntryAgentDemo";
 import RetailerAdminPanel from "@/pages/admin/RetailerAdminPanel";
 import AgentDashboard from "@/pages/admin/AgentDashboard";
+import WishlistPage from "@/pages/WishlistPage";
+import OneClickCheckout from "@/pages/OneClickCheckout";
 import AIAgentsPage from "@/pages/AIAgentsPage";
 import SearchResults from "@/pages/SearchResults";
 import CartRestoreNotification from "@/components/cart-restore-notification";
@@ -422,6 +424,8 @@ function Router() {
       <Route path="/product-entry-agent" component={ProductEntryAgentDemo} />
       <Route path="/admin/retailers" component={RetailerAdminPanel} />
       <Route path="/admin/agents" component={AgentDashboard} />
+      <Route path="/wishlist" component={WishlistPage} />
+      <Route path="/checkout" component={OneClickCheckout} />
       <Route path="/fulfillment-demo" component={FulfillmentDemo} />
       <Route path="/notifications-demo" component={NotificationsDemo} />
       <Route path="/live-support-demo" component={LiveSupportDemo} />
