@@ -3609,5 +3609,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load visual search routes:', err.message);
   }
 
+  // Advanced AI Image Search with Google Cloud Vision & IBM Cloudant
+  try {
+    const { default: advancedImageSearch } = await import('./api/advanced-image-search.js');
+    app.use('/api', advancedImageSearch);
+    console.log('✅ Advanced AI Image Search with Google Cloud Vision loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load Advanced AI Image Search routes:', err.message);
+  }
+
   return httpServer;
 }
