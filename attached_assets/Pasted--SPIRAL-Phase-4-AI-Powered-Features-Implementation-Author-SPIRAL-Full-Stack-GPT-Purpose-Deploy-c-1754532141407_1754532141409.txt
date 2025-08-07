@@ -1,0 +1,75 @@
+/*
+SPIRAL Phase 4 AI-Powered Features Implementation
+Author: SPIRAL Full Stack GPT
+Purpose: Deploy complete image-based shopping and AI assistant experience for SPIRAL
+*/
+
+export default async function handlePhase4AI(req, res) {
+  try {
+    // 1. IMAGE SEARCH INTEGRATION
+    const vision = require("@google-cloud/vision");
+    const client = new vision.ImageAnnotatorClient();
+    const uploadHandler = require("../../utils/imageUploader");
+    const cloudant = require("../../utils/cloudant");
+    const geolib = require("geolib");
+
+    // 2. SHOPPER ASSISTANT AGENT
+    const ShopperAssistAgent = {
+      analyzeQuery: async (imageData, userLocation) => {
+        const [result] = await client.labelDetection(imageData);
+        const labels = result.labelAnnotations.map(l => l.description.toLowerCase());
+        const allProducts = await cloudant.get("products");
+        const matched = allProducts.filter(p => labels.some(l => p.name.toLowerCase().includes(l)));
+        return matched.map(p => ({
+          ...p,
+          distance: geolib.getDistance(userLocation, { latitude: p.lat, longitude: p.lng }) / 1609.34 // miles
+        }));
+      }
+    };
+
+    // 3. API ENDPOINT FOR IMAGE SEARCH
+    if (req.method === "POST" && req.url === "/api/search-by-image") {
+      const imageData = await uploadHandler(req);
+      const userLocation = req.body.location;
+      const matches = await ShopperAssistAgent.analyzeQuery(imageData, userLocation);
+      res.status(200).json({
+        success: true,
+        data: matches.sort((a, b) => a.distance - b.distance),
+        duration: Date.now() - req.startTime,
+        error: null
+      });
+      return;
+    }
+
+    // 4. FRONTEND COMPONENT (React - Dropzone for shopper UI)
+    // Code stub, UI to be rendered client-side
+    /*
+      - Upload box for drag and drop or mobile image selection
+      - GPS permission request + fetch current location
+      - Display search matches sorted by miles
+      - Allow filtering by category, mall, or perks
+      - Add-to-cart or directions options per match
+    */
+
+    // 5. RETAILER ALERTS (Optional)
+    /*
+      On match: notify nearby retailers with stock via Cloudant query
+      + Webhook to retailer dashboard with product_id, match_score, shopper_location
+    */
+
+    res.status(200).json({
+      success: true,
+      data: "Phase 4 AI Image Search System Initialized",
+      duration: Date.now() - req.startTime,
+      error: null
+    });
+  } catch (error) {
+    console.error("AI Phase 4 Error:", error);
+    res.status(500).json({
+      success: false,
+      data: null,
+      duration: Date.now() - req.startTime,
+      error: error.message
+    });
+  }
+}

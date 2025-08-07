@@ -84,6 +84,7 @@ import InvitePage from "@/pages/InvitePage";
 import InviteManagementPage from "@/pages/InviteManagementPage";
 import ReferralSystemPage from "@/pages/ReferralSystemPage";
 import NearMePage from "@/pages/NearMePage";
+import ImageSearchPage from "@/pages/ImageSearchPage";
 import AIAgentsPage from "@/pages/AIAgentsPage";
 import SearchResults from "@/pages/SearchResults";
 import CartRestoreNotification from "@/components/cart-restore-notification";
@@ -259,6 +260,7 @@ import CompleteFunctionalityTest from "@/pages/complete-functionality-test";
 import CodeContinuityTest from "@/pages/code-continuity-test";
 import InviteFriends from "@/pages/invite-friends";
 import UpgradeSuccess from "@/pages/upgrade-success";
+import AIShoppingPage from "@/pages/AIShoppingPage";
 
 
 function Router() {
@@ -434,6 +436,8 @@ function Router() {
       <Route path="/invites" component={InviteManagementPage} />
       <Route path="/referrals" component={ReferralSystemPage} />
       <Route path="/near-me" component={NearMePage} />
+      <Route path="/image-search" component={ImageSearchPage} />
+      <Route path="/ai-shopping" component={AIShoppingPage} />
       <Route path="/fulfillment-demo" component={FulfillmentDemo} />
       <Route path="/notifications-demo" component={NotificationsDemo} />
       <Route path="/live-support-demo" component={LiveSupportDemo} />
