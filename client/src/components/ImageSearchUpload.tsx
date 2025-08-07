@@ -1,9 +1,20 @@
 import React, { useState } from "react";
 
+interface LocationData {
+  latitude: number;
+  longitude: number;
+}
+
+interface SearchResult {
+  name: string;
+  distance: string;
+  directions: string;
+}
+
 export default function ImageSearchUpload() {
-  const [file, setFile] = useState(null);
-  const [results, setResults] = useState([]);
-  const [location, setLocation] = useState(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [location, setLocation] = useState<LocationData | null>(null);
 
   const getLocation = () => {
     navigator.geolocation.getCurrentPosition(
@@ -15,7 +26,7 @@ export default function ImageSearchUpload() {
     );
   };
 
-  const handleDrop = async (e) => {
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const imageFile = e.dataTransfer.files[0];
     setFile(imageFile);
