@@ -2185,6 +2185,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error('❌ Failed to load retailer onboard routes:', err.message);
   }
 
+  // Stripe OAuth callback routes
+  try {
+    const { default: stripeCallbackRoutes } = await import('./api/stripe/callback.js');
+    app.use('/api/stripe', stripeCallbackRoutes);
+    console.log('✅ Stripe OAuth callback routes loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load Stripe callback routes:', err.message);
+  }
+
   // Inventory Management Routes
   try {
     const inventoryRoutes = await import('./routes/inventoryRoutes.js');

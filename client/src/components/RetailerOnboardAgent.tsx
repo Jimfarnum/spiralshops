@@ -161,26 +161,21 @@ export default function RetailerOnboardAgent() {
   };
 
   const handleStripeConnect = () => {
-    // In a real implementation, this would redirect to Stripe Connect OAuth
-    const stripeConnectUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_test&scope=read_write&redirect_uri=${encodeURIComponent(window.location.origin + '/stripe-callback')}`;
+    // Real Stripe Connect OAuth integration
+    const clientId = process.env.VITE_STRIPE_CLIENT_ID || 'ca_test';
+    const redirectUri = encodeURIComponent(`${window.location.origin}/api/stripe/callback`);
+    const stripeConnectUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${clientId}&scope=read_write&redirect_uri=${redirectUri}&state=${Date.now()}`;
     
     addAgentMessage(
       `🔄 Redirecting you to Stripe Connect...\n\n` +
-      `After connecting your Stripe account, you'll be brought back here to continue with inventory upload.`
+      `You'll be redirected to Stripe to securely connect your bank account. ` +
+      `After completing the setup, you'll be brought back to continue with inventory upload.\n\n` +
+      `This is a secure OAuth flow that protects your financial information.`
     );
     
-    // Simulate Stripe Connect completion
+    // Redirect to actual Stripe Connect
     setTimeout(() => {
-      addAgentMessage(
-        `✅ Stripe account connected successfully!\n\n` +
-        `✅ Step 4: Inventory Upload\n\n` +
-        `Now let's add your products to SPIRAL. You can:\n\n` +
-        `• Upload a CSV file with your inventory\n` +
-        `• Add products manually using our ProductEntryAgent\n` +
-        `• Connect existing systems (Shopify, Square POS)\n\n` +
-        `Choose your preferred method below.`
-      );
-      setCurrentStep(4);
+      window.location.href = stripeConnectUrl;
     }, 2000);
   };
 
