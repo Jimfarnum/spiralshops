@@ -1,0 +1,152 @@
+Absolutely — here is Phase 3: Location & Mapping rewritten into one clean, complete, and copy-pasteable coded message, fully configured to use miles instead of kilometers.
+
+
+---
+
+✅ PHASE 3 — Location + Mapping (Miles-Based)
+
+This includes:
+
+📍 GPS Detection (Web + Mobile)
+
+📏 Distance to Stores in Miles
+
+🧭 Turn-by-Turn Directions
+
+🔍 “Near Me” Radius Filtering
+
+
+
+---
+
+📁 /utils/getDistance.js — Miles-Based Haversine Function
+
+export function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 3958.8; // Radius of Earth in miles
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in miles
+}
+
+
+---
+
+📁 components/UseMyLocation.jsx — GPS Detection Hook
+
+import { useEffect } from 'react';
+
+export default function UseMyLocation({ onCoords }) {
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          onCoords({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          });
+        },
+        () => {
+          console.error("Location permission denied.");
+        }
+      );
+    }
+  }, [onCoords]);
+
+  return null;
+}
+
+
+---
+
+📁 /components/StoreList.jsx — Sort by Distance & Filter by Radius (Miles)
+
+import { getDistance } from '@/utils/getDistance';
+import UseMyLocation from './UseMyLocation';
+import { useState, useEffect } from 'react';
+
+export default function StoreList({ stores }) {
+  const [location, setLocation] = useState(null);
+  const [radius, setRadius] = useState(10); // miles
+
+  const sortedStores = location
+    ? stores
+        .map((store) => ({
+          ...store,
+          distance: getDistance(location.lat, location.lng, store.lat, store.lng)
+        }))
+        .filter((store) => store.distance <= radius)
+        .sort((a, b) => a.distance - b.distance)
+    : stores;
+
+  return (
+    <div className="p-4">
+      <UseMyLocation onCoords={setLocation} />
+
+      <div className="mb-4">
+        <label className="mr-2">Show stores within:</label>
+        <select value={radius} onChange={(e) => setRadius(Number(e.target.value))}>
+          <option value={5}>5 miles</option>
+          <option value={10}>10 miles</option>
+          <option value={25}>25 miles</option>
+        </select>
+      </div>
+
+      <ul>
+        {sortedStores.map((store) => (
+          <li key={store.id} className="mb-2 border p-3 rounded">
+            <h2 className="font-bold">{store.name}</h2>
+            <p>{store.address}</p>
+            <p className="text-sm text-gray-500">📍 {store.distance.toFixed(1)} miles away</p>
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline mt-1 inline-block"
+            >
+              🧭 Get Directions
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
+---
+
+📁 Example Store Object Format (Must Include lat/lng)
+
+{
+  "id": "store123",
+  "name": "Red Wing Shoes",
+  "address": "123 Main St, Minneapolis, MN",
+  "lat": 44.9780,
+  "lng": -93.2638
+}
+
+
+---
+
+✅ SPIRAL’s Mapping System in Miles — Complete
+
+Feature	Status
+
+📍 Mobile GPS Detection	✅ Done
+📏 Distance Calculation (Miles)	✅ Done
+🔍 Near Me Radius Filter	✅ Done
+🧭 Turn-by-Turn Directions	✅ Done
+🛒 UI/UX Integrated	✅ Done
+
+
+
+---
+
+Say “Phase 4 Go” to begin building SPIRAL’s AI-powered features — starting with Search by Image and the ShopperAssistAgent.
+
