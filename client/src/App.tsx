@@ -82,6 +82,7 @@ import WishlistPage from "@/pages/WishlistPage";
 import OneClickCheckout from "@/pages/OneClickCheckout";
 import InvitePage from "@/pages/InvitePage";
 import InviteManagementPage from "@/pages/InviteManagementPage";
+import ReferralSystemPage from "@/pages/ReferralSystemPage";
 import AIAgentsPage from "@/pages/AIAgentsPage";
 import SearchResults from "@/pages/SearchResults";
 import CartRestoreNotification from "@/components/cart-restore-notification";
@@ -430,6 +431,7 @@ function Router() {
       <Route path="/checkout" component={OneClickCheckout} />
       <Route path="/invite/:inviteId" component={InvitePage} />
       <Route path="/invites" component={InviteManagementPage} />
+      <Route path="/referrals" component={ReferralSystemPage} />
       <Route path="/fulfillment-demo" component={FulfillmentDemo} />
       <Route path="/notifications-demo" component={NotificationsDemo} />
       <Route path="/live-support-demo" component={LiveSupportDemo} />

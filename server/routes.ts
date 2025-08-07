@@ -560,6 +560,122 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Referral System API Routes
+  app.get('/api/referrals/stats', (req, res) => {
+    const mockStats = {
+      totalReferrals: 12,
+      successfulSignups: 8,
+      totalEarned: 450,
+      conversionRate: 66.7,
+      currentTier: 'Silver',
+      nextTierProgress: 65
+    };
+
+    const mockReferrals = [
+      {
+        id: '1',
+        email: 'alice@example.com',
+        signedUp: true,
+        firstPurchase: true,
+        spiralsEarned: 75,
+        referredAt: '2025-01-05T10:00:00Z',
+        signupDate: '2025-01-05T14:30:00Z',
+        purchaseDate: '2025-01-06T09:15:00Z'
+      },
+      {
+        id: '2',
+        email: 'bob@example.com',
+        signedUp: true,
+        firstPurchase: false,
+        spiralsEarned: 25,
+        referredAt: '2025-01-06T16:20:00Z',
+        signupDate: '2025-01-07T11:45:00Z'
+      },
+      {
+        id: '3',
+        email: 'carol@example.com',
+        signedUp: false,
+        firstPurchase: false,
+        spiralsEarned: 0,
+        referredAt: '2025-01-07T08:30:00Z'
+      },
+      {
+        id: '4',
+        email: 'david@example.com',
+        signedUp: true,
+        firstPurchase: true,
+        spiralsEarned: 75,
+        referredAt: '2025-01-04T09:00:00Z',
+        signupDate: '2025-01-04T15:20:00Z',
+        purchaseDate: '2025-01-05T11:30:00Z'
+      }
+    ];
+
+    res.json({
+      success: true,
+      stats: mockStats,
+      referrals: mockReferrals,
+      referralCode: 'SPIRAL2025',
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  app.post('/api/referrals/create', (req, res) => {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ success: false, error: "Email is required" });
+    }
+
+    const referralId = `ref_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    res.json({
+      success: true,
+      referralId,
+      message: "Referral created successfully",
+      rewards: {
+        signupBonus: { friend: 50, referrer: 25 },
+        purchaseBonus: { friend: 50, referrer: 50 }
+      },
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  app.get('/api/referrals/tiers', (req, res) => {
+    const tiers = {
+      Bronze: { 
+        multiplier: 1, 
+        bonus: 0, 
+        requirements: '0-4 successful referrals',
+        perks: ['Basic rewards', 'Standard support'] 
+      },
+      Silver: { 
+        multiplier: 1.25, 
+        bonus: 10, 
+        requirements: '5-14 successful referrals',
+        perks: ['25% bonus rewards', '+10 SPIRALs per referral', 'Priority support'] 
+      },
+      Gold: { 
+        multiplier: 1.5, 
+        bonus: 20, 
+        requirements: '15-29 successful referrals',
+        perks: ['50% bonus rewards', '+20 SPIRALs per referral', 'VIP support', 'Early access'] 
+      },
+      Platinum: { 
+        multiplier: 2, 
+        bonus: 50, 
+        requirements: '30+ successful referrals',
+        perks: ['100% bonus rewards', '+50 SPIRALs per referral', 'Dedicated account manager', 'Exclusive events'] 
+      }
+    };
+
+    res.json({
+      success: true,
+      tiers,
+      timestamp: new Date().toISOString()
+    });
+  });
+
   // SPIRAL Progress Tracker API - SPIRAL Standard Response Format
   app.get('/api/admin/progress', spiralProtection.spiralAdminAuth, async (req, res) => {
     try {
