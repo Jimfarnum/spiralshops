@@ -271,6 +271,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/logout', spiralProtection.handleAdminLogout);
   app.get('/api/admin/verify', spiralProtection.verifyAdminStatus);
 
+  // Admin Routes
+  app.get('/api/admin/retailers', (req, res) => {
+    const retailers = [
+      {
+        id: '1',
+        storeName: 'Tech Hub Electronics',
+        ownerName: 'John Smith',
+        email: 'john@techhub.com',
+        phone: '(555) 123-4567',
+        address: '123 Main St, San Francisco, CA 94102',
+        plan: 'Gold',
+        status: 'pending',
+        stripeAccountId: 'acct_1234567890',
+        stripeStatus: 'connected',
+        productsCount: 15,
+        createdAt: '2025-01-07T10:30:00Z',
+        lastActivity: '2025-01-07T12:45:00Z',
+      },
+      {
+        id: '2',
+        storeName: 'Fashion Forward Boutique',
+        ownerName: 'Sarah Johnson',
+        email: 'sarah@fashionforward.com',
+        phone: '(555) 987-6543',
+        address: '456 Oak Ave, Los Angeles, CA 90210',
+        plan: 'Silver',
+        status: 'approved',
+        stripeAccountId: 'acct_0987654321',
+        stripeStatus: 'connected',
+        productsCount: 42,
+        createdAt: '2025-01-06T14:20:00Z',
+        lastActivity: '2025-01-07T11:30:00Z',
+      }
+    ];
+    res.json({ success: true, data: retailers });
+  });
+
+  app.post('/api/admin/update-retailer', (req, res) => {
+    const { id, status } = req.body;
+    res.json({ success: true, data: { id, status, updated: new Date().toISOString() } });
+  });
+
+  app.get('/api/admin/agent-logs', (req, res) => {
+    const logs = [
+      {
+        id: '1',
+        agentName: 'RetailerOnboardAgent',
+        retailerId: 'ret_001',
+        retailerName: 'Tech Hub Electronics',
+        status: 'complete',
+        sessionDuration: 12,
+        timestamp: '2025-01-07T14:30:00Z',
+        lastActivity: '2025-01-07T14:42:00Z',
+        stepCompleted: 'Inventory Upload',
+        totalSteps: 5,
+        currentStep: 5,
+        notes: 'Successfully completed onboarding with Gold plan',
+        metadata: { planSelected: 'Gold', stripeConnected: true }
+      },
+      {
+        id: '2',
+        agentName: 'ProductEntryAgent',
+        retailerId: 'ret_001',
+        retailerName: 'Tech Hub Electronics',
+        status: 'active',
+        sessionDuration: 8,
+        timestamp: '2025-01-07T14:45:00Z',
+        lastActivity: '2025-01-07T14:53:00Z',
+        stepCompleted: 'Product Information',
+        totalSteps: 5,
+        currentStep: 2,
+        notes: 'Adding first batch of electronics products',
+        metadata: { productsAdded: 3 }
+      }
+    ];
+    res.json({ success: true, data: logs });
+  });
+
   // SPIRAL Progress Tracker API - SPIRAL Standard Response Format
   app.get('/api/admin/progress', spiralProtection.spiralAdminAuth, async (req, res) => {
     try {
