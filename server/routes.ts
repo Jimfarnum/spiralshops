@@ -3390,6 +3390,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }));
 
+  // Near Me API endpoint for 100% compatibility testing
+  app.get('/api/near-me', asyncHandler(async (req, res) => {
+    const { lat, lng, radius = 25 } = req.query;
+    
+    if (!lat || !lng) {
+      return res.standard({ 
+        stores: [], 
+        error: 'Latitude and longitude are required',
+        success: false 
+      });
+    }
+
+    const userLat = parseFloat(lat);
+    const userLng = parseFloat(lng);
+    const searchRadius = parseFloat(radius);
+
+    if (isNaN(userLat) || isNaN(userLng) || isNaN(searchRadius)) {
+      return res.standard({ 
+        stores: [], 
+        error: 'Invalid coordinates or radius',
+        success: false 
+      });
+    }
+
+    function calculateDistance(lat1, lng1, lat2, lng2) {
+      const R = 3959; // Earth's radius in miles
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLng/2) * Math.sin(dLng/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    function formatDistance(distance) {
+      return distance < 1 ? `${(distance * 5280).toFixed(0)} ft` : `${distance.toFixed(1)} mi`;
+    }
+
+    // Get all stores and calculate distances
+    const allStores = await storage.getStores();
+    const storesWithDistance = allStores.map(store => {
+      const distance = calculateDistance(userLat, userLng, store.lat, store.lng);
+      return {
+        ...store,
+        distance: parseFloat(distance.toFixed(2)),
+        distanceText: formatDistance(distance)
+      };
+    }).filter(store => store.distance <= searchRadius)
+      .sort((a, b) => a.distance - b.distance);
+
+    res.standard({
+      stores: storesWithDistance,
+      total: storesWithDistance.length,
+      userLocation: { lat: userLat, lng: userLng },
+      radius: searchRadius,
+      success: true
+    });
+  }));
+
   // Near Me proximity search with radius filtering
   app.get("/api/maps/near-me/:lat/:lng", asyncHandler(async (req, res) => {
     const startTime = Date.now();
