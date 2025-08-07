@@ -19,7 +19,7 @@ Preferred communication style: Simple, everyday language.
 - **Core Features**:
     - **Shopping**: Product grid, filter sidebar, sorting, product detail pages, cart integration, multi-mall cart support, 18 major product categories with 144+ subcategories.
     - **Loyalty**: SPIRALs earning system, double redemption value in physical stores, sharing/referral bonuses, real-time balance display, loyalty dashboard with tiers and transaction history.
-    - **Retailer Experience**: AI-powered 5-step onboarding with RetailerOnboardAgent, comprehensive retailer portal with enhanced inventory dashboard, ProductEntryAgent for intelligent inventory management, category/subcategory management, CSV bulk upload/download with AI validation, real-time inventory statistics, sales/fees calculator, analytics dashboard, 5-tier store verification system.
+    - **Retailer Experience**: AI-powered 5-step onboarding with RetailerOnboardAgent (Free/Silver/Gold plans, Stripe Connect integration, conversational UI), comprehensive retailer portal with enhanced inventory dashboard, ProductEntryAgent for intelligent inventory management, category/subcategory management, CSV bulk upload/download with AI validation, real-time inventory statistics, sales/fees calculator, analytics dashboard, 5-tier store verification system.
     - **User Experience**: Shopper onboarding, enhanced profile settings, mall gift card system, mobile responsiveness, nationwide smart search, advanced mall directory, wishlist system with priority management and alerts.
     - **Logistics**: Advanced logistics platform with delivery zone management, driver tracking, route optimization, SPIRAL Centers network for hub-based shipping, split shipping functionality (Ship to Me, In-Store Pickup, Ship to Mall SPIRAL Center).
     - **Social & Community**: Comprehensive social media integration with advanced pixel tracking, universal event system, social sharing with SPIRAL rewards, social feed page, "Invite to Shop" feature with group bonuses.
@@ -33,7 +33,7 @@ Preferred communication style: Simple, everyday language.
 - **Database**: PostgreSQL with Drizzle ORM (Neon Database).
 - **Session Management**: PostgreSQL-backed sessions.
 - **API Style**: REST endpoints.
-- **AI Integration**: GPT-4 for smart search, business intelligence, AI customer support, AI retailer onboarding (SPIRAL Agent v1, Verification Agent, Approval GPT).
+- **AI Integration**: GPT-4 for smart search, business intelligence, AI customer support, AI retailer onboarding (RetailerOnboardAgent with conversational flow, SPIRAL Agent v1, Verification Agent, Approval GPT).
 - **AI Agents System**: Comprehensive AI-powered assistance framework with 7 specialized agents (ShopperAssist, Wishlist, ImageSearch, MallDirectory, AdminAudit, RetailerOnboard, ProductEntry) coordinated by SpiralAIOpsSupervisor. Modern AI-first approach with conversational interfaces replacing traditional form-heavy workflows. Features graceful fallbacks, cross-agent coordination, and 20+ AI endpoints covering all platform functions.
 - **Cloud Services**: Vercel deployment, IBM Cloud services (Watson Assistant, Watson Discovery, Cloudant Database, Redis Cache, Kubernetes).
 - **Security**: JWT authentication, 3-tier API rate limiting, CSP, XSS protection, input sanitization, CORS.
