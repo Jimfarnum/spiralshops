@@ -1,0 +1,136 @@
+// BACKEND FILE: /server/api/ai-image-search.js
+
+import express from 'express';
+import multer from 'multer';
+import vision from '@google-cloud/vision';
+import { getDistance } from '../../utils/haversine.js'; // Include this file
+import storeData from '../../data/stores.json'; // Replace with your actual DB call or model
+
+const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
+const client = new vision.ImageAnnotatorClient();
+
+router.post('/search-by-image', upload.single('image'), async (req, res) => {
+  try {
+    const userLocation = req.body.location ? JSON.parse(req.body.location) : null;
+    const [result] = await client.labelDetection({ image: { content: req.file.buffer } });
+    const labels = result.labelAnnotations.map((l) => l.description.toLowerCase());
+
+    const matches = storeData
+      .filter(store =>
+        labels.some(label =>
+          store.tags?.map(t => t.toLowerCase()).includes(label)
+        )
+      )
+      .map(store => {
+        const distance = userLocation
+          ? getDistance(userLocation.lat, userLocation.lng, store.lat, store.lng)
+          : null;
+        return { ...store, distance };
+      })
+      .sort((a, b) => a.distance - b.distance);
+
+    res.json({ success: true, data: { labels, matches }, error: null, duration: Date.now() });
+  } catch (err) {
+    res.status(500).json({ success: false, data: null, error: err.message, duration: Date.now() });
+  }
+});
+
+export default router;
+
+
+// UTILS FILE: /utils/haversine.js
+
+export function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 3958.8; // Miles
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c * 10) / 10;
+}
+
+
+// FRONTEND FILE: /components/DropzoneUpload.js
+
+import { useDropzone } from 'react-dropzone';
+import { useState } from 'react';
+
+export default function DropzoneUpload({ onSearch }) {
+  const [loading, setLoading] = useState(false);
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: { 'image/*': [] },
+    multiple: false,
+    onDrop: async (files) => {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('image', files[0]);
+
+      // GPS Permission + Fetch
+      const location = await new Promise((resolve) => {
+        navigator.geolocation.getCurrentPosition(
+          pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+          () => resolve(null)
+        );
+      });
+      if (location) formData.append('location', JSON.stringify(location));
+
+      const res = await fetch('/api/search-by-image', { method: 'POST', body: formData });
+      const result = await res.json();
+      onSearch(result);
+      setLoading(false);
+    }
+  });
+
+  return (
+    <div {...getRootProps()} className="p-4 border-2 border-dashed rounded-xl text-center bg-white shadow-md">
+      <input {...getInputProps()} />
+      <p className="text-gray-600">{loading ? 'Searching near you...' : 'Upload or drop an image to find products nearby'}</p>
+    </div>
+  );
+}
+
+
+// FRONTEND FILE: /pages/near-me.js
+
+import { useState } from 'react';
+import DropzoneUpload from '../components/DropzoneUpload';
+
+export default function NearMe() {
+  const [results, setResults] = useState(null);
+
+  return (
+    <div className="p-6">
+      <h1 className="text-xl font-bold mb-4">Search by Image (Mobile Compatible)</h1>
+      <DropzoneUpload onSearch={setResults} />
+      {results && (
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold mb-2">Matches:</h2>
+          {results.data.matches.length === 0 ? (
+            <p>No nearby matches found.</p>
+          ) : (
+            results.data.matches.map((store, idx) => (
+              <div key={idx} className="mb-4 border p-3 rounded-md shadow-sm">
+                <h3 className="text-md font-bold">{store.name}</h3>
+                <p>{store.address}</p>
+                {store.distance && <p>{store.distance} miles away</p>}
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
+                  className="text-blue-600 underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Get Directions
+                </a>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
