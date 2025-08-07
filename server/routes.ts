@@ -434,6 +434,132 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Invite-to-Shop API Routes
+  app.post('/api/invite', (req, res) => {
+    const { email, productId, personalMessage } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ success: false, error: "Email is required" });
+    }
+
+    const inviteId = `invite_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+    
+    const invite = {
+      id: inviteId,
+      hostUserId: 'user_current', // In real app, get from session
+      hostName: 'John Smith', // In real app, get from user profile
+      guestEmail: email,
+      productId: productId || null,
+      productName: productId ? 'Wireless Bluetooth Headphones' : null,
+      productPrice: productId ? 89.99 : null,
+      productImage: productId ? '/api/placeholder/300/300' : null,
+      retailerName: productId ? 'Tech Hub Electronics' : null,
+      accepted: false,
+      personalMessage: personalMessage || null,
+      sharedPerks: {
+        spiralsBonus: 25,
+        sameDayDiscount: 15,
+        earlyAccess: true,
+        freeShipping: true
+      },
+      expiresAt: expiresAt.toISOString(),
+      createdAt: new Date().toISOString()
+    };
+
+    // In a real app, save to database and send email
+    const inviteLink = `${req.protocol}://${req.get('host')}/invite/${inviteId}`;
+    
+    res.json({ 
+      success: true, 
+      inviteId,
+      inviteLink,
+      message: "Invite sent successfully",
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  app.get('/api/invite/:inviteId', (req, res) => {
+    const { inviteId } = req.params;
+    
+    // Mock invite data - in real app, fetch from database
+    const invite = {
+      id: inviteId,
+      hostUserId: 'user_host',
+      hostName: 'Sarah Johnson',
+      guestEmail: 'friend@example.com',
+      productId: 'prod_1',
+      productName: 'Wireless Bluetooth Headphones',
+      productPrice: 89.99,
+      productImage: '/api/placeholder/300/300',
+      retailerName: 'Tech Hub Electronics',
+      accepted: false,
+      personalMessage: 'Hey! I found these amazing headphones and thought you\'d love them. We\'ll both get exclusive perks if you shop today - let\'s save together!',
+      sharedPerks: {
+        spiralsBonus: 25,
+        sameDayDiscount: 15,
+        earlyAccess: true,
+        freeShipping: true
+      },
+      expiresAt: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString(), // 6 days from now
+      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() // 1 day ago
+    };
+
+    res.json({ 
+      success: true, 
+      invite,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  app.post('/api/invite/:inviteId/accept', (req, res) => {
+    const { inviteId } = req.params;
+    
+    // In real app, update database and trigger perk allocation
+    res.json({ 
+      success: true, 
+      message: "Invite accepted successfully",
+      perksActivated: {
+        spiralsBonus: 25,
+        sameDayDiscount: 15,
+        earlyAccess: true,
+        freeShipping: true
+      },
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  app.get('/api/invites/sent', (req, res) => {
+    // Mock sent invites data
+    const sentInvites = [
+      {
+        id: 'invite_001',
+        guestEmail: 'alice@example.com',
+        productName: 'Wireless Bluetooth Headphones',
+        accepted: true,
+        spiralsEarned: 25,
+        createdAt: '2025-01-06T10:00:00Z'
+      },
+      {
+        id: 'invite_002', 
+        guestEmail: 'bob@example.com',
+        productName: 'Summer Fashion Dress',
+        accepted: false,
+        spiralsEarned: 0,
+        createdAt: '2025-01-07T14:30:00Z'
+      }
+    ];
+
+    res.json({ 
+      success: true, 
+      invites: sentInvites,
+      totalSent: sentInvites.length,
+      totalAccepted: sentInvites.filter(i => i.accepted).length,
+      totalSpiralsEarned: sentInvites.reduce((sum, i) => sum + i.spiralsEarned, 0),
+      timestamp: new Date().toISOString()
+    });
+  });
+
   // SPIRAL Progress Tracker API - SPIRAL Standard Response Format
   app.get('/api/admin/progress', spiralProtection.spiralAdminAuth, async (req, res) => {
     try {
