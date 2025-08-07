@@ -5,6 +5,7 @@ SPIRAL is a modern local business directory connecting shoppers with local busin
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
+Preferred design approach: Clean, simplified interfaces over complex UI components. Favors functional minimalism while maintaining full backend integration capabilities.
 
 ## System Architecture
 
