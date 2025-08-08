@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { rateLimiter } from "./middleware/rateLimiter.js";
 import wishlistRoutes from "./api/wishlist";
 import intelligentWishlistRoutes from "./api/intelligent-wishlist";
 import aiOpsStatusRoutes from "./api/ai-ops-status";
@@ -12,6 +13,9 @@ import aiOpsDashboardRoutes from "./api/ai-ops-dashboard";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Add rate limiting to all API routes
+app.use('/api', rateLimiter);
 
 app.use((req, res, next) => {
   const start = Date.now();

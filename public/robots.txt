@@ -1,5 +1,19 @@
 User-agent: *
-Disallow: /admin-login
-Disallow: /admin/
-Disallow: /api/
 Allow: /
+
+# Important pages
+Allow: /stores
+Allow: /products
+Allow: /malls
+Allow: /about
+
+# Block admin areas
+Disallow: /admin
+Disallow: /api/
+Disallow: /retailer-dashboard
+
+# Sitemap
+Sitemap: https://spiralshops.com/sitemap.xml
+
+# Crawl-delay for better server performance
+Crawl-delay: 1
