@@ -1,0 +1,248 @@
+/agent
+
+Objective: Make SPIRAL investor-ready and deployable to Vercel with Cloudant + Stripe TEST mode. Create required files, fix routing, seed realistic demo data, validate core flows (shopper/retailer/mall/admin), and output one REPORT.md with results and next steps.
+
+ACCEPTANCE CRITERIA
+- Shopper: browse → search/filter → PDP → multi-retailer cart → Stripe TEST checkout → order history (2xx at each step).
+- Retailer: self-serve onboarding (≤15 min) → add single product + CSV bulk upload → inventory visible.
+- Mall: mall hub page → directory → cross-store search → gift card demo → loyalty accrual UI visible.
+- Admin: login → approve retailer → toggle plan tier → view vendor verification dashboard.
+- No 500s on happy paths; broken front-page buttons fixed; route map produced.
+- Sentry (if DSN present) + analytics integrated; no hardcoded secrets.
+- Seeded with ≥50 demo retailers (≥10 “mall tenant” lookalikes) and ≥500 products.
+- Vercel build succeeds; `vercel.json` has CSP + headers; API rate limiting enabled.
+
+TASKS (DO IN ORDER)
+
+1) ENV & SECRETS
+- Scan codebase for process.env usage; list required keys.
+- CREATE FILE: .env.template (exact content below)
+- Replace any hardcoded secrets with env references. Include a diff summary in REPORT.md.
+
+----- BEGIN FILE: .env.template -----
+STRIPE_SECRET_KEY=
+STRIPE_PUBLISHABLE_KEY=
+CLOUDANT_URL=
+CLOUDANT_APIKEY=
+CLOUDANT_DB=spiral
+SENDGRID_API_KEY=
+JWT_SECRET=
+ADMIN_EMAIL=
+ADMIN_PASS=
+SENTRY_DSN=
+PLAUSIBLE_DOMAIN=
+FEDEX_API_KEY=
+UPS_API_KEY=
+RATE_LIMIT_RPM=60
+SHIPPING_MODE=mock
+----- END FILE -----
+
+2) ROUTES & FRONT PAGE
+- Crawl homepage + primary nav. Build a ROUTE MAP: path → handler file → status.
+- Reproduce user-reported broken front-page buttons; capture console/network errors; FIX links or route definitions. Document fixes in REPORT.md.
+
+3) SECURITY: RATE LIMITER
+- CREATE FILE: server/middleware/rateLimiter.js (content below)
+- Add to API entry (Express): `app.use('/api', rateLimiter);`
+
+----- BEGIN FILE: server/middleware/rateLimiter.js -----
+const WINDOW_MS = 60 * 1000;
+const LIMIT = parseInt(process.env.RATE_LIMIT_RPM || '60', 10);
+const BUCKET = new Map();
+export function rateLimiter(req, res, next) {
+  try {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
+      || req.connection?.remoteAddress || 'unknown';
+    const now = Date.now();
+    const rec = BUCKET.get(ip) || { count: 0, start: now };
+    if (now - rec.start > WINDOW_MS) { rec.count = 0; rec.start = now; }
+    rec.count += 1; BUCKET.set(ip, rec);
+    if (rec.count > LIMIT) {
+      res.status(429).json({ ok: false, error: 'Rate limit exceeded. Try again in a minute.' });
+      return;
+    }
+    next();
+  } catch (err) {
+    console.error('rateLimiter error', err);
+    res.status(500).json({ ok: false, error: 'Rate limiter internal error' });
+  }
+}
+----- END FILE -----
+
+4) SECURITY HEADERS & CSP FOR VERCEL
+- CREATE FILE: vercel.json (content below). If file exists, merge headers safely.
+
+----- BEGIN FILE: vercel.json -----
+{
+  "version": 2,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' *.vercel.app *.stripe.com plausible.io 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' *.cloudant.com *.stripe.com plausible.io; frame-src *.stripe.com; base-uri 'self'; form-action 'self' *.stripe.com"
+        }
+      ]
+    }
+  ]
+}
+----- END FILE -----
+
+5) DATA SEEDING (CLOUDANT)
+
+- Ensure deps installed: `@ibm-cloud/cloudant`, `csv-parse`.
+- CREATE FILES: seed/retailers.csv, seed/products.csv, scripts/seed-cloudant.mjs, and add npm script.
+
+----- BEGIN FILE: seed/retailers.csv -----
+slug,name,address,city,state,zip,phone,hours,category,acceptsSpirals,mallSlug,lat,lng
+red-wing-shoes-roseville,Red Wing Shoes,1595 County Rd B2 W,Roseville,MN,55113,651-555-1212,"Mon-Sat 10-8; Sun 11-6",Footwear,true,moa,45.006,-93.156
+northwoods-outfitters,Northwoods Outfitters,88 7th St W,St Paul,MN,55102,651-555-2121,"Mon-Sat 10-7; Sun 12-5",Outdoor,true,moa,44.944,-93.100
+----- END FILE -----
+
+----- BEGIN FILE: seed/products.csv -----
+sku,retailerSlug,name,description,price,imageURL,category,stock
+RW-0803,red-wing-shoes-roseville,Classic Moc Boot,Heritage leather moc toe boot,289.99,https://picsum.photos/seed/rw803/800/800,Footwear,18
+NW-JKT-001,northwoods-outfitters,Thermal Trail Jacket,Insulated jacket for cold weather,149.99,https://picsum.photos/seed/nwjkt/800/800,Outerwear,42
+----- END FILE -----
+
+----- BEGIN FILE: scripts/seed-cloudant.mjs -----
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { CloudantV1 } from '@ibm-cloud/cloudant';
+import csvParse from 'csv-parse';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const { CLOUDANT_URL, CLOUDANT_APIKEY, CLOUDANT_DB = 'spiral' } = process.env;
+if (!CLOUDANT_URL || !CLOUDANT_APIKEY) {
+  console.error('Missing CLOUDANT_URL or CLOUDANT_APIKEY envs.');
+  process.exit(1);
+}
+
+// Cloudant SDK creates its own authenticator under the hood when using newInstance()
+const client = CloudantV1.newInstance({});
+client.setServiceUrl(CLOUDANT_URL);
+
+async function ensureDb(db) {
+  const dbs = (await client.getAllDbs()).result;
+  if (!dbs.includes(db)) {
+    await client.putDatabase({ db });
+    console.log(`Created DB: ${db}`);
+  }
+}
+
+function parseCsv(filePath) {
+  return new Promise((resolve, reject) => {
+    const records = [];
+    fs.createReadStream(filePath)
+      .pipe(csvParse({ columns: true, trim: true }))
+      .on('data', (row) => records.push(row))
+      .on('end', () => resolve(records))
+      .on('error', reject);
+  });
+}
+
+async function upsertDocs(db, docs, idField) {
+  const bulk = docs.map((d) => {
+    const _id = d[idField];
+    if (typeof d.price === 'string' && d.price !== '') d.price = parseFloat(d.price);
+    if (typeof d.stock === 'string' && d.stock !== '') d.stock = parseInt(d.stock, 10);
+    if (typeof d.acceptsSpirals === 'string') d.acceptsSpirals = d.acceptsSpirals.toLowerCase() === 'true';
+    if (typeof d.lat === 'string' && d.lat !== '') d.lat = parseFloat(d.lat);
+    if (typeof d.lng === 'string' && d.lng !== '') d.lng = parseFloat(d.lng);
+    return { _id, ...d, updatedAt: new Date().toISOString() };
+  });
+
+  const res = await client.postBulkDocs({ db, bulkDocs: { docs: bulk } });
+  const results = res.result;
+  const errors = results.filter((r) => r.error);
+  return { total: bulk.length, errors: errors.length, errorsList: errors.slice(0, 5) };
+}
+
+async function main() {
+  const retailersCsv = process.argv[2] || path.join(__dirname, '../seed/retailers.csv');
+  const productsCsv  = process.argv[3] || path.join(__dirname, '../seed/products.csv');
+
+  await ensureDb(CLOUDANT_DB);
+
+  console.log('Parsing retailers CSV…');
+  const retailers = await parseCsv(retailersCsv);
+  retailers.forEach((r) => (r.type = 'retailer'));
+  const r = await upsertDocs(CLOUDANT_DB, retailers, 'slug');
+  console.log(`Retailers upserted: ${r.total}, errors: ${r.errors}`);
+
+  console.log('Parsing products CSV…');
+  const products = await parseCsv(productsCsv);
+  products.forEach((p) => (p.type = 'product'));
+  const p = await upsertDocs(CLOUDANT_DB, products, 'sku');
+  console.log(`Products upserted: ${p.total}, errors: ${p.errors}`);
+
+  if (r.errors || p.errors) {
+    console.warn('Some upserts had errors:', { retailerErrors: r.errors, productErrors: p.errors });
+    console.warn('Examples:', r.errorsList, p.errorsList);
+  } else {
+    console.log('Seed complete with no errors.');
+  }
+}
+
+main().catch((e) => { console.error('Seed failed:', e); process.exit(1); });
+----- END FILE -----
+
+- UPDATE package.json: add script `"seed": "node scripts/seed-cloudant.mjs seed/retailers.csv seed/products.csv"` and ensure deps `"@ibm-cloud/cloudant"` and `"csv-parse"` exist. If package.json exists, patch it; otherwise, append these keys safely.
+
+6) CORE FLOWS – E2E VALIDATION
+- Shopper: run search → PDP → add to cart (multi-retailer) → Stripe TEST checkout (use 4242 4242 4242 4242) → order history.
+- Retailer: complete onboarding with seed data; add single product + CSV bulk upload; confirm visible in storefront.
+- Mall: open mall hub → list tenants → cross-store search → gift card demo → loyalty accrual in UI.
+- Admin: login → approve retailer → toggle tier → view vendor verification dashboard.
+- Log each step’s request/response (status + endpoint) into REPORT.md with PASS/FAIL.
+
+7) INTEGRATIONS & TELEMETRY
+- Stripe TEST mode must complete on Vercel + local.
+- SendGrid (sandbox) sends onboarding email (log or suppress to console).
+- If FEDEX/UPS keys absent, set `SHIPPING_MODE=mock` and ensure checkout uses mock rates.
+- Add Sentry (if DSN present) and trigger one test error. Add Plausible/GA4 snippet to layout.
+
+8) SEO BASICS
+- Generate `sitemap.xml` + `robots.txt`.
+- Ensure title/description + OG tags for: home, product detail, store detail, mall hub.
+
+9) VERCEL BUILD & DEPLOY DOCS
+- Produce a production build; capture build size/time + warnings.
+- Output exact steps to import repo into Vercel, add env vars from `.env.template`, map `spiralshops.com`, and smoke test core flows.
+
+10) REPORT & ARTIFACTS
+- CREATE FILE: REPORT.md with sections:
+  - Site State Summary (completion %, critical issues, recommended fixes High/Med/Low)
+  - Route Map & fixed links/buttons
+  - Core Flow Results (shopper/retailer/mall/admin) with logs
+  - Data Seeding (counts, rejects)
+  - Env Checklist (present/missing)
+  - Security/Telemetry (CSP, rate limit, Sentry status, analytics)
+  - Vercel Build (logs, warnings, next steps)
+  - Investor Demo Checklist (clickable paths) and a 5–7 item Next Actions list
+- Confirm the following artifacts exist and print their absolute paths:
+  - .env.template
+  - vercel.json
+  - server/middleware/rateLimiter.js
+  - seed/retailers.csv
+  - seed/products.csv
+  - scripts/seed-cloudant.mjs
+  - REPORT.md
+
+CONSTRAINTS
+- Avoid breaking schema; if changes are required, provide migration instructions and update seed script.
+- Prefer minimal, safe fixes that unblock demo flows over broad refactors.
+- Summarize code diffs in REPORT.md.
+
+OUTPUT
+- Commit all changes. Provide a summary with the list of created/modified files.
+- Print the command to run the seeder (`npm run seed`) and the command to start the app.
+- Provide Vercel deployment command sequence and a final PASS/FAIL for acceptance criteria.
