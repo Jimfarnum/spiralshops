@@ -878,7 +878,7 @@ export default function Home() {
               {stores && stores.length > 0 && (
                 <>
                   {showVerifiedOnly 
-                    ? `${stores.filter(store => store.isVerified).length} verified stores`
+                    ? `${stores.filter((store: any) => store.isVerified).length} verified stores`
                     : `${stores.length} total stores`
                   }
                 </>
