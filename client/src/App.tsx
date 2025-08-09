@@ -166,8 +166,9 @@ import LoyaltyDashboard from "@/pages/loyalty";
 import OrdersPage from "@/pages/orders";
 import OrdersTestPage from "@/pages/orders-test";
 import OrdersSimplePage from "@/pages/orders-simple";
-import PrivacyPolicy from "@/pages/privacy-policy";
-import TermsOfService from "@/pages/terms";
+import PrivacyPolicy from "@/pages/Privacy";
+import TermsOfService from "@/pages/Terms";
+import DMCAPage from "@/pages/DMCA";
 import OrderDetailPage from "@/pages/order-detail";
 import RetailerLoyaltyPage from "@/pages/loyalty-retailers";
 import MallPerksPage from "@/pages/loyalty-mall-perks";
@@ -427,6 +428,9 @@ function Router() {
       <Route path="/smart-search-demo" component={SmartSearchDemo} />
       <Route path="/enhanced-wallet-demo" component={EnhancedWalletDemo} />
       <Route path="/feature-improvement-hub" component={FeatureImprovementHub} />
+      <Route path="/privacy" component={PrivacyPolicy} />
+      <Route path="/terms" component={TermsOfService} />
+      <Route path="/dmca" component={DMCAPage} />
       <Route path="/comprehensive-feature-test" component={ComprehensiveFeatureTest} />
       <Route path="/retailer-onboarding-demo" component={RetailerOnboardingDemo} />
       <Route path="/retailer-onboard-agent" component={RetailerOnboardAgentDemo} />

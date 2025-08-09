@@ -1,0 +1,302 @@
+[
+  {
+    "id": "retailer_1",
+    "name": "Sample Store 1",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_2",
+    "name": "Sample Store 2",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_3",
+    "name": "Sample Store 3",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_4",
+    "name": "Sample Store 4",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_5",
+    "name": "Sample Store 5",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_6",
+    "name": "Sample Store 6",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_7",
+    "name": "Sample Store 7",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_8",
+    "name": "Sample Store 8",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_9",
+    "name": "Sample Store 9",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_10",
+    "name": "Sample Store 10",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_11",
+    "name": "Sample Store 11",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_12",
+    "name": "Sample Store 12",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_13",
+    "name": "Sample Store 13",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_14",
+    "name": "Sample Store 14",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_15",
+    "name": "Sample Store 15",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_16",
+    "name": "Sample Store 16",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_17",
+    "name": "Sample Store 17",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_18",
+    "name": "Sample Store 18",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_19",
+    "name": "Sample Store 19",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_20",
+    "name": "Sample Store 20",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_21",
+    "name": "Sample Store 21",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_22",
+    "name": "Sample Store 22",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_23",
+    "name": "Sample Store 23",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_24",
+    "name": "Sample Store 24",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_25",
+    "name": "Sample Store 25",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_26",
+    "name": "Sample Store 26",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_27",
+    "name": "Sample Store 27",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_28",
+    "name": "Sample Store 28",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_29",
+    "name": "Sample Store 29",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_30",
+    "name": "Sample Store 30",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_31",
+    "name": "Sample Store 31",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_32",
+    "name": "Sample Store 32",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_33",
+    "name": "Sample Store 33",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_34",
+    "name": "Sample Store 34",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_35",
+    "name": "Sample Store 35",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_36",
+    "name": "Sample Store 36",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_37",
+    "name": "Sample Store 37",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_38",
+    "name": "Sample Store 38",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_39",
+    "name": "Sample Store 39",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_40",
+    "name": "Sample Store 40",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_41",
+    "name": "Sample Store 41",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_42",
+    "name": "Sample Store 42",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_43",
+    "name": "Sample Store 43",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_44",
+    "name": "Sample Store 44",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_45",
+    "name": "Sample Store 45",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_46",
+    "name": "Sample Store 46",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_47",
+    "name": "Sample Store 47",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_48",
+    "name": "Sample Store 48",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_49",
+    "name": "Sample Store 49",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  },
+  {
+    "id": "retailer_50",
+    "name": "Sample Store 50",
+    "category": "retail",
+    "created": "2025-08-09T00:29:31.066Z"
+  }
+]
