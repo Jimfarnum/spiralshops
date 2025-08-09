@@ -1,0 +1,112 @@
+/agent
+
+Objective: Tie up post-deploy loose ends so SPIRAL is rock-solid for investor demos and early pilots. Confirm Vercel + IBM Cloudant are the live stack; keep Watson/watsonx OFF behind a feature flag. Add backups, alerts, legal pages, SEO, demo safety, and produce a FINAL_REPORT.md with proof and links.
+
+ACCEPTANCE CRITERIA
+- Stack: Vercel (prod) + IBM Cloudant (prod) confirmed; watsonx disabled (flag).
+- Legal: /privacy, /terms, /dmca routes live and linked in footer.
+- SEO: sitemap.xml + robots.txt generated; canonical, OG tags on key pages.
+- Observability: Uptime check added, Sentry alert rules verified, Plausible Goal for “Checkout Success” created.
+- Backups: Nightly Cloudant export job (script + cron via Replit scheduler or GitHub Actions) documented and test run logged.
+- Security: Admin auth hardening (no indexable admin), CSP present, rate limit logs visible; optional secret-gated investor page.
+- Demo safety: /investor optional secret param supported, demo:reset secured by DEMO_RESET_KEY and logged.
+- Stripe: LIVE checklist generated; app remains in TEST until explicit flip.
+- Performance: Lighthouse/ Web Vitals report captured (desktop/mobile) and build size remains ≈845KB (±15%).
+- FINAL_REPORT.md with links, logs, and next actions.
+
+TASKS
+
+0) CONFIRM STACK & FLAGS
+- Print env values (redacted) to confirm: PRIMARY_DOMAIN, STRIPE_MODE=test, INVESTOR_MODE=1, WATSONX_ENABLED=0.
+- In docs, state: “Production = Vercel + IBM Cloudant. Watson/watsonx optional; OFF by default.”
+
+1) LEGAL PAGES
+- Create minimal but valid pages:
+  • /privacy  • /terms  • /dmca
+- Add footer links; include last-updated date and contact email.
+- Include in sitemap.xml.
+
+2) SEO & DISCOVERY
+- Generate /sitemap.xml and /robots.txt (allow all except /admin and /api).
+- Add canonical tags and OG/Twitter meta to: home, store, product, mall hub, investor.
+- Verify HTTP 200 for these routes in prod; list in FINAL_REPORT.md.
+
+3) OBSERVABILITY & ALERTS
+- Add UptimeRobot (or similar) checks for:
+  • https://{PRIMARY_DOMAIN}/  • /api/health  • /investor  • checkout success URL
+- Sentry: create or verify alert rule: “Any error level >= error → email {your email}”.
+- Plausible: create a Goal: `Checkout Success` (path or event). Document setup.
+
+4) BACKUPS (CLOUDANT)
+- Create script scripts/backup-cloudant.mjs that:
+  • Exports selected collections (retailers, products, orders, users) to /backups/YYYY-MM-DD/*.json
+  • Optionally pushes to object storage if env BACKUP_TARGET_* set.
+- Run once now; attach output paths and counts to FINAL_REPORT.md.
+- Configure scheduler (Replit cron, GitHub Actions, or Vercel Cron) to run daily; document cron expression and secrets used.
+
+5) SECURITY HARDENING
+- Ensure /admin is not indexed: add meta robots noindex, disallow in robots.txt.
+- Verify CSP headers are present in prod (from vercel.json); log header sample.
+- Add rate limit breadcrumbs to Sentry (log 429s with route/IP truncated).
+- Optional: Add secret gate to /investor:
+  • If INVESTOR_SECRET is set, require `?key=${INVESTOR_SECRET}` or show 404.
+  • Document the current state (enabled/disabled).
+
+6) DEMO SAFETY & RESET
+- Ensure /api/admin/demo-reset requires DEMO_RESET_KEY and logs who triggered it + timestamp.
+- Add a small “Reset Demo” tile on /investor visible only when ADMIN logged in (or when `?admin=1` and cookie set).
+- Verify npm run demo:reset completes <15s; print counts cleared/seeded.
+
+7) STRIPE LIVE CHECKLIST (NO FLIP YET)
+- Create docs/STRIPE_GO_LIVE.md with:
+  • Keys required, where to set in Vercel
+  • Set STRIPE_MODE=live and LIVE_SAFETY_ON=1
+  • Test $0.50 live charge + refund
+  • Webhook config (if used), PII/PCI notes, escalation/rollback
+- Validate live keys with a dry API call ONLY; do not transact. Log result redacted.
+
+8) PERFORMANCE PASS
+- Run Lighthouse (or Next.js analyzer) for:
+  • Home  • PDP  • Store  • Mall hub  • Investor
+- Capture key metrics (LCP, CLS, TBT) desktop + mobile and bundle size report.
+- If build > 972KB, list top 3 savings (code-split, image opt, remove unused deps).
+
+9) WATSONX HOOKS (DISABLED)
+- Ensure feature flag WATSONX_ENABLED=0.
+- Stub `/api/recommendations/wx` that returns `{ disabled: true }` when flag off.
+- Document envs needed later and how to enable.
+
+10) FINAL_REPORT.md
+- Include:
+  • Live URLs, healthcheck
+  • Legal links
+  • SEO outputs
+  • Uptime/Sentry/Plausible confirmations
+  • Backup run log + schedule
+  • Security notes (CSP sample, rate limit evidence)
+  • Demo reset proof and instructions
+  • Stripe LIVE checklist path
+  • Performance metrics & bundle size
+  • Next actions (7 bullets)
+- Mark overall status PASS/FAIL for acceptance criteria.
+
+FILES TO CREATE/UPDATE
+- pages/privacy.tsx (or app/privacy/page.tsx)
+- pages/terms.tsx (or app/terms/page.tsx)
+- pages/dmca.tsx (or app/dmca/page.tsx)
+- public/sitemap.xml (generated) • public/robots.txt
+- scripts/backup-cloudant.mjs
+- docs/STRIPE_GO_LIVE.md
+- (optional) investor secret gate (env INVESTOR_SECRET)
+- FINAL_REPORT.md
+
+CONSTRAINTS
+- Do not change STRIPE_MODE from test.
+- Do not enable watsonx.
+- Keep current DB schema; if backup size too large, sample orders (last N days) only.
+
+OUTPUT
+- Commit changes; list created/modified files.
+- Print verification URLs and where backups were written.
+- Paste UptimeRobot checks, Sentry rule ID, and Plausible Goal name created.
+- Provide NEXT ACTIONS with owners: OPS, IS, MC.
