@@ -46,10 +46,10 @@ Order Value Ranges:
 ## 🎯 **SPIRAL TOKEN ECONOMICS**
 
 ### **Token Distribution Model**
-- **SPIRALs Earned per $1 Spent**: 2 tokens
-- **Total SPIRALs Issued**: 5,470 tokens (from $2,735 in sales)
+- **SPIRALs Earned per $1 Spent**: 0.05 tokens (5 cents per dollar)
+- **Total SPIRALs Issued**: 147.15 tokens (from $2,943 in sales)
 - **SPIRAL Token Value**: $0.50 each
-- **Total SPIRAL Value Created**: $2,735.00
+- **Total SPIRAL Value Created**: $73.58
 
 ### **SPIRAL Value Proposition** 
 - **Digital Spending**: 1 SPIRAL = $0.50 online credit (confirmed rate)
@@ -196,7 +196,7 @@ Aggressive (1000x growth):
 
 ---
 
-**Summary**: SPIRAL generates $2,943 in gross revenue with $147.15 platform commission from 25 orders. At the confirmed $0.50 per SPIRAL token value, the platform has issued 5,886 loyalty tokens worth $2,943 in digital value. Current annual run rate projects $35,807 gross revenue with $1,790 platform revenue, establishing solid unit economics for scaling growth scenarios.
+**Summary**: SPIRAL generates $2,943 in gross revenue with $147.15 platform commission from 25 orders. With the corrected earning rate of 5 cents per dollar (0.05 SPIRALs per $1 spent), the platform has issued 147 loyalty tokens worth $73.58 in digital value. This conservative token issuance creates sustainable economics while maintaining the 2x in-store multiplier incentive.
 
 ---
 
