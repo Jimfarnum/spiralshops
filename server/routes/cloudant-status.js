@@ -1,96 +1,99 @@
-// SPIRAL Cloudant Status & Integration Routes
-import express from 'express';
+// server/routes/cloudant-status.js
+import express from "express";
+import { CloudantV1 } from "@ibm-cloud/cloudant";
+import { IamAuthenticator } from "ibm-cloud-sdk-core";
+
 const router = express.Router();
 
-// Route to check Cloudant integration status
-router.get('/cloudant-status', (req, res) => {
-  const requiredSecrets = [
-    'CLOUDANT_URL',
-    'CLOUDANT_APIKEY', 
-    'CLOUDANT_HOST',
-    'CLOUDANT_USERNAME',
-    'CLOUDANT_DB',
-    'IBM_CLOUDANT_URL',
-    'IBM_CLOUDANT_API_KEY'
-  ];
-
-  const status = {
-    timestamp: new Date().toISOString(),
-    integration_ready: true,
-    secrets_configured: {},
-    missing_secrets: [],
-    next_steps: []
-  };
-
-  // Check each required secret
-  requiredSecrets.forEach(secret => {
-    const exists = !!process.env[secret];
-    status.secrets_configured[secret] = exists;
-    if (!exists) {
-      status.missing_secrets.push(secret);
-      status.integration_ready = false;
-    }
-  });
-
-  // Provide next steps
-  if (status.missing_secrets.length > 0) {
-    status.next_steps = [
-      'Add missing secrets to Replit Secrets panel',
-      'Use exact secret names and values provided',
-      'SPIRAL will automatically restart after adding secrets',
-      'Test connection with /api/cloudant-test endpoint'
-    ];
-  } else {
-    status.next_steps = [
-      'All secrets configured!',
-      'Test connection with /api/cloudant-test',
-      'Ready for production deployment'
-    ];
-  }
-
-  res.json({
-    success: true,
-    cloudant_status: status
-  });
+const client = CloudantV1.newInstance({
+  authenticator: new IamAuthenticator({ apikey: process.env.CLOUDANT_APIKEY }),
+  serviceUrl: process.env.CLOUDANT_URL,
 });
 
-// Route to test Cloudant connection
-router.get('/cloudant-test', async (req, res) => {
-  if (!process.env.CLOUDANT_URL || !process.env.CLOUDANT_APIKEY) {
-    return res.status(400).json({
-      success: false,
-      error: 'Cloudant credentials not configured',
-      message: 'Please add CLOUDANT_URL and CLOUDANT_APIKEY secrets'
+const DB = process.env.CLOUDANT_DB || "spiral_production";
+
+router.get("/cloudant-status", async (_req, res) => {
+  const started = Date.now();
+  try {
+    // light ping: server info + verify DB exists
+    const info = await client.getServerInformation();
+    const dbs = await client.getAllDbs();
+    let connected = Array.isArray(dbs.result) && dbs.result.includes(DB);
+    
+    // If database doesn't exist, try to create it automatically
+    if (!connected) {
+      try {
+        await client.putDatabase({ db: DB });
+        // Verify creation by checking databases again
+        const updatedDbs = await client.getAllDbs();
+        connected = Array.isArray(updatedDbs.result) && updatedDbs.result.includes(DB);
+      } catch (createError) {
+        // Database creation might fail due to permissions or already exists
+        console.log(`Database auto-creation: ${createError.message}`);
+      }
+    }
+
+    res.json({
+      ok: true,
+      connected,
+      data: {
+        db: DB,
+        couchdb: info.result?.couchdb ?? null,
+        version: info.result?.version ?? null,
+        host: new URL(process.env.CLOUDANT_URL).host, // mask full URL
+        available_databases: dbs.result?.length || 0,
+        databases_list: connected ? "Database exists" : "Database not found"
+      },
+      timing_ms: Date.now() - started,
+      now: new Date().toISOString(),
+    });
+  } catch (e) {
+    res.status(200).json({
+      ok: true,
+      connected: false,
+      error: String(e?.message || e),
+      timing_ms: Date.now() - started,
+      now: new Date().toISOString(),
     });
   }
+});
 
+// Route to create the production database if it doesn't exist
+router.post("/cloudant-create-db", async (_req, res) => {
+  const started = Date.now();
   try {
-    // Import and test Cloudant connection
-    const { default: SpiralCloudantManager } = await import('../cloudant-integration-test.js');
-    const manager = new SpiralCloudantManager();
+    // Check if database exists first
+    const dbs = await client.getAllDbs();
+    const exists = Array.isArray(dbs.result) && dbs.result.includes(DB);
     
-    const connected = await manager.initialize();
-    
-    if (connected) {
-      const status = manager.getStatus();
-      res.json({
-        success: true,
-        message: 'Cloudant connection successful',
-        status: status,
-        ready_for_production: true
-      });
-    } else {
-      res.status(500).json({
-        success: false,
-        error: 'Connection failed',
-        message: 'Check credentials and try again'
+    if (exists) {
+      return res.json({
+        ok: true,
+        created: false,
+        message: `Database '${DB}' already exists`,
+        timing_ms: Date.now() - started,
+        now: new Date().toISOString(),
       });
     }
-  } catch (error) {
+    
+    // Create the database
+    await client.putDatabase({ db: DB });
+    
+    res.json({
+      ok: true,
+      created: true,
+      message: `Database '${DB}' created successfully`,
+      timing_ms: Date.now() - started,
+      now: new Date().toISOString(),
+    });
+    
+  } catch (e) {
     res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Cloudant connection error'
+      ok: false,
+      created: false,
+      error: String(e?.message || e),
+      timing_ms: Date.now() - started,
+      now: new Date().toISOString(),
     });
   }
 });
