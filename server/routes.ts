@@ -966,6 +966,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.standard({ message: 'Logout successful' });
   });
 
+  // Cloudant Integration Status Routes
+  app.get('/api/cloudant-status', (req, res) => {
+    const requiredSecrets = [
+      'CLOUDANT_URL',
+      'CLOUDANT_APIKEY', 
+      'CLOUDANT_HOST',
+      'CLOUDANT_USERNAME',
+      'CLOUDANT_DB',
+      'IBM_CLOUDANT_URL',
+      'IBM_CLOUDANT_API_KEY'
+    ];
+
+    const status = {
+      timestamp: new Date().toISOString(),
+      integration_ready: true,
+      secrets_configured: {},
+      missing_secrets: [],
+      next_steps: []
+    };
+
+    // Check each required secret
+    requiredSecrets.forEach(secret => {
+      const exists = !!process.env[secret];
+      status.secrets_configured[secret] = exists;
+      if (!exists) {
+        status.missing_secrets.push(secret);
+        status.integration_ready = false;
+      }
+    });
+
+    // Provide next steps
+    if (status.missing_secrets.length > 0) {
+      status.next_steps = [
+        'Add missing secrets to Replit Secrets panel',
+        'Use exact secret names and values provided',
+        'SPIRAL will automatically restart after adding secrets',
+        'Test connection with /api/cloudant-test endpoint'
+      ];
+    } else {
+      status.next_steps = [
+        'All secrets configured!',
+        'Test connection with /api/cloudant-test',
+        'Ready for production deployment'
+      ];
+    }
+
+    res.standard({
+      cloudant_status: status
+    });
+  });
+
   // Protected shopper-only endpoint example
   app.get('/api/shopper/profile', authSystem.authenticateUser, authSystem.requireShopper, (req, res) => {
     res.json({

@@ -77,6 +77,10 @@ app.use((req, res, next) => {
   const stripeTestRoutes = await import('./routes/stripeTest.js');
   app.use("/api/stripe-test", stripeTestRoutes.default);
   
+  // Register Cloudant Status routes
+  const cloudantStatusRoutes = await import('./routes/cloudant-status.js');
+  app.use("/api", cloudantStatusRoutes.default);
+  
   const server = await registerRoutes(app);
 
   // Initialize AI Ops GPT System
