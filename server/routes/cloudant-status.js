@@ -1,5 +1,5 @@
 // SPIRAL Cloudant Status & Integration Routes
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
 // Route to check Cloudant integration status
@@ -66,7 +66,7 @@ router.get('/cloudant-test', async (req, res) => {
 
   try {
     // Import and test Cloudant connection
-    const SpiralCloudantManager = require('../cloudant-integration-test');
+    const { default: SpiralCloudantManager } = await import('../cloudant-integration-test.js');
     const manager = new SpiralCloudantManager();
     
     const connected = await manager.initialize();
@@ -95,4 +95,4 @@ router.get('/cloudant-test', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
