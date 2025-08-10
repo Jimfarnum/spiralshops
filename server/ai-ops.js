@@ -120,7 +120,7 @@ spiralAI.registerAgent("ShopperUXAgent", async () => {
     const recommendResponse = await fetch("http://localhost:5000/api/recommend");
     if (!recommendResponse.ok) throw new Error(`AI recommendations failed: ${recommendResponse.status}`);
     const recommendations = await recommendResponse.json();
-    if (!Array.isArray(recommendations)) {
+    if (!recommendations.success || !recommendations.data || !recommendations.data.recommendations) {
       throw new Error("AI recommendations response invalid");
     }
 
@@ -128,14 +128,14 @@ spiralAI.registerAgent("ShopperUXAgent", async () => {
     const storesResponse = await fetch("http://localhost:5000/api/stores");
     if (!storesResponse.ok) throw new Error(`Store search failed: ${storesResponse.status}`);
     const stores = await storesResponse.json();
-    if (!Array.isArray(stores)) {
+    if (!stores.success || !stores.data || !stores.data.stores) {
       throw new Error("Store search response invalid");
     }
 
     const duration = Date.now() - startTime;
     return {
       status: "OK",
-      detail: `Shopper UX flow completed: ${products.products.length} products, ${featured.products.length} featured, ${recommendations.length} recommendations, ${stores.length} stores`,
+      detail: `Shopper UX flow completed: ${products.products.length} products, ${featured.products.length} featured, ${recommendations.data.recommendations.length} recommendations, ${stores.data.stores.length} stores`,
       duration
     };
   } catch (err) {
