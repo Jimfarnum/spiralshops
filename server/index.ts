@@ -13,6 +13,7 @@ import businessCategoriesRoutes from "./api/business-categories";
 import aiRetailerOnboardingRoutes from "./api/ai-retailer-onboarding";
 import inventoryCategoriesRoutes from "./api/inventory-categories";
 import aiOpsDashboardRoutes from "./api/ai-ops-dashboard";
+import statusRoutes from "./routes/status";
 
 const app = express();
 app.use(express.json());
@@ -72,6 +73,9 @@ app.use((req, res, next) => {
   
   // Register AI Ops dashboard routes
   app.use("/api", aiOpsDashboardRoutes);
+  
+  // Register comprehensive status routes
+  app.use(statusRoutes);
   
   // Register Beta Testing routes
   const betaTestingRoutes = await import('./routes/betaTesting.js');

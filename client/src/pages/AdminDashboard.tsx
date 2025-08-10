@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, XCircle, Clock, Database, Server, CreditCard } from "lucide-react";
-import CloudantBadge from "@/components/CloudantBadge";
+import { CloudantBadge, StripeBadge, EmailBadge, SearchBadge, SystemStatusSummary } from "@/components/CloudantBadge";
 
 interface SystemHealth {
   status: string;
@@ -41,15 +41,6 @@ function HealthBadge() {
   );
 }
 
-function StripeBadge() {
-  return (
-    <Badge variant="default" className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700">
-      <CreditCard className="h-3 w-3" />
-      <span className="text-xs">Stripe Ready</span>
-    </Badge>
-  );
-}
-
 function DatabaseBadge() {
   return (
     <Badge variant="default" className="flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700">
@@ -65,10 +56,12 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">SPIRAL Admin Dashboard</h1>
         <div className="flex items-center gap-3">
+          <SystemStatusSummary />
           <CloudantBadge />
-          <HealthBadge />
-          <DatabaseBadge />
           <StripeBadge />
+          <EmailBadge />
+          <SearchBadge />
+          <HealthBadge />
         </div>
       </div>
 
