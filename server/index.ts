@@ -8,12 +8,12 @@ import { setupVite, serveStatic, log } from "./vite";
 import { rateLimiter } from "./middleware/rateLimiter.js";
 import wishlistRoutes from "./api/wishlist";
 import intelligentWishlistRoutes from "./api/intelligent-wishlist";
-import aiOpsStatusRoutes from "./api/ai-ops-status";
-import businessCategoriesRoutes from "./api/business-categories";
-import aiRetailerOnboardingRoutes from "./api/ai-retailer-onboarding";
-import inventoryCategoriesRoutes from "./api/inventory-categories";
-import aiOpsDashboardRoutes from "./api/ai-ops-dashboard";
-import statusRoutes from "./routes/status";
+import aiOpsStatusRoutes from "./api/ai-ops-status.js";
+import businessCategoriesRoutes from "./api/business-categories.js";
+import aiRetailerOnboardingRoutes from "./api/ai-retailer-onboarding.js";
+import inventoryCategoriesRoutes from "./api/inventory-categories.js";
+import aiOpsDashboardRoutes from "./api/ai-ops-dashboard.js";
+import statusRoutes from "./routes/status.js";
 
 const app = express();
 app.use(express.json());
