@@ -255,7 +255,7 @@ import StoresPage from "@/pages/stores";
 import AdminRetailerApplications from "@/pages/admin-retailer-applications";
 import AiRetailerDemo from "@/pages/ai-retailer-demo";
 import AdminLogin from "@/pages/AdminLogin";
-import AdminDashboard from "@/pages/AdminDashboard";
+import CloudantAdminDashboard from "@/pages/AdminDashboard";
 import RetailerInventoryDashboard from "@/components/RetailerInventoryDashboard";
 import ProductsPage from "@/pages/products";
 import ProductsPageNew from "@/pages/ProductsPage";
@@ -521,7 +521,8 @@ function Router() {
       <Route path="/admin/retailer-applications" component={AdminRetailerApplications} />
       <Route path="/ai-retailer-demo" component={AiRetailerDemo} />
       <Route path="/admin-login" component={AdminLogin} />
-      <Route path="/admin-dashboard" component={AdminDashboard} />
+      <Route path="/admin-dashboard" component={SpiralAdminDashboard} />
+      <Route path="/cloudant-admin" component={CloudantAdminDashboard} />
       <Route path="/retailer-inventory" component={RetailerInventoryDashboard} />
       <Route path="/retailer-dashboard" component={RetailerInventoryDashboard} />
       <Route path="/admin-test-dashboard" component={AdminTestDashboardExisting} />
