@@ -108,15 +108,42 @@ export default function SOAPGDashboard() {
   }
 
   useEffect(() => {
-    // Check system status
-    fetch('/api/soap-g/status')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setSystemStatus(data.status)
-        }
-      })
-      .catch(err => console.log('Status check failed:', err))
+    // Check system status and update agent data
+    const fetchStatus = () => {
+      fetch('/api/soap-g/status')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setSystemStatus(data.status)
+            // Update agents with real-time data from backend
+            if (data.agentDetails) {
+              // Update agent statuses based on backend heartbeat data
+              Object.keys(data.agentDetails).forEach(agentId => {
+                const backendAgent = data.agentDetails[agentId];
+                // Find and update corresponding agent in our local state
+                const agentIndex = agents.findIndex(a => a.id === agentId);
+                if (agentIndex !== -1) {
+                  agents[agentIndex].status = backendAgent.status === 'active' ? 'active' : 
+                                             backendAgent.status === 'processing' ? 'processing' : 'idle';
+                  agents[agentIndex].tasks = backendAgent.pendingTasks || 0;
+                  agents[agentIndex].lastActivity = backendAgent.lastHeartbeat ? 
+                    `${Math.floor((new Date() - new Date(backendAgent.lastHeartbeat)) / 1000)} seconds ago` : 
+                    agents[agentIndex].lastActivity;
+                }
+              });
+            }
+          }
+        })
+        .catch(err => console.log('Status check failed:', err))
+    };
+
+    // Initial fetch
+    fetchStatus();
+    
+    // Set up interval for real-time updates
+    const interval = setInterval(fetchStatus, 5000); // Update every 5 seconds
+    
+    return () => clearInterval(interval);
   }, [])
 
   return (
