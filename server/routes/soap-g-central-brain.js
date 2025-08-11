@@ -345,8 +345,8 @@ class AdminAgent {
   }
 }
 
-// Initialize SOAP G Central Brain
-const soapG = new SOAPGCentralBrain();
+// SOAP G Central Brain is now implemented as functional system above
+// const soapG = new SOAPGCentralBrain(); // Removed class-based approach
 
 // Public API routes with enhanced monitoring
 

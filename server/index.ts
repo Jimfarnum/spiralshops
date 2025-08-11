@@ -112,7 +112,7 @@ app.use((req, res, next) => {
   try {
     const soapGRouter = await import('./routes/soap-g-central-brain.js');
     app.use('/api', soapGRouter.default);
-    console.log('🧠 SOAP G Central Brain initialized with 6 AI agents');
+    console.log('🧠 SOAP G Central Brain routes mounted at /api');
     console.log('✅ Mall Manager AI, Retailer AI, Shopper Engagement AI');
     console.log('✅ Social Media AI, Marketing & Partnerships AI, Admin AI');
   } catch (error: any) {
