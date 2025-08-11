@@ -532,6 +532,8 @@ function Router() {
       <Route path="/upgrade-success" component={UpgradeSuccess} />
       <Route path="/ai-agents" component={AIAgentsPage} />
       <Route path="/dashboard-hub" component={lazy(() => import("./pages/DashboardHubPage"))} />
+      <Route path="/soap-g-dashboard" component={lazy(() => import("./pages/SOAPGDashboardPage"))} />
+      <Route path="/soap-g-test" component={lazy(() => import("./pages/SOAPGTestPage"))} />
       <Route path="/mall-manager-dashboard" component={lazy(() => import("./pages/MallManagerPage"))} />
       <Route path="/retailer-ai-assistant" component={lazy(() => import("./pages/RetailerAIPage"))} />
       <Route path="/shopper-ai-agent" component={lazy(() => import("./pages/ShopperAIPage"))} />

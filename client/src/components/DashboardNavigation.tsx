@@ -12,6 +12,14 @@ export default function DashboardNavigation() {
           <p className="text-lg text-gray-600">
             Choose your role to access specialized AI-powered management tools
           </p>
+          <div className="mt-6">
+            <Link href="/soap-g-dashboard">
+              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                <Brain className="w-5 h-5 mr-2" />
+                SOAP G Central Brain
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

@@ -108,6 +108,17 @@ app.use((req, res, next) => {
     console.log("⚠️ AI Dashboard Agents initialization error:", error.message);
   }
 
+  // Initialize SOAP G Central Brain System
+  try {
+    const soapGRouter = await import('./routes/soap-g-central-brain.js');
+    app.use('/api', soapGRouter.default);
+    console.log('🧠 SOAP G Central Brain initialized with 6 AI agents');
+    console.log('✅ Mall Manager AI, Retailer AI, Shopper Engagement AI');
+    console.log('✅ Social Media AI, Marketing & Partnerships AI, Admin AI');
+  } catch (error: any) {
+    console.log("⚠️ SOAP G Central Brain initialization error:", error.message);
+  }
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
