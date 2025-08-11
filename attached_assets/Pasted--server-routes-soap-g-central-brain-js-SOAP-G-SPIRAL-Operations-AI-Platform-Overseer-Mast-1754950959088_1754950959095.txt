@@ -1,0 +1,80 @@
+// /server/routes/soap-g-central-brain.js
+// SOAP G - SPIRAL Operations AI Platform Overseer
+// Master orchestrator for all SPIRAL AI agents with checks & balances
+
+import express from "express";
+import { mallManagerAgent, retailerAgent, shopperAgent } from "./ai-dashboard-agents.js";
+import { socialMediaAgent, marketingAgent, adminAgent } from "./ai-agents.js";
+
+const router = express.Router();
+
+// Centralized state
+let soapGStatus = {
+    uptime: 0,
+    lastCheck: null,
+    agents: {},
+    alerts: [],
+    tasks: []
+};
+
+// Checks & Balances System
+function runChecksAndBalances() {
+    const now = new Date();
+    soapGStatus.lastCheck = now;
+    soapGStatus.alerts = [];
+
+    Object.keys(soapGStatus.agents).forEach(agentName => {
+        const agent = soapGStatus.agents[agentName];
+        if (!agent || !agent.lastHeartbeat || (now - agent.lastHeartbeat > 60000)) {
+            soapGStatus.alerts.push(`${agentName} has not responded in the last minute`);
+        }
+        if (agent && agent.pendingTasks > 10) {
+            soapGStatus.alerts.push(`${agentName} has unusually high task load`);
+        }
+    });
+
+    return soapGStatus.alerts.length === 0;
+}
+
+// Agent heartbeat registration
+function heartbeat(agentName, stats) {
+    soapGStatus.agents[agentName] = {
+        lastHeartbeat: new Date(),
+        ...stats
+    };
+}
+
+// Master task dispatcher
+async function assignTask(agentName, task) {
+    if (!soapGStatus.agents[agentName]) {
+        throw new Error(`Agent ${agentName} not registered`);
+    }
+    soapGStatus.tasks.push({ agentName, task, assigned: new Date() });
+    return { success: true, task };
+}
+
+// Public API routes
+router.get("/status", (req, res) => {
+    soapGStatus.uptime++;
+    const systemHealthy = runChecksAndBalances();
+    res.json({ systemHealthy, soapGStatus });
+});
+
+router.post("/assign", (req, res) => {
+    const { agentName, task } = req.body;
+    try {
+        const result = assignTask(agentName, task);
+        res.json(result);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+router.post("/heartbeat", (req, res) => {
+    const { agentName, stats } = req.body;
+    heartbeat(agentName, stats);
+    res.json({ success: true });
+});
+
+// Export router
+export default router;
