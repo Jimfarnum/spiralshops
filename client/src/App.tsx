@@ -1,5 +1,5 @@
 import { Switch, Route, useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, lazy } from "react";
 
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -531,6 +531,10 @@ function Router() {
       <Route path="/code-continuity-test" component={CodeContinuityTest} />
       <Route path="/upgrade-success" component={UpgradeSuccess} />
       <Route path="/ai-agents" component={AIAgentsPage} />
+      <Route path="/dashboard-hub" component={lazy(() => import("./pages/DashboardHubPage"))} />
+      <Route path="/mall-manager-dashboard" component={lazy(() => import("./pages/MallManagerPage"))} />
+      <Route path="/retailer-ai-assistant" component={lazy(() => import("./pages/RetailerAIPage"))} />
+      <Route path="/shopper-ai-agent" component={lazy(() => import("./pages/ShopperAIPage"))} />
       <Route path="/beta" component={BetaProgram} />
       <Route path="/stripe-test" component={StripeTestPage} />
       <Route component={NotFound} />

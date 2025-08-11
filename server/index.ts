@@ -99,6 +99,15 @@ app.use((req, res, next) => {
     console.log("⚠️ AI Ops initialization error:", error.message);
   }
 
+  // Initialize AI Dashboard Agents
+  try {
+    const aiDashboardAgentsRouter = await import('./routes/ai-dashboard-agents.js');
+    app.use('/api', aiDashboardAgentsRouter.default);
+    console.log('✅ AI Dashboard Agents registered: MallManager, Retailer, Shopper');
+  } catch (error: any) {
+    console.log("⚠️ AI Dashboard Agents initialization error:", error.message);
+  }
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
