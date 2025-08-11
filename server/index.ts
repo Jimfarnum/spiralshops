@@ -119,6 +119,15 @@ app.use((req, res, next) => {
     console.log("⚠️ SOAP G Central Brain initialization error:", error.message);
   }
 
+  // Initialize Admin Command Center
+  try {
+    const adminCommandCenterRouter = require('./routes/adminCommandCenter.js');
+    app.use('/api/admin-command-center', adminCommandCenterRouter);
+    console.log('🎛️ Admin Command Center initialized with enhanced KPI collection');
+  } catch (error: any) {
+    console.log("⚠️ Admin Command Center initialization error:", error.message);
+  }
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
