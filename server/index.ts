@@ -137,6 +137,15 @@ app.use((req, res, next) => {
     console.log("⚠️ QR routes initialization error:", error.message);
   }
 
+  // Initialize QR Campaign Templates routes
+  try {
+    const qrCampaignTemplatesRouter = await import('./routes/qrCampaignTemplates.js');
+    app.use('/api/qr', qrCampaignTemplatesRouter.default);
+    console.log('✅ QR Campaign Templates routes loaded successfully');
+  } catch (error: any) {
+    console.log("⚠️ QR Campaign Templates routes initialization error:", error.message);
+  }
+
   // Initialize Admin Command Center
   try {
     const adminCommandCenterRouter = require('./routes/adminCommandCenter.js');

@@ -9,6 +9,7 @@ Preferred design approach: Clean, simplified interfaces over complex UI componen
 
 ## Recent Updates (August 12, 2025)
 - **QR Code Marketing System**: Complete QR generation, scanning, and analytics with IBM Cloudant integration
+- **QR Campaign Templates**: 8 proven marketing templates with professional customization and SOAP G coordination
 - **SOAP G Central Brain Enhanced**: 7 specialized AI agents with advanced checks & balances system (added InviteToShop agent)
 - **Cross-Agent Reporting**: Real-time communication between agents for QR activities and campaign coordination
 - **Marketing Analytics Dashboard**: Live QR performance tracking with scan rates, campaign analytics, and auto-refresh

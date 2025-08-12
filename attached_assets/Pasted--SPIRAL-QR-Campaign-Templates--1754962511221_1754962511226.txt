@@ -1,0 +1,356 @@
+/********************************************************************
+SPIRAL QR Campaign Templates – One-Paste Install (Replit + Cloudant)
+Adds: /api/qr/templates  and  /api/qr/create-from-template
+Mall Manager UI: <MallQrCampaignTemplates />
+********************************************************************/
+
+/* =========================
+   BACKEND: routes/qrCampaignTemplates.js
+========================= */
+import express from "express";
+import QRCode from "qrcode";
+import { CloudantV1 } from "@ibm-cloud/cloudant";
+import { IamAuthenticator } from "ibm-cloud-sdk-core";
+import { CLOUDANT_URL, CLOUDANT_APIKEY, CLOUDANT_DB } from "../config.js";
+import soapGReport from "../utils/soapGReport.js";
+
+const router = express.Router();
+
+// --- Cloudant ---
+const cloudant = CloudantV1.newInstance({
+  authenticator: new IamAuthenticator({ apikey: CLOUDANT_APIKEY }),
+  serviceUrl: CLOUDANT_URL,
+});
+
+// --- Template Catalog (curated, tweak as needed) ---
+const QR_CAMPAIGN_TEMPLATES = [
+  {
+    id: "mall-wide-sale",
+    name: "Mall‑Wide Sale Weekend",
+    description: "Drive foot traffic with multi‑store discounts this weekend.",
+    suggestedIncentive: "Earn 2× SPIRALs + 10% off at participating stores",
+    defaultLandingPath: "/welcome?utm=mall_wide_sale",
+    suggestedCopy:
+      "This weekend only — support local, save big. Scan to see deals at verified stores and earn 2× SPIRALs.",
+    suggestedHashtags: ["#MainStreetRevival", "#EarnSPIRALs", "#ShopLocal"],
+  },
+  {
+    id: "grand-opening",
+    name: "Grand Opening",
+    description: "Launch a new store with a splash and measurable reach.",
+    suggestedIncentive: "First 100 shoppers get bonus SPIRALs",
+    defaultLandingPath: "/welcome?utm=grand_opening",
+    suggestedCopy:
+      "We’re open! Scan to claim your welcome reward and discover opening‑day offers.",
+    suggestedHashtags: ["#NewInTown", "#LocalLove", "#EarnSPIRALs"],
+  },
+  {
+    id: "flash-deal",
+    name: "Flash Deal (24h)",
+    description: "Time‑boxed urgency to clear stock and spike visits.",
+    suggestedIncentive: "Limited time: 15% off + SPIRAL bonus today only",
+    defaultLandingPath: "/welcome?utm=flash_deal_24h",
+    suggestedCopy:
+      "24‑hour local deal—scan now to unlock today’s rewards and store‑only pricing.",
+    suggestedHashtags: ["#TodayOnly", "#LocalDeals", "#EarnSPIRALs"],
+  },
+  {
+    id: "seasonal-festival",
+    name: "Seasonal Festival",
+    description: "Tie into seasonal events with family‑friendly traffic.",
+    suggestedIncentive: "Kids‑eat‑free partner promo + double SPIRAL weekends",
+    defaultLandingPath: "/welcome?utm=seasonal_festival",
+    suggestedCopy:
+      "Celebrate the season with local favorites. Scan for events, treats, and bonus SPIRALs.",
+    suggestedHashtags: ["#Seasonal", "#FamilyTime", "#ShopLocal"],
+  },
+  {
+    id: "verified-spotlight",
+    name: "Verified Retailer Spotlight",
+    description: "Highlight trusted, SPIRAL‑verified stores in one campaign.",
+    suggestedIncentive: "Extra SPIRALs at verified stores this week",
+    defaultLandingPath: "/welcome?utm=verified_spotlight",
+    suggestedCopy:
+      "Trust your Main Street. Scan to explore SPIRAL‑verified stores and earn extra SPIRALs.",
+    suggestedHashtags: ["#VerifiedLocal", "#EarnSPIRALs", "#MainStreetRevival"],
+  },
+];
+
+// --- GET: list templates ---
+router.get("/templates", async (_req, res) => {
+  res.json({ templates: QR_CAMPAIGN_TEMPLATES });
+});
+
+// --- POST: create from template (auto-generate QR, log, report) ---
+/*
+Body:
+{
+  "templateId": "grand-opening",
+  "ownerType": "mall|retailer", // who owns this campaign
+  "ownerId": "abc123",          // mallId or retailerId
+  "campaignName": "Grand Opening – North Entrance",
+  "landingPathOverride": "/welcome?utm=go_north",
+  "metadata": { "eventDate": "...", "notes": "..." }
+}
+*/
+router.post("/create-from-template", async (req, res) => {
+  try {
+    const {
+      templateId,
+      ownerType,
+      ownerId,
+      campaignName,
+      landingPathOverride,
+      metadata = {},
+    } = req.body;
+
+    const tpl = QR_CAMPAIGN_TEMPLATES.find((t) => t.id === templateId);
+    if (!tpl) return res.status(400).json({ error: "Unknown templateId" });
+    if (!ownerType || !ownerId)
+      return res.status(400).json({ error: "ownerType and ownerId required" });
+
+    const landingPath = landingPathOverride || tpl.defaultLandingPath || "/welcome";
+    // NOTE: Your public domain/landing handler here:
+    const qrLink = `https://spiral-platform.app${landingPath}&cid=${encodeURIComponent(
+      campaignName || tpl.name
+    )}&owner=${ownerType}:${ownerId}`;
+
+    // Generate QR (base64 PNG)
+    const qrImage = await QRCode.toDataURL(qrLink, {
+      errorCorrectionLevel: "H",
+      width: 560,
+      margin: 2,
+      color: { dark: "#000000", light: "#ffffff" },
+    });
+
+    // Save to Cloudant
+    const createdAt = new Date().toISOString();
+    await cloudant.postDocument({
+      db: CLOUDANT_DB,
+      document: {
+        type: "qr_generated",
+        source: "template",
+        templateId,
+        ownerType,
+        ownerId,
+        campaignName: campaignName || tpl.name,
+        suggestedIncentive: tpl.suggestedIncentive,
+        suggestedCopy: tpl.suggestedCopy,
+        suggestedHashtags: tpl.suggestedHashtags,
+        landingPath,
+        qrLink,
+        qrImage,
+        metadata,
+        createdAt,
+      },
+    });
+
+    // Cross-agent report (SOAP G)
+    await soapGReport({
+      agent: "MarketingAI",
+      action: "QR_TEMPLATE_CREATED",
+      data: {
+        templateId,
+        ownerType,
+        ownerId,
+        campaignName: campaignName || tpl.name,
+        qrLink,
+        createdAt,
+      },
+    });
+
+    res.json({
+      success: true,
+      qrLink,
+      qrImage,
+      template: {
+        id: tpl.id,
+        name: tpl.name,
+        description: tpl.description,
+        suggestedIncentive: tpl.suggestedIncentive,
+        suggestedCopy: tpl.suggestedCopy,
+        suggestedHashtags: tpl.suggestedHashtags,
+      },
+    });
+  } catch (err) {
+    console.error("QR template create error:", err);
+    res.status(500).json({ error: "Failed to create campaign QR" });
+  }
+});
+
+export default router;
+
+
+/* =========================
+   FRONTEND: components/MallQrCampaignTemplates.jsx
+========================= */
+import React, { useEffect, useState } from "react";
+
+export default function MallQrCampaignTemplates({ ownerType = "mall", ownerId }) {
+  const [templates, setTemplates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(null);
+  const [campaignName, setCampaignName] = useState("");
+  const [qrResult, setQrResult] = useState(null);
+  const [notes, setNotes] = useState("");
+
+  useEffect(() => {
+    fetch("/api/qr/templates")
+      .then((r) => r.json())
+      .then((d) => setTemplates(d.templates || []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const createFromTemplate = async () => {
+    if (!selected || !ownerId) return alert("Select a template and ensure ownerId is set.");
+    const body = {
+      templateId: selected.id,
+      ownerType,
+      ownerId,
+      campaignName: campaignName || selected.name,
+      metadata: { notes },
+    };
+    const res = await fetch("/api/qr/create-from-template", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!data.success) return alert(data.error || "Failed to create campaign");
+    setQrResult(data);
+  };
+
+  return (
+    <div style={{ padding: "16px", background: "#fff", borderRadius: 12, border: "1px solid #eee" }}>
+      <h2 style={{ marginTop: 0 }}>QR Campaign Templates</h2>
+      <p style={{ color: "#555" }}>
+        Pick a proven template, customize lightly, and generate a trackable QR code. SOAP G will
+        coordinate Social, Shopper Engagement, and Marketing agents for you.
+      </p>
+
+      {loading ? (
+        <div>Loading templates…</div>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 16 }}>
+          {templates.map((tpl) => (
+            <div
+              key={tpl.id}
+              onClick={() => setSelected(tpl)}
+              style={{
+                cursor: "pointer",
+                padding: 16,
+                borderRadius: 10,
+                border: selected?.id === tpl.id ? "2px solid #111" : "1px solid #ddd",
+                background: selected?.id === tpl.id ? "#fafafa" : "#fff",
+              }}
+            >
+              <h3 style={{ margin: "0 0 6px" }}>{tpl.name}</h3>
+              <p style={{ margin: "0 0 8px", color: "#444" }}>{tpl.description}</p>
+              <div style={{ fontSize: 13, color: "#333" }}>
+                <strong>Incentive:</strong> {tpl.suggestedIncentive}
+                <br />
+                <strong>Copy:</strong> <em>{tpl.suggestedCopy}</em>
+                <br />
+                <strong>Hashtags:</strong> {tpl.suggestedHashtags.join(" ")}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px dashed #ddd" }}>
+        <label style={{ display: "block", marginBottom: 8 }}>
+          Campaign Name
+          <input
+            value={campaignName}
+            onChange={(e) => setCampaignName(e.target.value)}
+            placeholder="e.g., Summer Kickoff Weekend"
+            style={{ display: "block", width: "100%", padding: 10, marginTop: 6, borderRadius: 8, border: "1px solid #ccc" }}
+          />
+        </label>
+        <label style={{ display: "block", margin: "8px 0" }}>
+          Notes (optional)
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Add details for your team (not shown to shoppers)…"
+            rows={3}
+            style={{ display: "block", width: "100%", padding: 10, marginTop: 6, borderRadius: 8, border: "1px solid #ccc" }}
+          />
+        </label>
+        <button
+          onClick={createFromTemplate}
+          disabled={!selected || !ownerId}
+          style={{
+            background: "#111", color: "#fff", border: "none", padding: "10px 16px",
+            borderRadius: 8, cursor: selected && ownerId ? "pointer" : "not-allowed"
+          }}
+        >
+          Generate Campaign QR
+        </button>
+      </div>
+
+      {qrResult && (
+        <div style={{ marginTop: 20, padding: 16, border: "1px solid #eee", borderRadius: 10 }}>
+          <h3 style={{ marginTop: 0 }}>Campaign Ready</h3>
+          <p><strong>Landing Link:</strong> <a href={qrResult.qrLink} target="_blank" rel="noreferrer">{qrResult.qrLink}</a></p>
+          <img src={qrResult.qrImage} alt="Campaign QR" width="240" height="240" />
+          <div style={{ marginTop: 10 }}>
+            <a href={qrResult.qrImage} download="spiral-campaign-qr.png">Download QR</a>
+          </div>
+          <div style={{ marginTop: 10, fontSize: 13, color: "#333" }}>
+            <strong>Suggested Copy:</strong> <em>{qrResult.template.suggestedCopy}</em><br />
+            <strong>Hashtags:</strong> {qrResult.template.suggestedHashtags.join(" ")}<br />
+            <strong>Incentive:</strong> {qrResult.template.suggestedIncentive}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+/* =========================
+   SUPPORT: utils/soapGReport.js
+   (Only include if you don't already have it)
+========================= */
+import fetch from "node-fetch";
+export default async function soapGReport({ agent, action, data }) {
+  try {
+    await fetch(process.env.SOAPG_REPORT_URL || "http://localhost:3000/api/soapg/report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ agent, action, data, timestamp: new Date().toISOString() }),
+    });
+  } catch (err) {
+    console.error("SOAP G report error:", err);
+  }
+}
+
+
+/* =========================
+   CONFIG: config.js
+   (Only include if you don't already have it)
+========================= */
+export const CLOUDANT_URL = process.env.CLOUDANT_URL;
+export const CLOUDANT_APIKEY = process.env.CLOUDANT_APIKEY;
+export const CLOUDANT_DB = process.env.CLOUDANT_DB || "spiral_qr";
+
+
+/* =========================
+   INTEGRATION (3 steps)
+========================= */
+// 1) Add backend route to your Express app (server.js or app.js):
+// import qrCampaignTemplates from "./routes/qrCampaignTemplates.js";
+// app.use("/api/qr", qrCampaignTemplates);
+
+// 2) Use the component in your Mall Manager dashboard page:
+// import MallQrCampaignTemplates from "../components/MallQrCampaignTemplates.jsx";
+// <MallQrCampaignTemplates ownerType="mall" ownerId={activeMallId} />
+
+// 3) Make sure your Replit .env has Cloudant creds:
+// CLOUDANT_URL=your-cloudant-url
+// CLOUDANT_APIKEY=your-cloudant-apikey
+// CLOUDANT_DB=spiral_qr
+// (Optional) SOAPG_REPORT_URL=https://your-server/api/soapg/report
