@@ -169,6 +169,17 @@ app.use((req, res, next) => {
     console.log("⚠️ QR Campaign Templates routes initialization error:", error.message);
   }
 
+  // Initialize Internal Platform Monitor
+  try {
+    // @ts-ignore
+    const internalMonitorRouter = await import('./routes/internal-platform-monitor.js');
+    app.use('/api/internal-monitor', internalMonitorRouter.default);
+    console.log('🤖 Internal Platform AI Agent routes loaded successfully');
+    console.log('✅ Continuous monitoring: UI/UX, bottlenecks, crash points, onboarding');
+  } catch (error: any) {
+    console.log("⚠️ Internal Platform Monitor initialization error:", error.message);
+  }
+
   // Initialize Admin Command Center
   try {
     const adminCommandCenterRouter = require('./routes/adminCommandCenter.js');

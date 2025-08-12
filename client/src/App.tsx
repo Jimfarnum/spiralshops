@@ -76,6 +76,10 @@ import SEOLandingRoute from "@/pages/SEOLandingRoute";
 import QRCodeHub from "@/pages/QRCodeHub";
 import BetaProgram from "@/pages/BetaProgram";
 import StripeTestPage from "@/pages/StripeTestPage";
+import InternalPlatformDashboard from "@/components/InternalPlatformDashboard";
+import SEOHead from "@/components/SEOHead";
+import PerformanceOptimizer from "@/components/PerformanceOptimizer";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import RetailerOnboardAgentDemo from "@/pages/RetailerOnboardAgentDemo";
 import StripeConnectSuccess from "@/pages/retailer/onboarding/success";
 import ProductEntryAgentDemo from "@/pages/ProductEntryAgentDemo";
@@ -275,7 +279,14 @@ function Router() {
   // Update meta tags and track page views when route changes
   useEffect(() => {
     updateMetaTags(location);
-    SocialPixelManager.trackUniversalEvent('page_view');
+    
+    // Track page views with Google Analytics if available
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'page_view', {
+        page_location: window.location.href,
+        page_path: location
+      });
+    }
   }, [location]);
 
   return (
@@ -541,6 +552,7 @@ function Router() {
       <Route path="/shopper-ai-agent" component={lazy(() => import("./pages/ShopperAIPage"))} />
       <Route path="/beta" component={BetaProgram} />
       <Route path="/stripe-test" component={StripeTestPage} />
+      <Route path="/internal-platform-monitor" component={InternalPlatformDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
