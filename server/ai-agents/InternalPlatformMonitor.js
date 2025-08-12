@@ -191,19 +191,32 @@ class InternalPlatformMonitor {
     }, 30000); // Every 30 seconds
   }
 
-  // AI-powered analysis and correction
+  // AI-powered analysis and correction (single run, not loop)
   async aiAnalysisLoop() {
     try {
-      const systemState = this.generateSystemState();
+      // Get system state without recursion
+      const now = Date.now();
+      const systemState = {
+        memoryUsage: Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100,
+        avgApiTime: this.calculateAvgApiTime(),
+        errorRate: this.calculateErrorRate(),
+        timestamp: now
+      };
+      
       const analysis = await this.analyzeWithAI(systemState);
       
-      if (analysis.recommendations) {
+      if (analysis && analysis.recommendations) {
         for (const recommendation of analysis.recommendations) {
           await this.implementRecommendation(recommendation);
         }
       }
     } catch (error) {
-      console.error('AI analysis error:', error);
+      // Handle quota errors gracefully
+      if (error.status === 429) {
+        console.log('🤖 Internal Platform AI Agent: AI analysis paused due to quota limits (monitoring continues)');
+      } else {
+        console.error('AI analysis error:', error.message);
+      }
     }
   }
 
@@ -407,7 +420,7 @@ Format as JSON with recommendations array.
         avgApiTime: Math.round(avgApiTime * 100) / 100,
         memoryUsage,
         uiLoadTime: this.getRecentUIMetric('page_load'),
-        criticalIssues: this.identifyCriticalIssues(),
+        criticalIssues: [], // Calculated separately to avoid recursion
         recentCorrections,
         timestamp: now
       };
@@ -626,21 +639,30 @@ Format as JSON with recommendations array.
 
   identifyCriticalIssues() {
     const issues = [];
-    const systemState = this.generateSystemState();
     
-    if (systemState.avgApiTime > this.thresholds.criticalResponseTime) {
-      issues.push(`Critical API response time: ${systemState.avgApiTime}ms`);
+    try {
+      // Direct calculations without calling generateSystemState to avoid recursion
+      const avgApiTime = this.calculateAvgApiTime();
+      const memoryUsage = Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100;
+      const errorRate = this.calculateErrorRate();
+      
+      if (avgApiTime > this.thresholds.criticalResponseTime) {
+        issues.push(`Critical API response time: ${avgApiTime}ms`);
+      }
+      
+      if (memoryUsage > this.thresholds.memoryUsage) {
+        issues.push(`High memory usage: ${memoryUsage}MB`);
+      }
+      
+      if (errorRate > this.thresholds.errorRate * 100) {
+        issues.push(`High error rate: ${errorRate}%`);
+      }
+      
+      return issues;
+    } catch (error) {
+      console.error('Error identifying critical issues:', error);
+      return [];
     }
-    
-    if (systemState.memoryUsage > this.thresholds.memoryUsage) {
-      issues.push(`High memory usage: ${systemState.memoryUsage}MB`);
-    }
-    
-    if (systemState.errorRate > this.thresholds.errorRate * 100) {
-      issues.push(`High error rate: ${systemState.errorRate}%`);
-    }
-    
-    return issues;
   }
 
   async implementRecommendation(recommendation) {
