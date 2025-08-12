@@ -1,6 +1,7 @@
 import express from "express";
 import QRCode from "qrcode";
 import { CloudantV1 } from "@ibm-cloud/cloudant";
+import { v4 as uuidv4 } from "uuid";
 import soapGReport from "../utils/soapGReport.js";
 
 const router = express.Router();
@@ -27,6 +28,21 @@ let fallbackStorage = {
   qr_templates: [],
   template_campaigns: []
 };
+
+// SPIRAL SVG Logo for Template QR Codes
+const SPIRAL_TEMPLATE_SVG = `
+<svg width="80" height="80" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="templateGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="95" stroke="url(#templateGrad)" stroke-width="8" fill="white"/>
+  <text x="50%" y="45%" text-anchor="middle" dy=".3em" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="url(#templateGrad)">SPIRAL</text>
+  <text x="50%" y="65%" text-anchor="middle" dy=".3em" font-family="Arial, sans-serif" font-size="11" font-weight="normal" fill="#6B7280">Template</text>
+</svg>
+`.trim();
 
 // Template Catalog - proven retail marketing campaigns
 const QR_CAMPAIGN_TEMPLATES = [
@@ -222,16 +238,38 @@ router.post("/create-from-template", async (req, res) => {
     const baseUrl = process.env.REPLIT_DEV_DOMAIN || 'https://spiralshops.com';
     const qrLink = `${baseUrl}${landingPath}&cid=${encodeURIComponent(finalCampaignName)}&owner=${ownerType}:${ownerId}&template=${templateId}`;
 
-    // Generate high-quality QR code
-    const qrImage = await QRCode.toDataURL(qrLink, {
+    // Generate high-quality QR code with template branding
+    const qrOptions = {
       errorCorrectionLevel: "H",
       width: 400,
       margin: 2,
-      color: { dark: "#1a202c", light: "#ffffff" },
+      color: { dark: "#1a202c", light: "#ffffff" }
+    };
+
+    // Generate as SVG for logo embedding
+    let qrSVG = await QRCode.toString(qrLink, { 
+      ...qrOptions, 
+      type: 'svg' 
     });
 
+    // Embed SPIRAL template logo
+    const logoBase64 = Buffer.from(SPIRAL_TEMPLATE_SVG).toString('base64');
+    const logoSize = qrOptions.width * 0.22; // Slightly smaller for templates
+    const logoX = (qrOptions.width - logoSize) / 2;
+    const logoY = (qrOptions.width - logoSize) / 2;
+    
+    qrSVG = qrSVG.replace(
+      '</svg>',
+      `<rect x="${logoX - 8}" y="${logoY - 8}" width="${logoSize + 16}" height="${logoSize + 16}" fill="white" fill-opacity="0.95" rx="6"/>
+       <image x="${logoX}" y="${logoY}" width="${logoSize}" height="${logoSize}" href="data:image/svg+xml;base64,${logoBase64}"/>
+       </svg>`
+    );
+
+    // Convert to base64 data URL
+    const qrImage = `data:image/svg+xml;base64,${Buffer.from(qrSVG).toString('base64')}`;
+
     const createdAt = new Date().toISOString();
-    const campaignId = `campaign_${templateId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const campaignId = uuidv4();
     
     // Campaign document for storage
     const campaignDoc = {

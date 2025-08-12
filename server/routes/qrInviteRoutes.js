@@ -1,6 +1,7 @@
 import express from "express";
 import QRCode from "qrcode";
 import { CloudantV1 } from "@ibm-cloud/cloudant";
+import { v4 as uuidv4 } from "uuid";
 import soapGReport from "../utils/soapGReport.js";
 
 const router = express.Router();
@@ -28,28 +29,70 @@ let fallbackStorage = {
   qr_scanned: []
 };
 
-// Generate QR Code
+// Inline SPIRAL SVG Logo for QR code branding
+const SPIRAL_SVG_LOGO = `
+<svg width="80" height="80" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="spiralGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="95" stroke="url(#spiralGrad)" stroke-width="8" fill="white"/>
+  <text x="50%" y="45%" text-anchor="middle" dy=".3em" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="url(#spiralGrad)">SPIRAL</text>
+  <text x="50%" y="65%" text-anchor="middle" dy=".3em" font-family="Arial, sans-serif" font-size="12" font-weight="normal" fill="#6B7280">Local Commerce</text>
+</svg>
+`.trim();
+
+// Generate QR Code with SPIRAL SVG Logo
 router.post("/generate-qr", async (req, res) => {
   try {
-    const { retailerId, campaignName, shopperId } = req.body;
+    const { retailerId, campaignName, shopperId, style = "full" } = req.body;
+    const campaignId = uuidv4();
     const qrData = {
       retailerId,
       campaignName,
       shopperId: shopperId || 'guest',
       createdAt: new Date().toISOString(),
-      id: `qr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      id: campaignId
     };
 
-    const qrLink = `${process.env.REPLIT_DEV_DOMAIN || 'https://spiralshops.com'}/invite?retailer=${retailerId}&campaign=${encodeURIComponent(campaignName)}&ref=qr`;
+    const qrLink = `${process.env.REPLIT_DEV_DOMAIN || 'https://spiralshops.com'}/qr/scan?id=${campaignId}&retailer=${retailerId}&campaign=${encodeURIComponent(campaignName)}&ref=qr`;
 
-    const qrImage = await QRCode.toDataURL(qrLink, {
-      width: 300,
+    const qrOptions = {
+      width: style === "compact" ? 240 : 400,
       margin: 2,
       color: {
         dark: '#1a202c',
         light: '#ffffff'
-      }
+      },
+      errorCorrectionLevel: 'H' // High error correction for logo overlay
+    };
+
+    // Generate base QR code as SVG for logo embedding
+    let qrSVG = await QRCode.toString(qrLink, { 
+      ...qrOptions, 
+      type: 'svg' 
     });
+
+    // Embed SPIRAL logo in the center for full style
+    if (style === "full") {
+      const logoBase64 = Buffer.from(SPIRAL_SVG_LOGO).toString('base64');
+      const logoSize = qrOptions.width * 0.25; // 25% of QR size
+      const logoX = (qrOptions.width - logoSize) / 2;
+      const logoY = (qrOptions.width - logoSize) / 2;
+      
+      qrSVG = qrSVG.replace(
+        '</svg>',
+        `<image x="${logoX}" y="${logoY}" width="${logoSize}" height="${logoSize}" href="data:image/svg+xml;base64,${logoBase64}"/>
+         <rect x="${logoX - 10}" y="${logoY - 10}" width="${logoSize + 20}" height="${logoSize + 20}" fill="white" fill-opacity="0.9" rx="8"/>
+         <image x="${logoX}" y="${logoY}" width="${logoSize}" height="${logoSize}" href="data:image/svg+xml;base64,${logoBase64}"/>
+         </svg>`
+      );
+    }
+
+    // Convert SVG to base64 data URL
+    const qrImage = `data:image/svg+xml;base64,${Buffer.from(qrSVG).toString('base64')}`;
 
     const document = {
       type: "qr_generated",
@@ -97,20 +140,22 @@ router.post("/generate-qr", async (req, res) => {
   }
 });
 
-// Handle QR Scan
+// Handle QR Scan with Enhanced Tracking
 router.get("/scan", async (req, res) => {
   try {
-    const { retailer, campaign, ref } = req.query;
+    const { id, retailer, campaign, ref } = req.query;
 
     const scanData = {
       type: "qr_scan",
+      campaignId: id,
       retailerId: retailer,
       campaignName: campaign,
       referrer: ref || 'direct',
       scannedAt: new Date().toISOString(),
       userAgent: req.get('User-Agent') || 'unknown',
       ip: req.ip || req.connection.remoteAddress,
-      id: `scan_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      id: `scan_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      hasLogo: true // Track that this scan came from a branded QR code
     };
 
     // Log scan event

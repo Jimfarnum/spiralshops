@@ -30,6 +30,7 @@ export default function QRCodeGenerator({
 }: QRCodeGeneratorProps) {
   const [campaignName, setCampaignName] = useState(defaultCampaign)
   const [description, setDescription] = useState("")
+  const [qrStyle, setQRStyle] = useState<'full' | 'compact'>('full')
   const [generating, setGenerating] = useState(false)
   const [qrData, setQRData] = useState<any>(null)
   const { toast } = useToast()
@@ -55,7 +56,8 @@ export default function QRCodeGenerator({
           retailerId,
           campaignName: campaignName.trim(),
           description: description.trim(),
-          shopperId: 'current-user' // This would come from auth context
+          shopperId: 'current-user', // This would come from auth context
+          style: qrStyle
         }),
       })
 
@@ -182,6 +184,37 @@ export default function QRCodeGenerator({
             />
           </div>
 
+          <div>
+            <Label className="text-purple-800 font-medium">QR Code Style</Label>
+            <div className="flex gap-4 mt-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="qrStyle"
+                  value="full"
+                  checked={qrStyle === 'full'}
+                  onChange={(e) => setQRStyle(e.target.value as 'full' | 'compact')}
+                  className="text-purple-600"
+                />
+                <span className="text-sm text-purple-700">Full (with SPIRAL logo)</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="qrStyle"
+                  value="compact"
+                  checked={qrStyle === 'compact'}
+                  onChange={(e) => setQRStyle(e.target.value as 'full' | 'compact')}
+                  className="text-purple-600"
+                />
+                <span className="text-sm text-purple-700">Compact</span>
+              </label>
+            </div>
+            <p className="text-xs text-purple-600 mt-1">
+              Full style includes the SPIRAL logo in the center for brand recognition
+            </p>
+          </div>
+
           <Button 
             onClick={generateQR}
             disabled={generating || !campaignName.trim()}
@@ -212,8 +245,13 @@ export default function QRCodeGenerator({
                 <img 
                   src={qrData.qrImage} 
                   alt={`QR Code for ${campaignName}`}
-                  className="w-48 h-48 mx-auto"
+                  className={qrStyle === 'full' ? 'w-64 h-64 mx-auto' : 'w-48 h-48 mx-auto'}
                 />
+                <div className="text-center mt-2">
+                  <Badge variant="outline" className="text-xs">
+                    {qrStyle === 'full' ? 'Branded QR' : 'Compact QR'}
+                  </Badge>
+                </div>
               </div>
             </div>
 
