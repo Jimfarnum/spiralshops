@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import QRCodeGenerator from '@/components/QRCodeGenerator'
 import MallQrCampaignTemplates from '@/components/MallQrCampaignTemplates'
+import SpiralQRGenerator from '@/components/SpiralQRGenerator'
 import { 
   Building2, 
   Users, 
@@ -348,7 +349,17 @@ export default function MallManagerDashboard() {
                   
                   {/* Divider */}
                   <div className="border-t border-purple-200 pt-6">
-                    <h3 className="text-lg font-semibold text-purple-900 mb-4">Custom QR Generator</h3>
+                    <h3 className="text-lg font-semibold text-purple-900 mb-4">Advanced QR Generator</h3>
+                    <SpiralQRGenerator 
+                      onQRGenerated={(qrData) => {
+                        console.log('Advanced QR Generated:', qrData);
+                      }}
+                    />
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-purple-200 pt-6">
+                    <h3 className="text-lg font-semibold text-purple-900 mb-4">Simple QR Generator</h3>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       <QRCodeGenerator 
                         retailerId="mall-manager-001"

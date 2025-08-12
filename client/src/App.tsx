@@ -73,6 +73,7 @@ import LoyaltyProgramPage from "@/pages/LoyaltyProgramPage";
 import DeliveryOptionsPage from "@/pages/DeliveryOptionsPage";
 import RetailerProfilePage from "@/pages/RetailerProfilePage";
 import SEOLandingRoute from "@/pages/SEOLandingRoute";
+import QRCodeHub from "@/pages/QRCodeHub";
 import BetaProgram from "@/pages/BetaProgram";
 import StripeTestPage from "@/pages/StripeTestPage";
 import RetailerOnboardAgentDemo from "@/pages/RetailerOnboardAgentDemo";
@@ -352,6 +353,7 @@ function Router() {
       <Route path="/p0-features-demo" component={P1FeaturesDemo} />
       <Route path="/p1-features-demo" component={P1FeaturesDemo} />
       <Route path="/p1-test-suite" component={P1TestSuite} />
+      <Route path="/qr-hub" component={QRCodeHub} />
       <Route path="/loyalty-dashboard" component={LoyaltyDashboard} />
       <Route path="/mall-events-demo" component={MallEventsDemo} />
       <Route path="/retailer-onboarding" component={RetailerOnboarding} />

@@ -325,4 +325,74 @@ router.get("/retailer/:retailerId/analytics", async (req, res) => {
   }
 });
 
+// Admin Dashboard Data
+router.get("/admin/qr-dashboard", async (req, res) => {
+  try {
+    let campaigns = [];
+
+    if (cloudant) {
+      try {
+        const result = await cloudant.postFind({
+          db: CLOUDANT_DB,
+          selector: { type: "qr_generated" },
+          limit: 50,
+          sort: [{ createdAt: "desc" }]
+        });
+        campaigns = result.result.docs.map(doc => ({
+          _id: doc.id,
+          campaignName: doc.campaignName,
+          targetUrl: doc.retailerId ? `/invite?retailer=${doc.retailerId}` : '/welcome',
+          scans: doc.scans || 0,
+          createdAt: doc.createdAt
+        }));
+      } catch (cloudantError) {
+        console.log("Cloudant dashboard fetch failed, using fallback:", cloudantError.message);
+        campaigns = fallbackStorage.qr_generated.map(doc => ({
+          _id: doc.id,
+          campaignName: doc.campaignName,
+          targetUrl: doc.retailerId ? `/invite?retailer=${doc.retailerId}` : '/welcome',
+          scans: doc.scans || 0,
+          createdAt: doc.createdAt
+        }));
+      }
+    } else {
+      campaigns = fallbackStorage.qr_generated.map(doc => ({
+        _id: doc.id,
+        campaignName: doc.campaignName,
+        targetUrl: doc.retailerId ? `/invite?retailer=${doc.retailerId}` : '/welcome',
+        scans: doc.scans || 0,
+        createdAt: doc.createdAt
+      }));
+    }
+
+    res.json({ campaigns });
+  } catch (error) {
+    console.error("Dashboard data fetch error:", error);
+    res.status(500).json({ error: "Failed to fetch dashboard data" });
+  }
+});
+
+// Mall Manager QR Hub (AI Assisted)
+router.get("/mall-manager/qr-hub", (req, res) => {
+  res.json({
+    aiSuggestions: [
+      "Weekend Local Festival Promo",
+      "Buy One Get One Free Friday",
+      "Exclusive Mall Loyalty Day Campaign",
+      "Holiday Shopping Guide 2024",
+      "New Store Grand Opening",
+      "Flash Sale - 24 Hours Only",
+      "Customer Appreciation Week",
+      "Back to School Special Offers"
+    ],
+    tip: "Use QR codes in entrances, food courts, and high-traffic areas for maximum engagement.",
+    bestPractices: [
+      "Place QR codes at eye level for easy scanning",
+      "Include clear instructions like 'Scan for Deals'",
+      "Test QR codes before printing and distribution",
+      "Use high contrast colors for better scanning"
+    ]
+  });
+});
+
 export default router;
