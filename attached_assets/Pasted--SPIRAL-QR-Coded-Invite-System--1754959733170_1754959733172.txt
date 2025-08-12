@@ -1,0 +1,107 @@
+/********************************************************************
+SPIRAL QR-Coded Invite System
+QR Codes with SPIRAL Logo → Landing Page/App Download
+Integrated with Invite to Shop AI Agent
+********************************************************************/
+
+// ===== Dependencies =====
+// npm install qrcode canvas node-fetch
+
+const express = require('express');
+const QRCode = require('qrcode');
+const { createCanvas, loadImage } = require('canvas');
+const cloudant = require('../utils/cloudant');
+const router = express.Router();
+
+// Invite to Shop AI Agent - QR Integration
+router.post('/invite-shopper', async (req, res) => {
+  try {
+    const { inviterId, customMessage } = req.body;
+    if (!inviterId) return res.status(400).json({ error: 'Missing inviter ID' });
+
+    // Fixed SPIRAL Landing Page URL (device-aware)
+    const spiralLandingURL = `https://spiralplatform.com/invite?ref=${inviterId}`;
+
+    // Generate QR Code with SPIRAL logo
+    const qrDataUrl = await QRCode.toDataURL(spiralLandingURL, {
+      errorCorrectionLevel: 'H',
+      width: 500,
+      margin: 2,
+      color: { dark: '#000000', light: '#ffffff' }
+    });
+
+    const canvas = createCanvas(500, 500);
+    const ctx = canvas.getContext('2d');
+
+    // Draw QR
+    const qrImage = await loadImage(qrDataUrl);
+    ctx.drawImage(qrImage, 0, 0);
+
+    // Overlay SPIRAL Logo (ensure /public/images/spiral-logo.png exists)
+    const logo = await loadImage('./public/images/spiral-logo.png');
+    const logoSize = 100;
+    const logoX = (canvas.width - logoSize) / 2;
+    const logoY = (canvas.height - logoSize) / 2;
+    ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+
+    // Save QR to Cloudant
+    const dbInvites = cloudant.db.use('spiral_invites');
+    const doc = {
+      type: 'shopper_invite',
+      inviterId,
+      customMessage: customMessage || '',
+      inviteUrl: spiralLandingURL,
+      qrImage: canvas.toDataURL(),
+      createdAt: new Date()
+    };
+    await dbInvites.insert(doc);
+
+    // Return QR & invite details
+    res.json({
+      message: 'Invite QR Code generated successfully',
+      invite: doc
+    });
+
+  } catch (error) {
+    console.error('Invite QR Error:', error);
+    res.status(500).json({ error: 'Failed to generate invite QR' });
+  }
+});
+
+module.exports = router;
+
+// ===== Client-side Invite UI (React) =====
+import { useState } from 'react';
+
+export default function InviteShopper() {
+  const [customMessage, setCustomMessage] = useState('');
+  const [qrImage, setQrImage] = useState(null);
+
+  const sendInvite = async () => {
+    const res = await fetch('/invite-shopper', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        inviterId: 'currentUserId123',
+        customMessage
+      })
+    });
+    const data = await res.json();
+    setQrImage(data.invite.qrImage);
+  };
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <h1>Invite Friends to SPIRAL</h1>
+      <textarea
+        placeholder="Add a custom welcome message (optional)"
+        value={customMessage}
+        onChange={(e) => setCustomMessage(e.target.value)}
+        style={{ width: '400px', height: '100px', margin: '5px' }}
+      />
+      <br />
+      <button onClick={sendInvite}>Generate Invite QR</button>
+
+      {qrImage && (
+        <div style={{ marginTop: '20px' }}>
+          <

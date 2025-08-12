@@ -1,0 +1,189 @@
+/********************************************************************
+SPIRAL Invite to Shop – Self-Testing Workflow + Admin Dashboard
+Full unified code for Replit with IBM Cloudant backend.
+********************************************************************/
+
+// ===== server/routes/inviteToShop.js =====
+const express = require('express');
+const router = express.Router();
+const cloudant = require('../utils/cloudant');
+const SOAPG = require('../agents/soap-g-central-brain');
+const { shopperEngagementAI, socialMediaAI, mallManagerAI } = require('../agents/ai-dashboard-agents');
+
+// Helper: Validate non-empty
+const validateOutput = (label, data) => {
+  if (!data || (Array.isArray(data) && data.length === 0) || (typeof data === 'object' && Object.keys(data).length === 0)) {
+    throw new Error(`${label} returned empty result`);
+  }
+  return true;
+};
+
+router.post('/create', async (req, res) => {
+  const report = {
+    workflow: 'inviteToShop',
+    stages: [],
+    createdAt: new Date(),
+    status: 'In Progress'
+  };
+
+  try {
+    const { shopperId, friends, platform, location, preferences } = req.body;
+    const dbInvites = cloudant.db.use('spiral_invites');
+    const dbReports = cloudant.db.use('spiral_invite_reports');
+
+    // Stage 1: Shopper Engagement Plan
+    const shoppingPlan = await shopperEngagementAI.generatePlan({ preferences, location });
+    validateOutput('Shopper Engagement AI', shoppingPlan);
+    report.stages.push({ stage: 'Shopper Engagement', success: true, details: shoppingPlan });
+
+    // Stage 2: Social Media Content
+    const socialContent = await socialMediaAI.createInvitePost({ platform, plan: shoppingPlan });
+    validateOutput('Social Media AI', socialContent);
+    report.stages.push({ stage: 'Social Media', success: true, details: socialContent });
+
+    // Stage 3: Mall Manager Coordination
+    const mallOffers = await mallManagerAI.prepareOffers({ location, plan: shoppingPlan });
+    validateOutput('Mall Manager AI', mallOffers);
+    report.stages.push({ stage: 'Mall Manager', success: true, details: mallOffers });
+
+    // Stage 4: Save Invite to DB
+    const inviteDoc = {
+      type: 'invite',
+      shopperId,
+      friends,
+      platform,
+      location,
+      preferences,
+      shoppingPlan,
+      socialContent,
+      mallOffers,
+      createdAt: new Date()
+    };
+    await dbInvites.insert(inviteDoc);
+    report.stages.push({ stage: 'Database Save', success: true });
+
+    // Stage 5: SOAP G Coordination
+    await SOAPG.coordinateWorkflow('inviteToShop', {
+      shopperId,
+      friends,
+      platform,
+      location,
+      plan: shoppingPlan
+    });
+    report.stages.push({ stage: 'SOAP G Coordination', success: true });
+
+    // Finalize Report
+    report.status = 'Completed';
+    await dbReports.insert(report);
+    await SOAPG.adminNotify('inviteToShop', report);
+
+    res.status(200).json({
+      message: 'Invite created successfully with self-testing',
+      report
+    });
+
+  } catch (error) {
+    console.error('Invite to Shop Error:', error);
+    report.status = 'Failed';
+    report.error = error.message;
+    try {
+      const dbReports = cloudant.db.use('spiral_invite_reports');
+      await dbReports.insert(report);
+    } catch (e) {
+      console.error('Failed to save report:', e);
+    }
+    await SOAPG.adminNotify('inviteToShop', report);
+    res.status(500).json({ error: 'Invite creation failed', report });
+  }
+});
+
+module.exports = router;
+
+
+// ===== server/agents/soap-g-central-brain.js (Extended Monitoring) =====
+module.exports = {
+  coordinateWorkflow: async (workflowType, payload) => {
+    console.log(`[SOAP G] Coordinating workflow: ${workflowType}`, payload);
+    switch (workflowType) {
+      case 'inviteToShop':
+        console.log('[SOAP G] Assigning tasks to Shopper, Social, Mall Manager AIs...');
+        break;
+      default:
+        console.log('[SOAP G] Unknown workflow.');
+    }
+    return true;
+  },
+  adminNotify: async (workflowType, report) => {
+    console.log(`[SOAP G] Admin Notification: ${workflowType} Report`, JSON.stringify(report, null, 2));
+    // Later: Send WebSocket or Email to admin dashboard
+  }
+};
+
+
+// ===== server/routes/adminInviteReports.js =====
+const expressAdmin = require('express');
+const adminRouter = expressAdmin.Router();
+const cloudantAdmin = require('../utils/cloudant');
+
+adminRouter.get('/invite-reports', async (req, res) => {
+  try {
+    const dbReports = cloudantAdmin.db.use('spiral_invite_reports');
+    const result = await dbReports.list({ include_docs: true });
+    const reports = result.rows.map(row => row.doc).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.json(reports);
+  } catch (err) {
+    console.error('Error fetching invite reports:', err);
+    res.status(500).json({ error: 'Failed to fetch invite reports' });
+  }
+});
+
+module.exports = adminRouter;
+
+
+// ===== client/pages/admin/invite-reports.js (React Page for Admin Dashboard) =====
+import { useEffect, useState } from 'react';
+
+export default function InviteReportsPage() {
+  const [reports, setReports] = useState([]);
+
+  useEffect(() => {
+    fetch('/admin/invite-reports')
+      .then(res => res.json())
+      .then(setReports)
+      .catch(err => console.error(err));
+  }, []);
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <h1>SPIRAL – Invite to Shop Reports</h1>
+      {reports.length === 0 ? (
+        <p>No reports found.</p>
+      ) : (
+        <table border="1" cellPadding="5">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Stages</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reports.map((r, idx) => (
+              <tr key={idx}>
+                <td>{new Date(r.createdAt).toLocaleString()}</td>
+                <td>{r.status}</td>
+                <td>
+                  {r.stages.map((s, i) => (
+                    <div key={i}>
+                      <strong>{s.stage}:</strong> {s.success ? '✅' : '❌'}
+                    </div>
+                  ))}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
