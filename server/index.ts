@@ -119,6 +119,15 @@ app.use((req, res, next) => {
     console.log("⚠️ SOAP G Central Brain initialization error:", error.message);
   }
 
+  // Initialize Invite to Shop routes
+  try {
+    const inviteToShopRouter = await import('./routes/inviteToShop.js');
+    app.use('/api/invite-to-shop', inviteToShopRouter.default);
+    console.log('✅ Invite to Shop AI-enhanced workflow routes loaded successfully');
+  } catch (error: any) {
+    console.log("⚠️ Invite to Shop routes initialization error:", error.message);
+  }
+
   // Initialize Admin Command Center
   try {
     const adminCommandCenterRouter = require('./routes/adminCommandCenter.js');

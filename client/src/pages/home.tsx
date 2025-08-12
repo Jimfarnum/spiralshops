@@ -34,6 +34,7 @@ import EnhancedFeaturedProducts from "@/components/EnhancedFeaturedProducts";
 import MallEvents from "@/components/MallEvents";
 import LocalPromotions from "@/components/LocalPromotions";
 import HomeVisualSearchBanner from "@/components/HomeVisualSearchBanner";
+import InviteToShopSection from "@/components/InviteToShopSection";
 import { SharePopupWrapper, useSpiralshopsOnboarding } from "@/components/SpiralshopsCorrection";
 
 export default function Home() {
@@ -378,6 +379,24 @@ export default function Home() {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Invite to Shop Section */}
+      <section className="section-modern bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-[var(--spiral-navy)] mb-6">Shop Together, Save Together</h2>
+            <p className="text-xl text-gray-600">Invite friends for group shopping experiences with AI-powered coordination</p>
+          </div>
+          
+          <div className="max-w-2xl mx-auto">
+            <InviteToShopSection 
+              shopperId="demo-shopper-001"
+              location="Minneapolis Shopping District"
+              className="shadow-lg"
+            />
           </div>
         </div>
       </section>

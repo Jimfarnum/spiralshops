@@ -121,6 +121,68 @@ async function assignTask(agentName, task, priority = 'normal') {
     return { success: true, taskId, task: taskEntry };
 }
 
+// Invite to Shop workflow coordination
+async function coordinateInviteWorkflow(inviteData) {
+    console.log('[SOAP G] Coordinating Invite to Shop workflow...');
+    
+    const workflowId = `workflow_invite_${Date.now()}`;
+    const coordination = {
+        id: workflowId,
+        type: 'inviteToShop',
+        data: inviteData,
+        agents: [],
+        status: 'active',
+        startTime: new Date()
+    };
+    
+    try {
+        // Step 1: Assign to Shopper Engagement Agent
+        if (inviteData.aiEnabled) {
+            const shopperTask = await assignTask('shopperEngagement', 
+                `Generate personalized shopping plan for invite: ${JSON.stringify(inviteData)}`, 
+                'high');
+            coordination.agents.push({
+                agent: 'shopperEngagement',
+                taskId: shopperTask.taskId,
+                purpose: 'Personalized shopping recommendations'
+            });
+            
+            // Step 2: Assign to Social Media Agent
+            const socialTask = await assignTask('socialMedia', 
+                `Create optimized social content for platform ${inviteData.platform}: ${JSON.stringify(inviteData)}`, 
+                'high');
+            coordination.agents.push({
+                agent: 'socialMedia',
+                taskId: socialTask.taskId,
+                purpose: 'Social media content optimization'
+            });
+            
+            // Step 3: Assign to Mall Manager Agent
+            const mallTask = await assignTask('mallManager', 
+                `Coordinate group offers and timing for location ${inviteData.location}: ${JSON.stringify(inviteData)}`, 
+                'medium');
+            coordination.agents.push({
+                agent: 'mallManager',
+                taskId: mallTask.taskId,
+                purpose: 'Group offers and mall coordination'
+            });
+        }
+        
+        // Store workflow coordination
+        soapGStatus.workflows = soapGStatus.workflows || [];
+        soapGStatus.workflows.push(coordination);
+        
+        console.log(`[SOAP G] Invite workflow ${workflowId} coordinated with ${coordination.agents.length} agents`);
+        return coordination;
+        
+    } catch (error) {
+        console.error('[SOAP G] Invite workflow coordination failed:', error);
+        coordination.status = 'failed';
+        coordination.error = error.message;
+        return coordination;
+    }
+}
+
 // Task completion handler
 function completeTask(taskId, result, success = true) {
     const taskIndex = soapGStatus.tasks.findIndex(t => t.id === taskId);
@@ -528,7 +590,7 @@ router.post('/soap-g/admin', async (req, res) => {
 
 // Initialize all agents with heartbeats on startup
 function initializeAgents() {
-    const agents = ['mallManager', 'retailer', 'shopperEngagement', 'socialMedia', 'marketingPartnerships', 'admin'];
+    const agents = ['mallManager', 'retailer', 'shopperEngagement', 'socialMedia', 'marketingPartnerships', 'admin', 'inviteToShop'];
     agents.forEach(agentName => {
         heartbeat(agentName, { 
             status: 'initialized',
@@ -538,8 +600,27 @@ function initializeAgents() {
             averageResponseTime: 0
         });
     });
-    console.log('🧠 SOAP G Central Brain: All 6 agents initialized with heartbeat monitoring');
+    console.log('🧠 SOAP G Central Brain: All 7 agents initialized with heartbeat monitoring');
 }
+
+// Invite to Shop agent endpoint
+router.post('/soap-g/invite-to-shop/coordinate', async (req, res) => {
+    const startTime = Date.now();
+    try {
+        heartbeat('inviteToShop', { status: 'processing' });
+        const coordination = await coordinateInviteWorkflow(req.body);
+        const responseTime = Date.now() - startTime;
+        heartbeat('inviteToShop', { 
+            status: 'active', 
+            averageResponseTime: responseTime,
+            lastTaskType: 'invite-coordination'
+        });
+        res.json({ success: true, coordination, responseTime });
+    } catch (error) {
+        heartbeat('inviteToShop', { status: 'error', lastError: error.message });
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
 
 // Initialize agents on module load
 initializeAgents();

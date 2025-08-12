@@ -1,275 +1,295 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-import { Users, Gift, Zap, Mail, Copy, Share2, Heart } from 'lucide-react';
+import React, { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { useToast } from '@/hooks/use-toast'
+import { 
+  Users, 
+  Zap, 
+  Share2, 
+  Gift, 
+  MapPin, 
+  Sparkles,
+  Info,
+  Brain,
+  Heart,
+  ShoppingBag
+} from 'lucide-react'
 
 interface InviteToShopModalProps {
-  productId?: string;
-  productName?: string;
-  productPrice?: number;
-  retailerName?: string;
+  shopperId?: string;
+  location?: string;
   trigger?: React.ReactNode;
 }
 
 export default function InviteToShopModal({ 
-  productId, 
-  productName = "this amazing product",
-  productPrice,
-  retailerName,
+  shopperId = "demo-shopper-001", 
+  location = "Minneapolis Shopping District",
   trigger 
 }: InviteToShopModalProps) {
-  const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState('');
-  const [personalMessage, setPersonalMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [inviteLink, setInviteLink] = useState('');
-  const [step, setStep] = useState<'compose' | 'sent'>('compose');
-  const { toast } = useToast();
+  const { toast } = useToast()
+  const [isOpen, setIsOpen] = useState(false)
+  const [aiEnabled, setAiEnabled] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [inviteData, setInviteData] = useState({
+    friends: '',
+    platform: 'Instagram',
+    preferences: '',
+    budget: '',
+    message: ''
+  })
 
-  const sharedPerks = {
-    spiralsBonus: 25,
-    sameDayDiscount: 15,
-    earlyAccess: true,
-    freeShipping: true
-  };
-
-  const sendInvite = async () => {
-    if (!email) {
+  const handleCreateInvite = async () => {
+    if (!inviteData.friends.trim()) {
       toast({
-        title: "Email Required",
-        description: "Please enter your friend's email address.",
+        title: "Friends required",
+        description: "Please add at least one friend to invite",
         variant: "destructive"
-      });
-      return;
+      })
+      return
     }
 
-    setLoading(true);
+    setLoading(true)
 
     try {
-      const response = await fetch('/api/invite', {
+      const response = await fetch('/api/invite-to-shop/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email, 
-          productId,
-          personalMessage: personalMessage || `Check out ${productName} on SPIRAL! We'll both get exclusive perks when you shop today.`
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          shopperId,
+          friends: inviteData.friends.split(',').map(f => f.trim()).filter(f => f),
+          platform: inviteData.platform,
+          location,
+          preferences: inviteData.preferences.split(',').map(p => p.trim()).filter(p => p),
+          budget: inviteData.budget,
+          aiEnabled
         })
-      });
+      })
 
-      const data = await response.json();
-      
-      if (data.success) {
-        setInviteLink(data.inviteLink);
-        setStep('sent');
+      const result = await response.json()
+
+      if (result.success) {
         toast({
-          title: "Invite Sent!",
-          description: "Your friend will receive an email with exclusive shopping perks.",
-        });
+          title: "Invite created successfully!",
+          description: aiEnabled 
+            ? "AI has optimized your invite with personalized recommendations" 
+            : "Your shopping invite is ready to share"
+        })
+        
+        // Reset form and close modal
+        setInviteData({
+          friends: '',
+          platform: 'Instagram',
+          preferences: '',
+          budget: '',
+          message: ''
+        })
+        setIsOpen(false)
       } else {
-        throw new Error(data.error || 'Failed to send invite');
+        throw new Error(result.error || 'Failed to create invite')
       }
     } catch (error) {
+      console.error('Error creating invite:', error)
       toast({
-        title: "Send Failed",
-        description: "Could not send invite. Please try again.",
+        title: "Error creating invite",
+        description: "Please try again or check your connection",
         variant: "destructive"
-      });
+      })
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const copyInviteLink = () => {
-    navigator.clipboard.writeText(inviteLink);
-    toast({
-      title: "Link Copied",
-      description: "Invite link copied to clipboard.",
-    });
-  };
-
-  const shareViaOther = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: `Shop ${productName} with me on SPIRAL!`,
-        text: `I found this amazing product and we can both get exclusive perks if you shop today!`,
-        url: inviteLink
-      });
-    }
-  };
-
-  const resetModal = () => {
-    setStep('compose');
-    setEmail('');
-    setPersonalMessage('');
-    setInviteLink('');
-  };
+  const defaultTrigger = (
+    <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+      <Users className="w-4 h-4 mr-2" />
+      Invite to Shop
+    </Button>
+  )
 
   return (
-    <Dialog open={open} onOpenChange={(newOpen) => {
-      setOpen(newOpen);
-      if (!newOpen) {
-        setTimeout(resetModal, 300);
-      }
-    }}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        {trigger || (
-          <Button variant="outline" className="flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            Invite Friend
-          </Button>
-        )}
+        {trigger || defaultTrigger}
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Gift className="w-5 h-5 text-orange-500" />
-            {step === 'compose' ? 'Invite a Friend to Shop' : 'Invite Sent Successfully!'}
+            <Users className="w-5 h-5 text-blue-600" />
+            Invite Friends to Shop
           </DialogTitle>
           <DialogDescription>
-            {step === 'compose' 
-              ? 'Share exclusive perks and earn rewards together'
-              : 'Your friend will receive an email with their special shopping link'
-            }
+            Create a personalized shopping invitation with AI-powered recommendations and group coordination
           </DialogDescription>
         </DialogHeader>
 
-        {step === 'compose' ? (
-          <div className="space-y-6">
-            {/* Shared Perks Preview */}
-            <div className="bg-gradient-to-r from-orange-50 to-teal-50 p-4 rounded-lg border">
-              <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-yellow-500" />
-                Shared Perks for Both of You
-              </h4>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <Badge className="bg-orange-100 text-orange-800">
-                    +{sharedPerks.spiralsBonus} SPIRALs
-                  </Badge>
+        <div className="space-y-6 py-4">
+          {/* AI Toggle Section */}
+          <Card className="border-blue-100 bg-blue-50/50">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-blue-600" />
+                  <CardTitle className="text-lg">AI Enhancement</CardTitle>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Badge className="bg-green-100 text-green-800">
-                    {sharedPerks.sameDayDiscount}% Off
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Badge className="bg-purple-100 text-purple-800">
-                    Early Access
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Badge className="bg-blue-100 text-blue-800">
-                    Free Shipping
-                  </Badge>
-                </div>
+                <Switch
+                  checked={aiEnabled}
+                  onCheckedChange={setAiEnabled}
+                />
               </div>
-            </div>
-
-            {/* Product Context */}
-            {productName && (
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <p className="text-sm text-gray-600">Inviting friend to shop:</p>
-                <p className="font-medium">{productName}</p>
-                {productPrice && <p className="text-sm text-teal-600">${productPrice}</p>}
-                {retailerName && <p className="text-sm text-gray-500">{retailerName}</p>}
-              </div>
+            </CardHeader>
+            {aiEnabled && (
+              <CardContent className="pt-0">
+                <div className="flex items-start gap-2 text-sm text-blue-700">
+                  <Info className="w-4 h-4 mt-0.5" />
+                  <div>
+                    <p className="font-medium mb-1">Why Enable AI?</p>
+                    <ul className="text-xs space-y-1">
+                      <li>• Personalized store recommendations based on group preferences</li>
+                      <li>• Optimized social media content for maximum engagement</li>
+                      <li>• Coordination with Mall Manager for special group offers</li>
+                      <li>• Smart timing and route planning for efficient shopping</li>
+                      <li>• SPIRAL rewards optimization for group activities</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
             )}
+          </Card>
 
-            {/* Email Input */}
+          {/* Basic Invite Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Friend's Email Address</label>
-              <Input
-                type="email"
-                placeholder="friend@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full"
-              />
-            </div>
-
-            {/* Personal Message */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Personal Message (Optional)</label>
+              <Label htmlFor="friends">Friends to Invite</Label>
               <Textarea
-                placeholder={`Hey! I found this amazing ${productName} and thought you'd love it. We'll both get exclusive perks if you shop today - let's save together!`}
-                value={personalMessage}
-                onChange={(e) => setPersonalMessage(e.target.value)}
-                rows={3}
-                className="w-full"
+                id="friends"
+                placeholder="Enter friend names or emails (comma separated)
+Example: Sarah, mike@example.com, Emily Chen"
+                value={inviteData.friends}
+                onChange={(e) => setInviteData(prev => ({...prev, friends: e.target.value}))}
+                className="min-h-[80px]"
               />
             </div>
 
-            {/* Send Button */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="platform">Share Platform</Label>
+                <select
+                  id="platform"
+                  value={inviteData.platform}
+                  onChange={(e) => setInviteData(prev => ({...prev, platform: e.target.value}))}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="Instagram">Instagram</option>
+                  <option value="Facebook">Facebook</option>
+                  <option value="Twitter">X (Twitter)</option>
+                  <option value="TikTok">TikTok</option>
+                  <option value="Messages">Text Messages</option>
+                  <option value="Email">Email</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="budget">Budget Range (Optional)</Label>
+                <Input
+                  id="budget"
+                  placeholder="e.g., $50-100 per person"
+                  value={inviteData.budget}
+                  onChange={(e) => setInviteData(prev => ({...prev, budget: e.target.value}))}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="preferences">Shopping Interests</Label>
+            <Input
+              id="preferences"
+              placeholder="e.g., fashion, electronics, home decor, gifts (comma separated)"
+              value={inviteData.preferences}
+              onChange={(e) => setInviteData(prev => ({...prev, preferences: e.target.value}))}
+            />
+          </div>
+
+          {/* Location Display */}
+          <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+            <MapPin className="w-5 h-5 text-gray-600" />
+            <div>
+              <p className="font-medium text-gray-900">Shopping Location</p>
+              <p className="text-sm text-gray-600">{location}</p>
+            </div>
+          </div>
+
+          {/* AI Features Preview */}
+          {aiEnabled && (
+            <Card className="border-green-200 bg-green-50/50">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-green-600" />
+                  AI Features Included
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <Share2 className="w-4 h-4 text-blue-500" />
+                  <span>Social Media Optimization</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Gift className="w-4 h-4 text-purple-500" />
+                  <span>Group Offers & Discounts</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ShoppingBag className="w-4 h-4 text-orange-500" />
+                  <span>Personalized Store Recommendations</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Heart className="w-4 h-4 text-red-500" />
+                  <span>Group Activity Planning</span>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <Separator />
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-3">
             <Button 
-              onClick={sendInvite} 
-              disabled={loading || !email}
-              className="w-full"
-              size="lg"
+              variant="outline" 
+              onClick={() => setIsOpen(false)}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleCreateInvite}
+              disabled={loading || !inviteData.friends.trim()}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
               {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Sending Invite...
-                </div>
+                <>
+                  <Zap className="w-4 h-4 mr-2 animate-spin" />
+                  {aiEnabled ? 'AI Processing...' : 'Creating...'}
+                </>
               ) : (
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  Send Shopping Invite
-                </div>
+                <>
+                  <Users className="w-4 h-4 mr-2" />
+                  {aiEnabled ? 'Create AI-Enhanced Invite' : 'Create Invite'}
+                </>
               )}
             </Button>
           </div>
-        ) : (
-          <div className="space-y-6">
-            {/* Success Message */}
-            <div className="text-center space-y-3">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <Heart className="w-8 h-8 text-green-600" />
-              </div>
-              <p className="text-gray-600">
-                Your invite has been sent to <strong>{email}</strong> with exclusive perks worth over $50!
-              </p>
-            </div>
-
-            {/* Invite Link Sharing */}
-            <div className="space-y-3">
-              <label className="text-sm font-medium">Share Link Directly</label>
-              <div className="flex gap-2">
-                <Input
-                  value={inviteLink}
-                  readOnly
-                  className="flex-1 bg-gray-50"
-                />
-                <Button variant="outline" onClick={copyInviteLink}>
-                  <Copy className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Additional Sharing Options */}
-            <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" onClick={shareViaOther} className="flex items-center gap-2">
-                <Share2 className="w-4 h-4" />
-                Share
-              </Button>
-              <Button onClick={() => setOpen(false)}>
-                Done
-              </Button>
-            </div>
-
-            {/* Perk Reminder */}
-            <div className="bg-orange-50 p-3 rounded-lg border">
-              <p className="text-sm text-orange-800 font-medium">
-                You'll both earn {sharedPerks.spiralsBonus} SPIRALs when your friend shops today!
-              </p>
-            </div>
-          </div>
-        )}
+        </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
