@@ -1,0 +1,121 @@
+// === SPIRAL QR Code Generator Component (React) ===
+// Place this in your front-end src/components directory in Replit
+
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+const QRGenerator = () => {
+  const [campaignName, setCampaignName] = useState("");
+  const [targetUrl, setTargetUrl] = useState("");
+  const [style, setStyle] = useState("full");
+  const [qrImage, setQrImage] = useState(null);
+  const [campaigns, setCampaigns] = useState([]);
+  const [aiSuggestions, setAiSuggestions] = useState([]);
+
+  useEffect(() => {
+    // Fetch existing campaigns
+    axios.get("/admin/qr-dashboard").then(res => setCampaigns(res.data.campaigns));
+    // Fetch AI suggestions for mall managers
+    axios.get("/mall-manager/qr-hub").then(res => setAiSuggestions(res.data.aiSuggestions));
+  }, []);
+
+  const generateQR = async () => {
+    if (!campaignName || !targetUrl) {
+      alert("Please enter campaign name and target URL.");
+      return;
+    }
+    try {
+      const res = await axios.post("/generate-qr", { campaignName, targetUrl, style });
+      setQrImage(res.data.qrImage);
+      alert(`QR Campaign "${campaignName}" created successfully!`);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to generate QR code.");
+    }
+  };
+
+  return (
+    <div className="p-6 bg-white rounded-xl shadow-md max-w-3xl mx-auto">
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">SPIRAL QR Code Generator</h2>
+      
+      <div className="mb-4">
+        <label className="block text-sm font-medium">Campaign Name</label>
+        <input
+          type="text"
+          value={campaignName}
+          onChange={(e) => setCampaignName(e.target.value)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium">Target URL</label>
+        <input
+          type="text"
+          value={targetUrl}
+          onChange={(e) => setTargetUrl(e.target.value)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium">QR Style</label>
+        <select value={style} onChange={(e) => setStyle(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300">
+          <option value="full">Full (Logo in Center)</option>
+          <option value="compact">Compact (No Logo)</option>
+        </select>
+      </div>
+
+      <button
+        onClick={generateQR}
+        className="px-4 py-2 bg-yellow-500 text-white font-bold rounded-md hover:bg-yellow-600"
+      >
+        Generate QR
+      </button>
+
+      {qrImage && (
+        <div className="mt-6 text-center">
+          <img src={qrImage} alt="SPIRAL QR Code" className="mx-auto border rounded-md shadow" />
+          <a
+            href={qrImage}
+            download={`${campaignName}-qr.png`}
+            className="mt-2 inline-block px-4 py-2 bg-green-500 text-white rounded-md"
+          >
+            Download QR
+          </a>
+        </div>
+      )}
+
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold">AI Campaign Suggestions</h3>
+        <ul className="list-disc ml-5 mt-2">
+          {aiSuggestions.map((s, idx) => <li key={idx}>{s}</li>)}
+        </ul>
+      </div>
+
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold">Existing Campaigns</h3>
+        <table className="min-w-full mt-2 border">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="px-4 py-2 border">Campaign</th>
+              <th className="px-4 py-2 border">Scans</th>
+              <th className="px-4 py-2 border">Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {campaigns.map((c) => (
+              <tr key={c._id}>
+                <td className="border px-4 py-2">{c.campaignName}</td>
+                <td className="border px-4 py-2">{c.scans}</td>
+                <td className="border px-4 py-2">{new Date(c.createdAt).toLocaleDateString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default QRGenerator;
