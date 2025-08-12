@@ -14,8 +14,15 @@ import aiRetailerOnboardingRoutes from "./api/ai-retailer-onboarding.js";
 import inventoryCategoriesRoutes from "./api/inventory-categories.js";
 import aiOpsDashboardRoutes from "./api/ai-ops-dashboard.js";
 import statusRoutes from "./routes/status.js";
+import performanceFixes from "./performance-fixes";
+import { registerOptimizedStoreRoutes } from "./optimized-store-routes";
 
 const app = express();
+
+// Apply performance monitoring and error handling FIRST
+performanceFixes.addPerformanceMiddleware(app);
+performanceFixes.addErrorHandling(app);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -88,6 +95,9 @@ app.use((req, res, next) => {
   // Register Cloudant Status routes
   const cloudantStatusRoutes = await import('./routes/cloudant-status.js');
   app.use("/api", cloudantStatusRoutes.default);
+  
+  // Register optimized store routes BEFORE main routes for performance
+  registerOptimizedStoreRoutes(app);
   
   const server = await registerRoutes(app);
 
