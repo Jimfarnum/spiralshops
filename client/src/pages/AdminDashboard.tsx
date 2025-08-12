@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, XCircle, Clock, Database, Server, CreditCard } from "lucide-react";
 import { CloudantBadge, StripeBadge, EmailBadge, SearchBadge, SystemStatusSummary } from "@/components/CloudantBadge";
+import AdminQRPerformanceCard from "@/components/AdminQRPerformanceCard";
 
 interface SystemHealth {
   status: string;
@@ -63,6 +64,41 @@ export default function AdminDashboard() {
           <SearchBadge />
           <HealthBadge />
         </div>
+      </div>
+
+      {/* QR Performance Analytics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <AdminQRPerformanceCard />
+        <Card className="border-green-200 bg-gradient-to-br from-green-50 to-teal-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-green-800">
+              <Database className="w-5 h-5" />
+              SOAP G Agent Status
+            </CardTitle>
+            <CardDescription className="text-green-600">
+              Real-time coordination and performance monitoring
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-2 bg-white/60 rounded border border-green-100">
+                <span className="text-sm font-medium text-green-900">Marketing AI</span>
+                <Badge variant="default" className="bg-green-600">Active</Badge>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-white/60 rounded border border-green-100">
+                <span className="text-sm font-medium text-green-900">Shopper Engagement</span>
+                <Badge variant="default" className="bg-green-600">Active</Badge>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-white/60 rounded border border-green-100">
+                <span className="text-sm font-medium text-green-900">Social Media AI</span>
+                <Badge variant="default" className="bg-green-600">Active</Badge>
+              </div>
+              <div className="text-center text-xs text-green-600 mt-3">
+                7 Agents • Cross-Agent Reporting • QR Integration
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -128,6 +128,15 @@ app.use((req, res, next) => {
     console.log("⚠️ Invite to Shop routes initialization error:", error.message);
   }
 
+  // Initialize QR Code routes
+  try {
+    const qrInviteRouter = await import('./routes/qrInviteRoutes.js');
+    app.use('/api/qr', qrInviteRouter.default);
+    console.log('✅ QR Code generation and analytics routes loaded successfully');
+  } catch (error: any) {
+    console.log("⚠️ QR routes initialization error:", error.message);
+  }
+
   // Initialize Admin Command Center
   try {
     const adminCommandCenterRouter = require('./routes/adminCommandCenter.js');

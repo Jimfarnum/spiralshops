@@ -622,6 +622,49 @@ router.post('/soap-g/invite-to-shop/coordinate', async (req, res) => {
     }
 });
 
+// Cross-agent reporting endpoint for QR activities
+router.post('/soap-g/cross-agent-report', async (req, res) => {
+    const startTime = Date.now();
+    try {
+        const { sourceAgent, action, data, reportType } = req.body;
+        
+        // Log the cross-agent communication
+        console.log(`🔄 SOAP G Cross-Agent Report: ${sourceAgent} -> ${action} (${reportType})`);
+        
+        // Update relevant agent heartbeats based on the activity
+        if (reportType === 'qr_activity') {
+            if (action === 'QR_GENERATED') {
+                heartbeat('marketingPartnerships', { 
+                    status: 'active',
+                    lastTaskType: 'qr-generation',
+                    lastActivity: new Date().toISOString()
+                });
+            } else if (action === 'QR_SCANNED') {
+                heartbeat('shopperEngagement', { 
+                    status: 'active',
+                    lastTaskType: 'qr-engagement',
+                    lastActivity: new Date().toISOString()
+                });
+                heartbeat('socialMedia', { 
+                    status: 'active',
+                    lastTaskType: 'qr-conversion',
+                    lastActivity: new Date().toISOString()
+                });
+            }
+        }
+        
+        const responseTime = Date.now() - startTime;
+        res.json({ 
+            success: true, 
+            message: 'Cross-agent report processed',
+            responseTime 
+        });
+    } catch (error) {
+        console.error('SOAP G cross-agent report error:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // Initialize agents on module load
 initializeAgents();
 

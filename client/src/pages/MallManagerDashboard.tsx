@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import QRCodeGenerator from '@/components/QRCodeGenerator'
 import { 
   Building2, 
   Users, 
@@ -17,7 +18,8 @@ import {
   Eye,
   Star,
   BarChart3,
-  Settings
+  Settings,
+  QrCode
 } from 'lucide-react'
 
 interface EventData {
@@ -212,9 +214,10 @@ export default function MallManagerDashboard() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="events" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="events">Events & Invites</TabsTrigger>
             <TabsTrigger value="retailers">Retailer Coordination</TabsTrigger>
+            <TabsTrigger value="qr-marketing">QR Marketing</TabsTrigger>
             <TabsTrigger value="traffic">Traffic Insights</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="operations">Operations</TabsTrigger>
@@ -317,6 +320,76 @@ export default function MallManagerDashboard() {
                         <Badge variant="outline">Due: Oct 2025</Badge>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="qr-marketing" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <QrCode className="w-5 h-5" />
+                  QR Code Marketing Hub
+                </CardTitle>
+                <CardDescription>
+                  Create and track QR code campaigns for events, promotions, and mall activities
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <QRCodeGenerator 
+                    retailerId="mall-manager-001"
+                    defaultCampaign="Mall Event"
+                    onGenerated={(qrData) => {
+                      console.log('QR Generated:', qrData);
+                    }}
+                  />
+                  
+                  <div className="space-y-4">
+                    <h3 className="font-medium text-purple-900">Campaign Ideas</h3>
+                    <div className="space-y-3">
+                      <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                        <h4 className="font-medium text-purple-800 mb-1">Event Check-ins</h4>
+                        <p className="text-sm text-purple-600">
+                          Generate QR codes for mall events to track attendance and engagement
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h4 className="font-medium text-blue-800 mb-1">Directory Navigation</h4>
+                        <p className="text-sm text-blue-600">
+                          Place QR codes around the mall for instant store directory access
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <h4 className="font-medium text-green-800 mb-1">Promotional Campaigns</h4>
+                        <p className="text-sm text-green-600">
+                          Create QR codes for seasonal sales and special offers
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                        <h4 className="font-medium text-orange-800 mb-1">Social Media Integration</h4>
+                        <p className="text-sm text-orange-600">
+                          Connect QR scans to social media campaigns and SPIRAL rewards
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {aiEnabled && (
+                      <div className="mt-6 p-4 bg-gradient-to-r from-purple-100 to-blue-100 rounded-lg border border-purple-200">
+                        <h4 className="font-medium text-purple-900 mb-2">AI Campaign Suggestions</h4>
+                        <ul className="text-sm text-purple-700 space-y-1">
+                          <li>• Generate QR codes with personalized landing pages for different customer segments</li>
+                          <li>• Coordinate with Social Media AI for optimized campaign timing and targeting</li>
+                          <li>• Auto-analyze scan patterns to recommend optimal QR placement locations</li>
+                          <li>• Integrate with Shopper Engagement AI for follow-up messaging campaigns</li>
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>
