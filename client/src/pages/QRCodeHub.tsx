@@ -1,11 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import SpiralQRGenerator from '@/components/SpiralQRGenerator';
 import MallQrCampaignTemplates from '@/components/MallQrCampaignTemplates';
 import AdminQRPerformanceCard from '@/components/AdminQRPerformanceCard';
-import { QrCode, Sparkles, BarChart3 } from 'lucide-react';
+import { QrCode, Sparkles, BarChart3, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+interface QRStats {
+  totalScans: number;
+  totalGenerated: number;
+  todayScans: number;
+  todayGenerated: number;
+  scanRate: string;
+}
 
 export default function QRCodeHub() {
+  const [stats, setStats] = useState<QRStats>({
+    totalScans: 0,
+    totalGenerated: 0,
+    todayScans: 0,
+    todayGenerated: 0,
+    scanRate: "0"
+  });
+  const [loading, setLoading] = useState(true);
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/qr/admin/qr-analytics');
+      const data = await response.json();
+      if (data.success) {
+        setStats({
+          totalScans: data.totalScans,
+          totalGenerated: data.totalGenerated,
+          todayScans: data.todayScans,
+          todayGenerated: data.todayGenerated,
+          scanRate: data.scanRate
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch QR stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -36,24 +78,48 @@ export default function QRCodeHub() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-white/60 rounded-lg border border-purple-100">
-                  <div className="text-2xl font-bold text-purple-700">247</div>
-                  <div className="text-sm text-purple-600">Total Scans</div>
-                </div>
-                <div className="text-center p-4 bg-white/60 rounded-lg border border-blue-100">
-                  <div className="text-2xl font-bold text-blue-700">23</div>
-                  <div className="text-sm text-blue-600">Active Campaigns</div>
-                </div>
-                <div className="text-center p-4 bg-white/60 rounded-lg border border-green-100">
-                  <div className="text-2xl font-bold text-green-700">68%</div>
-                  <div className="text-sm text-green-600">Scan Rate</div>
-                </div>
-                <div className="text-center p-4 bg-white/60 rounded-lg border border-orange-100">
-                  <div className="text-2xl font-bold text-orange-700">12</div>
-                  <div className="text-sm text-orange-600">This Week</div>
-                </div>
+              <div className="flex justify-between items-center mb-4">
+                <div className="text-sm text-purple-600">Live QR Analytics</div>
+                <Button
+                  onClick={fetchStats}
+                  variant="outline"
+                  size="sm"
+                  className="text-purple-600 border-purple-300 hover:bg-purple-50"
+                >
+                  <RefreshCw className="w-4 h-4 mr-1" />
+                  Refresh
+                </Button>
               </div>
+              
+              {loading ? (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="text-center p-4 bg-white/60 rounded-lg border border-gray-100 animate-pulse">
+                      <div className="h-8 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-4 bg-white/60 rounded-lg border border-purple-100">
+                    <div className="text-2xl font-bold text-purple-700">{stats.totalScans}</div>
+                    <div className="text-sm text-purple-600">Total Scans</div>
+                  </div>
+                  <div className="text-center p-4 bg-white/60 rounded-lg border border-blue-100">
+                    <div className="text-2xl font-bold text-blue-700">{stats.totalGenerated}</div>
+                    <div className="text-sm text-blue-600">QR Codes Created</div>
+                  </div>
+                  <div className="text-center p-4 bg-white/60 rounded-lg border border-green-100">
+                    <div className="text-2xl font-bold text-green-700">{stats.scanRate}%</div>
+                    <div className="text-sm text-green-600">Scan Rate</div>
+                  </div>
+                  <div className="text-center p-4 bg-white/60 rounded-lg border border-orange-100">
+                    <div className="text-2xl font-bold text-orange-700">{stats.todayGenerated}</div>
+                    <div className="text-sm text-orange-600">Created Today</div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

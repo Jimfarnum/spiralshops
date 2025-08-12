@@ -110,9 +110,11 @@ router.post("/generate-qr", async (req, res) => {
         });
       } catch (cloudantError) {
         console.log("Cloudant save failed, using fallback:", cloudantError.message);
+        if (!fallbackStorage.qr_generated) fallbackStorage.qr_generated = [];
         fallbackStorage.qr_generated.push(document);
       }
     } else {
+      if (!fallbackStorage.qr_generated) fallbackStorage.qr_generated = [];
       fallbackStorage.qr_generated.push(document);
     }
 
@@ -167,9 +169,11 @@ router.get("/scan", async (req, res) => {
         });
       } catch (cloudantError) {
         console.log("Cloudant scan log failed, using fallback:", cloudantError.message);
+        if (!fallbackStorage.qr_scanned) fallbackStorage.qr_scanned = [];
         fallbackStorage.qr_scanned.push(scanData);
       }
     } else {
+      if (!fallbackStorage.qr_scanned) fallbackStorage.qr_scanned = [];
       fallbackStorage.qr_scanned.push(scanData);
     }
 
@@ -216,12 +220,12 @@ router.get("/admin/qr-analytics", async (req, res) => {
         generated = generatedResults.result.docs;
       } catch (cloudantError) {
         console.log("Cloudant analytics failed, using fallback:", cloudantError.message);
-        scans = fallbackStorage.qr_scanned;
-        generated = fallbackStorage.qr_generated;
+        scans = fallbackStorage.qr_scanned || [];
+        generated = fallbackStorage.qr_generated || [];
       }
     } else {
-      scans = fallbackStorage.qr_scanned;
-      generated = fallbackStorage.qr_generated;
+      scans = fallbackStorage.qr_scanned || [];
+      generated = fallbackStorage.qr_generated || [];
     }
 
     // Calculate additional analytics
