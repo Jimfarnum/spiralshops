@@ -180,6 +180,17 @@ app.use((req, res, next) => {
     console.log("⚠️ Internal Platform Monitor initialization error:", error.message);
   }
 
+  // Initialize Site Testing Agent
+  try {
+    // @ts-ignore
+    const siteTestingRouter = await import('./routes/site-testing-agent.js');
+    app.use('/api/site-testing', siteTestingRouter.default);
+    console.log('🧪 Site Testing AI Agent routes loaded successfully');
+    console.log('✅ Real-time user journey testing: Homepage, Products, Stores, Signup flows');
+  } catch (error: any) {
+    console.log("⚠️ Site Testing Agent initialization error:", error.message);
+  }
+
   // Initialize Admin Command Center
   try {
     const adminCommandCenterRouter = require('./routes/adminCommandCenter.js');

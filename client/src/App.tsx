@@ -77,6 +77,7 @@ import QRCodeHub from "@/pages/QRCodeHub";
 import BetaProgram from "@/pages/BetaProgram";
 import StripeTestPage from "@/pages/StripeTestPage";
 import InternalPlatformDashboard from "@/components/InternalPlatformDashboard";
+import SiteTestingDashboard from "@/components/SiteTestingDashboard";
 import SEOHead from "@/components/SEOHead";
 import PerformanceOptimizer from "@/components/PerformanceOptimizer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
@@ -553,6 +554,7 @@ function Router() {
       <Route path="/beta" component={BetaProgram} />
       <Route path="/stripe-test" component={StripeTestPage} />
       <Route path="/internal-platform-monitor" component={InternalPlatformDashboard} />
+      <Route path="/site-testing-dashboard" component={SiteTestingDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
