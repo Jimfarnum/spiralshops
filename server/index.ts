@@ -8,11 +8,17 @@ import { setupVite, serveStatic, log } from "./vite";
 import { rateLimiter } from "./middleware/rateLimiter.js";
 import wishlistRoutes from "./api/wishlist";
 import intelligentWishlistRoutes from "./api/intelligent-wishlist";
+// @ts-ignore - JS modules without type declarations
 import aiOpsStatusRoutes from "./api/ai-ops-status.js";
+// @ts-ignore
 import businessCategoriesRoutes from "./api/business-categories.js";
+// @ts-ignore
 import aiRetailerOnboardingRoutes from "./api/ai-retailer-onboarding.js";
+// @ts-ignore
 import inventoryCategoriesRoutes from "./api/inventory-categories.js";
+// @ts-ignore
 import aiOpsDashboardRoutes from "./api/ai-ops-dashboard.js";
+// @ts-ignore
 import statusRoutes from "./routes/status.js";
 import performanceFixes from "./performance-fixes";
 import { registerOptimizedStoreRoutes } from "./optimized-store-routes";
@@ -93,6 +99,7 @@ app.use((req, res, next) => {
   app.use("/api/stripe-test", stripeTestRoutes.default);
   
   // Register Cloudant Status routes
+  // @ts-ignore
   const cloudantStatusRoutes = await import('./routes/cloudant-status.js');
   app.use("/api", cloudantStatusRoutes.default);
   
@@ -103,6 +110,7 @@ app.use((req, res, next) => {
 
   // Initialize AI Ops GPT System
   try {
+    // @ts-ignore
     const { default: aiOps } = await import('./ai-ops.js');
     console.log("✅ SPIRAL AI Ops GPT system initialized successfully");
   } catch (error: any) {
@@ -111,6 +119,7 @@ app.use((req, res, next) => {
 
   // Initialize AI Dashboard Agents
   try {
+    // @ts-ignore
     const aiDashboardAgentsRouter = await import('./routes/ai-dashboard-agents.js');
     app.use('/api', aiDashboardAgentsRouter.default);
     console.log('✅ AI Dashboard Agents registered: MallManager, Retailer, Shopper');
@@ -120,6 +129,7 @@ app.use((req, res, next) => {
 
   // Initialize SOAP G Central Brain System
   try {
+    // @ts-ignore
     const soapGRouter = await import('./routes/soap-g-central-brain.js');
     app.use('/api', soapGRouter.default);
     console.log('🧠 SOAP G Central Brain routes mounted at /api');
@@ -131,6 +141,7 @@ app.use((req, res, next) => {
 
   // Initialize Invite to Shop routes
   try {
+    // @ts-ignore
     const inviteToShopRouter = await import('./routes/inviteToShop.js');
     app.use('/api/invite-to-shop', inviteToShopRouter.default);
     console.log('✅ Invite to Shop AI-enhanced workflow routes loaded successfully');
@@ -140,6 +151,7 @@ app.use((req, res, next) => {
 
   // Initialize QR Code routes
   try {
+    // @ts-ignore
     const qrInviteRouter = await import('./routes/qrInviteRoutes.js');
     app.use('/api/qr', qrInviteRouter.default);
     console.log('✅ QR Code generation and analytics routes loaded successfully');
@@ -149,6 +161,7 @@ app.use((req, res, next) => {
 
   // Initialize QR Campaign Templates routes
   try {
+    // @ts-ignore
     const qrCampaignTemplatesRouter = await import('./routes/qrCampaignTemplates.js');
     app.use('/api/qr', qrCampaignTemplatesRouter.default);
     console.log('✅ QR Campaign Templates routes loaded successfully');
