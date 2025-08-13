@@ -10,6 +10,7 @@ import RetailerOrderDashboard from '@/components/RetailerOrderDashboard';
 import { Store, Users, ShoppingCart, TrendingUp, Bell, Settings, CheckCircle } from 'lucide-react';
 
 export default function RetailerDashboard() {
+  const [activeTab, setActiveTab] = useState('trips');
   const [showSubscriptionAlert, setShowSubscriptionAlert] = useState(false);
   
   // Check for subscription confirmation in URL params
@@ -143,7 +144,7 @@ export default function RetailerDashboard() {
         </div>
 
         {/* Dashboard Tabs */}
-        <Tabs defaultValue="trips" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="trips">Live Shopping Trips</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
