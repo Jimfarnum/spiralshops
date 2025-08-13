@@ -48,6 +48,8 @@ import authSystem from "./authSystem.js";
 import { getProgressData } from "../spiral-progress.js";
 import { createRateLimit } from "./rate_limit";
 import { registerRetailerDataRoutes } from "./retailerDataIntegration";
+import { adminAuth } from "./admin_auth.js";
+import { getOpsSummary } from "./ops_summary.js";
 // Admin panel will be added separately
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -3706,6 +3708,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   } catch (err) {
     console.error('❌ Failed to load Advanced AI Image Search routes:', err.message);
   }
+
+  // Admin Operations Summary Endpoint (Feature #8 fixup)
+  app.get("/api/admin/ops-summary", adminAuth, asyncHandler(async (req, res) => {
+    const summary = await getOpsSummary();
+    res.standard(summary);
+  }));
+
+  // System health check endpoint (no auth required for monitoring)
+  app.get("/api/health", asyncHandler(async (req, res) => {
+    const uptime = process.uptime();
+    const memUsage = process.memoryUsage();
+    
+    res.standard({
+      status: "healthy",
+      uptime: `${Math.floor(uptime / 60)}m ${Math.floor(uptime % 60)}s`,
+      memory: {
+        rss: `${Math.round(memUsage.rss / 1024 / 1024)}MB`,
+        heapUsed: `${Math.round(memUsage.heapUsed / 1024 / 1024)}MB`,
+        heapTotal: `${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`
+      },
+      timestamp: new Date().toISOString(),
+      version: "1.0.0"
+    });
+  }));
+
+  console.log('✅ Feature #8 fixups complete: Admin auth, ops summary, and system hardening loaded successfully');
 
   return httpServer;
 }
