@@ -1,0 +1,247 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ─────────────────────────────────────────────────────────────
+# SPIRAL Feature #9 — Self-Check Suite (analysis + report)
+# - /api/selfcheck/run (token-gated): runs real HTTP tests vs live server
+# - /admin/selfcheck (token-gated): interactive dashboard UI
+# - Patch: fulfillment quote sets X-Cache HIT/MISS headers
+# - Debug: /api/analytics/debug/events-count (token-gated)
+# - Roadmap: add selfcheck_suite
+# ─────────────────────────────────────────────────────────────
+
+mkdir -p server public/admin data
+
+# Bump version for traceability
+if [ -f package.json ]; then
+  sed -i 's/"version": *"[^"]*"/"version": "1.7.0"/' package.json || true
+fi
+
+# ─────────────────────────────────────────────────────────────
+# Patch fulfillment quotes to expose X-Cache headers
+# ─────────────────────────────────────────────────────────────
+if [ -f server/fulfillment.js ]; then
+  # import cache helpers if not present
+  grep -q 'from "./cache.js"' server/fulfillment.js || sed -i '1i import { getCache, setCache } from "./cache.js";' server/fulfillment.js
+
+  # add HIT header when cached
+  perl -0777 -pe 's#const from_zip = String\\(req\\.query\\.from_zip\\|\\|""\\);#const from_zip = String(req.query.from_zip||"");\n    const cacheKey = `quote:${from_zip}:${String(req.query.to_zip||"")}:${String(req.query.weight_kg||0.5)}`;\n    const cached = getCache(cacheKey);\n    if (cached) { res.setHeader("X-Cache","HIT"); return res.json(cached); }#' -i server/fulfillment.js
+
+  # add MISS header when computing quotes
+  perl -0777 -pe 's#res\\.json\\(\\{ from_zip, to_zip, km, kg, quotes \\}\\);#const payload = { from_zip, to_zip, km, kg, quotes };\n    setCache(cacheKey, payload, 30);\n    res.setHeader("X-Cache","MISS");\n    res.json(payload);#' -i server/fulfillment.js
+fi
+
+# ─────────────────────────────────────────────────────────────
+# Self-check runner (server-side)
+# ─────────────────────────────────────────────────────────────
+cat > server/selfcheck.js << 'EOF'
+export async function runSelfCheck(base, token){
+  const results = [];
+  const headersAdmin = token ? { "X-Admin-Token": token } : {};
+  let pass = true;
+
+  async function t(name, fn){
+    const item = { name, pass:false, detail:null };
+    try { item.detail = await fn(); item.pass = true; }
+    catch (e){ item.detail = String(e?.message||e); item.pass = false; }
+    results.push(item); if(!item.pass) pass = false;
+  }
+
+  // 1) Health
+  await t("Health heartbeat", async ()=>{
+    const r = await fetch(base+"/api/ops/heartbeat"); const j = await r.json();
+    if(!j.ok) throw new Error("heartbeat not ok"); return j;
+  });
+
+  // 2) Ops Summary
+  await t("Ops summary", async ()=>{
+    const r = await fetch(base+"/api/ops/summary"); const j = await r.json();
+    if(typeof j.retailers!=="number") throw new Error("invalid summary");
+    return { retailers:j.retailers, skus:j.skus, events:j.analytics_events };
+  });
+
+  // 3) Admin gate (unauthorized)
+  await t("Admin auth blocks unauthorized", async ()=>{
+    const r = await fetch(base+"/admin/fulfillment", { method:"GET" });
+    if (r.status !== 401) throw new Error("expected 401, got "+r.status);
+    return { status:r.status };
+  });
+
+  // 4) Admin gate (authorized)
+  await t("Admin auth allows with token", async ()=>{
+    const r = await fetch(base+"/admin/fulfillment?admin_token="+encodeURIComponent(token), { method:"GET" });
+    if (r.status !== 200) throw new Error("expected 200, got "+r.status);
+    return { status:r.status };
+  });
+
+  // 5) Rate-limit headers presence (availability)
+  await t("Availability has X-RateLimit headers", async ()=>{
+    const r = await fetch(base+"/api/inventory/availability?sku=SKU-HEADPHONES-01&lat=44.98&lng=-93.27&radius_km=30");
+    if (!r.headers.get("X-RateLimit-Limit")) throw new Error("missing X-RateLimit-Limit");
+    const j = await r.json(); return { limit:r.headers.get("X-RateLimit-Limit"), hits:j.length||0 };
+  });
+
+  // 6) Quote cache HIT/MISS
+  await t("Quote cache MISS then HIT", async ()=>{
+    const url = base+"/api/fulfillment/quote?from_zip=55101&to_zip=55104&weight_kg=1.1";
+    const r1 = await fetch(url); const miss = r1.headers.get("X-Cache");
+    const r2 = await fetch(url); const hit  = r2.headers.get("X-Cache");
+    if (miss!=="MISS" || hit!=="HIT") throw new Error(`expected MISS→HIT, got ${miss}→${hit}`);
+    const j = await r2.json(); return { quotes:j.quotes?.length||0, cache: `${miss}->${hit}` };
+  });
+
+  // 7) Availability includes retailer_zip (if any items)
+  await t("Availability includes retailer_zip", async ()=>{
+    const r = await fetch(base+"/api/inventory/availability?sku=SKU-HEADPHONES-01&lat=44.98&lng=-93.27&radius_km=30");
+    const j = await r.json();
+    if (Array.isArray(j) && j.length>0 && !("retailer_zip" in j[0])) throw new Error("retailer_zip missing");
+    return { items: j.length||0, ok: true };
+  });
+
+  // 8) Returns flow (create)
+  await t("Returns create produces label", async ()=>{
+    const payload = { order_id:"selfcheck-o-"+Date.now(), retailer_id:"ret-001", customer_zip:"55101", method:"dropoff" };
+    const r = await fetch(base+"/api/fulfillment/returns/create", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload) });
+    const j = await r.json();
+    if(!j.id || !j.label_url) throw new Error("return id/label missing");
+    return { id:j.id, label:j.label_url };
+  });
+
+  // 9) Analytics events increased (debug endpoint)
+  //    Requires /api/analytics/debug/events-count (token-gated)
+  await t("Analytics events incrementing", async ()=>{
+    const h = { "X-Admin-Token": token };
+    const before = await (await fetch(base+"/api/analytics/debug/events-count", { headers:h })).json();
+    // Trigger a quote + availability + returns to generate events
+    await fetch(base+"/api/fulfillment/quote?from_zip=55101&to_zip=55104&weight_kg=1.2");
+    await fetch(base+"/api/inventory/availability?sku=SKU-HEADPHONES-01&lat=44.98&lng=-93.27&radius_km=30");
+    await fetch(base+"/api/fulfillment/returns/create", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ order_id:"selfcheck-o-2-"+Date.now(), retailer_id:"ret-001", customer_zip:"55101", method:"dropoff" }) });
+    const after = await (await fetch(base+"/api/analytics/debug/events-count", { headers:h })).json();
+    if (typeof before.count!=="number" || typeof after.count!=="number" || after.count <= before.count){
+      throw new Error(`events did not grow (${before.count} -> ${after.count})`);
+    }
+    return { before:before.count, after:after.count };
+  });
+
+  return { pass, results, generated_at: new Date().toISOString() };
+}
+EOF
+
+# ─────────────────────────────────────────────────────────────
+# Wire routes + debug endpoint + selfcheck page
+# ─────────────────────────────────────────────────────────────
+if [ -f server/index.js ]; then
+  # Imports
+  grep -q 'from "./selfcheck.js"' server/index.js || sed -i '1i import { runSelfCheck } from "./selfcheck.js";' server/index.js
+  grep -q 'from "./datastore.js"' server/index.js || sed -i '1i import { ds } from "./datastore.js";' server/index.js
+  grep -q 'adminAuth' server/index.js || sed -i '1i import { adminAuth } from "./admin_auth.js";' server/index.js
+  grep -q 'const publicDir' server/index.js || sed -i 's#const app = express();#const app = express();\nconst publicDir = path.join(__dirname, "..", "public");#' server/index.js
+
+  # API: /api/selfcheck/run (token-gated)
+  grep -q '/api/selfcheck/run' server/index.js || \
+  sed -i 's#app.use(express.static(publicDir, { index: false }));#app.use(express.static(publicDir, { index: false }));\n\napp.get("/api/selfcheck/run", adminAuth, async (req,res)=>{\n  const base = `${req.protocol}://${req.get("host")}`;\n  try { const out = await runSelfCheck(base, req.query.admin_token || req.headers["x-admin-token"]); res.json(out); }\n  catch(e){ res.status(500).json({ error:String(e?.message||e) }); }\n});#' server/index.js
+
+  # Debug: analytics events count (token-gated)
+  grep -q '/api/analytics/debug/events-count' server/index.js || \
+  sed -i 's#app.use(express.static(publicDir, { index: false }));#app.use(express.static(publicDir, { index: false }));\n\napp.get("/api/analytics/debug/events-count", adminAuth, async (_req,res)=>{ try{ const ev = await ds.getEvents(); res.json({ count: (ev||[]).length }); } catch(e){ res.status(500).json({ error:String(e?.message||e) }); } });#' server/index.js
+
+  # Page: /admin/selfcheck (token-gated by existing adminGuard)
+  grep -q '"/admin/selfcheck"' server/index.js || \
+  sed -i 's#app.use(express.static(publicDir, { index: false }));#app.use(express.static(publicDir, { index: false }));\n\napp.get("/admin/selfcheck", (_req,res)=> res.sendFile(path.join(publicDir, "admin", "selfcheck.html")));#' server/index.js
+fi
+
+# ─────────────────────────────────────────────────────────────
+# Selfcheck UI
+# ─────────────────────────────────────────────────────────────
+cat > public/admin/selfcheck.html << 'EOF'
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPIRAL — Self-Check Suite</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:22px;color:#0b1220}
+.card{border:1px solid #e5e7eb;border-radius:14px;padding:16px;margin:10px 0}
+.badge{border-radius:999px;padding:4px 8px}
+.pass{background:#e6ffed;border:1px solid #bbf7d0}
+.fail{background:#ffecec;border:1px solid #fecaca}
+.small{color:#6b7280}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #e5e7eb;padding:8px;text-align:left}
+input,button{padding:10px;border:1px solid #d1d5db;border-radius:12px}
+button{background:#111827;color:#fff;cursor:pointer}
+pre{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:12px;overflow:auto}
+</style>
+<h1>SPIRAL — Self-Check Suite</h1>
+<div class="card">
+  <div>Provide your admin token (pre-filled if you arrived with <code>?admin_token=...</code>).</div>
+  <div style="margin-top:8px">
+    <input id="tok" placeholder="ADMIN_TOKEN" style="min-width:300px">
+    <button onclick="run()">Run Self-Check</button>
+  </div>
+  <div class="small">This runs live HTTP tests against your server.</div>
+</div>
+
+<div class="card">
+  <h3>Results</h3>
+  <div id="summary" class="badge">—</div>
+  <table id="tbl"><thead><tr><th>Test</th><th>Status</th><th>Detail</th></tr></thead><tbody></tbody></table>
+</div>
+
+<div class="card">
+  <h3>Raw Output</h3>
+  <pre id="raw">—</pre>
+</div>
+
+<script>
+function qp(k){ const u=new URL(window.location); return u.searchParams.get(k); }
+document.getElementById('tok').value = qp('admin_token') || '';
+
+async function run(){
+  const token = document.getElementById('tok').value.trim();
+  const url = '/api/selfcheck/run?admin_token='+encodeURIComponent(token);
+  const r = await fetch(url);
+  const data = await r.json();
+  const tb = document.querySelector('#tbl tbody'); tb.innerHTML='';
+  let allPass = data.pass;
+  (data.results||[]).forEach(t=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${t.name}</td><td>${t.pass?'<span class="badge pass">PASS</span>':'<span class="badge fail">FAIL</span>'}</td><td><pre>${typeof t.detail==='object'?JSON.stringify(t.detail,null,2):t.detail}</pre></td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById('summary').className = 'badge '+(allPass?'pass':'fail');
+  document.getElementById('summary').textContent = allPass ? 'ALL TESTS PASS' : 'SOME TESTS FAILED';
+  document.getElementById('raw').textContent = JSON.stringify(data,null,2);
+}
+</script>
+EOF
+
+# ─────────────────────────────────────────────────────────────
+# Roadmap update
+# ─────────────────────────────────────────────────────────────
+if [ -f data/roadmap.json ]; then
+python3 - <<'PY' || true
+import json,sys,datetime
+p="data/roadmap.json"
+try:
+  r=json.load(open(p))
+except: r={"phase":"Phase 1 — Competitive Gap Closing","items":[],"last_updated":""}
+def up(id,title,status):
+  it=next((x for x in r.get("items",[]) if x.get("id")==id),None)
+  if it: it.update({"title":title,"status":status})
+  else: r.setdefault("items",[]).append({"id":id,"title":title,"status":status})
+up("selfcheck_suite","Self-Check Suite (Analysis & Report)","done")
+r["last_updated"]=datetime.datetime.utcnow().isoformat()+"Z"
+open(p,"w").write(json.dumps(r,indent=2))
+PY
+fi
+
+echo "✅ Self-Check Suite installed.
+Next:
+  • Set ADMIN_TOKEN in Replit Secrets (if not already).
+  • npm start
+  • Open /admin/selfcheck?admin_token=YOUR_TOKEN and click 'Run Self-Check'.
+
+The endpoint /api/selfcheck/run returns a JSON report suitable for CI/monitoring.
+"
