@@ -143,6 +143,7 @@ import AdminTestDashboard from "@/pages/admin-test-dashboard";
 import MobileAppBase from "@/pages/mobile-app-base";
 import RetailerDataManagement from "@/pages/RetailerDataManagement";
 import CheckoutPage from "@/pages/CheckoutPage";
+import Returns from "./pages/Returns";
 import PaymentSuccessPage from "@/pages/PaymentSuccessPage";
 import PaymentDemo from "@/pages/PaymentDemo";
 import PaymentSystemDemo from "@/pages/PaymentSystemDemo";
@@ -421,6 +422,7 @@ function Router() {
       <Route path="/admin/wishlist-alerts" component={AdminWishlistAlertsPage} />
       <Route path="/orders/returns" component={OrdersReturns} />
       <Route path="/admin/returns" component={AdminReturns} />
+      <Route path="/returns" component={Returns} />
       <Route path="/feature-11-demo" component={Feature11Demo} />
       <Route path="/feature-12-demo" component={Feature12Demo} />
       <Route path="/feature-13-demo" component={Feature13Demo} />

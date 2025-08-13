@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { Router } from "express";
+import { getCache, setCache } from "./cache";
 
 const dataDir = path.join(process.cwd(), "data");
 const servicePath = path.join(dataDir, "serviceability.json");
@@ -194,6 +195,13 @@ fulfillmentRouter.get("/quote", (req, res) => {
     return res.status(400).json({ error: "from_zip and to_zip required" });
   }
   
+  // Check cache first (30 second TTL)
+  const cacheKey = `quote:${from_zip}:${to_zip}:${kg}`;
+  const cached = getCache(cacheKey);
+  if (cached) {
+    return res.json(cached);
+  }
+  
   const service = load(servicePath);
   const couriers = load(courierPath);
   const serviceable = service.serviceable_zips.includes(from_zip) && 
@@ -214,14 +222,18 @@ fulfillmentRouter.get("/quote", (req, res) => {
     };
   }).sort((a: any, b: any) => a.price - b.price);
 
-  res.json({ 
+  const payload = { 
     from_zip, 
     to_zip, 
     distance_km: km, 
     weight_kg: kg, 
     quotes,
     serviceable_area: serviceable
-  });
+  };
+  
+  // Cache the result for 30 seconds
+  setCache(cacheKey, payload, 30);
+  res.json(payload);
 });
 
 // Dispatch endpoint - POST with order details

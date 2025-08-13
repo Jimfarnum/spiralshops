@@ -46,12 +46,22 @@ import { giftCardsStorage } from "./giftCardsStorage";
 import { z } from "zod";
 import authSystem from "./authSystem.js";
 import { getProgressData } from "../spiral-progress.js";
+import { createRateLimit } from "./rate_limit";
 import { registerRetailerDataRoutes } from "./retailerDataIntegration";
 // Admin panel will be added separately
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Enable trust proxy for Replit environment
   app.set('trust proxy', 1);
+
+  // Rate limiting middleware
+  const rl60 = createRateLimit(60, 60 * 1000); // 60 requests per minute
+  const rl30 = createRateLimit(30, 60 * 1000); // 30 requests per minute
+  
+  // Apply rate limits to specific endpoints
+  app.use("/api/inventory/availability", rl60);
+  app.use("/api/fulfillment/quote", rl60);
+  app.use("/api/orders/route", rl30);
   
   // Apply global response middleware for all API routes
   app.use('/api', globalResponseMiddleware);

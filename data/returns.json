@@ -12,5 +12,19 @@
     "status": "authorized",
     "customer_name": "Customer",
     "items": []
+  },
+  {
+    "id": "RET-00002",
+    "order_id": "ORDER-123456",
+    "retailer_id": "unknown",
+    "reason": "Defective item",
+    "method": "dropoff",
+    "customer_zip": "55101",
+    "pickup_center_id": null,
+    "label_url": "/api/fulfillment/returns/label/RET-00002.pdf",
+    "created_at": "2025-08-13T02:53:56.068Z",
+    "status": "authorized",
+    "customer_name": "Customer",
+    "items": []
   }
 ]

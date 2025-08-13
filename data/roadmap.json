@@ -14,13 +14,28 @@
     {
       "id": "local_fulfillment",
       "title": "Local Fulfillment Layer (couriers + returns + pickup)",
-      "status": "done"
+      "status": "in_progress"
     },
     {
       "id": "customer_ui",
       "title": "Customer Cross-Retailer Shopping UI (ZIP-gated + ETA badges)",
       "status": "done"
+    },
+    {
+      "id": "returns_ui",
+      "title": "Customer Returns Page (/returns)",
+      "status": "done"
+    },
+    {
+      "id": "rate_limit_cache",
+      "title": "Rate Limits + Quote Cache",
+      "status": "done"
+    },
+    {
+      "id": "postgres_migration",
+      "title": "Migrate JSON stores to Postgres",
+      "status": "todo"
     }
   ],
-  "last_updated": "2025-08-13T02:41:59.080Z"
+  "last_updated": "2025-08-13T02:55:14.106Z"
 }
