@@ -248,6 +248,20 @@ export default function Home() {
               </div>
             </Link>
 
+            {/* Cross-Retailer Search - NEW REVOLUTIONARY FEATURE */}
+            <Link to="/cross-retailer" className="group">
+              <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-indigo-600 to-blue-500 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target relative overflow-hidden">
+                <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-bold animate-pulse">NEW</div>
+                <div className="flex items-center gap-4 text-left">
+                  <div className="text-3xl">🔗</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-1 font-['Poppins']">Cross-Retailer</h3>
+                    <p className="text-sm text-white/90 font-['Inter']">Search ALL local stores at once</p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+
             {/* AI Wishlist Intelligence */}
             <Link to="/intelligent-wishlist" className="group">
               <div className="w-full max-w-[300px] mx-auto md:mx-0 py-4 px-4 rounded-xl shadow-md bg-gradient-to-br from-purple-600 to-violet-500 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer touch-target relative overflow-hidden">
