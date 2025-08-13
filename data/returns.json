@@ -1,0 +1,16 @@
+[
+  {
+    "id": "RET-00001",
+    "order_id": "TEST-001",
+    "retailer_id": "ret-001",
+    "reason": "defective_item",
+    "method": "dropoff",
+    "customer_zip": "55101",
+    "pickup_center_id": "pc-001",
+    "label_url": "/api/fulfillment/returns/label/RET-00001.pdf",
+    "created_at": "2025-08-13T02:31:59.001Z",
+    "status": "authorized",
+    "customer_name": "Customer",
+    "items": []
+  }
+]

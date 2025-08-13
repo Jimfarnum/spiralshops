@@ -1,0 +1,38 @@
+[
+  {
+    "id": "cr-local",
+    "name": "Local Courier Co",
+    "kind": "local",
+    "base_fee": 4,
+    "per_km": 0.6,
+    "per_kg": 0.5,
+    "sla_mins": [
+      30,
+      90
+    ]
+  },
+  {
+    "id": "cr-roadie",
+    "name": "Roadie Integration",
+    "kind": "gig",
+    "base_fee": 6,
+    "per_km": 0.7,
+    "per_kg": 0.4,
+    "sla_mins": [
+      60,
+      180
+    ]
+  },
+  {
+    "id": "cr-standard",
+    "name": "UPS/FedEx Network",
+    "kind": "carrier",
+    "base_fee": 8,
+    "per_km": 0.4,
+    "per_kg": 0.3,
+    "sla_mins": [
+      720,
+      2880
+    ]
+  }
+]

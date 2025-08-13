@@ -75,6 +75,7 @@ import SEOLandingRoute from "@/pages/SEOLandingRoute";
 import QRCodeHub from "@/pages/QRCodeHub";
 import CrossRetailerHub from "@/pages/CrossRetailerHub";
 import AnalyticsDashboard from "@/pages/admin/AnalyticsDashboard";
+import FulfillmentDashboard from "@/pages/admin/FulfillmentDashboard";
 import BetaProgram from "@/pages/BetaProgram";
 import StripeTestPage from "@/pages/StripeTestPage";
 import InternalPlatformDashboard from "@/components/InternalPlatformDashboard";
@@ -370,6 +371,7 @@ function Router() {
       <Route path="/qr-hub" component={QRCodeHub} />
       <Route path="/cross-retailer" component={CrossRetailerHub} />
       <Route path="/admin/analytics" component={AnalyticsDashboard} />
+      <Route path="/admin/fulfillment" component={FulfillmentDashboard} />
       <Route path="/loyalty-dashboard" component={LoyaltyDashboard} />
       <Route path="/mall-events-demo" component={MallEventsDemo} />
       <Route path="/retailer-onboarding" component={RetailerOnboarding} />

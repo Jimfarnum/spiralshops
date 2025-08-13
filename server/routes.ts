@@ -39,6 +39,7 @@ import { registerEnhancedFeaturesRoutes } from "./routes/enhancedFeatures";
 import aiAgentsRouter from './routes/ai-agents.js';
 import crossRetailerRouter from './crossRetailerInventory';
 import { analyticsRouter } from './analytics';
+import { fulfillmentRouter } from './fulfillment';
 import { insertStoreSchema, insertRetailerSchema, insertUserSchema, insertSpiralTransactionSchema, insertOrderSchema, insertReviewSchema } from "@shared/schema";
 import { reviewsStorage } from "./reviewsStorage";
 import { giftCardsStorage } from "./giftCardsStorage";
@@ -65,6 +66,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Analytics & Intelligence Hub
   app.use('/api/analytics', analyticsRouter);
   console.log('✅ Analytics & Intelligence Hub loaded successfully');
+  
+  // Local Fulfillment Layer
+  app.use('/api/fulfillment', fulfillmentRouter);
+  console.log('✅ Local Fulfillment Layer loaded successfully');
   
   // Admin Test Routes Integration
   try {

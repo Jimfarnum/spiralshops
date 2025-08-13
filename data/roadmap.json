@@ -2,10 +2,20 @@
   "phase": "Phase 1 — Competitive Gap Closing",
   "items": [
     {
+      "id": "cross_inventory",
+      "title": "Cross-Retailer Inventory Referencing (API + UI)",
+      "status": "done"
+    },
+    {
       "id": "analytics_hub",
       "title": "Retailer Analytics & Intelligence Hub (MVP)",
       "status": "in_progress"
+    },
+    {
+      "id": "local_fulfillment",
+      "title": "Local Fulfillment Layer (couriers + returns + pickup)",
+      "status": "in_progress"
     }
   ],
-  "last_updated": "2025-08-13T02:22:31.734Z"
+  "last_updated": "2025-08-13T02:32:06.012Z"
 }

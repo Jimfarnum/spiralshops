@@ -1,0 +1,525 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ─────────────────────────────────────────────────────────────
+# SPIRAL Feature #3 — Local Fulfillment Layer (MVP)
+# Adds:
+#  - Serviceability map (ZIPs), pickup centers, courier adapters (mock)
+#  - Quote & dispatch APIs with ETA logic
+#  - Unified returns desk (create labels/intake ticket)
+#  - /admin/fulfillment console
+#  - Roadmap update
+# ─────────────────────────────────────────────────────────────
+
+mkdir -p server public/admin data
+
+# Ensure package.json exists and bump minor version
+if [ ! -f package.json ]; then
+cat > package.json << 'EOF'
+{
+  "name": "spiralshops",
+  "version": "1.3.0",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
+EOF
+else
+  sed -i 's/"version": *"[^"]*"/"version": "1.3.0"/' package.json || true
+fi
+
+# ─────────────────────────────────────────────────────────────
+# Minimal hardening (re-use / create if missing)
+# ─────────────────────────────────────────────────────────────
+if [ ! -f server/app-hardening.js ]; then
+cat > server/app-hardening.js << 'EOF'
+export function attachHardening(app) {
+  app.get("/api/health", (_req,res)=> res.json({ status:"ok", service:"spiralshops", version:"1.3.0" }));
+  app.use((req,res,next)=>{
+    res.setHeader("Strict-Transport-Security","max-age=31536000; includeSubDomains; preload");
+    res.setHeader("X-Content-Type-Options","nosniff");
+    res.setHeader("Referrer-Policy","strict-origin-when-cross-origin");
+    res.setHeader("Content-Security-Policy",
+      [
+        "default-src 'self' https: data:",
+        "script-src 'self' https: 'unsafe-inline' 'unsafe-eval'",
+        "style-src 'self' https: 'unsafe-inline'",
+        "img-src 'self' https: data:",
+        "font-src 'self' https: data:",
+        "connect-src 'self' https:",
+        "frame-ancestors 'self'",
+        "base-uri 'self'"
+      ].join("; ")
+    );
+    if (req.path.startsWith("/investors") || req.path.startsWith("/admin")){
+      res.setHeader("X-Robots-Tag","noindex, nofollow");
+    }
+    next();
+  });
+}
+EOF
+fi
+
+# ─────────────────────────────────────────────────────────────
+# Fulfillment server: serviceability, quotes, dispatch, returns
+# ─────────────────────────────────────────────────────────────
+cat > server/fulfillment.js << 'EOF'
+import fs from "fs";
+import path from "path";
+
+const dataDir = path.join(process.cwd(), "data");
+const servicePath = path.join(dataDir, "serviceability.json");
+const pickupsPath = path.join(dataDir, "pickup_centers.json");
+const courierPath = path.join(dataDir, "couriers.json");
+const returnsPath = path.join(dataDir, "returns.json");
+const roadmapPath = path.join(dataDir, "roadmap.json");
+
+// initialize files if missing
+function ensure(p, init){ if (!fs.existsSync(p)) fs.writeFileSync(p, JSON.stringify(init, null, 2)); }
+ensure(servicePath, { serviceable_zips: ["55101","55104","55415"], default_eta_mins:[120,240] });
+ensure(pickupsPath, [
+  { id:"pc-001", name:"SPIRAL Center — Downtown", zip:"55101", address:"123 Main St", hours:"10–8", capacity:200 },
+  { id:"pc-002", name:"SPIRAL Center — City Mall", zip:"55415", address:"500 Market Ave", hours:"10–9", capacity:400 }
+]);
+ensure(courierPath, [
+  { id:"cr-local", name:"Local Courier Co", kind:"local", base_fee:4.0, per_km:0.6, per_kg:0.5, sla_mins:[30,90] },
+  { id:"cr-roadie", name:"Roadie (Mock)", kind:"gig", base_fee:6.0, per_km:0.7, per_kg:0.4, sla_mins:[60,180] },
+  { id:"cr-standard", name:"UPS/USPS (Mock)", kind:"carrier", base_fee:8.0, per_km:0.4, per_kg:0.3, sla_mins:[720,2880] }
+]);
+ensure(returnsPath, []);
+ensure(roadmapPath, { phase:"Phase 1 — Competitive Gap Closing", items:[], last_updated:"" });
+
+function load(p){ return JSON.parse(fs.readFileSync(p,"utf-8")); }
+function save(p, v){ fs.writeFileSync(p, JSON.stringify(v,null,2)); }
+function nowISO(){ return new Date().toISOString(); }
+
+// simple helpers
+function kmBetweenZips(zipA, zipB){
+  // rough heuristic: treat different zips as distances via table or approx
+  if (!zipA || !zipB) return 10;
+  if (zipA===zipB) return 2;
+  const n = Math.abs(parseInt(zipA.slice(0,3)) - parseInt(zipB.slice(0,3)));
+  return 2 + n * 3; // rough fake distance
+}
+function priceFor(courier, km, kg){
+  return Number((courier.base_fee + km*courier.per_km + kg*courier.per_kg).toFixed(2));
+}
+
+function upsertRoadmap(id, title, status){
+  const r = load(roadmapPath);
+  const idx = r.items.findIndex(x=>x.id===id);
+  if (idx===-1) r.items.push({ id, title, status });
+  else { r.items[idx].title = title; r.items[idx].status = status || r.items[idx].status; }
+  r.last_updated = nowISO();
+  save(roadmapPath, r);
+}
+upsertRoadmap("local_fulfillment","Local Fulfillment Layer (couriers + returns + pickup)","in_progress");
+
+function json(req,res,next){
+  if (req.headers["content-type"] && req.headers["content-type"].includes("application/json")){
+    let b=""; req.on("data",ch=>b+=ch); req.on("end",()=>{ try{ req.body=b?JSON.parse(b):{}; }catch(e){ return res.status(400).json({error:"bad_json"}); } next(); });
+  } else { req.body={}; next(); }
+}
+
+export function attachFulfillmentRoutes(app){
+
+  // Serviceability & pickup centers
+  app.get("/api/fulfillment/serviceability", (_req,res)=> res.json(load(servicePath)));
+  app.put("/api/fulfillment/serviceability", json, (req,res)=>{
+    const s = load(servicePath);
+    if (Array.isArray(req.body.serviceable_zips)) s.serviceable_zips = req.body.serviceable_zips.map(z=>String(z));
+    if (Array.isArray(req.body.default_eta_mins)) s.default_eta_mins = req.body.default_eta_mins.map(Number);
+    save(servicePath, s);
+    res.json(s);
+  });
+  app.get("/api/fulfillment/pickup-centers", (_req,res)=> res.json(load(pickupsPath)));
+  app.post("/api/fulfillment/pickup-centers", json, (req,res)=>{
+    const pcs = load(pickupsPath);
+    const id = "pc-"+String(pcs.length+1).padStart(3,"0");
+    pcs.push({ id, name:req.body.name, zip:req.body.zip, address:req.body.address, hours:req.body.hours||"10–8", capacity:Number(req.body.capacity||200) });
+    save(pickupsPath, pcs);
+    res.json({ok:true, id});
+  });
+
+  // Courier listing (mock adapters)
+  app.get("/api/fulfillment/couriers", (_req,res)=> res.json(load(courierPath)));
+  app.put("/api/fulfillment/couriers", json, (req,res)=>{
+    if (!Array.isArray(req.body)) return res.status(400).json({error:"array_required"});
+    save(courierPath, req.body); res.json({ok:true,count:req.body.length});
+  });
+
+  // Quote endpoint
+  // GET /api/fulfillment/quote?from_zip=55101&to_zip=55104&weight_kg=1.2
+  app.get("/api/fulfillment/quote", (req,res)=>{
+    const from_zip = String(req.query.from_zip||"");
+    const to_zip   = String(req.query.to_zip||"");
+    const kg = Number(req.query.weight_kg||0.5);
+    const service = load(servicePath);
+    const couriers = load(courierPath);
+    const serviceable = service.serviceable_zips.includes(from_zip) && service.serviceable_zips.includes(to_zip);
+    const km = kmBetweenZips(from_zip, to_zip);
+
+    const quotes = couriers.map(c=>{
+      const price = priceFor(c, km, kg);
+      const eta = serviceable ? c.sla_mins : service.default_eta_mins;
+      return { courier_id:c.id, courier_name:c.name, kind:c.kind, price, eta_mins:eta, serviceable };
+    }).sort((a,b)=> a.price - b.price);
+
+    res.json({ from_zip, to_zip, km, kg, quotes });
+  });
+
+  // Dispatch endpoint
+  // POST { order_id, from_zip, to_zip, kg, courier_id?, pickup_center_id? }
+  app.post("/api/fulfillment/dispatch", json, (req,res)=>{
+    const { order_id, from_zip, to_zip, kg=0.5, courier_id, pickup_center_id } = req.body||{};
+    if (!order_id || !from_zip || !to_zip) return res.status(400).json({error:"order_id_from_zip_to_zip_required"});
+    const service = load(servicePath);
+    const courierList = load(courierPath);
+    const pcs = load(pickupsPath);
+    const km = kmBetweenZips(String(from_zip), String(to_zip));
+    const chosen = courier_id ? courierList.find(c=>c.id===courier_id) : courierList[0];
+    if (!chosen) return res.status(404).json({error:"courier_not_found"});
+
+    const serviceable = service.serviceable_zips.includes(String(from_zip)) && service.serviceable_zips.includes(String(to_zip));
+    const price = priceFor(chosen, km, Number(kg));
+    const eta = serviceable ? chosen.sla_mins : service.default_eta_mins;
+    const pickup = pickup_center_id ? pcs.find(p=>p.id===pickup_center_id) : null;
+
+    // In real world, call courier API, get tracking; here we mock:
+    const tracking = `TRK-${Date.now()}-${Math.floor(Math.random()*999)}`;
+    const status_url = `/api/fulfillment/status/${tracking}`;
+
+    res.json({
+      ok:true, order_id, courier:{ id:chosen.id, name:chosen.name }, price, eta_mins: eta,
+      serviceable, pickup_center: pickup || null, tracking, status_url
+    });
+  });
+
+  // Mock shipment status
+  app.get("/api/fulfillment/status/:tracking", (req,res)=>{
+    const { tracking } = req.params;
+    // pseudo-random phase based on time
+    const phases = ["label_created","picked_up","in_transit","out_for_delivery","delivered"];
+    const idx = Math.min(phases.length-1, Math.floor((Date.now()/600000)%phases.length));
+    res.json({ tracking, status: phases[idx], updated_at: nowISO() });
+  });
+
+  // Unified returns
+  // POST { order_id, retailer_id, reason, method: "dropoff"|"pickup", customer_zip, pickup_center_id? }
+  app.post("/api/fulfillment/returns/create", json, (req,res)=>{
+    const list = load(returnsPath);
+    const id = "ret-"+String(list.length+1).padStart(5,"0");
+    const r = {
+      id,
+      order_id: req.body.order_id,
+      retailer_id: req.body.retailer_id,
+      reason: req.body.reason || "unspecified",
+      method: req.body.method || "dropoff",
+      customer_zip: req.body.customer_zip || null,
+      pickup_center_id: req.body.pickup_center_id || null,
+      label_url: `/api/fulfillment/returns/label/${id}.pdf`,
+      created_at: nowISO(),
+      status: "authorized"
+    };
+    list.push(r); save(returnsPath, list);
+    res.json(r);
+  });
+
+  app.get("/api/fulfillment/returns", (_req,res)=> res.json(load(returnsPath)));
+
+  // Fake label PDF (returns a simple text as PDF mime)
+  app.get("/api/fulfillment/returns/label/:id.pdf", (req,res)=>{
+    res.setHeader("Content-Type","application/pdf");
+    const payload = `SPIRAL RETURN LABEL\nID: ${req.params.id}\nGenerated: ${nowISO()}\n`;
+    res.send(Buffer.from(payload));
+  });
+
+  // Ops summary for dashboards
+  app.get("/api/fulfillment/ops", (_req,res)=>{
+    const s = load(servicePath);
+    const pcs = load(pickupsPath);
+    const c  = load(courierPath);
+    const r  = load(returnsPath);
+    res.json({ serviceable_count: s.serviceable_zips.length, pickup_centers: pcs.length, couriers: c.length, returns_open: r.filter(x=>x.status!=="closed").length });
+  });
+}
+EOF
+
+# ─────────────────────────────────────────────────────────────
+# Wire routes into server/index.js (create if missing)
+# ─────────────────────────────────────────────────────────────
+if [ ! -f server/index.js ]; then
+cat > server/index.js << 'EOF'
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+import { attachHardening } from "./app-hardening.js";
+import { attachFulfillmentRoutes } from "./fulfillment.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const app = express();
+
+attachHardening(app);
+attachFulfillmentRoutes(app);
+
+const publicDir = path.join(__dirname, "..", "public");
+app.use(express.static(publicDir, { index: false }));
+
+app.get("/admin/fulfillment", (_req,res)=>{
+  res.sendFile(path.join(publicDir, "admin", "fulfillment.html"));
+});
+
+app.get("*", (_req,res)=>{
+  res.send(`<!doctype html><meta charset="utf-8"><title>SPIRAL</title>
+  <style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:40px;color:#0b1220}</style>
+  <h1>SPIRAL — Local Fulfillment Layer (MVP)</h1>
+  <ul>
+    <li><a href="/admin/fulfillment">/admin/fulfillment</a> — Configure serviceability, couriers, pickup centers</li>
+    <li><code>GET  /api/fulfillment/quote?from_zip=55101&to_zip=55104&weight_kg=1.2</code></li>
+    <li><code>POST /api/fulfillment/dispatch</code> { order_id, from_zip, to_zip, kg }</li>
+    <li><code>POST /api/fulfillment/returns/create</code></li>
+  </ul>`);
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, ()=> console.log("SPIRAL server running on :"+port));
+EOF
+else
+  # Append fulfillment wiring if not present
+  grep -q "attachFulfillmentRoutes" server/index.js || \
+  sed -i '1i import { attachFulfillmentRoutes } from "./fulfillment.js";' server/index.js
+  grep -q "attachFulfillmentRoutes(app);" server/index.js || \
+  sed -i 's/attachHardening(app);/attachHardening(app);\nattachFulfillmentRoutes(app);/' server/index.js
+  # Ensure admin route exists
+  grep -q "/admin/fulfillment" server/index.js || \
+  sed -i 's/app.use(express.static(publicDir, { index: false }));/app.use(express.static(publicDir, { index: false }));\n\napp.get("\\/admin\\/fulfillment", (_req,res)=>{ res.sendFile(path.join(publicDir, "admin", "fulfillment.html")); });/' server/index.js
+fi
+
+# ─────────────────────────────────────────────────────────────
+# Admin Fulfillment Console (configure & test)
+# ─────────────────────────────────────────────────────────────
+cat > public/admin/fulfillment.html << 'EOF'
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPIRAL Admin — Fulfillment</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:22px;color:#0b1220}
+h1{margin:.2rem 0 1rem}
+.card{border:1px solid #e5e7eb;border-radius:14px;padding:16px;margin:10px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select,button,textarea{padding:10px;border:1px solid #d1d5db;border-radius:12px}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{border-bottom:1px solid #e5e7eb;padding:8px;text-align:left}
+.small{color:#6b7280;font-size:.92rem}
+.badge{background:#f3f4f6;border-radius:999px;padding:4px 8px}
+a{color:inherit;text-decoration:underline}
+pre{background:#f9fafb;padding:12px;border-radius:12px;overflow:auto}
+</style>
+<h1>SPIRAL — Local Fulfillment Layer</h1>
+
+<div class="card">
+  <h3>Serviceability</h3>
+  <div class="row">
+    <input id="zips" placeholder="Comma-separated ZIPs e.g. 55101,55104,55415" style="min-width:360px">
+    <input id="etaMin" placeholder="Default ETA min e.g. 120" type="number">
+    <input id="etaMax" placeholder="Default ETA max e.g. 240" type="number">
+    <button onclick="saveService()">Save</button>
+    <span id="svcStatus" class="badge"></span>
+  </div>
+  <div class="small">Used when a courier/ZIP isn’t in a fast local zone.</div>
+</div>
+
+<div class="card">
+  <h3>Pickup Centers</h3>
+  <div class="row">
+    <input id="pcName" placeholder="Name">
+    <input id="pcZip" placeholder="ZIP">
+    <input id="pcAddr" placeholder="Address">
+    <input id="pcHours" placeholder="Hours e.g. 10–8">
+    <input id="pcCap" placeholder="Capacity" type="number">
+    <button onclick="addPickup()">Add</button>
+  </div>
+  <table id="pcs"><thead><tr><th>ID</th><th>Name</th><th>ZIP</th><th>Address</th><th>Hours</th><th>Capacity</th></tr></thead><tbody></tbody></table>
+</div>
+
+<div class="card">
+  <h3>Couriers</h3>
+  <table id="crs"><thead><tr><th>ID</th><th>Name</th><th>Kind</th><th>Base</th><th>$/km</th><th>$/kg</th><th>SLA (min)</th></tr></thead><tbody></tbody></table>
+  <div class="row">
+    <textarea id="crJson" rows="6" style="width:100%"></textarea>
+    <button onclick="saveCouriers()">Save Couriers JSON</button>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Quote & Dispatch Test</h3>
+  <div class="row">
+    <input id="fromZip" placeholder="From ZIP e.g. 55101">
+    <input id="toZip" placeholder="To ZIP e.g. 55104">
+    <input id="kg" placeholder="Weight kg e.g. 1.2" type="number" step="0.1">
+    <button onclick="quote()">Get Quotes</button>
+  </div>
+  <pre id="quoteOut"></pre>
+  <div class="row">
+    <input id="orderId" placeholder="Order ID e.g. o-2001">
+    <input id="courierId" placeholder="Courier ID (optional)">
+    <input id="pickId" placeholder="Pickup Center ID (optional)">
+    <button onclick="dispatch()">Dispatch</button>
+  </div>
+  <pre id="dispatchOut"></pre>
+</div>
+
+<div class="card">
+  <h3>Unified Returns</h3>
+  <div class="row">
+    <input id="rOrder" placeholder="Order ID">
+    <input id="rRetailer" placeholder="Retailer ID">
+    <input id="rZip" placeholder="Customer ZIP">
+    <select id="rMethod"><option>dropoff</option><option>pickup</option></select>
+    <input id="rPC" placeholder="Pickup Center ID (optional)">
+    <button onclick="mkReturn()">Create Return</button>
+  </div>
+  <pre id="retOut"></pre>
+</div>
+
+<div class="card">
+  <h3>Ops Summary</h3>
+  <button onclick="ops()">Refresh</button>
+  <pre id="opsOut"></pre>
+</div>
+
+<script>
+async function loadService(){
+  const s = await (await fetch('/api/fulfillment/serviceability')).json();
+  document.getElementById('zips').value = (s.serviceable_zips||[]).join(',');
+  document.getElementById('etaMin').value = (s.default_eta_mins||[120,240])[0];
+  document.getElementById('etaMax').value = (s.default_eta_mins||[120,240])[1];
+}
+async function saveService(){
+  const zips = document.getElementById('zips').value.split(',').map(z=>z.trim()).filter(Boolean);
+  const min = Number(document.getElementById('etaMin').value||120);
+  const max = Number(document.getElementById('etaMax').value||240);
+  const r = await fetch('/api/fulfillment/serviceability',{method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ serviceable_zips:zips, default_eta_mins:[min,max] })});
+  if(r.ok){ document.getElementById('svcStatus').textContent='Saved'; }
+}
+async function loadPickups(){
+  const pcs = await (await fetch('/api/fulfillment/pickup-centers')).json();
+  const tb = document.querySelector('#pcs tbody'); tb.innerHTML='';
+  pcs.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${p.id}</td><td>${p.name}</td><td>${p.zip}</td><td>${p.address}</td><td>${p.hours}</td><td>${p.capacity}</td>`;
+    tb.appendChild(tr);
+  });
+}
+async function addPickup(){
+  const payload = {
+    name:document.getElementById('pcName').value,
+    zip:document.getElementById('pcZip').value,
+    address:document.getElementById('pcAddr').value,
+    hours:document.getElementById('pcHours').value,
+    capacity:Number(document.getElementById('pcCap').value||200)
+  };
+  await fetch('/api/fulfillment/pickup-centers',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+  loadPickups();
+}
+async function loadCouriers(){
+  const cs = await (await fetch('/api/fulfillment/couriers')).json();
+  const tb = document.querySelector('#crs tbody'); tb.innerHTML='';
+  cs.forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${c.id}</td><td>${c.name}</td><td>${c.kind}</td><td>${c.base_fee}</td><td>${c.per_km}</td><td>${c.per_kg}</td><td>${c.sla_mins[0]}–${c.sla_mins[1]}</td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById('crJson').value = JSON.stringify(cs,null,2);
+}
+async function saveCouriers(){
+  const js = document.getElementById('crJson').value;
+  await fetch('/api/fulfillment/couriers',{method:'PUT', headers:{'Content-Type':'application/json'}, body:js});
+  loadCouriers();
+}
+async function quote(){
+  const q = new URLSearchParams({
+    from_zip: document.getElementById('fromZip').value,
+    to_zip:   document.getElementById('toZip').value,
+    weight_kg:document.getElementById('kg').value||1
+  }).toString();
+  const r = await (await fetch('/api/fulfillment/quote?'+q)).json();
+  document.getElementById('quoteOut').textContent = JSON.stringify(r,null,2);
+}
+async function dispatch(){
+  const payload = {
+    order_id: document.getElementById('orderId').value,
+    from_zip: document.getElementById('fromZip').value,
+    to_zip:   document.getElementById('toZip').value,
+    kg:       Number(document.getElementById('kg').value||1),
+    courier_id: document.getElementById('courierId').value || undefined,
+    pickup_center_id: document.getElementById('pickId').value || undefined
+  };
+  const r = await (await fetch('/api/fulfillment/dispatch',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)})).json();
+  document.getElementById('dispatchOut').textContent = JSON.stringify(r,null,2);
+}
+async function mkReturn(){
+  const payload = {
+    order_id: document.getElementById('rOrder').value,
+    retailer_id: document.getElementById('rRetailer').value,
+    customer_zip: document.getElementById('rZip').value,
+    method: document.getElementById('rMethod').value,
+    pickup_center_id: document.getElementById('rPC').value || undefined
+  };
+  const r = await (await fetch('/api/fulfillment/returns/create',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)})).json();
+  document.getElementById('retOut').textContent = JSON.stringify(r,null,2);
+}
+async function ops(){
+  const r = await (await fetch('/api/fulfillment/ops')).json();
+  document.getElementById('opsOut').textContent = JSON.stringify(r,null,2);
+}
+
+loadService(); loadPickups(); loadCouriers(); ops();
+</script>
+EOF
+
+# ─────────────────────────────────────────────────────────────
+# Update Roadmap file (create if missing)
+# ─────────────────────────────────────────────────────────────
+if [ ! -f data/roadmap.json ]; then
+cat > data/roadmap.json << 'EOF'
+{ "phase":"Phase 1 — Competitive Gap Closing", "items":[
+  { "id":"cross_inventory","title":"Cross-Retailer Inventory Referencing (API + UI)","status":"done" },
+  { "id":"analytics_hub","title":"Retailer Analytics & Intelligence Hub (MVP)","status":"done" },
+  { "id":"local_fulfillment","title":"Local Fulfillment Layer (couriers + returns + pickup)","status":"in_progress" }
+], "last_updated": "" }
+EOF
+else
+  # best-effort mark items
+  tmp=$(mktemp)
+  cat data/roadmap.json | sed 's/"cross_inventory"[^}]*"status":[^"]*"[^"]*"/"cross_inventory","title":"Cross-Retailer Inventory Referencing (API + UI)","status":"done"/' > "$tmp" || true
+  mv "$tmp" data/roadmap.json
+fi
+
+npm install
+
+echo "✅ Local Fulfillment Layer installed (MVP)
+Start:        npm start
+Console:      /admin/fulfillment
+
+APIs:
+  GET  /api/fulfillment/serviceability
+  PUT  /api/fulfillment/serviceability
+  GET  /api/fulfillment/pickup-centers
+  POST /api/fulfillment/pickup-centers
+  GET  /api/fulfillment/couriers
+  PUT  /api/fulfillment/couriers
+  GET  /api/fulfillment/quote?from_zip=55101&to_zip=55104&weight_kg=1.2
+  POST /api/fulfillment/dispatch
+       {\"order_id\":\"o-2001\",\"from_zip\":\"55101\",\"to_zip\":\"55104\",\"kg
