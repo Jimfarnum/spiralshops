@@ -6,10 +6,9 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { updateMetaTags } from "@/utils/metaTags";
-import OptimizedSocialPixels from "@/utils/optimizedSocialPixels";
-import OptimizedGoogleAnalytics from "@/components/OptimizedGoogleAnalytics";
-import LazyLoadWrapper from "@/components/LazyLoadWrapper";
-import { usePerformanceOptimization } from "@/hooks/usePerformanceOptimization";
+// Removed non-existent imports that were causing LSP errors
+// Performance optimization imports
+import performanceOptimizations from "@/utils/performanceOptimizations";
 import Home from "@/pages/home";
 import Store from "@/pages/store";
 import NotFound from "@/pages/not-found";
@@ -78,6 +77,7 @@ import BetaProgram from "@/pages/BetaProgram";
 import StripeTestPage from "@/pages/StripeTestPage";
 import InternalPlatformDashboard from "@/components/InternalPlatformDashboard";
 import SiteTestingDashboard from "@/components/SiteTestingDashboard";
+import ContinuousOptimizationDashboard from "@/components/ContinuousOptimizationDashboard";
 import SEOHead from "@/components/SEOHead";
 import PerformanceOptimizer from "@/components/PerformanceOptimizer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
@@ -555,6 +555,7 @@ function Router() {
       <Route path="/stripe-test" component={StripeTestPage} />
       <Route path="/internal-platform-monitor" component={InternalPlatformDashboard} />
       <Route path="/site-testing-dashboard" component={SiteTestingDashboard} />
+      <Route path="/continuous-optimization-dashboard" component={ContinuousOptimizationDashboard} />
       <Route component={NotFound} />
     </Switch>
   );

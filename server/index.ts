@@ -191,6 +191,17 @@ app.use((req, res, next) => {
     console.log("⚠️ Site Testing Agent initialization error:", error.message);
   }
 
+  // Initialize Continuous Optimization Agent
+  try {
+    // @ts-ignore
+    const continuousOptimizationRouter = await import('./routes/continuous-optimization-agent.js');
+    app.use('/api/continuous-optimization', continuousOptimizationRouter.default);
+    console.log('🔄 Continuous Optimization AI Agent routes loaded successfully');
+    console.log('✅ Automated performance monitoring, testing, and optimization');
+  } catch (error: any) {
+    console.log("⚠️ Continuous Optimization Agent initialization error:", error.message);
+  }
+
   // Initialize Admin Command Center
   try {
     const adminCommandCenterRouter = require('./routes/adminCommandCenter.js');
