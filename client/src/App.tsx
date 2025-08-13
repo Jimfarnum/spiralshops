@@ -74,6 +74,7 @@ import RetailerProfilePage from "@/pages/RetailerProfilePage";
 import SEOLandingRoute from "@/pages/SEOLandingRoute";
 import QRCodeHub from "@/pages/QRCodeHub";
 import CrossRetailerHub from "@/pages/CrossRetailerHub";
+import CrossRetailerCustomer from "@/pages/CrossRetailerCustomer";
 import AnalyticsDashboard from "@/pages/admin/AnalyticsDashboard";
 import FulfillmentDashboard from "@/pages/admin/FulfillmentDashboard";
 import BetaProgram from "@/pages/BetaProgram";
@@ -370,6 +371,7 @@ function Router() {
       <Route path="/p1-test-suite" component={P1TestSuite} />
       <Route path="/qr-hub" component={QRCodeHub} />
       <Route path="/cross-retailer" component={CrossRetailerHub} />
+      <Route path="/cross-retailer-customer" component={CrossRetailerCustomer} />
       <Route path="/admin/analytics" component={AnalyticsDashboard} />
       <Route path="/admin/fulfillment" component={FulfillmentDashboard} />
       <Route path="/loyalty-dashboard" component={LoyaltyDashboard} />

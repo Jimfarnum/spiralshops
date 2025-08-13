@@ -15,7 +15,12 @@
       "id": "local_fulfillment",
       "title": "Local Fulfillment Layer (couriers + returns + pickup)",
       "status": "in_progress"
+    },
+    {
+      "id": "customer_ui",
+      "title": "Customer Cross-Retailer Shopping UI (ZIP-gated + ETA badges)",
+      "status": "done"
     }
   ],
-  "last_updated": "2025-08-13T02:32:06.012Z"
+  "last_updated": "2025-08-13T02:41:59.080Z"
 }

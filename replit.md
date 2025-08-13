@@ -17,6 +17,7 @@ Preferred design approach: Clean, simplified interfaces over complex UI componen
 - **Shipping Quote Engine**: Multi-courier price comparison with ETA calculations and distance-based optimization
 - **Returns Management System**: Unified returns desk with label generation, intake tracking, and multi-method processing (dropoff/pickup)
 - **Fulfillment Operations Dashboard**: Professional admin interface for managing serviceability, pickup centers, couriers, and returns
+- **Customer Cross-Retailer Shopping UI**: ZIP-gated shopping interface with location detection, ETA badges, pickup center integration, and multi-retailer cart functionality
 - **Local Commerce Operating System**: Core competitive advantage enabling 30-minute delivery vs Amazon's 2-day
 - **QR Code Marketing System**: Complete QR generation, scanning, and analytics with IBM Cloudant integration
 - **QR Campaign Templates**: 8 proven marketing templates with professional customization and SOAP G coordination
