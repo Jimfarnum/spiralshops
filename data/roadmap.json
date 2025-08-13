@@ -14,7 +14,7 @@
     {
       "id": "local_fulfillment",
       "title": "Local Fulfillment Layer (couriers + returns + pickup)",
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": "customer_ui",
