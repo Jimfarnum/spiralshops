@@ -26,5 +26,33 @@
     "status": "authorized",
     "customer_name": "Customer",
     "items": []
+  },
+  {
+    "id": "RET-00003",
+    "order_id": "ORDER-TEST-123",
+    "retailer_id": "unknown",
+    "reason": "Product damaged in shipping",
+    "method": "dropoff",
+    "customer_zip": "55101",
+    "pickup_center_id": null,
+    "label_url": "/api/fulfillment/returns/label/RET-00003.pdf",
+    "created_at": "2025-08-13T03:12:08.419Z",
+    "status": "authorized",
+    "customer_name": "Customer",
+    "items": []
+  },
+  {
+    "id": "RET-00004",
+    "order_id": "ORDER-TEST-456",
+    "retailer_id": "unknown",
+    "reason": "Wrong size ordered",
+    "method": "pickup",
+    "customer_zip": "55101",
+    "pickup_center_id": null,
+    "label_url": "/api/fulfillment/returns/label/RET-00004.pdf",
+    "created_at": "2025-08-13T03:13:21.470Z",
+    "status": "authorized",
+    "customer_name": "Customer",
+    "items": []
   }
 ]
