@@ -32,7 +32,7 @@ import ShopperDashboardNew from "@/components/ShopperDashboardNew";
 import ShopperDashboard from "@/pages/shopper-dashboard";
 import Following from "@/pages/following";
 import MarketingCenter from "@/pages/marketing-center";
-import AnalyticsDashboard from "@/pages/analytics-dashboard";
+import OldAnalyticsDashboard from "@/pages/analytics-dashboard";
 import SocialFeed from "@/pages/social-feed";
 import OrderConfirmation from "@/pages/order-confirmation";
 import SpiralVideos from "@/pages/spiral-videos";
@@ -74,6 +74,7 @@ import RetailerProfilePage from "@/pages/RetailerProfilePage";
 import SEOLandingRoute from "@/pages/SEOLandingRoute";
 import QRCodeHub from "@/pages/QRCodeHub";
 import CrossRetailerHub from "@/pages/CrossRetailerHub";
+import AnalyticsDashboard from "@/pages/admin/AnalyticsDashboard";
 import BetaProgram from "@/pages/BetaProgram";
 import StripeTestPage from "@/pages/StripeTestPage";
 import InternalPlatformDashboard from "@/components/InternalPlatformDashboard";
@@ -318,7 +319,7 @@ function Router() {
       <Route path="/retailer-portal" component={RetailerDashboardNew} />
       <Route path="/retailer-stripe-setup" component={RetailerStripeSetup} />
       <Route path="/marketing-center" component={MarketingCenter} />
-      <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
+      <Route path="/analytics-dashboard" component={OldAnalyticsDashboard} />
       <Route path="/social-feed" component={SocialFeed} />
       <Route path="/order-confirmation/:orderId?" component={OrderConfirmation} />
       <Route path="/spiral-videos" component={SpiralVideos} />
@@ -368,6 +369,7 @@ function Router() {
       <Route path="/p1-test-suite" component={P1TestSuite} />
       <Route path="/qr-hub" component={QRCodeHub} />
       <Route path="/cross-retailer" component={CrossRetailerHub} />
+      <Route path="/admin/analytics" component={AnalyticsDashboard} />
       <Route path="/loyalty-dashboard" component={LoyaltyDashboard} />
       <Route path="/mall-events-demo" component={MallEventsDemo} />
       <Route path="/retailer-onboarding" component={RetailerOnboarding} />

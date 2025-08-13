@@ -1,0 +1,16 @@
+[
+  {
+    "id": "ret-001",
+    "name": "Main Street Outfitters",
+    "zip": "55101",
+    "lat": 44.9477,
+    "lng": -93.0936
+  },
+  {
+    "id": "ret-002",
+    "name": "City Mall Electronics",
+    "zip": "55415",
+    "lat": 44.973,
+    "lng": -93.257
+  }
+]

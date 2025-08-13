@@ -1,0 +1,76 @@
+{
+  "events": [
+    {
+      "type": "order",
+      "order_id": "ORD-001",
+      "retailer_id": "ret-001", 
+      "customer_id": "cust-123",
+      "zip": "55101",
+      "subtotal": 89.99,
+      "tax": 7.20,
+      "shipping": 5.99,
+      "total": 103.18,
+      "cost_total": 65.00,
+      "ts": "2024-08-12T10:30:00Z"
+    },
+    {
+      "type": "item",
+      "order_id": "ORD-001",
+      "retailer_id": "ret-001",
+      "sku": "BLUETOOTH-001",
+      "title": "Wireless Bluetooth Headphones",
+      "qty": 1,
+      "price": 89.99,
+      "cost": 55.00,
+      "ts": "2024-08-12T10:30:00Z"
+    },
+    {
+      "type": "order",
+      "order_id": "ORD-002",
+      "retailer_id": "ret-002",
+      "customer_id": "cust-456",
+      "zip": "55415",
+      "subtotal": 1299.99,
+      "tax": 104.00,
+      "shipping": 0.00,
+      "total": 1403.99,
+      "cost_total": 850.00,
+      "ts": "2024-08-12T14:15:00Z"
+    },
+    {
+      "type": "item",
+      "order_id": "ORD-002",
+      "retailer_id": "ret-002",
+      "sku": "LAPTOP-001",
+      "title": "Gaming Laptop Pro",
+      "qty": 1,
+      "price": 1299.99,
+      "cost": 850.00,
+      "ts": "2024-08-12T14:15:00Z"
+    },
+    {
+      "type": "order",
+      "order_id": "ORD-003",
+      "retailer_id": "ret-001",
+      "customer_id": "cust-123",
+      "zip": "55101",
+      "subtotal": 45.99,
+      "tax": 3.68,
+      "shipping": 4.99,
+      "total": 54.66,
+      "cost_total": 28.00,
+      "ts": "2024-08-13T09:15:00Z"
+    },
+    {
+      "type": "item",
+      "order_id": "ORD-003",
+      "retailer_id": "ret-001",
+      "sku": "PHONE-CASE-001",
+      "title": "Premium Phone Case",
+      "qty": 1,
+      "price": 45.99,
+      "cost": 28.00,
+      "ts": "2024-08-13T09:15:00Z"
+    }
+  ]
+}
