@@ -47,6 +47,7 @@ interface Correction {
 }
 
 const InternalPlatformDashboard: React.FC = () => {
+  const [activeTab, setActiveTab] = useState('bottlenecks');
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [bottlenecks, setBottlenecks] = useState<Bottleneck[]>([]);
   const [corrections, setCorrections] = useState<Correction[]>([]);
@@ -277,7 +278,7 @@ const InternalPlatformDashboard: React.FC = () => {
       )}
 
       {/* Detailed Monitoring */}
-      <Tabs defaultValue="bottlenecks" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="bottlenecks">Bottlenecks</TabsTrigger>
           <TabsTrigger value="corrections">Auto-Corrections</TabsTrigger>

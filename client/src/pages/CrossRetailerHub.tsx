@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CrossRetailerSearch from '@/components/CrossRetailerSearch';
 import { Package, Route, BarChart3, Settings } from 'lucide-react';
 
 export default function CrossRetailerHub() {
+  const [activeTab, setActiveTab] = useState('search');
+  
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">
       {/* Header */}
@@ -67,7 +69,7 @@ export default function CrossRetailerHub() {
       </div>
 
       {/* Main Interface */}
-      <Tabs defaultValue="search" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="search">Inventory Search</TabsTrigger>
           <TabsTrigger value="routing">Order Routing</TabsTrigger>

@@ -18,6 +18,7 @@ interface RetailerAIAssistantProps {
 }
 
 export default function RetailerAIAssistant({ retailerId = "retailer-001" }: RetailerAIAssistantProps) {
+  const [activeTab, setActiveTab] = useState('ai-tasks');
   const [selectedTasks, setSelectedTasks] = useState<string[]>([])
   const [aiActive, setAiActive] = useState(false)
   const [businessData, setBusinessData] = useState({
@@ -180,7 +181,7 @@ export default function RetailerAIAssistant({ retailerId = "retailer-001" }: Ret
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="ai-tasks" className="space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="ai-tasks">AI Task Manager</TabsTrigger>
             <TabsTrigger value="quick-actions">Quick Actions</TabsTrigger>

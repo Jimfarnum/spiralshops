@@ -13,6 +13,7 @@ import Footer from '@/components/footer';
 const RetailerLogin = () => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('login');
   
   const [loginData, setLoginData] = useState({
     email: '',
@@ -90,7 +91,7 @@ const RetailerLogin = () => {
 
         {/* Login/Signup Tabs */}
         <Card className="shadow-xl border-0">
-          <Tabs defaultValue="login" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 rounded-t-xl">
               <TabsTrigger value="login" className="rounded-lg">Sign In</TabsTrigger>
               <TabsTrigger value="signup" className="rounded-lg">Join SPIRAL</TabsTrigger>

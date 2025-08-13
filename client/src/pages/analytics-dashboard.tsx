@@ -61,6 +61,7 @@ interface RetailerMetric {
 
 const AnalyticsDashboard = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('7d');
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Mock weekly data
   const weeklyStats: WeeklyStat[] = [
@@ -314,7 +315,7 @@ const AnalyticsDashboard = () => {
         </div>
 
         {/* Main Analytics Content */}
-        <Tabs defaultValue="overview" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 rounded-xl">
             <TabsTrigger value="overview" className="rounded-lg">Overview</TabsTrigger>
             <TabsTrigger value="products" className="rounded-lg">Products</TabsTrigger>

@@ -7,6 +7,8 @@ import ImageSearchUpload from '../components/ImageSearchUpload';
 import AdvancedImageSearchDemo from '../components/AdvancedImageSearchDemo';
 
 export default function AdvancedImageSearchPage() {
+  const [activeTab, setActiveTab] = useState('upload');
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto p-6">
@@ -25,7 +27,7 @@ export default function AdvancedImageSearchPage() {
         </div>
 
         {/* Tabs for Upload and Demo */}
-        <Tabs defaultValue="upload" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="upload" className="flex items-center gap-2">
               <Upload className="h-4 w-4" />

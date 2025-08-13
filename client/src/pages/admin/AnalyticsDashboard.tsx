@@ -55,6 +55,7 @@ interface ZipTrendsData {
 }
 
 export default function AnalyticsDashboard() {
+  const [activeTab, setActiveTab] = useState('timeseries');
   const [selectedRetailer, setSelectedRetailer] = useState<string>("all");
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
@@ -251,7 +252,7 @@ export default function AnalyticsDashboard() {
         )}
 
         {/* Charts */}
-        <Tabs defaultValue="timeseries" className="space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList>
             <TabsTrigger value="timeseries">Revenue Trends</TabsTrigger>
             <TabsTrigger value="products">Top Products</TabsTrigger>

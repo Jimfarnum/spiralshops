@@ -40,6 +40,7 @@ interface TrafficInsight {
 }
 
 export default function MallManagerDashboard() {
+  const [activeTab, setActiveTab] = useState('events');
   const [events, setEvents] = useState<EventData[]>([])
   const [trafficData, setTrafficData] = useState<TrafficInsight[]>([])
   const [loading, setLoading] = useState(true)
@@ -215,7 +216,7 @@ export default function MallManagerDashboard() {
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="events" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="events">Events & Invites</TabsTrigger>
             <TabsTrigger value="retailers">Retailer Coordination</TabsTrigger>

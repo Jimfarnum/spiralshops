@@ -29,6 +29,7 @@ interface Agent {
 }
 
 export default function SOAPGDashboard() {
+  const [activeTab, setActiveTab] = useState('overview');
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null)
   const [systemStatus, setSystemStatus] = useState('operational')
   
@@ -127,7 +128,7 @@ export default function SOAPGDashboard() {
                                              backendAgent.status === 'processing' ? 'processing' : 'idle';
                   agents[agentIndex].tasks = backendAgent.pendingTasks || 0;
                   agents[agentIndex].lastActivity = backendAgent.lastHeartbeat ? 
-                    `${Math.floor((new Date() - new Date(backendAgent.lastHeartbeat)) / 1000)} seconds ago` : 
+                    `${Math.floor((new Date().getTime() - new Date(backendAgent.lastHeartbeat).getTime()) / 1000)} seconds ago` : 
                     agents[agentIndex].lastActivity;
                 }
               });
@@ -235,7 +236,7 @@ export default function SOAPGDashboard() {
         </div>
 
         {/* Agent Grid */}
-        <Tabs defaultValue="overview" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="overview">Agent Overview</TabsTrigger>
             <TabsTrigger value="coordination">Multi-Agent Coordination</TabsTrigger>

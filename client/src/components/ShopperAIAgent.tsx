@@ -17,6 +17,7 @@ interface ShopperAIAgentProps {
 }
 
 export default function ShopperAIAgent({ shopperId = "shopper-001" }: ShopperAIAgentProps) {
+  const [activeTab, setActiveTab] = useState('ai-services');
   const [selectedServices, setSelectedServices] = useState<string[]>([])
   const [aiActive, setAiActive] = useState(false)
   const [budget, setBudget] = useState([500])
@@ -245,7 +246,7 @@ export default function ShopperAIAgent({ shopperId = "shopper-001" }: ShopperAIA
         </Card>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="ai-services" className="space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="ai-services">AI Services</TabsTrigger>
             <TabsTrigger value="quick-help">Quick Help</TabsTrigger>

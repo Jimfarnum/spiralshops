@@ -12,6 +12,7 @@ interface MallManagerDashboardProps {
 }
 
 export default function MallManagerDashboard({ mallId = "mall-001" }: MallManagerDashboardProps) {
+  const [activeTab, setActiveTab] = useState('ai-tasks');
   const [selectedTasks, setSelectedTasks] = useState<string[]>([])
   const [aiAssistance, setAiAssistance] = useState(false)
   const [dashboardData, setDashboardData] = useState<{
@@ -144,7 +145,7 @@ export default function MallManagerDashboard({ mallId = "mall-001" }: MallManage
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="ai-tasks" className="space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="ai-tasks">AI Task Manager</TabsTrigger>
             <TabsTrigger value="retailers">Retailer Management</TabsTrigger>

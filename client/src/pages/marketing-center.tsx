@@ -62,6 +62,7 @@ interface CouponCode {
 const MarketingCenter = () => {
   const { toast } = useToast();
   
+  const [activeTab, setActiveTab] = useState('campaigns');
   const [showEmailBuilder, setShowEmailBuilder] = useState(false);
   const [showCouponGenerator, setShowCouponGenerator] = useState(false);
   const [showSchedulePost, setShowSchedulePost] = useState(false);
@@ -550,18 +551,27 @@ const MarketingCenter = () => {
           </Dialog>
         </div>
 
-        {/* Campaigns List */}
-        <Card className="shadow-lg border-0">
-          <CardHeader>
-            <CardTitle className="text-[var(--spiral-navy)] font-['Poppins'] flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
-              Campaign History
-            </CardTitle>
-            <CardDescription className="font-['Inter']">
-              View and manage all your marketing campaigns
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        {/* Marketing Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 rounded-xl">
+            <TabsTrigger value="campaigns" className="rounded-lg">Campaigns</TabsTrigger>
+            <TabsTrigger value="templates" className="rounded-lg">Templates</TabsTrigger>
+            <TabsTrigger value="coupons" className="rounded-lg">Coupons</TabsTrigger>
+            <TabsTrigger value="analytics" className="rounded-lg">Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="campaigns">
+            <Card className="shadow-lg border-0">
+              <CardHeader>
+                <CardTitle className="text-[var(--spiral-navy)] font-['Poppins'] flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Campaign History
+                </CardTitle>
+                <CardDescription className="font-['Inter']">
+                  View and manage all your marketing campaigns
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
             <div className="space-y-4">
               {campaigns.map((campaign) => (
                 <div key={campaign.id} className="border rounded-xl p-4 hover:bg-gray-50 transition-colors">
@@ -610,8 +620,115 @@ const MarketingCenter = () => {
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="templates">
+            <Card className="shadow-lg border-0">
+              <CardHeader>
+                <CardTitle className="text-[var(--spiral-navy)] font-['Poppins']">Email Templates</CardTitle>
+                <CardDescription>Pre-designed templates for your email campaigns</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="bg-gradient-to-br from-blue-100 to-blue-200 h-32 rounded mb-3 flex items-center justify-center">
+                      <span className="text-blue-600 font-semibold">Welcome Template</span>
+                    </div>
+                    <h3 className="font-semibold mb-2">New Customer Welcome</h3>
+                    <p className="text-sm text-gray-600 mb-3">Perfect for onboarding new customers</p>
+                    <Button size="sm" className="w-full">Use Template</Button>
+                  </div>
+                  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="bg-gradient-to-br from-green-100 to-green-200 h-32 rounded mb-3 flex items-center justify-center">
+                      <span className="text-green-600 font-semibold">Sale Template</span>
+                    </div>
+                    <h3 className="font-semibold mb-2">Seasonal Sale</h3>
+                    <p className="text-sm text-gray-600 mb-3">Promote special offers and discounts</p>
+                    <Button size="sm" className="w-full">Use Template</Button>
+                  </div>
+                  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="bg-gradient-to-br from-purple-100 to-purple-200 h-32 rounded mb-3 flex items-center justify-center">
+                      <span className="text-purple-600 font-semibold">Newsletter</span>
+                    </div>
+                    <h3 className="font-semibold mb-2">Monthly Newsletter</h3>
+                    <p className="text-sm text-gray-600 mb-3">Keep customers updated with news</p>
+                    <Button size="sm" className="w-full">Use Template</Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="coupons">
+            <Card className="shadow-lg border-0">
+              <CardHeader>
+                <CardTitle className="text-[var(--spiral-navy)] font-['Poppins']">Active Coupons</CardTitle>
+                <CardDescription>Manage your discount codes and promotional offers</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-4 border rounded-lg">
+                    <div>
+                      <h4 className="font-semibold">WELCOME20</h4>
+                      <p className="text-sm text-gray-600">20% off for new customers</p>
+                      <p className="text-xs text-gray-500">Expires: Dec 31, 2024</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-green-600">45 uses</p>
+                      <p className="text-sm text-gray-600">of 100 limit</p>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center p-4 border rounded-lg">
+                    <div>
+                      <h4 className="font-semibold">SPIRAL10</h4>
+                      <p className="text-sm text-gray-600">$10 off orders over $50</p>
+                      <p className="text-xs text-gray-500">Expires: Jan 15, 2025</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-blue-600">12 uses</p>
+                      <p className="text-sm text-gray-600">of unlimited</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <Card className="shadow-lg border-0">
+              <CardHeader>
+                <CardTitle className="text-[var(--spiral-navy)] font-['Poppins']">Marketing Analytics</CardTitle>
+                <CardDescription>Track performance of your marketing efforts</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                  <div className="bg-blue-50 p-4 rounded-lg text-center">
+                    <p className="text-2xl font-bold text-blue-600">1,247</p>
+                    <p className="text-sm text-gray-600">Total Emails Sent</p>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg text-center">
+                    <p className="text-2xl font-bold text-green-600">34.5%</p>
+                    <p className="text-sm text-gray-600">Open Rate</p>
+                  </div>
+                  <div className="bg-purple-50 p-4 rounded-lg text-center">
+                    <p className="text-2xl font-bold text-purple-600">8.2%</p>
+                    <p className="text-sm text-gray-600">Click Rate</p>
+                  </div>
+                  <div className="bg-orange-50 p-4 rounded-lg text-center">
+                    <p className="text-2xl font-bold text-orange-600">156</p>
+                    <p className="text-sm text-gray-600">Coupon Uses</p>
+                  </div>
+                </div>
+                <div className="border rounded-lg p-4">
+                  <h4 className="font-semibold mb-4">Campaign Performance</h4>
+                  <p className="text-gray-600 text-center py-8">Analytics chart would go here</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
       <Footer />
     </div>
