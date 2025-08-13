@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import path from "path";
 import { calculateShippingOptions, validateDeliveryAddress, calculateDeliveryDate } from "./shippingRoutes.js";
 import spiralProtection from "./middleware/spiralProtection.js";
 import { globalResponseMiddleware, asyncHandler } from "./middleware/globalResponseFormatter.js";
@@ -50,6 +51,7 @@ import { createRateLimit } from "./rate_limit";
 import { registerRetailerDataRoutes } from "./retailerDataIntegration";
 import { adminAuth } from "./admin_auth.js";
 import { getOpsSummary } from "./ops_summary.js";
+import { runSelfCheck } from "./selfcheck.js";
 // Admin panel will be added separately
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -3732,6 +3734,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       version: "1.0.0"
     });
   }));
+
+  // SPIRAL Feature #9 - Self-Check Suite
+  app.get("/api/selfcheck/run", adminAuth, asyncHandler(async (req, res) => {
+    const startTime = Date.now();
+    const base = `${req.protocol}://${req.get("host")}`;
+    const token = req.query.admin_token || req.headers["x-admin-token"];
+    
+    try {
+      const results = await runSelfCheck(base, token);
+      res.standard(results, startTime);
+    } catch (error) {
+      res.status(500).json({ 
+        error: String(error?.message || error),
+        timestamp: new Date().toISOString()
+      });
+    }
+  }));
+
+  // Self-Check Dashboard (HTML page)
+  app.get("/admin/selfcheck", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "public", "admin", "selfcheck.html"));
+  });
 
   console.log('✅ Feature #8 fixups complete: Admin auth, ops summary, and system hardening loaded successfully');
 
