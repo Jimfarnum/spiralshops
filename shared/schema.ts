@@ -50,8 +50,50 @@ export const retailers = pgTable("retailers", {
   mallName: text("mall_name"), // Optional mall association
   stripeAccountId: text("stripe_account_id"), // Stripe Connect account
   onboardingStatus: text("onboarding_status").default("pending"), // 'pending', 'info_collected', 'payment_setup', 'completed'
+  // Cross-retailer inventory features
+  latitude: decimal("latitude", { precision: 10, scale: 8 }),
+  longitude: decimal("longitude", { precision: 11, scale: 8 }),
+  allowPartnerFulfillment: boolean("allow_partner_fulfillment").default(true),
+  fulfillmentRadius: integer("fulfillment_radius").default(25), // miles
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Cross-retailer inventory table
+export const crossRetailerInventory = pgTable("cross_retailer_inventory", {
+  id: serial("id").primaryKey(),
+  retailerId: integer("retailer_id").references(() => retailers.id).notNull(),
+  sku: text("sku").notNull(),
+  title: text("title").notNull(),
+  quantity: integer("quantity").notNull().default(0),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  category: text("category"),
+  brand: text("brand"),
+  condition: text("condition").default("new"), // 'new', 'used', 'refurbished'
+  isActive: boolean("is_active").default(true),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  reservedQuantity: integer("reserved_quantity").default(0), // For pending orders
+});
+
+// Note: spiralCenters table is defined later in the file with full specifications
+
+// Order routing and fulfillment tracking
+export const orderRouting = pgTable("order_routing", {
+  id: serial("id").primaryKey(),
+  orderId: text("order_id").notNull(),
+  customerId: integer("customer_id").references(() => users.id),
+  requestedSku: text("requested_sku").notNull(),
+  requestedQuantity: integer("requested_quantity").notNull(),
+  customerLatitude: decimal("customer_latitude", { precision: 10, scale: 8 }),
+  customerLongitude: decimal("customer_longitude", { precision: 11, scale: 8 }),
+  selectedRetailerId: integer("selected_retailer_id").references(() => retailers.id),
+  routingReason: text("routing_reason"), // 'closest', 'cheapest', 'availability', 'preferred'
+  alternatives: jsonb("alternatives"), // Other retailer options considered
+  estimatedDeliveryTime: integer("estimated_delivery_time"), // minutes
+  actualDeliveryTime: integer("actual_delivery_time"), // minutes
+  status: text("status").default("pending"), // 'pending', 'routed', 'fulfilled', 'delivered', 'cancelled'
+  createdAt: timestamp("created_at").defaultNow(),
+  fulfilledAt: timestamp("fulfilled_at"),
 });
 
 // AI Retailer Applications table
