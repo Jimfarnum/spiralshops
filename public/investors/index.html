@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPIRAL — Investor Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<style>
+:root{--ink:#0b1220;--muted:#6b7280;--br:14px;--btn:#111827}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink)}
+.wrap{max-width:1040px;margin:0 auto;padding:22px}
+h1{margin:.2rem 0 1rem}
+.small{color:var(--muted);font-size:.92rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.card{border:1px solid #e5e7eb;border-radius:var(--br);padding:16px;margin:10px 0;background:#fff}
+input,button{padding:10px;border:1px solid #d1d5db;border-radius:12px}
+button.btn{background:#111827;color:#fff;border:none;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:900px){ .grid{grid-template-columns:1fr 1fr} }
+@media (max-width:640px){ .grid{grid-template-columns:1fr} }
+.tile{border:1px solid #e5e7eb;border-radius:var(--br);padding:14px}
+.kpi{font-size:1.35rem;font-weight:600}
+.badge{background:#f3f4f6;border-radius:999px;padding:4px 8px}
+a{color:inherit;text-decoration:underline}
+hr{border:none;border-top:1px solid #e5e7eb;margin:10px 0}
+.hero{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.hero .tag{background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}
+.status {padding: 8px 12px; border-radius: 8px; margin: 8px 0; display: none;}
+.status.error {background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; display: block;}
+.status.success {background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; display: block;}
+.loading {opacity: 0.7; pointer-events: none;}
+</style>
+
+<div class="wrap" id="pdfRoot">
+  <header class="hero">
+    <div>
+      <h1>SPIRAL — Local Commerce Operating System</h1>
+      <div class="small">Unifying brick-and-mortar retailers with <b>cross-retailer inventory</b>, <b>same-day local delivery</b>, and <b>analytics</b> — all community-first.</div>
+      <div style="margin-top:8px" class="row">
+        <span class="badge tag">30–90 min local delivery</span>
+        <span class="badge tag">Cross-store search</span>
+        <span class="badge tag">Real-time analytics</span>
+      </div>
+    </div>
+    <div>
+      <button class="btn" onclick="generatePDF()">Generate One-Pager PDF</button>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <input id="tok" placeholder="Investor token (pre-filled if you used ?investor_token=...)" style="min-width:320px">
+      <button class="btn" onclick="load()" id="loadBtn">Load Live Metrics</button>
+      <a id="deck" class="small" target="_blank" style="margin-left:auto">View Pitch Deck</a>
+    </div>
+    <div class="small">This page is token-gated. Do not share publicly. Metrics are pulled live from the running system.</div>
+    <div id="status" class="status"></div>
+  </div>
+
+  <div class="card" id="metrics" style="display:none">
+    <h3>Live Metrics <span class="small" id="lastUpdated"></span></h3>
+    <div class="grid">
+      <div class="tile"><div class="small">Retailers</div><div id="m-ret" class="kpi">—</div></div>
+      <div class="tile"><div class="small">SKUs</div><div id="m-skus" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Serviceable ZIPs</div><div id="m-zips" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Pickup Centers</div><div id="m-pc" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Couriers</div><div id="m-cr" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Open Returns</div><div id="m-retu" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Revenue (All-time)</div><div id="m-rev" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Orders</div><div id="m-ord" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Customers</div><div id="m-cus" class="kpi">—</div></div>
+    </div>
+    <hr>
+    <div class="small">Top Products</div>
+    <div id="topProducts" class="grid"></div>
+  </div>
+
+  <div class="card">
+    <h3>See It Live</h3>
+    <div class="grid">
+      <div class="tile">
+        <b>Cross-Retailer Search</b>
+        <div class="small">Unified local inventory & ETA badges</div>
+        <a class="btn" href="/cross-retailer" target="_blank">Open Demo</a>
+      </div>
+      <div class="tile">
+        <b>Fulfillment Console</b>
+        <div class="small">Serviceable ZIPs, couriers, pickup centers</div>
+        <a class="btn" href="/admin/fulfillment" target="_blank">Open Admin (token)</a>
+      </div>
+      <div class="tile">
+        <b>Analytics Hub</b>
+        <div class="small">Real-time KPIs & timeseries</div>
+        <a class="btn" href="/admin/analytics" target="_blank">Open Admin (token)</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Contact</h3>
+    <div class="small">Interested in joining the round? Email <a href="mailto:founder@spiralshops.com">founder@spiralshops.com</a> or reply to your intro thread.</div>
+  </div>
+
+  <footer class="small">© SPIRAL — Tech that builds towns • This portal is confidential and not an offer to sell securities.</footer>
+</div>
+
+<!-- client libs for PDF generation (no server deps) -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script>
+function qp(k){ const u=new URL(window.location); return u.searchParams.get(k); }
+document.getElementById('tok').value = qp('investor_token') || qp('admin_token') || '';
+
+(function setDeck(){
+  const links = [
+    'https://docs.google.com/presentation/d/1example/edit',
+    'https://drive.google.com/file/d/1example/view',
+    '/static/spiral-deck.pdf'
+  ];
+  document.getElementById('deck').href = links[0];
+})();
+
+let lastData = null;
+
+function showStatus(msg, isError = false) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + (isError ? 'error' : 'success');
+  setTimeout(() => el.style.display = 'none', isError ? 5000 : 3000);
+}
+
+async function load() {
+  const token = document.getElementById('tok').value.trim();
+  if (!token) {
+    showStatus('Please provide an investor token', true);
+    return;
+  }
+
+  const loadBtn = document.getElementById('loadBtn');
+  const originalText = loadBtn.textContent;
+  loadBtn.textContent = 'Loading...';
+  loadBtn.disabled = true;
+
+  try {
+    const url = '/api/investors/metrics?investor_token=' + encodeURIComponent(token);
+    const res = await fetch(url);
+    
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Failed to load metrics');
+    }
+    
+    const data = await res.json();
+    lastData = data;
+    
+    // Update metrics
+    document.getElementById('m-ret').textContent = data.platform.retailers || '0';
+    document.getElementById('m-skus').textContent = data.platform.skus || '0';
+    document.getElementById('m-zips').textContent = data.platform.serviceable_zips || '0';
+    document.getElementById('m-pc').textContent = data.platform.pickup_centers || '0';
+    document.getElementById('m-cr').textContent = data.platform.couriers || '0';
+    document.getElementById('m-retu').textContent = data.highlights.open_returns || '0';
+    document.getElementById('m-rev').textContent = '$' + (data.kpis.revenue || 0).toLocaleString();
+    document.getElementById('m-ord').textContent = data.kpis.orders || '0';
+    document.getElementById('m-cus').textContent = data.kpis.customers || '0';
+    
+    // Update top products
+    const topProductsEl = document.getElementById('topProducts');
+    topProductsEl.innerHTML = '';
+    (data.top_products || []).forEach(p => {
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.innerHTML = `
+        <b>${p.title}</b>
+        <div class="small">SKU: ${p.sku}</div>
+        <div class="small">Qty: ${p.qty} • Revenue: $${p.revenue.toLocaleString()}</div>
+      `;
+      topProductsEl.appendChild(tile);
+    });
+    
+    // Show metrics section
+    document.getElementById('metrics').style.display = 'block';
+    document.getElementById('lastUpdated').textContent = `(Updated: ${new Date(data.generated_at).toLocaleTimeString()})`;
+    
+    showStatus('Metrics loaded successfully');
+    
+  } catch (error) {
+    showStatus(error.message, true);
+  } finally {
+    loadBtn.textContent = originalText;
+    loadBtn.disabled = false;
+  }
+}
+
+async function generatePDF() {
+  if (!lastData) {
+    showStatus('Please load metrics first', true);
+    return;
+  }
+  
+  try {
+    showStatus('Generating PDF...');
+    
+    // Create a clean version for PDF
+    const pdfElement = document.getElementById('pdfRoot').cloneNode(true);
+    pdfElement.style.background = 'white';
+    pdfElement.style.padding = '20px';
+    
+    // Remove interactive elements
+    const buttons = pdfElement.querySelectorAll('button, input');
+    buttons.forEach(btn => btn.style.display = 'none');
+    
+    // Use html2canvas to capture the content
+    const canvas = await html2canvas(pdfElement, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true
+    });
+    
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF.jsPDF('p', 'mm', 'a4');
+    
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`SPIRAL-Investor-Summary-${new Date().toISOString().split('T')[0]}.pdf`);
+    
+    showStatus('PDF generated successfully');
+    
+  } catch (error) {
+    showStatus('PDF generation failed: ' + error.message, true);
+  }
+}
+
+// Auto-load if token is in URL
+if (qp('investor_token') || qp('admin_token')) {
+  setTimeout(load, 500);
+}
+</script>
+</html>

@@ -8,6 +8,10 @@ Preferred communication style: Simple, everyday language.
 Preferred design approach: Clean, simplified interfaces over complex UI components. Favors functional minimalism while maintaining full backend integration capabilities.
 
 ## Recent Updates (August 13, 2025)
+- **SPIRAL Feature #10 - Investor Portal COMPLETE**: Token-gated investor dashboard with live metrics, PDF generation, demo access, and secure authentication system
+- **Live Investor Metrics**: Real-time platform KPIs including revenue, orders, customers, retailers, inventory, and logistics data (sanitized, no PII)
+- **Professional Dashboard**: Modern web interface at /investors with interactive metrics loading, PDF export, and direct demo access
+- **Secure API Access**: Token-protected /api/investors/metrics endpoint with INVESTOR_TOKEN or ADMIN_TOKEN fallback support
 - **SPIRAL Feature #9 - Self-Check Suite COMPLETE**: Comprehensive automated testing system with 10 critical platform tests, real HTTP validation, admin dashboard UI, and production monitoring integration
 - **Automated Quality Assurance**: Real-time platform health monitoring with end-to-end functionality validation and performance baseline establishment
 - **Self-Check Dashboard**: Professional web interface at /admin/selfcheck with one-click comprehensive testing, visual pass/fail indicators, and detailed diagnostics

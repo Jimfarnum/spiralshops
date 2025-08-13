@@ -1,0 +1,313 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ─────────────────────────────────────────────────────────────
+# SPIRAL Feature #10 — Investor Portal (token-gated)
+# - /investors page with live metrics, demos, PDF one-pager
+# - /api/investors/metrics (sanitized, no PII)
+# - INVESTOR_TOKEN gate (falls back to ADMIN_TOKEN if set)
+# - Roadmap update
+# ─────────────────────────────────────────────────────────────
+
+mkdir -p server public/investors data
+
+# Bump version for traceability
+[ -f package.json ] && sed -i 's/"version": *"[^"]*"/"version": "1.8.0"/' package.json || true
+
+# ─────────────────────────────────────────────────────────────
+# Investor auth (separate from admin; can fallback to ADMIN_TOKEN)
+# ─────────────────────────────────────────────────────────────
+cat > server/investor_auth.js << 'EOF'
+export function investorAuth(req, res, next){
+  const token = process.env.INVESTOR_TOKEN || process.env.ADMIN_TOKEN || "";
+  if (!token) return res.status(500).json({ error:"investor_token_not_set", hint:"Set INVESTOR_TOKEN (or ADMIN_TOKEN) env var" });
+  const h = req.headers["x-investor-token"] || req.headers["x-admin-token"];
+  const q = (req.query && (req.query.investor_token || req.query.admin_token)) || null;
+  if (h === token || q === token) return next();
+  return res.status(401).json({ error:"unauthorized", how:"Send X-Investor-Token header or ?investor_token=..." });
+}
+EOF
+
+# ─────────────────────────────────────────────────────────────
+# Investor API + routes
+# ─────────────────────────────────────────────────────────────
+cat > server/investors.js << 'EOF'
+import { ds } from "./datastore.js";
+import { getOpsSummary } from "./ops_summary.js";
+
+function sum(arr, pick){ let s=0; for(const x of arr){ s += Number(pick?pick(x):x)||0; } return s; }
+
+export function attachInvestorRoutes(app){
+  // Sanitized metrics (no PII). Token-gated.
+  app.get("/api/investors/metrics", async (req,res)=>{
+    // auth handled by router or guard above this handler
+    try{
+      const ops = await getOpsSummary();
+      const events = await (ds.getEvents?.() || []);
+      const orders = (events||[]).filter(e=>e.type==="order");
+      const items  = (events||[]).filter(e=>e.type==="item");
+      const revenue = sum(orders, e=>e.total||0);
+      const orderIds = new Set(orders.map(o=>o.order_id).filter(Boolean));
+      const customers = new Set(orders.map(o=>o.customer_id).filter(Boolean));
+      const bySku = {};
+      for (const it of items){
+        const k = it.sku||"unknown";
+        bySku[k] ||= { sku:k, title: it.title||k, qty:0, revenue:0 };
+        bySku[k].qty += Number(it.qty||0);
+        bySku[k].revenue += Number(it.price||0) * Number(it.qty||0);
+      }
+      const top_products = Object.values(bySku).sort((a,b)=> b.revenue-a.revenue).slice(0,5);
+
+      res.json({
+        generated_at: new Date().toISOString(),
+        platform: {
+          datastore_mode: ops.datastore_mode,
+          retailers: ops.retailers,
+          skus: ops.skus,
+          serviceable_zips: ops.serviceable_zips,
+          pickup_centers: ops.pickup_centers,
+          couriers: ops.couriers
+        },
+        kpis: {
+          revenue: Number(revenue.toFixed(2)),
+          orders: orderIds.size,
+          customers: customers.size
+        },
+        highlights: {
+          local_delivery_window_mins: "30–90",
+          same_day_zip_count: ops.serviceable_zips,
+          open_returns: ops.open_returns
+        },
+        top_products
+      });
+    }catch(e){
+      res.status(500).json({ error:String(e?.message||e) });
+    }
+  });
+}
+EOF
+
+# ─────────────────────────────────────────────────────────────
+# Wire into server/index.js
+# ─────────────────────────────────────────────────────────────
+if [ -f server/index.js ]; then
+  grep -q 'from "./investors.js"' server/index.js || sed -i '1i import { attachInvestorRoutes } from "./investors.js";' server/index.js
+  grep -q 'from "./investor_auth.js"' server/index.js || sed -i '1i import { investorAuth } from "./investor_auth.js";' server/index.js
+
+  # Ensure publicDir exists in this file
+  grep -q "const publicDir" server/index.js || sed -i 's#const app = express();#const app = express();\nconst publicDir = path.join(__dirname, "..", "public");#' server/index.js
+
+  # Investor guard for static /investors page (similar to adminGuard)
+  grep -q "investorGuard" server/index.js || \
+  sed -i 's#app.use(express.static(publicDir, { index: false }));#\n// Guard /investors pages with token\nfunction investorGuard(req,res,next){ if(!req.path.startsWith("/investors")) return next(); const t=req.headers["x-investor-token"]||req.query.investor_token||req.headers["x-admin-token"]||req.query.admin_token; const tok=process.env.INVESTOR_TOKEN||process.env.ADMIN_TOKEN; if(!tok) return res.status(500).send("INVESTOR_TOKEN not set"); if(t===tok) return next(); return res.status(401).send("Unauthorized — supply X-Investor-Token or ?investor_token="); }\napp.use(investorGuard);\n\napp.use(express.static(publicDir, { index: false }));#' server/index.js
+
+  # API mount (protect with investorAuth)
+  grep -q '/api/investors/metrics' server/index.js || \
+  sed -i 's#app.use(express.static(publicDir, { index: false }));#app.use(express.static(publicDir, { index: false }));\n\napp.get("/api/investors/metrics", investorAuth, async (req,res,next)=>{ const { attachInvestorRoutes } = await import("./investors.js"); next(); });#' server/index.js
+
+  # Actually attach all investor routes once
+  grep -q "attachInvestorRoutes(app);" server/index.js || \
+  sed -i 's#attachHardening(app);#attachHardening(app);\nattachInvestorRoutes(app);\n#' server/index.js
+
+  # Serve the investor page
+  grep -q '"/investors"' server/index.js || \
+  sed -i 's#app.use(express.static(publicDir, { index: false }));#app.use(express.static(publicDir, { index: false }));\n\napp.get("/investors", (_req,res)=> res.sendFile(path.join(publicDir, "investors", "index.html")));#' server/index.js
+
+  # Add link on fallback homepage (best-effort)
+  perl -0777 -pe 's#<ul>\\s*#<ul>\n    <li><a href="/investors">Investors (token required)</a></li>\n#g' -i server/index.js 2>/dev/null || true
+fi
+
+# ─────────────────────────────────────────────────────────────
+# Public investor page
+# ─────────────────────────────────────────────────────────────
+cat > public/investors/index.html << 'EOF'
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPIRAL — Investor Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<style>
+:root{--ink:#0b1220;--muted:#6b7280;--br:14px;--btn:#111827}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink)}
+.wrap{max-width:1040px;margin:0 auto;padding:22px}
+h1{margin:.2rem 0 1rem}
+.small{color:var(--muted);font-size:.92rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.card{border:1px solid #e5e7eb;border-radius:var(--br);padding:16px;margin:10px 0;background:#fff}
+input,button{padding:10px;border:1px solid #d1d5db;border-radius:12px}
+button.btn{background:#111827;color:#fff;border:none;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:900px){ .grid{grid-template-columns:1fr 1fr} }
+@media (max-width:640px){ .grid{grid-template-columns:1fr} }
+.tile{border:1px solid #e5e7eb;border-radius:var(--br);padding:14px}
+.kpi{font-size:1.35rem;font-weight:600}
+.badge{background:#f3f4f6;border-radius:999px;padding:4px 8px}
+a{color:inherit;text-decoration:underline}
+hr{border:none;border-top:1px solid #e5e7eb;margin:10px 0}
+.hero{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.hero .tag{background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}
+</style>
+
+<div class="wrap" id="pdfRoot">
+  <header class="hero">
+    <div>
+      <h1>SPIRAL — Local Commerce Operating System</h1>
+      <div class="small">Unifying brick-and-mortar retailers with <b>cross-retailer inventory</b>, <b>same-day local delivery</b>, and <b>analytics</b> — all community-first.</div>
+      <div style="margin-top:8px" class="row">
+        <span class="badge tag">30–90 min local delivery</span>
+        <span class="badge tag">Cross-store search</span>
+        <span class="badge tag">Real-time analytics</span>
+      </div>
+    </div>
+    <div>
+      <button class="btn" onclick="generatePDF()">Generate One-Pager PDF</button>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <input id="tok" placeholder="Investor token (pre-filled if you used ?investor_token=...)" style="min-width:320px">
+      <button class="btn" onclick="load()">Load Live Metrics</button>
+      <a id="deck" class="small" target="_blank" style="margin-left:auto">View Pitch Deck</a>
+    </div>
+    <div class="small">This page is token-gated. Do not share publicly. Metrics are pulled live from the running system.</div>
+  </div>
+
+  <div class="card" id="metrics" style="display:none">
+    <h3>Live Metrics</h3>
+    <div class="grid">
+      <div class="tile"><div class="small">Retailers</div><div id="m-ret" class="kpi">—</div></div>
+      <div class="tile"><div class="small">SKUs</div><div id="m-skus" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Serviceable ZIPs</div><div id="m-zips" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Pickup Centers</div><div id="m-pc" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Couriers</div><div id="m-cr" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Open Returns</div><div id="m-retu" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Revenue (All-time)</div><div id="m-rev" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Orders</div><div id="m-ord" class="kpi">—</div></div>
+      <div class="tile"><div class="small">Customers</div><div id="m-cus" class="kpi">—</div></div>
+    </div>
+    <hr>
+    <div class="small">Top Products</div>
+    <div id="topProducts" class="grid"></div>
+  </div>
+
+  <div class="card">
+    <h3>See It Live</h3>
+    <div class="grid">
+      <div class="tile">
+        <b>Cross-Retailer Search</b>
+        <div class="small">Unified local inventory & ETA badges</div>
+        <a class="btn" href="/cross-retailer" target="_blank">Open Demo</a>
+      </div>
+      <div class="tile">
+        <b>Fulfillment Console</b>
+        <div class="small">Serviceable ZIPs, couriers, pickup centers</div>
+        <a class="btn" href="/admin/fulfillment" target="_blank">Open Admin (token)</a>
+      </div>
+      <div class="tile">
+        <b>Analytics Hub</b>
+        <div class="small">Real-time KPIs & timeseries</div>
+        <a class="btn" href="/admin/analytics" target="_blank">Open Admin (token)</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Contact</h3>
+    <div class="small">Interested in joining the round? Email <a href="mailto:founder@spiralshops.com">founder@spiralshops.com</a> or reply to your intro thread.</div>
+  </div>
+
+  <footer class="small">© SPIRAL — Tech that builds towns • This portal is confidential and not an offer to sell securities.</footer>
+</div>
+
+<!-- client libs for PDF generation (no server deps) -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script>
+function qp(k){ const u=new URL(window.location); return u.searchParams.get(k); }
+document.getElementById('tok').value = qp('investor_token') || qp('admin_token') || '';
+(function setDeck(){
+  const deck = document.getElementById('deck');
+  fetch('/api/ops/summary').then(()=>{ /* noop to ensure server up */ });
+  const envDeck = (new URLSearchParams(window.location.search)).get('deck') || ''; // optional override
+  deck.href = envDeck || (window.DECK_URL || '#');
+  deck.textContent = (envDeck || window.DECK_URL) ? 'View Pitch Deck' : 'Add ?deck=URL or set DECK_URL';
+})();
+
+async function load(){
+  const t = document.getElementById('tok').value.trim();
+  if(!t){ alert('Enter investor token'); return; }
+  const r = await fetch('/api/investors/metrics', { headers: { 'X-Investor-Token': t } });
+  if(!r.ok){ alert('Unauthorized or server error'); return; }
+  const m = await r.json();
+  document.getElementById('metrics').style.display='';
+  const f=(n)=> n!=null? n.toLocaleString(): '—';
+  document.getElementById('m-ret').textContent = f(m.platform.retailers);
+  document.getElementById('m-skus').textContent = f(m.platform.skus);
+  document.getElementById('m-zips').textContent = f(m.platform.serviceable_zips);
+  document.getElementById('m-pc').textContent  = f(m.platform.pickup_centers);
+  document.getElementById('m-cr').textContent  = f(m.platform.couriers);
+  document.getElementById('m-retu').textContent= f(m.platform.open_returns);
+  document.getElementById('m-rev').textContent = '$'+(m.kpis.revenue||0).toFixed(2);
+  document.getElementById('m-ord').textContent = f(m.kpis.orders);
+  document.getElementById('m-cus').textContent = f(m.kpis.customers);
+  const tp = document.getElementById('topProducts'); tp.innerHTML='';
+  (m.top_products||[]).forEach(p=>{
+    const d=document.createElement('div'); d.className='tile';
+    d.innerHTML = `<div><b>${p.title}</b></div><div class="small">${p.sku}</div><div class="badge">Qty ${p.qty}</div><div class="badge">$${p.revenue.toFixed(2)}</div>`;
+    tp.appendChild(d);
+  });
+}
+
+async function generatePDF(){
+  const root = document.getElementById('pdfRoot');
+  const canvas = await html2canvas(root, { scale: 2 });
+  const imgData = canvas.toDataURL('image/png');
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p','pt','a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+  const imgWidth = canvas.width * ratio;
+  const imgHeight = canvas.height * ratio;
+  pdf.addImage(imgData, 'PNG', (pageWidth-imgWidth)/2, 20, imgWidth, imgHeight);
+  pdf.save('SPIRAL_OnePager.pdf');
+}
+</script>
+<script>
+/* Allow server to inject a deck URL at build time if desired */
+</script>
+EOF
+
+# ─────────────────────────────────────────────────────────────
+# Roadmap update
+# ─────────────────────────────────────────────────────────────
+if [ -f data/roadmap.json ]; then
+python3 - <<'PY' || true
+import json,sys,datetime
+p="data/roadmap.json"
+try:
+  r=json.load(open(p))
+except: r={"phase":"Phase 1 — Competitive Gap Closing","items":[],"last_updated":""}
+def up(id,title,status):
+  it=next((x for x in r.get("items",[]) if x.get("id")==id),None)
+  if it: it.update({"title":title,"status":status})
+  else: r.setdefault("items",[]).append({"id":id,"title":title,"status":status})
+up("investor_portal","Investor Portal (/investors + metrics + PDF)","done")
+r["last_updated"]=datetime.datetime.utcnow().isoformat()+"Z"
+open(p,"w").write(json.dumps(r,indent=2))
+PY
+fi
+
+echo "✅ Investor Portal installed.
+Next:
+  1) Set INVESTOR_TOKEN in Replit Secrets (e.g., spiral-invest-2025).
+  2) (Optional) Set DECK_URL to your DocSend or PDF link (can also pass ?deck=URL).
+  3) npm start
+  4) Open /investors?investor_token=YOUR_TOKEN
+
+The /api/investors/metrics endpoint is sanitized and token-gated.
+Use 'Generate One-Pager PDF' for a downloadable investor handout.
+"

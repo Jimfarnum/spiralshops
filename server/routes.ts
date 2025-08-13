@@ -52,6 +52,8 @@ import { registerRetailerDataRoutes } from "./retailerDataIntegration";
 import { adminAuth } from "./admin_auth.js";
 import { getOpsSummary } from "./ops_summary.js";
 import { runSelfCheck } from "./selfcheck.js";
+import { investorAuth } from "./investor_auth.js";
+import { attachInvestorRoutes } from "./investors.js";
 // Admin panel will be added separately
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -3755,6 +3757,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Self-Check Dashboard (HTML page)
   app.get("/admin/selfcheck", (req, res) => {
     res.sendFile(path.join(process.cwd(), "public", "admin", "selfcheck.html"));
+  });
+
+  // SPIRAL Feature #10 - Investor Portal
+  // Token-gated investor metrics endpoint
+  app.get("/api/investors/metrics", investorAuth, asyncHandler(async (req, res) => {
+    const startTime = Date.now();
+    try {
+      const { getInvestorMetrics } = await import("./investors.js");
+      const metrics = await getInvestorMetrics();
+      res.standard(metrics, startTime);
+    } catch (error) {
+      res.status(500).json({ 
+        error: String(error?.message || error),
+        timestamp: new Date().toISOString()
+      });
+    }
+  }));
+
+  // Investor Portal HTML page (token-gated via middleware)
+  app.get("/investors", (req, res) => {
+    const token = req.query.investor_token || req.query.admin_token || req.headers["x-investor-token"] || req.headers["x-admin-token"];
+    const expectedToken = process.env.INVESTOR_TOKEN || process.env.ADMIN_TOKEN;
+    
+    if (!expectedToken) {
+      return res.status(500).send("INVESTOR_TOKEN not configured");
+    }
+    
+    if (!token || token !== expectedToken) {
+      return res.status(401).send(`
+        <!doctype html>
+        <html><head><title>Access Required</title></head>
+        <body style="font-family:system-ui;padding:2rem;max-width:600px;margin:0 auto">
+          <h1>🔐 Access Required</h1>
+          <p>This investor portal requires authentication.</p>
+          <p>Add <code>?investor_token=YOUR_TOKEN</code> to the URL.</p>
+        </body></html>
+      `);
+    }
+    
+    res.sendFile(path.join(process.cwd(), "public", "investors", "index.html"));
   });
 
   console.log('✅ Feature #8 fixups complete: Admin auth, ops summary, and system hardening loaded successfully');
