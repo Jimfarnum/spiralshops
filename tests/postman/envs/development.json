@@ -1,0 +1,43 @@
+{
+  "id": "spiral-dev-env",
+  "name": "SPIRAL Development Environment",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "api_base",
+      "value": "{{base_url}}/api",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "admin_token",
+      "value": "136a652548aa5ae81bffdc9bca394006d602bb8d2a50aa602bb6b17cc852b22f",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "investor_token",
+      "value": "spiral-demo-2025-stonepath-67c9",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "test_user_id",
+      "value": "1",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "test_store_id",
+      "value": "1",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

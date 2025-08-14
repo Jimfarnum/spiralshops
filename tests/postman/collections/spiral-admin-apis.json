@@ -1,0 +1,120 @@
+{
+  "info": {
+    "name": "SPIRAL Admin APIs",
+    "description": "Administrative and authenticated endpoint testing for SPIRAL platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Self-Check System",
+      "item": [
+        {
+          "name": "Run Platform Self-Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-admin-token",
+                "value": "{{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/selfcheck/run",
+              "host": ["{{api_base}}"],
+              "path": ["selfcheck", "run"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Self-check completes successfully', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const response = pm.response.json();",
+                  "  pm.expect(response).to.have.property('tests_passed');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Analytics & Business Intelligence",
+      "item": [
+        {
+          "name": "Get Analytics Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-admin-token", 
+                "value": "{{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/analytics/summary",
+              "host": ["{{api_base}}"],
+              "path": ["analytics", "summary"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cross-Retailer System",
+      "item": [
+        {
+          "name": "Search Cross-Retailer Inventory",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/cross-retailer/search?query=electronics&zip=55401",
+              "host": ["{{api_base}}"],
+              "path": ["cross-retailer", "search"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "electronics"
+                },
+                {
+                  "key": "zip",
+                  "value": "55401"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fulfillment Network",
+      "item": [
+        {
+          "name": "Get Shipping Quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"zip\": \"55401\",\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2,\n      \"retailerId\": 1\n    }\n  ],\n  \"method\": \"standard\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/fulfillment/quote",
+              "host": ["{{api_base}}"],
+              "path": ["fulfillment", "quote"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
