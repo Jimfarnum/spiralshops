@@ -1,0 +1,115 @@
+{
+  "info": {
+    "name": "SPIRAL Authentication Tests",
+    "description": "Focused authentication testing for SPIRAL investor portal and admin access",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Investor Portal Authentication",
+      "item": [
+        {
+          "name": "Test Investor Token (Query Param)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/investors/metrics?investor_token={{investor_token}}",
+              "host": ["{{api_base}}"],
+              "path": ["investors", "metrics"],
+              "query": [
+                {
+                  "key": "investor_token",
+                  "value": "{{investor_token}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const expectedToken = 'spiral-demo-2025-stonepath-67c9';",
+                  "const currentStatus = pm.response.code;",
+                  "",
+                  "if (currentStatus === 200) {",
+                  "  pm.test('✅ Investor authentication successful', () => {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('kpis');",
+                  "    pm.expect(response).to.have.property('platform');",
+                  "  });",
+                  "} else if (currentStatus === 401) {",
+                  "  pm.test('⚠️ Authentication failed - check INVESTOR_TOKEN', () => {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.error).to.equal('unauthorized');",
+                  "    console.log('❌ INVESTOR_TOKEN needs fixing in Replit Secrets');",
+                  "    console.log('❌ Remove \"Value: \" prefix from token');",
+                  "  });",
+                  "} else {",
+                  "  pm.test('❌ Unexpected response', () => {",
+                  "    pm.expect(currentStatus).to.be.oneOf([200, 401]);",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Test Investor Token (Header)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-investor-token",
+                "value": "{{investor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/investors/metrics",
+              "host": ["{{api_base}}"],
+              "path": ["investors", "metrics"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Authentication",
+      "item": [
+        {
+          "name": "Test Admin Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-admin-token",
+                "value": "{{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/selfcheck/run",
+              "host": ["{{api_base}}"],
+              "path": ["selfcheck", "run"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✅ Admin authentication working', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const response = pm.response.json();",
+                  "  pm.expect(response.data.pass).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
