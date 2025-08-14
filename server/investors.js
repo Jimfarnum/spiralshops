@@ -66,13 +66,7 @@ export async function getInvestorMetrics() {
 }
 
 export function attachInvestorRoutes(app) {
-  // Sanitized metrics (no PII). Token-gated.
-  app.get("/api/investors/metrics", async (req, res) => {
-    try {
-      const metrics = await getInvestorMetrics();
-      res.json(metrics);
-    } catch (e) {
-      res.status(500).json({ error: String(e?.message || e) });
-    }
-  });
+  // Note: This function exists for legacy compatibility but the actual
+  // investor routes with authentication are defined in routes.ts
+  console.log('⚠️  Legacy attachInvestorRoutes called - using authenticated routes from routes.ts instead');
 }
