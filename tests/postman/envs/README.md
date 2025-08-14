@@ -29,7 +29,12 @@ Run the automated test script:
 4. Choose appropriate environment for testing
 5. Run collections with selected environment
 
+## Collections Available
+- **Core APIs**: `../collections/spiral-core-apis.json` - Basic functionality tests
+- **Security Suite**: `../collections/spiral-api-security.json` - Professional security validation
+
 ## Current Status
 - Development environment: Ready for immediate use
-- Production environment: Template prepared for deployment
+- Production environment: Enhanced template with security variables
 - All test collections configured for both environments
+- Security testing suite integrated for production readiness
