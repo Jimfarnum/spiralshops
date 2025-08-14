@@ -1,0 +1,44 @@
+# ZAP Security Rules for SPIRAL Platform
+# Format: RULE_ID	THRESHOLD	ACTION
+# RULE_ID: ZAP rule identifier
+# THRESHOLD: OFF, LOW, MEDIUM, HIGH
+# ACTION: IGNORE, INFO, WARN, FAIL
+
+# Content Security Policy
+10038	MEDIUM	WARN
+
+# X-Frame-Options Header
+10020	MEDIUM	WARN
+
+# X-Content-Type-Options Header
+10021	MEDIUM	WARN
+
+# Strict-Transport-Security Header
+10035	MEDIUM	WARN
+
+# SQL Injection
+40018	HIGH	FAIL
+
+# Cross Site Scripting (XSS)
+40012	HIGH	FAIL
+
+# Directory Browsing
+0	LOW	WARN
+
+# Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s)
+10037	LOW	INFO
+
+# Weak Authentication Method
+10105	MEDIUM	WARN
+
+# Session ID in URL Rewrite
+3	MEDIUM	WARN
+
+# Cookie No HttpOnly Flag
+10010	LOW	INFO
+
+# Cookie Without Secure Flag
+10011	LOW	INFO
+
+# Incomplete or No Cache-control and Pragma HTTP Header Set
+10015	LOW	INFO
