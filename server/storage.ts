@@ -263,9 +263,6 @@ export class MemStorage implements IStorage {
         reviewedAt: null,
         rejectionReason: null,
         website: null,
-        taxId: null,
-        complianceStatus: "compliant",
-        lastInspectionDate: null,
         isLargeRetailer: false,
         hours: "Mon-Fri: 9AM-7PM, Sat: 10AM-6PM, Sun: 12PM-5PM",
         imageUrl: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
@@ -427,6 +424,15 @@ export class MemStorage implements IStorage {
       hours: insertStore.hours || "Mon-Fri: 9AM-5PM",
       perks: insertStore.perks || [],
       imageUrl: insertStore.imageUrl || null,
+      isVerified: false,
+      verificationStatus: "pending",
+      verificationTier: "Unverified",
+      verificationDocumentPath: null,
+      submittedAt: new Date(),
+      reviewedAt: null,
+      rejectionReason: null,
+      website: null,
+      isLargeRetailer: false,
     };
     this.stores.set(id, store);
     return store;
@@ -460,6 +466,16 @@ export class MemStorage implements IStorage {
       id,
       approved: false,
       description: insertRetailer.description || null,
+      plan: insertRetailer.plan || "free",
+      mallName: insertRetailer.mallName || null,
+      stripeAccountId: insertRetailer.stripeAccountId || null,
+      onboardingStatus: insertRetailer.onboardingStatus || "pending",
+      latitude: insertRetailer.latitude || null,
+      longitude: insertRetailer.longitude || null,
+      allowPartnerFulfillment: insertRetailer.allowPartnerFulfillment ?? true,
+      fulfillmentRadius: insertRetailer.fulfillmentRadius || 25,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.retailers.set(id, retailer);
     return retailer;
