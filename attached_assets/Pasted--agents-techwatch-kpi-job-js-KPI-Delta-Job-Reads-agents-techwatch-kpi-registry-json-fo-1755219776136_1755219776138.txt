@@ -1,0 +1,115 @@
+// agents/techwatch/kpi_job.js
+/**
+ * KPI Delta Job
+ * - Reads agents/techwatch/kpi_registry.json for INITIATE items
+ * - For each item, computes BEFORE vs AFTER metrics within target window
+ * - Saves per-item results + a consolidated results.json
+ *
+ * Plug-in metrics adapter: replace fetchMetrics() with your real source (DB/analytics API)
+ */
+
+const fs = require("fs");
+const path = require("path");
+
+const ROOT = path.join(process.cwd(), "agents", "techwatch");
+const KPI_REG = path.join(ROOT, "kpi_registry.json");
+const OUT_DIR = path.join(ROOT, "kpi_results", new Date().toISOString().split("T")[0]);
+
+function ensure() { fs.mkdirSync(OUT_DIR, { recursive: true }); }
+
+// ==== SAMPLE METRICS ADAPTER (replace with your real analytics) ====
+/**
+ * fetchMetrics(metric, startISO, endISO) -> number
+ * Supported sample metrics:
+ *  - conversion_rate (0-1)
+ *  - pickup_adoption_rate (0-1)
+ *  - checkout_time_p95 (ms)
+ *  - support_contact_rate (contacts per 100 orders)
+ */
+function fetchMetrics(metric, startISO, endISO) {
+  // Replace this with real queries to your DB, analytics, or API.
+  // Here we generate deterministic fake values per date range for demo purposes.
+  const seed = new Date(endISO).getTime() - new Date(startISO).getTime();
+  const rng = (x) => Math.abs(Math.sin(seed / (x + 37.13)));
+  switch (metric) {
+    case "conversion_rate":        return 0.02 + rng(3) * 0.06;  // 2% - 8%
+    case "pickup_adoption_rate":   return 0.10 + rng(5) * 0.35;  // 10% - 45%
+    case "checkout_time_p95":      return 4500 - rng(7) * 2500;  // 2s - 4.5s (ms)
+    case "support_contact_rate":   return 3 + rng(11) * 7;       // per 100 orders
+    default: return NaN;
+  }
+}
+// ===================================================================
+
+function daysFrom(iso, days) {
+  const d = new Date(iso); d.setDate(d.getDate() - days); return d.toISOString();
+}
+
+function formatPct(x) { return (x*100).toFixed(1) + "%"; }
+function formatMs(x)  { return Math.round(x) + " ms"; }
+
+function pretty(metric, val) {
+  if (metric === "checkout_time_p95") return formatMs(val);
+  if (metric.endsWith("_rate")) return formatPct(val);
+  return String(Math.round(val * 100) / 100);
+}
+
+async function main() {
+  ensure();
+  if (!fs.existsSync(KPI_REG)) {
+    console.log("No KPI registry found, nothing to compute.");
+    return;
+  }
+  const reg = JSON.parse(fs.readFileSync(KPI_REG, "utf8"));
+  const items = reg.items || [];
+  if (!items.length) {
+    console.log("KPI registry empty.");
+    return;
+  }
+
+  const today = new Date().toISOString();
+  const results = [];
+
+  for (const it of items) {
+    const windowDays = it.target_window_days || 30;
+    const startAfterISO = new Date(it.created_at).toISOString();
+    const startBeforeISO = daysFrom(it.created_at, windowDays);
+    const endAfterISO = today;
+    const endBeforeISO  = it.created_at;
+
+    const rec = {
+      title: it.title,
+      url: it.url,
+      created_at: it.created_at,
+      target_window_days: windowDays,
+      metrics: []
+    };
+
+    for (const m of (it.kpis || [])) {
+      const before = fetchMetrics(m, startBeforeISO, endBeforeISO);
+      const after  = fetchMetrics(m, startAfterISO, endAfterISO);
+      const delta  = after - before;
+
+      rec.metrics.push({
+        metric: m,
+        before,
+        after,
+        delta,
+        before_pretty: pretty(m, before),
+        after_pretty: pretty(m, after),
+        delta_pretty: (m === "checkout_time_p95")
+          ? (delta > 0 ? "+" : "") + formatMs(delta)
+          : (delta > 0 ? "+" : "") + formatPct(delta)
+      });
+    }
+
+    const outFile = path.join(OUT_DIR, `kpi_${rec.title.replace(/[^a-z0-9]+/gi, "_").slice(0,60)}.json`);
+    fs.writeFileSync(outFile, JSON.stringify(rec, null, 2));
+    results.push(rec);
+  }
+
+  fs.writeFileSync(path.join(OUT_DIR, "results.json"), JSON.stringify({ generated_at: new Date().toISOString(), results }, null, 2));
+  console.log(`KPI results written to ${OUT_DIR}`);
+}
+
+main().catch(e => { console.error(e); process.exit(1); });
