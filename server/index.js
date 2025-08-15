@@ -116,10 +116,6 @@ app.use((req, res, next) => {
   });
 
   // Start server
-  const PORT = process.env.PORT || 5000;
-  server.listen(PORT, "0.0.0.0", () => {
-    console.log(`🚀 SPIRAL platform running on port ${PORT}`);
-    console.log(`📡 API endpoint: http://localhost:${PORT}/api/check`);
-    console.log(`🧠 JavaScript mode: Core functionality active`);
-  });
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
 })();
