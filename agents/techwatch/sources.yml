@@ -1,0 +1,33 @@
+topics:
+  - ai-platforms
+  - retail-tech
+  - payments
+  - investor/venture
+  - comp-moves
+  - policy
+
+sources:
+  ai-platforms:
+    - { name: "OpenAI Blog",        url: "https://openai.com/blog/rss",                     type: "rss" }
+    - { name: "Anthropic News",     url: "https://www.anthropic.com/news.xml",              type: "rss" }
+    - { name: "Google AI Blog",     url: "https://ai.googleblog.com/atom.xml",              type: "rss" }
+    - { name: "Meta AI",            url: "https://ai.facebook.com/blog/rss",                type: "rss" }
+    - { name: "arXiv cs.AI recent", url: "http://export.arxiv.org/api/query?search_query=cat:cs.AI&sortBy=lastUpdatedDate&max_results=30", type: "atom" }
+  retail-tech:
+    - { name: "Shopify Engineering", url: "https://shopify.engineering/rss.xml", type: "rss" }
+    - { name: "Amazon Science",      url: "https://www.amazon.science/latest-news.rss", type: "rss" }
+    - { name: "Walmart Global Tech", url: "https://medium.com/feed/walmartglobaltech", type: "rss" }
+    - { name: "Target Tech",         url: "https://medium.com/feed/target-tech", type: "rss" }
+    - { name: "NRF",                 url: "https://nrf.com/rss.xml", type: "rss" }
+  payments:
+    - { name: "Stripe Blog",  url: "https://stripe.com/blog/feed.rss", type: "rss" }
+    - { name: "Visa Dev",     url: "https://developer.visa.com/sitecore/api/rss/visa-developer-center", type: "rss" }
+    - { name: "Adyen Blog",   url: "https://www.adyen.com/blog/rss.xml", type: "rss" }
+  investor/venture:
+    - { name: "a16z",   url: "https://a16z.com/feed/", type: "rss" }
+    - { name: "Sequoia",url: "https://www.sequoiacap.com/feed/", type: "rss" }
+  comp-moves:
+    - { name: "Hacker News Front", url: "https://hnrss.org/frontpage", type: "rss" }
+    - { name: "HN: retail AI",     url: "https://hnrss.org/newest?q=retail%20AI", type: "rss" }
+  policy:
+    - { name: "NIST AI", url: "https://www.nist.gov/feeds", type: "rss" }

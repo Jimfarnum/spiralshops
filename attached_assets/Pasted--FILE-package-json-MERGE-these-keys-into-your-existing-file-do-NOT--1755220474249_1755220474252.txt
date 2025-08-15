@@ -1,0 +1,169 @@
+# =========================
+# FILE: package.json  (MERGE these keys into your existing file; do NOT duplicate keys)
+# =========================
+{
+  "name": "spiral",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "techwatch:scan": "node agents/techwatch/agent.js",
+    "techwatch:daemon": "node agents/techwatch/agent.js --daemon",
+    "techwatch:initiate": "node agents/techwatch/implementor_cli.js",
+    "techwatch:kpi": "node agents/techwatch/kpi_job.js",
+    "techwatch:kpi:comment": "node agents/techwatch/gh_commenter.js"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.5.0",
+    "jsdom": "^22.1.0",
+    "rss-parser": "^3.12.0",
+    "yaml": "^2.5.0"
+  },
+  "devDependencies": {
+    "node-cron": "^3.0.3"
+  }
+}
+
+# =========================
+# FILE: agents/techwatch/sources.yml
+# =========================
+topics:
+  - ai-platforms
+  - retail-tech
+  - payments
+  - investor/venture
+  - comp-moves
+  - policy
+
+sources:
+  ai-platforms:
+    - { name: "OpenAI Blog",        url: "https://openai.com/blog/rss",                     type: "rss" }
+    - { name: "Anthropic News",     url: "https://www.anthropic.com/news.xml",              type: "rss" }
+    - { name: "Google AI Blog",     url: "https://ai.googleblog.com/atom.xml",              type: "rss" }
+    - { name: "Meta AI",            url: "https://ai.facebook.com/blog/rss",                type: "rss" }
+    - { name: "arXiv cs.AI recent", url: "http://export.arxiv.org/api/query?search_query=cat:cs.AI&sortBy=lastUpdatedDate&max_results=30", type: "atom" }
+  retail-tech:
+    - { name: "Shopify Engineering", url: "https://shopify.engineering/rss.xml", type: "rss" }
+    - { name: "Amazon Science",      url: "https://www.amazon.science/latest-news.rss", type: "rss" }
+    - { name: "Walmart Global Tech", url: "https://medium.com/feed/walmartglobaltech", type: "rss" }
+    - { name: "Target Tech",         url: "https://medium.com/feed/target-tech", type: "rss" }
+    - { name: "NRF",                 url: "https://nrf.com/rss.xml", type: "rss" }
+  payments:
+    - { name: "Stripe Blog",  url: "https://stripe.com/blog/feed.rss", type: "rss" }
+    - { name: "Visa Dev",     url: "https://developer.visa.com/sitecore/api/rss/visa-developer-center", type: "rss" }
+    - { name: "Adyen Blog",   url: "https://www.adyen.com/blog/rss.xml", type: "rss" }
+  investor/venture:
+    - { name: "a16z",   url: "https://a16z.com/feed/", type: "rss" }
+    - { name: "Sequoia",url: "https://www.sequoiacap.com/feed/", type: "rss" }
+  comp-moves:
+    - { name: "Hacker News Front", url: "https://hnrss.org/frontpage", type: "rss" }
+    - { name: "HN: retail AI",     url: "https://hnrss.org/newest?q=retail%20AI", type: "rss" }
+  policy:
+    - { name: "NIST AI", url: "https://www.nist.gov/feeds", type: "rss" }
+
+# =========================
+# FILE: agents/techwatch/agent.js
+# =========================
+/* TechWatch Agent: fetch -> extract -> analyze -> score -> report (MD+JSON)
+ * ENV (Secrets):
+ *  OPENAI_API_KEY (recommended) | OPENAI_MODEL (default gpt-4o-mini)
+ *  SLACK_WEBHOOK_URL (optional) | TECHWATCH_TO_EMAILS / SENDGRID_API_KEY (optional)
+ *  TECHWATCH_DAEMON=true for cron; or pass --daemon
+ */
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
+const Parser = require("rss-parser");
+const YAML = require("yaml");
+const { JSDOM } = require("jsdom");
+const { Readability } = require("@mozilla/readability");
+
+const parser = new Parser();
+const ROOT = path.join(process.cwd(), "agents", "techwatch");
+const DATA_DIR = path.join(ROOT, "data");
+const REPORTS_DIR = path.join(ROOT, "reports");
+const DB_FILE = path.join(DATA_DIR, "seen.json");
+const SOURCES_YML = path.join(ROOT, "sources.yml");
+
+const have = (k) => !!process.env[k] && String(process.env[k]).trim().length > 0;
+
+function ensureDirs() { fs.mkdirSync(DATA_DIR, { recursive: true }); fs.mkdirSync(REPORTS_DIR, { recursive: true }); }
+function sha(s) { return crypto.createHash("sha256").update(s).digest("hex"); }
+function loadDB() { try { return JSON.parse(fs.readFileSync(DB_FILE, "utf8")); } catch { return {}; } }
+function saveDB(db) { fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2)); }
+function loadSources() { return YAML.parse(fs.readFileSync(SOURCES_YML, "utf8")); }
+
+async function safeFetch(url) {
+  try { const r = await fetch(url, { headers: { "user-agent": "SPIRAL-TechWatch/1.0" } }); if (!r.ok) throw new Error(r.status); return await r.text(); }
+  catch (e) { console.warn("Fetch failed:", url, e.message); return null; }
+}
+async function fetchFeed(src) {
+  try { if (src.type === "rss" || src.type === "atom") return await parser.parseURL(src.url); return null; }
+  catch (e) { console.warn("Feed parse failed:", src.name, e.message); return null; }
+}
+async function extractReadable(url) {
+  const html = await safeFetch(url); if (!html) return null;
+  try { const dom = new JSDOM(html, { url }); const reader = new Readability(dom.window.document); const art = reader.parse(); if (!art) return null;
+    const text = (art.textContent || "").trim(); return { title: art.title || "", text, byline: art.byline || "", length: text.length }; }
+  catch (e) { console.warn("Readability failed:", url, e.message); return null; }
+}
+function keywordHeuristic(text) {
+  const s = (text || "").toLowerCase(); let score = 0;
+  ["retail","shop","mall","loyalty","checkout","fulfillment","inventory","pos"].forEach(k => { if (s.includes(k)) score += 1; });
+  ["ai","model","agents","gpt","ml","transformer"].forEach(k => { if (s.includes(k)) score += 1.5; });
+  return Math.min(5, Math.round(score));
+}
+async function analyzeLLM(item) {
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+  const prompt = `
+Return strict JSON with keys: title,url,source,topic,summary,key_points (array),
+scores:{relevance_0_5,impact_now_0_5,impact_12mo_0_5,effort_low_med_high,legal_risk_low_med_high},
+recommendations (array), next_actions (array), decision, rationale.
+TEXT:
+${item.readable?.text?.slice(0,12000) || item.contentSnippet || ""}
+META:
+title="${item.title}" url="${item.link}" source="${item.sourceName}" topic="${item.topic}"`;
+  if (!have("OPENAI_API_KEY")) {
+    const rel = keywordHeuristic(item.readable?.text || item.contentSnippet || "");
+    return {
+      title: item.title, url: item.link, source: item.sourceName, topic: item.topic,
+      summary: (item.readable?.text || "").slice(0, 400),
+      key_points: [],
+      scores: { relevance_0_5: rel, impact_now_0_5: Math.max(1, rel-1), impact_12mo_0_5: Math.max(2, rel), effort_low_med_high: rel>=4?"med":"low", legal_risk_low_med_high: "low" },
+      recommendations: ["Review for applicability to SPIRAL."],
+      next_actions: [{ title: "Assign DRI to evaluate integration", owner_role: "CTO", eta_days: 7 }],
+      decision: rel>=4 ? "INITIATE" : (rel>=3 ? "WATCH" : "DISCARD"),
+      rationale: "Heuristic scoring without LLM."
+    };
+  }
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { "content-type": "application/json", "authorization": `Bearer ${process.env.OPENAI_API_KEY}` },
+      body: JSON.stringify({ model, temperature: 0.2, messages: [
+        { role: "system", content: "You are SPIRAL’s AI R&D lead. Be pragmatic and implementation-minded." },
+        { role: "user", content: prompt }
+      ]})
+    });
+    const json = await res.json();
+    const content = json.choices?.[0]?.message?.content?.trim() || "{}";
+    return JSON.parse(content);
+  } catch (e) {
+    console.warn("LLM analyze failed:", e.message);
+    return {
+      title: item.title, url: item.link, source: item.sourceName, topic: item.topic,
+      summary: item.contentSnippet || "", key_points: [],
+      scores: { relevance_0_5: 3, impact_now_0_5: 2, impact_12mo_0_5: 3, effort_low_med_high: "med", legal_risk_low_med_high: "low" },
+      recommendations: ["Manual review"], next_actions: [],
+      decision: "WATCH", rationale: "LLM error; placed on watch."
+    };
+  }
+}
+function pickTop(items, n=10) {
+  return [...items].sort((a,b)=>((b.scores?.relevance_0_5||0)+(b.scores?.impact_now_0_5||0)+(b.scores?.impact_12mo_0_5||0))-
+                                 ((a.scores?.relevance_0_5||0)+(a.scores?.impact_now_0_5||0)+(a.scores?.impact_12mo_0_5||0))).slice(0,n);
+}
+function mdEscape(s){return String(s||"").replace(/\|/g,"\\|");}
+function buildReportMD(dateISO, analyzed){
+  const top = pickTop(analyzed, 10);
+  let md = `# SPIRAL Technology Watch — ${dateISO}\n\nItems analyzed: ${analyzed.length}\n\n## Top Recommendations\n`;
+  top.forEach((it,i)=>{ md += `\n### ${i+1}. ${it.title}\n**Source**: ${it.source} • **Topic**: ${it.topic}\n\n${it.summary
