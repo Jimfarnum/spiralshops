@@ -83,7 +83,8 @@ app.use((req, res, next) => {
     './routes/qrCampaignTemplates.js',
     './routes/internal-platform-monitor.js',
     './routes/site-testing-agent.js',
-    './routes/continuous-optimization-agent.js'
+    './routes/continuous-optimization-agent.js',
+    './adminTechwatchFunnelsRoute.js'
   ];
 
   for (const routePath of jsRoutes) {
