@@ -1,0 +1,82 @@
+// ======== SPIRAL Quick Server Diag (drop-in) ========
+/* Put this at the very top of your entry file (e.g., server.js). */
+const express = require("express");
+const { monitorEventLoopDelay } = require("perf_hooks");
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+const BUILD_ID = process.env.BUILD_ID || new Date().toISOString(); // change to confirm redeploys
+
+// ---- Heartbeat proves server is alive & new code deployed ----
+setInterval(() => {
+  console.log(
+    `[HEARTBEAT] alive=${new Date().toISOString()} build=${BUILD_ID} memMB=${(process.memoryUsage().rss/1048576).toFixed(1)}`
+  );
+}, 5000);
+
+// ---- Event loop lag monitor (blocked loop or heavy sync work) ----
+const loopLag = monitorEventLoopDelay({ resolution: 10 });
+loopLag.enable();
+setInterval(() => {
+  const p95 = (loopLag.percentile(95) / 1e6).toFixed(1); // ms
+  const mean = (loopLag.mean / 1e6).toFixed(1);
+  if (p95 > 200) {
+    console.warn(`[WARN] High event loop lag: p95=${p95}ms mean=${mean}ms`);
+  }
+  loopLag.reset();
+}, 4000);
+
+// ---- Watchdog: detects fully stuck event loop (no tick progress) ----
+let lastTick = Date.now();
+setInterval(() => { lastTick = Date.now(); }, 100);
+setInterval(() => {
+  const gap = Date.now() - lastTick;
+  if (gap > 2000) console.error(`[ERROR] Event loop stall detected: gap=${gap}ms`);
+}, 1000);
+
+// ---- Request timing & hang detection middleware ----
+app.use((req, res, next) => {
+  const start = process.hrtime.bigint();
+  const tag = `${req.method} ${req.originalUrl}`;
+  const timer = setTimeout(() => {
+    console.warn(`[SLOW] ${tag} still running after 5s`);
+  }, 5000);
+
+  res.on("finish", () => {
+    clearTimeout(timer);
+    const durMs = Number(process.hrtime.bigint() - start) / 1e6;
+    console.log(`[REQ] ${tag} -> ${res.statusCode} in ${durMs.toFixed(1)}ms`);
+  });
+
+  res.on("close", () => clearTimeout(timer));
+  next();
+});
+
+// ---- Minimal health/diag endpoints ----
+app.get("/__health", (req, res) => {
+  res.json({ ok: true, build: BUILD_ID, ts: new Date().toISOString() });
+});
+
+let loopCounter = 0;
+app.get("/__diag", (req, res) => {
+  loopCounter++;
+  res.json({
+    ok: true,
+    build: BUILD_ID,
+    loopCounter,
+    rssMB: (process.memoryUsage().rss / 1048576).toFixed(1),
+    uptimeSec: process.uptime().toFixed(1)
+  });
+});
+
+// ---- (Place your existing routes below this line) ----
+// app.use("/api", apiRouter);
+
+// ---- Start server (or export app if your file already does app.listen elsewhere) ----
+if (!module.parent) {
+  app.listen(PORT, () => {
+    console.log(`[BOOT] Server listening on :${PORT} build=${BUILD_ID}`);
+    console.log(`[TIP] Hit /__health to verify deploy, /__diag to exercise code path.`);
+  });
+}
+// ======== end diag ========
