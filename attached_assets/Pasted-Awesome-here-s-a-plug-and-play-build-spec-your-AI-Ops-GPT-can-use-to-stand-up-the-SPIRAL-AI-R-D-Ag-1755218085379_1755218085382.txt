@@ -1,0 +1,372 @@
+Awesome — here’s a plug-and-play build spec your AI Ops GPT can use to stand up the SPIRAL AI R&D Agent that analyzes → recommends → initiates (not just collects links).
+
+
+---
+
+SPIRAL AI R&D Agent — Build Spec (for AI Ops GPT)
+
+0) Mission (one line)
+
+Continuously find tech that matters to SPIRAL, score it, produce an actionable brief, and kick off implementation tasks when the upside is clear.
+
+
+---
+
+1) Inputs (curated, low-noise)
+
+Use only sources that yield full text or clean summaries (no login-gated scraping):
+
+Research & standards: arXiv (cs.AI / cs.IR), NIST/ISO updates.
+
+Platform AI: OpenAI, Anthropic, Google, Mistral, Meta (official blogs/RSS, changelogs).
+
+Retail tech: Shopify Eng, Amazon Science, Walmart Global Tech, NRF.
+
+Fin/Payments: Stripe, Adyen, Visa Developer.
+
+Funding/competitor: a16z/Sequoia posts, public feature posts from Amazon/Shopify/Walmart/Target.
+
+
+> Reuse your existing agents/techwatch/sources.yml (already set up). The R&D Agent consumes its parsed items, not raw feeds.
+
+
+
+
+---
+
+2) Core Decisions (scoring & gates)
+
+Every candidate item is reduced to a single JSON object:
+
+{
+  "title": "string",
+  "url": "string",
+  "source": "string",
+  "topic": "ai-platforms|retail-tech|payments|venture|policy|comp-moves",
+  "summary": "<= 120 words, plain English",
+  "key_points": ["..."],
+  "scores": {
+    "relevance_0_5": 0,
+    "impact_now_0_5": 0,
+    "impact_12mo_0_5": 0,
+    "effort_low_med_high": "low|med|high",
+    "legal_risk_low_med_high": "low|med|high"
+  },
+  "recommendations": ["short, concrete actions"],
+  "next_actions": [
+    {"title": "Do X", "owner_role": "CTO|Growth|RetailOps|AI", "eta_days": 7}
+  ],
+  "decision": "INITIATE|WATCH|DISCARD",
+  "rationale": "one short paragraph"
+}
+
+Gate logic (default)
+
+INITIATE if: relevance ≥ 4 AND (impact_now ≥ 3 OR impact_12mo ≥ 4) AND legal_risk = low AND effort ∈ {low, med}.
+
+WATCH if: relevance ≥ 3 AND (impact_12mo ≥ 3) but effort = high or uncertainty is high.
+
+DISCARD if: relevance ≤ 2 OR legal_risk ≠ low OR duplicate.
+
+
+
+---
+
+3) Outputs (what the Agent produces)
+
+1. Weekly R&D Digest (Markdown + JSON)
+
+Top 5 items, decision + next_actions, links, and an “Exec take.”
+
+
+
+2. Ticket(s) for INITIATE
+
+Creates implementation tickets with acceptance criteria (see §5).
+
+
+
+3. Backlog/WATCH list
+
+De-duplicated list with review dates and triggers.
+
+
+
+
+File outputs:
+
+agents/techwatch/reports/YYYY-MM-DD/report.json
+agents/techwatch/reports/YYYY-MM-DD/report.md
+agents/techwatch/reports/YYYY-MM-DD/next-actions.md
+
+
+---
+
+4) Analysis prompt (for the LLM)
+
+Use this exact style; it enforces structured, decision-oriented output.
+
+System
+
+> You are SPIRAL’s AI R&D lead. Your job: analyze tech updates for a local-first, multi-retailer platform (malls, brick-and-mortar, unified multi-merchant cart). Be pragmatic, investor-ready, and implementation-minded.
+
+
+
+User
+
+> Read the TEXT and META. Return strict JSON with keys exactly as in the schema below. No prose outside JSON.
+Business rules: Favor items that (a) increase conversion or pickup usage, (b) reduce cost/ops, (c) strengthen local/mall differentiation, or (d) de-risk security/compliance.
+Scoring: 0–5 integers for relevance/impact; effort & legal_risk as enums.
+Decision gate: INITIATE, WATCH, or DISCARD as defined.
+Schema: (paste the JSON schema from §2)
+
+
+
+> TEXT:
+{{article_text_truncated_to_12k_chars}}
+
+
+
+> META:
+title="{{title}}"
+url="{{url}}"
+source="{{source}}"
+topic="{{topic}}"
+
+
+
+
+---
+
+5) “Initiate” = create real work (tickets + stubs)
+
+When decision = INITIATE, auto-generate:
+
+a) Engineering ticket (example body)
+
+Title: [INITIATE] Integrate Apple Pay express checkout (Stripe)
+
+Why: Increases conversion on mobile; reduces friction for pickup orders.
+
+Scope:
+- Add Apple Pay / Google Pay via Stripe Elements to 1-click flow
+- Store default pickup/ship preference; handle OOS fallback
+- A/B flag: enable_express_wallets
+
+Acceptance:
+- p95 checkout time ↓ 25%
+- Wallet auth works on iOS/Android web
+- No PII leaks; SAQ A maintained
+
+Owner: CTO
+ETA: 10 days
+
+b) Prototype stub (repo drop)
+
+Create /prototypes/<feature_slug>/README.md summarizing the approach.
+
+If trivial, generate a minimal code scaffold (e.g., Stripe Elements snippet).
+
+
+c) PM task(s) for rollout
+
+A/B test design, tracking events, success metrics.
+
+
+> Wire these into your tool of choice (GitHub Issues, Linear, Trello). Include a simple Node helper (optional) to post tickets via API.
+
+
+
+
+---
+
+6) Integration (how AI Ops GPT runs it)
+
+Data flow: Reuse your current TechWatch fetch/extract → hand items to the R&D Analyzer (this spec).
+
+Daemon: Run analyzer daily; produce weekly digest every Monday 09:00 local.
+
+Slack/Email: Post Top 5 with decisions; attach links to report & tickets.
+
+Dashboard: Add /admin/techwatch to view latest report and decisions.
+
+
+
+---
+
+7) Governance & safety
+
+Respect robots.txt; no scraping behind auth.
+
+Record sources/links in every artifact.
+
+Flag legal or privacy risks explicitly (legal_risk_low_med_high).
+
+Keep a decision log to explain why something was initiated or rejected (helps in boardrooms).
+
+
+
+---
+
+8) KPIs to track
+
+Time from discovery → decision (days).
+
+% of INITIATE items shipped within ETA.
+
+Measurable impact (conversion lift, pickup adoption, support workload change).
+
+False positive rate (items initiated with no impact).
+
+
+
+---
+
+9) Minimal code hook (drop-in)
+
+Add this file to reuse your existing agent and layer decisions on top.
+
+agents/techwatch/rd_analyzer.js
+
+const fs = require("fs");
+const path = require("path");
+
+async function callLLM(payload) {
+  const body = {
+    model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+    messages: [
+      { role: "system", content: "You are SPIRAL’s AI R&D lead. Be pragmatic and implementation-minded." },
+      { role: "user", content: payload.prompt }
+    ],
+    temperature: 0.2
+  };
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: { "content-type": "application/json", authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+    body: JSON.stringify(body)
+  });
+  const json = await res.json();
+  return JSON.parse(json.choices?.[0]?.message?.content || "{}");
+}
+
+exports.analyzeItem = async function analyzeItem({ title, url, source, topic, text }) {
+  const schema = `Return strict JSON with keys: title,url,source,topic,summary,key_points,scores:{relevance_0_5,impact_now_0_5,impact_12mo_0_5,effort_low_med_high,legal_risk_low_med_high},recommendations,next_actions,decision,rationale.`;
+  const prompt = `Read the TEXT and META. ${schema}\n\nTEXT:\n${(text||"").slice(0,12000)}\n\nMETA:\n title="${title}"\n url="${url}"\n source="${source}"\n topic="${topic}"`;
+  try { return await callLLM({ prompt }); }
+  catch (e) {
+    // Fallback: conservative WATCH
+    return {
+      title, url, source, topic,
+      summary: (text||"").slice(0,180),
+      key_points: [],
+      scores: { relevance_0_5: 3, impact_now_0_5: 2, impact_12mo_0_5: 3, effort_low_med_high: "med", legal_risk_low_med_high: "low" },
+      recommendations: ["Manual review"],
+      next_actions: [],
+      decision: "WATCH",
+      rationale: "LLM error; placed on watch."
+    };
+  }
+};
+
+exports.renderDigest = function renderDigest(items) {
+  const top = items
+    .sort((a,b) => (b.scores.relevance_0_5 + b.scores.impact_now_0_5 + b.scores.impact_12mo_0_5) - (a.scores.relevance_0_5 + a.scores.impact_now_0_5 + a.scores.impact_12mo_0_5))
+    .slice(0,5);
+  const lines = top.map((it,i)=>`${i+1}. ${it.title} — ${it.source}\nDecision: ${it.decision}\nNext: ${(it.next_actions||[]).map(a=>a.title).join("; ") || "—"}\n${it.url}`);
+  return `*SPIRAL R&D Digest (Top 5)*\n\n${lines.join("\n\n")}`;
+};
+
+exports.createTicketsLocally = function createTicketsLocally(items) {
+  const dir = path.join(process.cwd(), "agents", "techwatch", "tickets");
+  fs.mkdirSync(dir, { recursive: true });
+  const initiated = items.filter(i => i.decision === "INITIATE");
+  initiated.forEach((it, idx) => {
+    const body = [
+      `Title: [INITIATE] ${it.title}`,
+      ``,
+      `Why: ${it.rationale || "Improves revenue/ops or de-risks compliance."}`,
+      ``,
+      `Scope:`,
+      ...(it.recommendations || []).map(r => `- ${r}`),
+      ``,
+      `Acceptance:`,
+      `- KPI impact measurable (conversion/pickup/op costs)`,
+      `- Security & privacy checks pass`,
+      ``,
+      `Owner: ${ (it.next_actions?.[0]?.owner_role || "CTO") }`,
+      `ETA: ${ (it.next_actions?.[0]?.eta_days || 14) } days`,
+      ``,
+      `Source: ${it.source} — ${it.url}`
+    ].join("\n");
+    fs.writeFileSync(path.join(dir, `ticket_${idx+1}.md`), body);
+  });
+  return initiated.length;
+};
+
+Hook it into your existing agent (after your fetch/extract loop):
+
+// in agents/techwatch/agent.js, after you build 'collected' items with readable text:
+const { analyzeItem, renderDigest, createTicketsLocally } = require("./rd_analyzer");
+const analyzed = [];
+for (const it of collected) {
+  const ai = await analyzeItem({
+    title: it.title, url: it.link, source: it.sourceName, topic: it.topic,
+    text: it.readable?.text || it.contentSnippet || ""
+  });
+  analyzed.push(ai);
+}
+// Save report.json/md as you already do...
+const created = createTicketsLocally(analyzed);
+console.log(`INITIATE tickets created: ${created}`);
+// Optionally post digest to Slack from your existing notifier
+
+
+---
+
+10) Ops switches (ENV)
+
+OPENAI_API_KEY (required for high-quality analysis)
+
+RND_CREATE_TICKETS=true (to write local tickets)
+
+RND_DECISION_GATE_OVERRIDE (optional: “WATCH_ALL” in demo mode)
+
+RND_WEEKLY_DIGEST_DAY=Mon RND_WEEKLY_DIGEST_HOUR=09
+
+
+
+---
+
+11) Review cadence (human in the loop)
+
+Weekly 20-min review: CTO + Product + Ops skim Top 5; approve/adjust INITIATE.
+
+Monthly meta-review: which INITIATE items hit KPI targets; tune gate thresholds.
+
+
+
+---
+
+12) Investor/Board view (why this matters)
+
+Shows systematic innovation (not ad-hoc chasing trends).
+
+Ties every recommendation to KPI & ROI.
+
+Produces a visible decision log (good governance).
+
+Accelerates shipping of high-impact tech with tickets & prototypes auto-generated.
+
+
+
+---
+
+If you want, I can also:
+
+wire /admin/techwatch to preview reports and approve INITIATE with one click,
+
+add a GitHub Issues poster script (so INITIATE creates real issues),
+
+or tighten the decision gate to your exact KPIs (e.g., “pickup rate +5% in 30 days”).
+
+
