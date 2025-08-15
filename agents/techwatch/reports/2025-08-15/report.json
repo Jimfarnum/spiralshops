@@ -1,0 +1,99 @@
+{
+  "generated": "2025-08-15T00:42:05.454Z",
+  "platform": "SPIRAL Local Commerce Platform",
+  "total_items": 3,
+  "decisions": {
+    "initiate": 0,
+    "watch": 3,
+    "discard": 0
+  },
+  "items": [
+    {
+      "title": "Apple Pay Later Integration for Local Commerce",
+      "url": "https://developer.apple.com/pay-later",
+      "source": "Apple Developer",
+      "topic": "payments",
+      "summary": "Apple Pay Later provides consumers with a way to split purchases into four payments over six weeks, with no interest and no fees. For local commerce p",
+      "key_points": [
+        "Analysis completed"
+      ],
+      "scores": {
+        "relevance_0_5": 3,
+        "impact_now_0_5": 2,
+        "impact_12mo_0_5": 3,
+        "effort_low_med_high": "med",
+        "legal_risk_low_med_high": "low"
+      },
+      "recommendations": [
+        "Review implementation"
+      ],
+      "next_actions": [
+        {
+          "title": "Evaluate implementation",
+          "owner_role": "Tech Lead",
+          "eta_days": 7
+        }
+      ],
+      "decision": "WATCH",
+      "rationale": "Standard analysis completed"
+    },
+    {
+      "title": "Shopify Local Inventory Sync API Enhancement",
+      "url": "https://shopify.dev/api/admin-rest/2024-01/resources/inventory-level",
+      "source": "Shopify Engineering",
+      "topic": "retail-tech",
+      "summary": "New real-time inventory synchronization capabilities allow local stores to maintain accurate stock levels across multiple platforms. The enhanced API ",
+      "key_points": [
+        "Analysis completed"
+      ],
+      "scores": {
+        "relevance_0_5": 3,
+        "impact_now_0_5": 2,
+        "impact_12mo_0_5": 3,
+        "effort_low_med_high": "med",
+        "legal_risk_low_med_high": "low"
+      },
+      "recommendations": [
+        "Review implementation"
+      ],
+      "next_actions": [
+        {
+          "title": "Evaluate implementation",
+          "owner_role": "Tech Lead",
+          "eta_days": 7
+        }
+      ],
+      "decision": "WATCH",
+      "rationale": "Standard analysis completed"
+    },
+    {
+      "title": "Stripe Terminal for In-Store Payments",
+      "url": "https://stripe.com/terminal",
+      "source": "Stripe",
+      "topic": "payments",
+      "summary": "Stripe Terminal enables unified online and in-store payments through programmable card readers. For local commerce platforms, this creates seamless om",
+      "key_points": [
+        "Analysis completed"
+      ],
+      "scores": {
+        "relevance_0_5": 3,
+        "impact_now_0_5": 2,
+        "impact_12mo_0_5": 3,
+        "effort_low_med_high": "med",
+        "legal_risk_low_med_high": "low"
+      },
+      "recommendations": [
+        "Review implementation"
+      ],
+      "next_actions": [
+        {
+          "title": "Evaluate implementation",
+          "owner_role": "Tech Lead",
+          "eta_days": 7
+        }
+      ],
+      "decision": "WATCH",
+      "rationale": "Standard analysis completed"
+    }
+  ]
+}

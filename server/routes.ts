@@ -3799,6 +3799,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.sendFile(path.join(process.cwd(), "public", "investors", "index.html"));
   });
 
+  // SPIRAL AI R&D Agent routes
+  const rdAgentRoutes = await import('./routes/rd-agent-routes.js');
+  app.use('/api/rd-agent', rdAgentRoutes.default);
+  console.log('🧠 SPIRAL AI R&D Agent routes loaded successfully');
+
   console.log('✅ Feature #8 fixups complete: Admin auth, ops summary, and system hardening loaded successfully');
 
   return httpServer;

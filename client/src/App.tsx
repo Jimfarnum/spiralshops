@@ -73,6 +73,7 @@ import DeliveryOptionsPage from "@/pages/DeliveryOptionsPage";
 import RetailerProfilePage from "@/pages/RetailerProfilePage";
 import SEOLandingRoute from "@/pages/SEOLandingRoute";
 import QRCodeHub from "@/pages/QRCodeHub";
+import TechWatchDashboard from "@/pages/admin/TechWatchDashboard";
 import CrossRetailerHub from "@/pages/CrossRetailerHub";
 import CrossRetailerCustomer from "@/pages/CrossRetailerCustomer";
 import AnalyticsDashboard from "@/pages/admin/AnalyticsDashboard";
@@ -462,6 +463,7 @@ function Router() {
       <Route path="/product-entry-agent" component={ProductEntryAgentDemo} />
       <Route path="/admin/retailers" component={RetailerAdminPanel} />
       <Route path="/admin/agents" component={AgentDashboard} />
+      <Route path="/admin/techwatch" component={TechWatchDashboard} />
       <Route path="/wishlist" component={WishlistPage} />
       <Route path="/checkout" component={OneClickCheckout} />
       <Route path="/invite/:inviteId" component={InvitePage} />
