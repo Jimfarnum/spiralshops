@@ -1,0 +1,672 @@
+# =====================================================================
+# ONE-CODE DEPLOY — SPIRAL TechWatch (AI R&D) closed loop + Admin Auth
+# Stop the TS server; run the JS server only; add TechWatch + KPI system.
+# Paste this whole message into your Replit agent to create/update files.
+# =====================================================================
+
+# =========================
+# FILE: .replit
+# =========================
+run = "npm start"
+
+# =========================
+# FILE: package.json   (REPLACE or MERGE — keep your existing deps; ensure these fields exist)
+# =========================
+{
+  "name": "spiral",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "techwatch:scan": "node agents/techwatch/agent.js",
+    "techwatch:daemon": "node agents/techwatch/agent.js --daemon",
+    "techwatch:initiate": "node agents/techwatch/implementor_cli.js",
+    "techwatch:kpi": "node agents/techwatch/kpi_job.js",
+    "techwatch:kpi:comment": "node agents/techwatch/gh_commenter.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "@mozilla/readability": "^0.5.0",
+    "jsdom": "^22.1.0",
+    "rss-parser": "^3.12.0",
+    "yaml": "^2.5.0"
+  },
+  "devDependencies": {
+    "node-cron": "^3.0.3"
+  }
+}
+
+# =========================
+# FILE: server/securityHeaders.js
+# =========================
+import crypto from "crypto";
+export default function securityHeaders(opts = {}) {
+  const { cspExtraScriptSrc = [], cspExtraConnectSrc = [], enableHsts = true } = opts;
+  return function (req, res, next) {
+    const nonce = crypto.randomBytes(16).toString("base64");
+    res.locals.cspNonce = nonce;
+    const scriptSrc = ["'self'", `'nonce-${nonce}'`, ...cspExtraScriptSrc].join(" ");
+    const connectSrc = ["'self'", "https:", "wss:", ...cspExtraConnectSrc].join(" ");
+    const csp = [
+      `default-src 'self'`,
+      `base-uri 'self'`,
+      `frame-ancestors 'self'`,
+      `form-action 'self'`,
+      `object-src 'none'`,
+      `script-src ${scriptSrc}`,
+      `style-src 'self' 'unsafe-inline' https:`,
+      `img-src 'self' data: https:`,
+      `font-src 'self' https: data:`,
+      `connect-src ${connectSrc}`,
+      `upgrade-insecure-requests`
+    ].join("; ");
+    res.setHeader("Content-Security-Policy", csp);
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+    res.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+    if (enableHsts && (req.protocol === "https" || req.headers["x-forwarded-proto"] === "https")) {
+      res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+    }
+    next();
+  };
+}
+
+# =========================
+# FILE: server/adminAuth.js
+# =========================
+import crypto from "crypto";
+function b64url(buf) { return Buffer.from(buf).toString("base64").replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_"); }
+function sign(data, secret) { return b64url(crypto.createHmac("sha256", secret).update(data).digest()); }
+function makeToken({ sid, exp }, secret) { const payload = b64url(JSON.stringify({ sid, exp })); const sig = sign(payload, secret); return `${payload}.${sig}`; }
+function parseToken(token) {
+  const [payloadB64, sig] = String(token||"").split(".");
+  if (!payloadB64 || !sig) return null;
+  try { return { payloadB64, sig, payload: JSON.parse(Buffer.from(payloadB64,"base64").toString("utf8")) }; }
+  catch { return null; }
+}
+function parseCookies(header="") {
+  return header.split(";").reduce((acc, part) => {
+    const [k, ...v] = part.trim().split("="); if (!k) return acc;
+    acc[k] = decodeURIComponent(v.join("=") || ""); return acc;
+  }, {});
+}
+function secureFlag(req) { return (req.protocol === "https") || (req.headers["x-forwarded-proto"] === "https"); }
+
+export function createSessionCookie(req, res) {
+  const secret = process.env.ADMIN_SESSION_SECRET;
+  if (!secret) throw new Error("Missing ADMIN_SESSION_SECRET");
+  const sid = crypto.randomBytes(16).toString("hex");
+  const hours = Number(process.env.ADMIN_SESSION_HOURS || 12);
+  const exp = Date.now() + hours*60*60*1000;
+  const token = makeToken({ sid, exp }, secret);
+  const cookie = [
+    `admin_session=${token}`,
+    "HttpOnly",
+    "SameSite=Strict",
+    "Path=/",
+    `Max-Age=${Math.floor(hours*60*60)}`
+  ];
+  if (secureFlag(req)) cookie.push("Secure");
+  res.setHeader("Set-Cookie", cookie.join("; "));
+}
+export function clearSessionCookie(req, res) {
+  const cookie = ["admin_session=","HttpOnly","SameSite=Strict","Path=/","Max-Age=0"];
+  if (secureFlag(req)) cookie.push("Secure");
+  res.setHeader("Set-Cookie", cookie.join("; "));
+}
+export function guard(req, res, next) {
+  try {
+    const secret = process.env.ADMIN_SESSION_SECRET;
+    if (!secret) throw new Error("Missing ADMIN_SESSION_SECRET");
+    const cookies = parseCookies(req.headers.cookie || "");
+    const tok = cookies.admin_session;
+    if (!tok) return res.status(401).json({ ok:false, error:"Unauthorized" });
+    const parsed = parseToken(tok);
+    if (!parsed) return res.status(401).json({ ok:false, error:"Unauthorized" });
+    const expected = sign(parsed.payloadB64, secret);
+    if (!crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(parsed.sig))) return res.status(401).json({ ok:false, error:"Unauthorized" });
+    if (!parsed.payload?.exp || Date.now() > parsed.payload.exp) return res.status(401).json({ ok:false, error:"Session expired" });
+    next();
+  } catch (e) {
+    console.error("adminAuth.guard error:", e.message);
+    return res.status(401).json({ ok:false, error:"Unauthorized" });
+  }
+}
+
+# =========================
+# FILE: server/adminAuthRoutes.js
+# =========================
+import express from "express";
+import { createSessionCookie, clearSessionCookie } from "./adminAuth.js";
+const router = express.Router();
+router.use(express.json({ limit: "32kb" }));
+router.post("/login", (req, res) => {
+  try {
+    const supplied = String(req.body?.token || "");
+    const expected = String(process.env.ADMIN_TOKEN || "");
+    if (!expected) return res.status(500).json({ ok:false, error:"ADMIN_TOKEN not set" });
+    if (!supplied || supplied !== expected) return res.status(401).json({ ok:false, error:"Invalid token" });
+    createSessionCookie(req, res);
+    res.json({ ok:true });
+  } catch (e) {
+    console.error(e); res.status(500).json({ ok:false, error:"Login failed" });
+  }
+});
+router.post("/logout", (req, res) => {
+  try { clearSessionCookie(req, res); res.json({ ok:true }); }
+  catch (e) { console.error(e); res.status(500).json({ ok:false, error:"Logout failed" }); }
+});
+export default router;
+
+# =========================
+# FILE: server/adminTechwatchRoute.js
+# =========================
+import express from "express";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { guard } from "./adminAuth.js";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const router = express.Router();
+const ROOT = path.join(process.cwd(), "agents", "techwatch");
+const REPORTS_DIR = path.join(ROOT, "reports");
+
+router.get("/techwatch/health", (_req, res) => res.json({ ok:true }));  // public
+
+router.use(guard); // protect routes below
+
+function latestReportDir() {
+  const dates = fs.existsSync(REPORTS_DIR) ? fs.readdirSync(REPORTS_DIR).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort() : [];
+  return dates.length ? path.join(REPORTS_DIR, dates[dates.length-1]) : null;
+}
+
+router.get("/techwatch/latest", (req, res) => {
+  try {
+    const dir = latestReportDir();
+    if (!dir) return res.json({ ok:true, report: [] });
+    const report = JSON.parse(fs.readFileSync(path.join(dir, "report.json"), "utf8"));
+    res.json({ ok:true, report, dir });
+  } catch (e) {
+    console.error(e); res.status(500).json({ ok:false, error:e.message });
+  }
+});
+
+router.post("/techwatch/initiate", async (req, res) => {
+  try {
+    const { run } = await import("../agents/techwatch/implementor.js");
+    const result = await run();
+    res.json({ ok:true, result });
+  } catch (e) {
+    console.error(e); res.status(500).json({ ok:false, error:e.message });
+  }
+});
+
+router.post("/techwatch/kpi", async (req, res) => {
+  try {
+    await import("../agents/techwatch/kpi_job.js");
+    res.json({ ok:true });
+  } catch (e) {
+    console.error(e); res.status(500).json({ ok:false, error:e.message });
+  }
+});
+
+router.post("/techwatch/kpi/comment", async (req, res) => {
+  try {
+    await import("../agents/techwatch/gh_commenter.js");
+    res.json({ ok:true });
+  } catch (e) {
+    console.error(e); res.status(500).json({ ok:false, error:e.message });
+  }
+});
+
+export default router;
+
+# =========================
+# FILE: server/index.js
+# =========================
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+import securityHeaders from "./securityHeaders.js";
+import adminAuthRoutes from "./adminAuthRoutes.js";
+import adminTechwatch from "./adminTechwatchRoute.js";
+
+const app = express();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Security headers
+app.use(securityHeaders());
+
+// Health
+app.get("/api/check", (_req, res) => res.json({ ok:true, status:"SPIRAL API healthy" }));
+
+// Admin auth (public login/logout)
+app.use("/admin", adminAuthRoutes);
+
+// Admin protected routes (guarded inside)
+app.use("/admin", adminTechwatch);
+
+// (Optional) serve a minimal static admin client if you build one:
+// app.use(express.static(path.join(process.cwd(), "dist")));
+
+// Start server on Replit PORT
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
+
+# =========================
+# FILE: agents/techwatch/sources.yml
+# =========================
+topics:
+  - ai-platforms
+  - retail-tech
+  - payments
+  - investor/venture
+  - comp-moves
+  - policy
+
+sources:
+  ai-platforms:
+    - { name: "OpenAI Blog",        url: "https://openai.com/blog/rss",                     type: "rss" }
+    - { name: "Anthropic News",     url: "https://www.anthropic.com/news.xml",              type: "rss" }
+    - { name: "Google AI Blog",     url: "https://ai.googleblog.com/atom.xml",              type: "rss" }
+    - { name: "Meta AI",            url: "https://ai.facebook.com/blog/rss",                type: "rss" }
+    - { name: "arXiv cs.AI recent", url: "http://export.arxiv.org/api/query?search_query=cat:cs.AI&sortBy=lastUpdatedDate&max_results=30", type: "atom" }
+  retail-tech:
+    - { name: "Shopify Engineering", url: "https://shopify.engineering/rss.xml", type: "rss" }
+    - { name: "Amazon Science",      url: "https://www.amazon.science/latest-news.rss", type: "rss" }
+    - { name: "Walmart Global Tech", url: "https://medium.com/feed/walmartglobaltech", type: "rss" }
+    - { name: "Target Tech",         url: "https://medium.com/feed/target-tech", type: "rss" }
+    - { name: "NRF",                 url: "https://nrf.com/rss.xml", type: "rss" }
+  payments:
+    - { name: "Stripe Blog",  url: "https://stripe.com/blog/feed.rss", type: "rss" }
+    - { name: "Visa Dev",     url: "https://developer.visa.com/sitecore/api/rss/visa-developer-center", type: "rss" }
+    - { name: "Adyen Blog",   url: "https://www.adyen.com/blog/rss.xml", type: "rss" }
+  investor/venture:
+    - { name: "a16z",   url: "https://a16z.com/feed/", type: "rss" }
+    - { name: "Sequoia",url: "https://www.sequoiacap.com/feed/", type: "rss" }
+  comp-moves:
+    - { name: "Hacker News Front", url: "https://hnrss.org/frontpage", type: "rss" }
+    - { name: "HN: retail AI",     url: "https://hnrss.org/newest?q=retail%20AI", type: "rss" }
+  policy:
+    - { name: "NIST AI", url: "https://www.nist.gov/feeds", type: "rss" }
+
+# =========================
+# FILE: agents/techwatch/agent.js
+# =========================
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
+import Parser from "rss-parser";
+import YAML from "yaml";
+import { JSDOM } from "jsdom";
+import { Readability } from "@mozilla/readability";
+
+const parser = new Parser();
+const ROOT = path.join(process.cwd(), "agents", "techwatch");
+const DATA_DIR = path.join(ROOT, "data");
+const REPORTS_DIR = path.join(ROOT, "reports");
+const DB_FILE = path.join(DATA_DIR, "seen.json");
+const SOURCES_YML = path.join(ROOT, "sources.yml");
+
+const have = (k) => !!process.env[k] && String(process.env[k]).trim().length > 0;
+function ensureDirs(){ fs.mkdirSync(DATA_DIR,{recursive:true}); fs.mkdirSync(REPORTS_DIR,{recursive:true}); }
+function sha(s){ return crypto.createHash("sha256").update(s).digest("hex"); }
+function loadDB(){ try{ return JSON.parse(fs.readFileSync(DB_FILE,"utf8")); } catch { return {}; } }
+function saveDB(db){ fs.writeFileSync(DB_FILE, JSON.stringify(db,null,2)); }
+function loadSources(){ return YAML.parse(fs.readFileSync(SOURCES_YML,"utf8")); }
+
+async function safeFetch(url){
+  try{ const r=await fetch(url,{ headers:{ "user-agent":"SPIRAL-TechWatch/1.0" }}); if(!r.ok) throw new Error(r.status); return await r.text(); }
+  catch(e){ console.warn("Fetch failed:", url, e.message); return null; }
+}
+async function fetchFeed(src){
+  try{ if(src.type==="rss"||src.type==="atom") return await parser.parseURL(src.url); return null; }
+  catch(e){ console.warn("Feed parse failed:", src.name, e.message); return null; }
+}
+async function extractReadable(url){
+  const html = await safeFetch(url); if(!html) return null;
+  try{ const dom=new JSDOM(html,{url}); const reader=new Readability(dom.window.document); const art=reader.parse(); if(!art) return null;
+    const text=(art.textContent||"").trim(); return { title: art.title||"", text, byline: art.byline||"", length: text.length }; }
+  catch(e){ console.warn("Readability failed:", url, e.message); return null; }
+}
+function keywordHeuristic(text){ const s=(text||"").toLowerCase(); let score=0;
+  ["retail","shop","mall","loyalty","checkout","fulfillment","inventory","pos"].forEach(k=>{ if(s.includes(k)) score+=1; });
+  ["ai","model","agents","gpt","ml","transformer"].forEach(k=>{ if(s.includes(k)) score+=1.5; });
+  return Math.min(5, Math.round(score));
+}
+async function analyzeLLM(item){
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+  const prompt = `
+Return strict JSON with keys: title,url,source,topic,summary,key_points (array),
+scores:{relevance_0_5,impact_now_0_5,impact_12mo_0_5,effort_low_med_high,legal_risk_low_med_high},
+recommendations (array), next_actions (array), decision, rationale.
+TEXT:
+${item.readable?.text?.slice(0,12000) || item.contentSnippet || ""}
+META:
+title="${item.title}" url="${item.link}" source="${item.sourceName}" topic="${item.topic}"`;
+  if (!have("OPENAI_API_KEY")) {
+    const rel = keywordHeuristic(item.readable?.text || item.contentSnippet || "");
+    return {
+      title: item.title, url: item.link, source: item.sourceName, topic: item.topic,
+      summary: (item.readable?.text || "").slice(0, 400),
+      key_points: [],
+      scores: { relevance_0_5: rel, impact_now_0_5: Math.max(1, rel-1), impact_12mo_0_5: Math.max(2, rel), effort_low_med_high: rel>=4?"med":"low", legal_risk_low_med_high: "low" },
+      recommendations: ["Review for applicability to SPIRAL."],
+      next_actions: [{ title: "Assign DRI to evaluate integration", owner_role: "CTO", eta_days: 7 }],
+      decision: rel>=4 ? "INITIATE" : (rel>=3 ? "WATCH" : "DISCARD"),
+      rationale: "Heuristic scoring without LLM."
+    };
+  }
+  try{
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { "content-type":"application/json", "authorization": `Bearer ${process.env.OPENAI_API_KEY}` },
+      body: JSON.stringify({ model, temperature: 0.2, messages: [
+        { role:"system", content:"You are SPIRAL’s AI R&D lead. Be pragmatic and implementation-minded." },
+        { role:"user", content: prompt }
+      ]})
+    });
+    const json = await res.json();
+    const content = json.choices?.[0]?.message?.content?.trim() || "{}";
+    return JSON.parse(content);
+  } catch(e){
+    console.warn("LLM analyze failed:", e.message);
+    return { title:item.title, url:item.link, source:item.sourceName, topic:item.topic,
+      summary:item.contentSnippet||"", key_points:[],
+      scores:{ relevance_0_5:3, impact_now_0_5:2, impact_12mo_0_5:3, effort_low_med_high:"med", legal_risk_low_med_high:"low" },
+      recommendations:["Manual review"], next_actions:[], decision:"WATCH", rationale:"LLM error; watch." };
+  }
+}
+function pickTop(items,n=10){
+  return [...items].sort((a,b)=>((b.scores?.relevance_0_5||0)+(b.scores?.impact_now_0_5||0)+(b.scores?.impact_12mo_0_5||0))-
+                             ((a.scores?.relevance_0_5||0)+(a.scores?.impact_now_0_5||0)+(a.scores?.impact_12mo_0_5||0))).slice(0,n);
+}
+function mdEscape(s){ return String(s||"").replace(/\|/g,"\\|"); }
+function buildReportMD(dateISO, analyzed){
+  const top=pickTop(analyzed,10);
+  let md = `# SPIRAL Technology Watch — ${dateISO}\n\nItems analyzed: ${analyzed.length}\n\n## Top Recommendations\n`;
+  top.forEach((it,i)=>{ md+=`\n### ${i+1}. ${it.title}\n**Source**: ${it.source} • **Topic**: ${it.topic}\n\n${it.summary}\n\n**Scores:** Relevance=${it.scores?.relevance_0_5} • Now=${it.scores?.impact_now_0_5} • 12mo=${it.scores?.impact_12mo_0_5} • Effort=${it.scores?.effort_low_med_high} • Legal=${it.scores?.legal_risk_low_med_high}\n\n`;
+    if (it.recommendations?.length) md+=`**Recommendations:**\n- ${it.recommendations.join("\n- ")}\n\n`;
+    if (it.next_actions?.length) md+=`**Next actions:**\n- ${it.next_actions.map(a=>a.title||a).join("\n- ")}\n\n`;
+    md+=`[Open](${it.url})\n`; });
+  md+=`\n---\n## Full Catalog\n| Title | Source | Topic | Rel | Now | 12mo | Effort | Legal |\n|---|---|---|---:|---:|---:|---|---|\n`;
+  for (const it of analyzed) md+=`| ${mdEscape(it.title)} | ${mdEscape(it.source)} | ${mdEscape(it.topic)} | ${it.scores?.relevance_0_5||0} | ${it.scores?.impact_now_0_5||0} | ${it.scores?.impact_12mo_0_5||0} | ${it.scores?.effort_low_med_high||"-"} | ${it.scores?.legal_risk_low_med_high||"-"} |\n`;
+  return md;
+}
+async function runOnce(){
+  ensureDirs(); const db=loadDB(); const cfg=loadSources(); const collected=[];
+  for (const topic of Object.keys(cfg.sources)) {
+    for (const src of cfg.sources[topic]) {
+      const feed = await fetchFeed(src); if (!feed?.items) continue;
+      for (const item of feed.items) {
+        const link = item.link || item.id || ""; if (!link) continue;
+        const key = sha(link); if (db[key]) continue;
+        collected.push({ title:item.title||"(no title)", link, sourceName:src.name, topic, contentSnippet:item.contentSnippet||"" });
+      }
+    }
+  }
+  const analyzed=[];
+  for (const it of collected) {
+    it.readable = await extractReadable(it.link);
+    const analysis = await analyzeLLM(it);
+    analyzed.push(analysis);
+    db[sha(it.link)] = { url:it.link, title:it.title, topic:it.topic, date:new Date().toISOString() };
+  }
+  saveDB(db);
+  const dateISO = new Date().toISOString().split("T")[0];
+  const outDir = path.join(REPORTS_DIR, dateISO); fs.mkdirSync(outDir, { recursive:true });
+  const md = buildReportMD(dateISO, analyzed);
+  fs.writeFileSync(path.join(outDir,"report.md"), md);
+  fs.writeFileSync(path.join(outDir,"report.json"), JSON.stringify(analyzed,null,2));
+  const tasks = analyzed.flatMap(t => (t.next_actions||[]).map(a => `- [ ] ${a.title||a}  _(source: ${t.title})_`));
+  if (tasks.length) fs.writeFileSync(path.join(outDir,"next-actions.md"), `# Next Actions — ${dateISO}\n\n${tasks.join("\n")}\n`);
+  console.log(`TechWatch complete: ${outDir}`);
+}
+(async()=>{
+  const daemon = process.argv.includes("--daemon") || process.env.TECHWATCH_DAEMON==="true";
+  await runOnce();
+  if (daemon) {
+    console.log("Daemon mode — every 12 hours");
+    const cron = (await import("node-cron")).default;
+    cron.schedule("0 */12 * * *", async ()=>{ try{ await runOnce(); } catch(e){ console.error(e);} });
+  }
+})().catch(e=>{ console.error(e); process.exit(1); });
+
+# =========================
+# FILE: agents/techwatch/implementor.js
+# =========================
+import fs from "fs";
+import path from "path";
+const REPORTS_DIR = path.join(process.cwd(),"agents","techwatch","reports");
+const TICKETS_DIR = path.join(process.cwd(),"agents","techwatch","tickets");
+const STATUS_DIR  = path.join(process.cwd(),"agents","techwatch","status");
+const KPI_FILE    = path.join(process.cwd(),"agents","techwatch","kpi_registry.json");
+function ensure(){ [TICKETS_DIR,STATUS_DIR].forEach(d=>fs.mkdirSync(d,{recursive:true})); if(!fs.existsSync(KPI_FILE)) fs.writeFileSync(KPI_FILE, JSON.stringify({items:[]},null,2)); }
+function latestReportDir(){ const d=fs.existsSync(REPORTS_DIR)?fs.readdirSync(REPORTS_DIR).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)).sort():[]; if(!d.length) throw new Error("No reports found"); return path.join(REPORTS_DIR,d[d.length-1]); }
+function readReportJSON(dir){ return JSON.parse(fs.readFileSync(path.join(dir,"report.json"),"utf8")); }
+async function createGithubIssue(title, body, labels=["techwatch","initiate"]){
+  const token=process.env.GITHUB_TOKEN, repo=process.env.GITHUB_REPO; if(!token||!repo) return null;
+  const res = await fetch(`https://api.github.com/repos/${repo}/issues`, { method:"POST",
+    headers:{ authorization:`Bearer ${token}`, accept:"application/vnd.github+json", "content-type":"application/json" },
+    body: JSON.stringify({ title, body, labels, assignees: [] }) });
+  if(!res.ok){ console.warn("GitHub issue create failed:", res.status, await res.text()); return null; }
+  return await res.json();
+}
+function localTicket(title, body, idx){ const f=path.join(TICKETS_DIR,`ticket_${Date.now()}_${idx}.md`); fs.writeFileSync(f,`# ${title}\n\n${body}\n`); return { local_path: f }; }
+function buildIssueBody(item){
+  const owner=item.next_actions?.[0]?.owner_role||"CTO"; const eta=item.next_actions?.[0]?.eta_days||14;
+  const recs=(item.recommendations||[]).map(r=>`- ${r}`).join("\n")||"- Implement per design";
+  return [`**Why**: ${item.rationale||"Improves revenue/ops or de-risks compliance."}`,`**Scope:**\n${recs}`,
+    `**Acceptance:**`,`- KPI impact measurable (conversion/pickup/op costs)`,`- Security & privacy checks pass`,`- Flags/rollbacks added`,
+    `**Owner:** ${owner}`,`**ETA:** ${eta} days`,`**Source:** ${item.source} — ${item.url}`].join("\n");
+}
+function registerKPIWatch(item){
+  const kpi=JSON.parse(fs.readFileSync(KPI_FILE,"utf8"));
+  kpi.items.push({ title:item.title, url:item.url, created_at:new Date().toISOString(),
+    kpis:["conversion_rate","pickup_adoption_rate","checkout_time_p95","support_contact_rate"],
+    target_window_days:item.next_actions?.[0]?.eta_days||30, status:"initiated" });
+  fs.writeFileSync(KPI_FILE, JSON.stringify(kpi,null,2));
+}
+export async function run(){
+  ensure(); const dir=latestReportDir(); const items=readReportJSON(dir);
+  const initiated = items.filter(i => (i.decision||"").toUpperCase()==="INITIATE"); if(!initiated.length){ console.log("No INITIATE items."); return {created:0}; }
+  let created=0;
+  for(let idx=0; idx<initiated.length; idx++){
+    const it=initiated[idx]; const title=`[INITIATE] ${it.title}`; const body=buildIssueBody(it);
+    let ref=null; try{ ref=await createGithubIssue(title,body); } catch(e){ console.warn("Issue create error:", e.message); }
+    if(!ref) ref=localTicket(title, body, idx);
+    const statusRec = { title:it.title, url:it.url, source:it.source, created_at:new Date().toISOString(),
+      ticket: ref.html_url||ref.local_path, platform: ref.html_url?"github":"local",
+      owner: it.next_actions?.[0]?.owner_role||"CTO", eta_days: it.next_actions?.[0]?.eta_days||14 };
+    fs.writeFileSync(path.join(STATUS_DIR,`status_${Date.now()}_${idx}.json`), JSON.stringify(statusRec,null,2));
+    registerKPIWatch(it); created++;
+  }
+  console.log(`Created ${created} ticket(s).`); return { created };
+}
+
+# =========================
+# FILE: agents/techwatch/implementor_cli.js
+# =========================
+import { run } from "./implementor.js";
+(async()=>{ try{ const res=await run(); console.log("Initiate complete:", res); } catch(e){ console.error("Initiate failed:", e); process.exit(1);} })();
+
+# =========================
+# FILE: agents/techwatch/kpi_job.js
+# =========================
+import fs from "fs";
+import path from "path";
+const ROOT = path.join(process.cwd(),"agents","techwatch");
+const KPI_REG = path.join(ROOT,"kpi_registry.json");
+const OUT_DIR = path.join(ROOT,"kpi_results", new Date().toISOString().split("T")[0]);
+function ensure(){ fs.mkdirSync(OUT_DIR,{recursive:true}); }
+function daysFrom(iso, days){ const d=new Date(iso); d.setDate(d.getDate()-days); return d.toISOString(); }
+function fetchMetrics(metric, startISO, endISO){ const seed=new Date(endISO).getTime()-new Date(startISO).getTime(); const rng=(x)=>Math.abs(Math.sin(seed/(x+37.13)));
+  switch(metric){ case "conversion_rate": return 0.02 + rng(3)*0.06; case "pickup_adoption_rate": return 0.10 + rng(5)*0.35;
+    case "checkout_time_p95": return 4500 - rng(7)*2500; case "support_contact_rate": return 3 + rng(11)*7; default: return NaN; } }
+function formatPct(x){ return (x*100).toFixed(1)+"%"; } function formatMs(x){ return Math.round(x)+" ms"; }
+function pretty(metric,val){ if(metric==="checkout_time_p95") return formatMs(val); if(metric.endsWith("_rate")) return formatPct(val); return String(Math.round(val*100)/100); }
+(async()=>{
+  ensure(); if(!fs.existsSync(KPI_REG)){ console.log("No KPI registry."); return; }
+  const reg=JSON.parse(fs.readFileSync(KPI_REG,"utf8")); const items=reg.items||[]; if(!items.length){ console.log("KPI registry empty."); return; }
+  const today=new Date().toISOString(); const results=[];
+  for(const it of items){
+    const windowDays=it.target_window_days||30; const startAfter=new Date(it.created_at).toISOString(); const startBefore=daysFrom(it.created_at,windowDays);
+    const rec={ title:it.title, url:it.url, created_at:it.created_at, target_window_days:windowDays, metrics:[] };
+    for(const m of (it.kpis||[])){
+      const before=fetchMetrics(m,startBefore,it.created_at); const after=fetchMetrics(m,startAfter,today); const delta=after-before;
+      rec.metrics.push({ metric:m, before, after, delta, before_pretty:pretty(m,before), after_pretty:pretty(m,after),
+        delta_pretty: (m==="checkout_time_p95") ? ((delta>0?"+":"")+formatMs(delta)) : ((delta>0?"+":"")+formatPct(delta)) });
+    }
+    const outFile=path.join(OUT_DIR, `kpi_${rec.title.replace(/[^a-z0-9]+/gi,"_").slice(0,60)}.json`);
+    fs.writeFileSync(outFile, JSON.stringify(rec,null,2)); results.push(rec);
+  }
+  fs.writeFileSync(path.join(OUT_DIR,"results.json"), JSON.stringify({ generated_at:new Date().toISOString(), results },null,2));
+  console.log(`KPI results written to ${OUT_DIR}`);
+})().catch(e=>{ console.error(e); process.exit(1); });
+
+# =========================
+# FILE: agents/techwatch/gh_commenter.js
+# =========================
+import fs from "fs";
+import path from "path";
+const STATUS_DIR = path.join(process.cwd(),"agents","techwatch","status");
+const RESULTS_DIR = path.join(process.cwd(),"agents","techwatch","kpi_results");
+function latestResultsDir(){ const d=fs.existsSync(RESULTS_DIR)?fs.readdirSync(RESULTS_DIR).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)).sort():[]; if(!d.length) throw new Error("No KPI results"); return path.join(RESULTS_DIR,d[d.length-1]); }
+function loadResults(dir){ return JSON.parse(fs.readFileSync(path.join(dir,"results.json"),"utf8")).results||[]; }
+function loadStatuses(){ if(!fs.existsSync(STATUS_DIR)) return []; return fs.readdirSync(STATUS_DIR).filter(f=>f.endsWith(".json")).map(f=>JSON.parse(fs.readFileSync(path.join(STATUS_DIR,f),"utf8"))); }
+function issueFromUrl(url){ const m=/github\\.com\\/[^\\/]+\\/[^\\/]+\\/issues\\/(\\d+)/.exec(url||""); return m?Number(m[1]):null; }
+async function postComment(issue, body){
+  const token=process.env.GITHUB_TOKEN, repo=process.env.GITHUB_REPO; if(!token||!repo) throw new Error("Missing GITHUB_TOKEN or GITHUB_REPO");
+  const r=await fetch(`https://api.github.com/repos/${repo}/issues/${issue}/comments`,{ method:"POST", headers:{ authorization:`Bearer ${token}`, accept:"application/vnd.github+json", "content-type":"application/json" }, body: JSON.stringify({ body }) });
+  if(!r.ok){ throw new Error(`Comment failed: ${r.status} ${await r.text()}`); } return await r.json();
+}
+function fmt(m){ const name=m.metric.replace(/_/g," "); return `• **${name}**: ${m.before_pretty} → ${m.after_pretty} (${m.delta_pretty})`; }
+(async()=>{
+  try{
+    const latest=latestResultsDir(); const kpis=loadResults(latest); const statuses=loadStatuses(); let posted=0;
+    for(const s of statuses){
+      if(!s.ticket || s.platform!=="github") continue; const num=issueFromUrl(s.ticket); if(!num) continue;
+      const rec=kpis.find(r=>r.title===s.title); if(!rec) continue;
+      const lines=[`**KPI Update for:** _${rec.title}_`,"",...rec.metrics.map(fmt),"",`_Auto-posted • ${new Date().toISOString()}_`];
+      await postComment(num, lines.join("\n")); posted++;
+    }
+    console.log(`KPI comments posted: ${posted}`);
+  } catch(e){ console.error("KPI commenter error:", e.message); process.exit(1); }
+})();
+
+# =========================
+# FILE: app/AdminLogin.jsx   (optional UI if you serve a React app)
+# =========================
+import React, { useState } from "react";
+export default function AdminLogin(){
+  const [token,setToken]=useState(""); const [msg,setMsg]=useState("");
+  async function onSubmit(e){ e.preventDefault(); setMsg("Signing in…");
+    try{ const r=await fetch("/admin/login",{ method:"POST", headers:{ "content-type":"application/json" }, body:JSON.stringify({ token })});
+      const d=await r.json(); if(!d.ok) return setMsg(d.error||"Login failed"); window.location.href="/admin/techwatch"; }
+    catch{ setMsg("Login error"); } }
+  return (<div className="min-h-screen flex items-center justify-center p-6">
+    <form onSubmit={onSubmit} className="w-full max-w-sm p-6 rounded-2xl shadow border">
+      <h1 className="text-xl font-semibold mb-4">Admin Sign-in</h1>
+      <label className="block text-sm mb-1">Admin Token</label>
+      <input type="password" value={token} onChange={e=>setToken(e.target.value)} className="w-full border rounded-lg px-3 py-2 mb-3" placeholder="Enter ADMIN_TOKEN" required />
+      <button className="w-full bg-black text-white rounded-lg py-2">Sign in</button>
+      {msg && <div className="mt-3 text-sm text-gray-700">{msg}</div>}
+    </form></div>);
+}
+
+# =========================
+# FILE: app/AdminTechWatch.jsx  (optional UI if you serve a React app)
+# =========================
+import React, { useEffect, useState } from "react";
+export default function AdminTechWatch(){
+  const [report,setReport]=useState([]); const [loading,setLoading]=useState(true); const [msg,setMsg]=useState("");
+  async function fetchLatest(){ setLoading(true); setMsg(""); const r=await fetch("/admin/techwatch/latest"); if(r.status===401){ window.location.href="/admin/login"; return; }
+    const d=await r.json(); setReport(Array.isArray(d.report)?d.report:(d.report||[])); setLoading(false); }
+  useEffect(()=>{ fetchLatest(); },[]);
+  async function post(path){ setMsg("Working…"); const r=await fetch(`/admin/${path}`,{method:"POST"}); if(r.status===401){ window.location.href="/admin/login"; return; }
+    const d=await r.json(); setMsg(d.ok?"Done.":(d.error||"Error")); await fetchLatest(); }
+  return (<div className="p-6 max-w-6xl mx-auto">
+    <div className="flex items-center justify-between">
+      <h1 className="text-2xl font-bold mb-4">TechWatch — AI R&D</h1>
+      <form action="/admin/logout" method="post"><button className="px-3 py-1 rounded-lg border">Logout</button></form>
+    </div>
+    <div className="flex gap-2 mb-4">
+      <button onClick={()=>post("techwatch/initiate")} className="px-4 py-2 rounded-2xl shadow bg-black text-white">Approve & Initiate</button>
+      <button onClick={()=>post("techwatch/kpi")} className="px-4 py-2 rounded-2xl shadow bg-gray-800 text-white">Compute KPIs</button>
+      <button onClick={()=>post("techwatch/kpi/comment")} className="px-4 py-2 rounded-2xl shadow bg-gray-700 text-white">Post KPI Update</button>
+      <button onClick={fetchLatest} className="px-4 py-2 rounded-2xl shadow border">Refresh</button>
+    </div>
+    {msg && <div className="mb-4 text-sm text-green-700">{msg}</div>}
+    {loading ? (<div className="animate-pulse text-gray-500">Loading latest analysis…</div>) : (
+      <div className="grid md:grid-cols-2 gap-4">
+        {(report||[]).map((it,idx)=>(
+          <div key={idx} className="rounded-2xl shadow p-4 border">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="font-semibold text-lg pr-3 line-clamp-2">{it.title}</h2>
+              <span className="text-xs px-2 py-1 rounded-full bg-gray-100 border">{it.topic}</span>
+            </div>
+            <p className="text-sm text-gray-700 line-clamp-4 mb-3">{it.summary}</p>
+            <div className="text-xs text-gray-600 mb-3">
+              Scores: Rel {it.scores?.relevance_0_5} • Now {it.scores?.impact_now_0_5} • 12mo {it.scores?.impact_12mo_0_5} • Effort {it.scores?.effort_low_med_high} • Legal {it.scores?.legal_risk_low_med_high}
+            </div>
+            <div className="flex items-center gap-3">
+              <a href={it.url} target="_blank" rel="noreferrer" className="text-sm underline">Open</a>
+              <span className="text-xs text-gray-500">Decision: <b>{it.decision}</b></span>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}</div>);
+}
+
+# =========================
+# OPTIONAL: app/routes.jsx snippet (if you have a React router)
+# =========================
+/*
+// import AdminLogin from "./AdminLogin";
+// import AdminTechWatch from "./AdminTechWatch";
+// <Route path="/admin/login" element={<AdminLogin />} />
+// <Route path="/admin/techwatch" element={<AdminTechWatch />} />
+*/
+
+# =====================================================================
+# SECRETS to set in Replit (lock icon → Secrets)
+# =====================================================================
+# Required:
+# ADMIN_TOKEN             = your admin login token (string you share only with admins)
+# ADMIN_SESSION_SECRET    = long random string (use: openssl rand -hex 32)
+#
+# Recommended:
+# OPENAI_API_KEY          = for high-quality LLM analysis
+# OPENAI_MODEL            = gpt-4o-mini
+#
+# Optional (GitHub integration for tickets/KPI comments):
+# GITHUB_TOKEN            = fine-scoped PAT with 'repo'
+# GITHUB_REPO             = yourorg/yourrepo      (e.g., spiral/spiral-app)
+
+# =====================================================================
+# RUN CHECKS (Replit Shell)
+# =====================================================================
+# 1) Install deps
+# npm install
+#
+# 2) Start server (Run button or:)
+# npm start
+# (expect: "Server listening on <PORT>")
+#
+# 3) Generate first TechWatch report
+# npm run techwatch:scan
+#
+# 4) Admin login → dashboard
+# open /admin/login  (enter ADMIN_TOKEN)
+# go to /admin/techwatch  (use buttons)
+#
+# 5) (Optional) Initiate tickets / compute KPIs / post comments
+# npm run techwatch:initiate
+# npm run techwatch:kpi
+# npm run techwatch:kpi:comment
+# =====================================================================
+```0
