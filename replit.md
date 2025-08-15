@@ -6,6 +6,7 @@ SPIRAL is a modern local business directory designed to revitalize local commerc
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 Preferred design approach: Clean, simplified interfaces over complex UI components. Favors functional minimalism while maintaining full backend integration capabilities.
+Preferred server configuration: Simplified JavaScript server using `node server/index.js` with `npm start` command, port 3000 default.
 
 ## System Architecture
 
@@ -29,7 +30,8 @@ Preferred design approach: Clean, simplified interfaces over complex UI componen
 
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js.
-- **Language**: TypeScript with ES modules.
+- **Language**: JavaScript ES modules with TypeScript development support.
+- **Server Configuration**: Dual setup - TypeScript development server (server/index.ts) and simplified JavaScript production server (server/index.js).
 - **Database**: PostgreSQL with Drizzle ORM (Neon Database).
 - **Session Management**: PostgreSQL-backed sessions.
 - **API Style**: REST endpoints.
@@ -38,6 +40,12 @@ Preferred design approach: Clean, simplified interfaces over complex UI componen
 - **Cloud Services**: Vercel deployment, IBM Cloud services (Watson Assistant, Watson Discovery, Cloudant Database, Redis Cache, Kubernetes).
 - **Security**: JWT authentication, 3-tier API rate limiting, CSP, XSS protection, input sanitization, CORS.
 - **System Design Choices**: Centralized external service router, intelligent fallback for OpenAI API, production-ready architecture for scalability, modular design for feature expansion.
+
+#### Recent Changes (August 15, 2025)
+- Created simplified JavaScript server (server/index.js) for direct Node.js execution
+- Configured for port 3000 default with PORT environment variable support
+- Maintains all SPIRAL AI systems and 7 SOAP G Central Brain agents
+- Ready for npm start configuration with node server/index.js
 
 ## External Dependencies
 
