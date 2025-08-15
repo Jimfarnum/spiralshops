@@ -1,156 +1,20 @@
 {
-  "generated": "2025-08-15T01:25:15.295Z",
-  "reportDate": "2025-08-15T01:12:00.637Z",
+  "generated": "2025-08-15T01:31:44.208Z",
+  "reportDate": "2025-08-15T01:31:43.809Z",
   "platform": "SPIRAL Local Commerce Platform",
-  "totalItems": 6,
-  "initiateCount": 3,
-  "watchCount": 2,
-  "discardCount": 1,
-  "projectedRevenueImpact": 346000,
-  "totalEffortWeeks": 14,
-  "riskScore": 4,
-  "roiScore": 12,
+  "totalItems": 20,
+  "initiateCount": 0,
+  "watchCount": 20,
+  "discardCount": 0,
+  "projectedRevenueImpact": 0,
+  "totalEffortWeeks": 0,
+  "riskScore": 0,
+  "roiScore": 0,
   "strategicAlignment": {
-    "alignmentScore": 10,
-    "alignedCount": 3,
-    "totalCount": 3
+    "alignmentScore": 0,
+    "alignedCount": 0,
+    "totalCount": 0
   },
-  "topPriorities": [
-    {
-      "title": "Stripe Terminal for In-Store Payments",
-      "url": "https://stripe.com/terminal",
-      "source": "Stripe",
-      "topic": "payments",
-      "summary": "Unified online and in-store payments through programmable card readers for seamless omnichannel experiences",
-      "key_points": [
-        "Supports loyalty program integration",
-        "Handles split payments across multiple retailers",
-        "Enables seamless online-to-store completion",
-        "Real-time payment processing with low latency"
-      ],
-      "scores": {
-        "relevance_0_5": 5,
-        "impact_now_0_5": 4,
-        "impact_12mo_0_5": 5,
-        "effort_low_med_high": "med",
-        "legal_risk_low_med_high": "low"
-      },
-      "recommendations": [
-        "Integrate with existing SPIRAL payment infrastructure",
-        "Pilot with 3 high-volume retailers",
-        "Implement cross-retailer payment splitting"
-      ],
-      "next_actions": [
-        {
-          "title": "Stripe Terminal API integration",
-          "owner_role": "Payment Systems Engineer",
-          "eta_days": 14
-        },
-        {
-          "title": "Pilot program setup",
-          "owner_role": "Business Development",
-          "eta_days": 21
-        }
-      ],
-      "decision": "INITIATE",
-      "rationale": "Critical for omnichannel local commerce experience. High relevance and immediate impact with manageable implementation effort.",
-      "priorityScore": 13
-    },
-    {
-      "title": "Apple Pay Later for Local Retailers",
-      "url": "https://developer.apple.com/pay-later",
-      "source": "Apple Developer",
-      "topic": "payments",
-      "summary": "Split purchases into four payments over six weeks with no interest, reducing checkout friction for local retailers",
-      "key_points": [
-        "Increases conversion rates significantly",
-        "Minimal changes to existing Apple Pay integration",
-        "Boosts average order values",
-        "Perfect for local commerce price points"
-      ],
-      "scores": {
-        "relevance_0_5": 4,
-        "impact_now_0_5": 4,
-        "impact_12mo_0_5": 4,
-        "effort_low_med_high": "low",
-        "legal_risk_low_med_high": "low"
-      },
-      "recommendations": [
-        "Implement across all SPIRAL retailers",
-        "Create marketing materials for retailers",
-        "Track conversion rate improvements"
-      ],
-      "next_actions": [
-        {
-          "title": "Apple Pay Later SDK integration",
-          "owner_role": "Mobile Payment Engineer",
-          "eta_days": 7
-        }
-      ],
-      "decision": "INITIATE",
-      "rationale": "Low effort, high impact payment option that aligns perfectly with local commerce needs.",
-      "priorityScore": 12
-    },
-    {
-      "title": "Cross-Retailer Inventory Sync API",
-      "url": "https://shopify.dev/api/admin-rest/2024-01/resources/inventory-level",
-      "source": "Shopify Engineering",
-      "topic": "retail-tech",
-      "summary": "Real-time inventory synchronization enabling cross-retailer inventory sharing and 'available for pickup' indicators",
-      "key_points": [
-        "Enables inventory sharing across mall locations",
-        "Real-time stock level updates",
-        "Location-based availability tracking",
-        "Supports reserve-and-pickup workflows"
-      ],
-      "scores": {
-        "relevance_0_5": 5,
-        "impact_now_0_5": 3,
-        "impact_12mo_0_5": 5,
-        "effort_low_med_high": "med",
-        "legal_risk_low_med_high": "low"
-      },
-      "recommendations": [
-        "Integrate with SPIRAL's cross-retailer hub",
-        "Create inventory sharing agreements",
-        "Implement real-time sync protocols"
-      ],
-      "next_actions": [
-        {
-          "title": "Cross-retailer inventory API design",
-          "owner_role": "Backend Architect",
-          "eta_days": 10
-        },
-        {
-          "title": "Retailer agreement templates",
-          "owner_role": "Legal & Business Development",
-          "eta_days": 14
-        }
-      ],
-      "decision": "INITIATE",
-      "rationale": "Core differentiator for SPIRAL's local commerce platform. Enables unique cross-retailer shopping experiences.",
-      "priorityScore": 12
-    }
-  ],
-  "roadmap": {
-    "Q1 2025": [
-      {
-        "title": "Stripe Terminal for In-Store Payments",
-        "effort": "med",
-        "priority": 13
-      },
-      {
-        "title": "Apple Pay Later for Local Retailers",
-        "effort": "low",
-        "priority": 12
-      }
-    ],
-    "Q2 2025": [
-      {
-        "title": "Cross-Retailer Inventory Sync API",
-        "effort": "med",
-        "priority": 12
-      }
-    ]
-  }
+  "topPriorities": [],
+  "roadmap": {}
 }
