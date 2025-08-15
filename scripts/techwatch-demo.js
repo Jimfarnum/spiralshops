@@ -1,5 +1,15 @@
-{
-  "generated": "2025-08-15T01:12:00.637Z",
+#!/usr/bin/env node
+
+/**
+ * SPIRAL TechWatch Demo - Create Sample High Priority Items
+ * Demonstrates the full KPI calculation system with realistic R&D items
+ */
+
+import fs from 'fs';
+import path from 'path';
+
+const demoReport = {
+  "generated": new Date().toISOString(),
   "platform": "SPIRAL Local Commerce Platform",
   "total_items": 6,
   "decisions": {
@@ -54,7 +64,7 @@
       "topic": "payments",
       "summary": "Split purchases into four payments over six weeks with no interest, reducing checkout friction for local retailers",
       "key_points": [
-        "Increases conversion rates significantly",
+        "Increases conversion rates significantly", 
         "Minimal changes to existing Apple Pay integration",
         "Boosts average order values",
         "Perfect for local commerce price points"
@@ -213,4 +223,17 @@
       "rationale": "Interesting technology but adoption unclear. Watch for market indicators before implementation."
     }
   ]
+};
+
+// Save demo report
+const reportsDir = path.join(process.cwd(), 'agents', 'techwatch', 'reports', '2025-08-15');
+if (!fs.existsSync(reportsDir)) {
+  fs.mkdirSync(reportsDir, { recursive: true });
 }
+
+fs.writeFileSync(path.join(reportsDir, 'report.json'), JSON.stringify(demoReport, null, 2));
+
+console.log('✅ SPIRAL TechWatch Demo Report Generated');
+console.log(`📁 Report saved to: ${reportsDir}/report.json`);
+console.log('📊 Items: 6 total (3 INITIATE, 2 WATCH, 1 DISCARD)');
+console.log('🔄 Run KPI calculation: node scripts/techwatch-kpi.js');

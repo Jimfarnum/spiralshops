@@ -1,13 +1,21 @@
 {
-  "generated": "2025-08-15T01:12:00.637Z",
+  "generated": "2025-08-15T01:12:01.050Z",
+  "reportDate": "2025-08-15T01:12:00.637Z",
   "platform": "SPIRAL Local Commerce Platform",
-  "total_items": 6,
-  "decisions": {
-    "initiate": 3,
-    "watch": 2,
-    "discard": 1
+  "totalItems": 6,
+  "initiateCount": 3,
+  "watchCount": 2,
+  "discardCount": 1,
+  "projectedRevenueImpact": 346000,
+  "totalEffortWeeks": 14,
+  "riskScore": 4,
+  "roiScore": 12,
+  "strategicAlignment": {
+    "alignmentScore": 10,
+    "alignedCount": 3,
+    "totalCount": 3
   },
-  "items": [
+  "topPriorities": [
     {
       "title": "Stripe Terminal for In-Store Payments",
       "url": "https://stripe.com/terminal",
@@ -45,7 +53,8 @@
         }
       ],
       "decision": "INITIATE",
-      "rationale": "Critical for omnichannel local commerce experience. High relevance and immediate impact with manageable implementation effort."
+      "rationale": "Critical for omnichannel local commerce experience. High relevance and immediate impact with manageable implementation effort.",
+      "priorityScore": 13
     },
     {
       "title": "Apple Pay Later for Local Retailers",
@@ -79,7 +88,8 @@
         }
       ],
       "decision": "INITIATE",
-      "rationale": "Low effort, high impact payment option that aligns perfectly with local commerce needs."
+      "rationale": "Low effort, high impact payment option that aligns perfectly with local commerce needs.",
+      "priorityScore": 12
     },
     {
       "title": "Cross-Retailer Inventory Sync API",
@@ -118,99 +128,29 @@
         }
       ],
       "decision": "INITIATE",
-      "rationale": "Core differentiator for SPIRAL's local commerce platform. Enables unique cross-retailer shopping experiences."
-    },
-    {
-      "title": "AI-Powered Local Delivery Optimization",
-      "url": "https://example.com/ai-delivery",
-      "source": "Local Commerce Research",
-      "topic": "logistics",
-      "summary": "Machine learning algorithms for optimizing last-mile delivery routes and timing for local retailers",
-      "key_points": [
-        "Reduces delivery costs by 30%",
-        "Improves delivery time predictions",
-        "Optimizes driver routes dynamically",
-        "Integrates with existing fulfillment centers"
-      ],
-      "scores": {
-        "relevance_0_5": 4,
-        "impact_now_0_5": 2,
-        "impact_12mo_0_5": 4,
-        "effort_low_med_high": "high",
-        "legal_risk_low_med_high": "low"
-      },
-      "recommendations": [
-        "Start with pilot in one metropolitan area",
-        "Partner with existing delivery services",
-        "Collect baseline delivery metrics"
-      ],
-      "next_actions": [
-        {
-          "title": "AI delivery model research",
-          "owner_role": "ML Engineer",
-          "eta_days": 30
-        }
-      ],
-      "decision": "WATCH",
-      "rationale": "High long-term value but significant implementation complexity. Monitor for simpler alternatives."
-    },
-    {
-      "title": "Blockchain Supply Chain Tracking",
-      "url": "https://example.com/blockchain-supply",
-      "source": "Blockchain Weekly",
-      "topic": "general",
-      "summary": "Decentralized supply chain tracking for local retailers to verify product authenticity",
-      "key_points": [
-        "Immutable product history tracking",
-        "Enhanced consumer trust",
-        "Anti-counterfeiting capabilities"
-      ],
-      "scores": {
-        "relevance_0_5": 2,
-        "impact_now_0_5": 1,
-        "impact_12mo_0_5": 2,
-        "effort_low_med_high": "high",
-        "legal_risk_low_med_high": "med"
-      },
-      "recommendations": [
-        "Monitor blockchain adoption in retail",
-        "Evaluate simpler supply chain solutions"
-      ],
-      "next_actions": [],
-      "decision": "DISCARD",
-      "rationale": "Low relevance to local commerce priorities. High implementation effort with unclear ROI."
-    },
-    {
-      "title": "Voice Shopping Integration",
-      "url": "https://example.com/voice-commerce",
-      "source": "Voice Tech Today",
-      "topic": "mobile",
-      "summary": "Voice-activated shopping for local retailers through smart speakers and mobile devices",
-      "key_points": [
-        "Hands-free shopping experience",
-        "Integration with existing mobile apps",
-        "Voice-based order tracking"
-      ],
-      "scores": {
-        "relevance_0_5": 3,
-        "impact_now_0_5": 2,
-        "impact_12mo_0_5": 3,
-        "effort_low_med_high": "med",
-        "legal_risk_low_med_high": "low"
-      },
-      "recommendations": [
-        "Research voice shopping adoption rates",
-        "Evaluate existing voice platforms"
-      ],
-      "next_actions": [
-        {
-          "title": "Voice shopping market research",
-          "owner_role": "Product Manager",
-          "eta_days": 14
-        }
-      ],
-      "decision": "WATCH",
-      "rationale": "Interesting technology but adoption unclear. Watch for market indicators before implementation."
+      "rationale": "Core differentiator for SPIRAL's local commerce platform. Enables unique cross-retailer shopping experiences.",
+      "priorityScore": 12
     }
-  ]
+  ],
+  "roadmap": {
+    "Q1 2025": [
+      {
+        "title": "Stripe Terminal for In-Store Payments",
+        "effort": "med",
+        "priority": 13
+      },
+      {
+        "title": "Apple Pay Later for Local Retailers",
+        "effort": "low",
+        "priority": 12
+      }
+    ],
+    "Q2 2025": [
+      {
+        "title": "Cross-Retailer Inventory Sync API",
+        "effort": "med",
+        "priority": 12
+      }
+    ]
+  }
 }
