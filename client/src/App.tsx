@@ -277,6 +277,9 @@ import CompleteFunctionalityTest from "@/pages/complete-functionality-test";
 import CodeContinuityTest from "@/pages/code-continuity-test";
 import InviteFriends from "@/pages/invite-friends";
 import UpgradeSuccess from "@/pages/upgrade-success";
+import AlertsPage from "@/pages/alerts";
+import PaymentMethodsPage from "@/pages/payment-methods";
+import SupportPage from "@/pages/support";
 import AIShoppingPage from "@/pages/AIShoppingPage";
 
 
@@ -449,6 +452,9 @@ function Router() {
       <Route path="/discover-stores" component={DiscoverStores} />
       <Route path="/verified-lookup" component={VerifiedLookup} />
       <Route path="/contact-support" component={ContactSupport} />
+      <Route path="/alerts" component={AlertsPage} />
+      <Route path="/payment-methods" component={PaymentMethodsPage} />
+      <Route path="/support" component={SupportPage} />
       <Route path="/fee-explorer" component={FeeExplorer} />
       <Route path="/smart-search-demo" component={SmartSearchDemo} />
       <Route path="/enhanced-wallet-demo" component={EnhancedWalletDemo} />
