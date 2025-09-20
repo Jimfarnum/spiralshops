@@ -1,5 +1,6 @@
 // SEO Meta Tags Configuration for SPIRAL Platform
 // This utility manages page-specific meta tags for optimal SEO and social sharing
+import { Environment } from '../config/environment';
 
 export interface MetaTagsConfig {
   title: string;
@@ -14,6 +15,15 @@ export interface MetaTagsConfig {
   keywords?: string;
 }
 
+// Dynamic URL builder for meta tags
+function buildMetaUrl(path: string = ''): string {
+  return Environment.getAssetUrl(path);
+}
+
+function buildSocialImage(imagePath: string = '/images/social-preview.jpg'): string {
+  return Environment.getAssetUrl(imagePath);
+}
+
 export const META_TAGS: Record<string, MetaTagsConfig> = {
   // Homepage
   '/': {
@@ -21,11 +31,11 @@ export const META_TAGS: Record<string, MetaTagsConfig> = {
     description: 'Shop real local stores across the U.S. from one platform. Support brick-and-mortar businesses with SPIRAL.',
     ogTitle: 'SPIRAL – The Local Shopping Platform',
     ogDescription: 'Connecting shoppers with real local retailers across the U.S. via a powerful online + in-store platform.',
-    ogUrl: 'https://spiralshops.com',
-    ogImage: 'https://spiralshops.com/images/social-preview.jpg',
+    ogUrl: buildMetaUrl(),
+    ogImage: buildSocialImage(),
     twitterTitle: 'SPIRAL – The Local Shopping Platform',
     twitterDescription: 'Shop real stores locally and online. SPIRAL makes local shopping smarter.',
-    twitterImage: 'https://spiralshops.com/images/social-preview.jpg',
+    twitterImage: buildSocialImage(),
     keywords: 'local shopping, spiralshops, spiral, online shopping, shop local, brick and mortar, U.S. retailers'
   },
 
@@ -35,11 +45,11 @@ export const META_TAGS: Record<string, MetaTagsConfig> = {
     description: 'Browse thousands of products from local stores you know and trust on SPIRAL.',
     ogTitle: 'Shop Products | SPIRAL',
     ogDescription: 'Browse thousands of products from local stores you know and trust on SPIRAL.',
-    ogUrl: 'https://spiralshops.com/products',
-    ogImage: 'https://spiralshops.com/images/social-preview.jpg',
+    ogUrl: typeof window !== 'undefined' ? `${window.location.origin}/products` : '/products',
+    ogImage: typeof window !== 'undefined' ? `${window.location.origin}/images/social-preview.jpg` : '/images/social-preview.jpg',
     twitterTitle: 'Shop Products | SPIRAL',
     twitterDescription: 'Browse thousands of products from local stores you know and trust.',
-    twitterImage: 'https://spiralshops.com/images/social-preview.jpg',
+    twitterImage: typeof window !== 'undefined' ? `${window.location.origin}/images/social-preview.jpg` : '/images/social-preview.jpg',
     keywords: 'products, local products, shop online, local retailers, spiral products'
   },
 
@@ -49,11 +59,11 @@ export const META_TAGS: Record<string, MetaTagsConfig> = {
     description: 'Find and explore local stores near you. Connect with real brick-and-mortar retailers across the U.S.',
     ogTitle: 'Local Stores Directory | SPIRAL',
     ogDescription: 'Find and explore local stores near you. Connect with real brick-and-mortar retailers across the U.S.',
-    ogUrl: 'https://spiralshops.com/stores',
-    ogImage: 'https://spiralshops.com/images/social-preview.jpg',
+    ogUrl: typeof window !== 'undefined' ? `${window.location.origin}/stores` : '/stores',
+    ogImage: typeof window !== 'undefined' ? `${window.location.origin}/images/social-preview.jpg` : '/images/social-preview.jpg',
     twitterTitle: 'Local Stores Directory | SPIRAL',
     twitterDescription: 'Find and explore local stores near you.',
-    twitterImage: 'https://spiralshops.com/images/social-preview.jpg',
+    twitterImage: typeof window !== 'undefined' ? `${window.location.origin}/images/social-preview.jpg` : '/images/social-preview.jpg',
     keywords: 'local stores, store directory, brick and mortar, local retailers, find stores'
   },
 
@@ -63,8 +73,8 @@ export const META_TAGS: Record<string, MetaTagsConfig> = {
     description: 'Manage your store inventory, track sales, and grow your business with SPIRAL\'s comprehensive retailer tools.',
     ogTitle: 'Retailer Dashboard | SPIRAL',
     ogDescription: 'Manage your store inventory, track sales, and grow your business with SPIRAL\'s comprehensive retailer tools.',
-    ogUrl: 'https://spiralshops.com/retailer-dashboard',
-    ogImage: 'https://spiralshops.com/images/social-preview.jpg',
+    ogUrl: typeof window !== 'undefined' ? `${window.location.origin}/retailer-dashboard` : '/retailer-dashboard',
+    ogImage: typeof window !== 'undefined' ? `${window.location.origin}/images/social-preview.jpg` : '/images/social-preview.jpg',
     twitterTitle: 'Retailer Dashboard | SPIRAL',
     twitterDescription: 'Manage your store inventory and grow your business.',
     twitterImage: 'https://spiralshops.com/images/social-preview.jpg',

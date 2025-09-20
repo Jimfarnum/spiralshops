@@ -1,0 +1,37 @@
+{
+  "id": "spiral-prod-env",
+  "name": "SPIRAL Production Environment", 
+  "values": [
+    {
+      "key": "base_url",
+      "value": "https://your-domain.repl.co",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "api_base",
+      "value": "{{base_url}}/api",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "admin_token",
+      "value": "{{PRODUCTION_ADMIN_TOKEN}}",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "investor_token", 
+      "value": "{{PRODUCTION_INVESTOR_TOKEN}}",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "test_user_id",
+      "value": "1",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

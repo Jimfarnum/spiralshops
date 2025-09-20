@@ -30,7 +30,13 @@ import {
   UserCheck,
   Zap
 } from 'lucide-react';
-import { format } from 'date-fns';
+// Using native Date API instead of date-fns
+const formatDateDate = (date: string | Date, formatDateType: string = 'short') => {
+  const d = new Date(date);
+  if (formatDateType === 'PPp') return d.toLocaleString();
+  if (formatDateType === 'PP') return d.toLocaleDateString();
+  return d.toLocaleDateString();
+};
 
 const eventFormSchema = z.object({
   mallId: z.string().min(1, 'Mall is required'),
@@ -291,11 +297,11 @@ export default function AdminEventsPage() {
                               <div className="space-y-1 text-sm">
                                 <div className="flex items-center gap-1">
                                   <Calendar className="h-3 w-3" />
-                                  {format(new Date(event.startTime), 'MMM d, yyyy')}
+                                  {formatDate(new Date(event.startTime), 'MMM d, yyyy')}
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
-                                  {format(new Date(event.startTime), 'h:mm a')}
+                                  {formatDate(new Date(event.startTime), 'h:mm a')}
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <Users className="h-3 w-3" />
@@ -564,7 +570,7 @@ export default function AdminEventsPage() {
                       <SelectContent>
                         {events.filter((event: MallEventWithDetails) => event.isApproved).map((event: MallEventWithDetails) => (
                           <SelectItem key={event.id} value={event.id.toString()}>
-                            {event.title} - {format(new Date(event.startTime), 'MMM d, yyyy')}
+                            {event.title} - {formatDate(new Date(event.startTime), 'MMM d, yyyy')}
                           </SelectItem>
                         ))}
                       </SelectContent>

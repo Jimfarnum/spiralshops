@@ -44,9 +44,20 @@ export interface IStorage {
   getAllTransactions(): Promise<any[]>;
 }
 
+import { getCachedStores, setCachedStores } from "./cache";
+
 export class DatabaseStorage implements IStorage {
   async getStores(): Promise<Store[]> {
-    return await db.select().from(stores);
+    // Check cache first for Amazon-level performance
+    const cached = getCachedStores();
+    if (cached) {
+      return cached;
+    }
+    
+    // Fetch from database with optimized query
+    const result = await db.select().from(stores).limit(100); // Limit results for speed
+    setCachedStores(result);
+    return result;
   }
 
   async getStoresByZipCode(zipCode: string): Promise<Store[]> {

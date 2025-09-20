@@ -1,0 +1,28 @@
+{
+  "baseUrls": [
+    "http://localhost:5000"
+  ],
+  "timeoutMs": 25000,
+  "desktopViewport": { "width": 1366, "height": 900, "isMobile": false },
+  "mobileViewport":  { "width": 390,  "height": 844, "isMobile": true, "hasTouch": true },
+  "navItems": [
+    { "label": "Home",           "path": "/",               "expect": ["spiral", "local", "shopping"] },
+    { "label": "Products",       "path": "/products",       "expect": ["products", "categories", "shop"] },
+    { "label": "Stores",         "path": "/stores",         "expect": ["stores", "retailers", "directory"] },
+    { "label": "Mall Directory", "path": "/mall-directory", "expect": ["mall", "directory", "locations"] },
+    { "label": "Earn SPIRALS",   "path": "/spirals",        "expect": ["earn", "spirals", "rewards"] },
+    { "label": "Orders",         "path": "/orders",         "expect": ["order", "spiral", "account"] },
+    { "label": "Cart",           "path": "/cart",           "expect": ["cart", "checkout", "items"] },
+    { "label": "About",          "path": "/about",          "expect": ["about", "mission", "spiral"] },
+    { "label": "Contact",        "path": "/contact",        "expect": ["contact", "support", "help"] },
+    { "label": "Retailer Login", "path": "/retailer-login", "expect": ["retailer", "login", "sign in"] },
+    { "label": "Privacy Policy", "path": "/legal/privacy",  "expect": ["privacy", "policy", "data"] },
+    { "label": "Terms of Service","path": "/legal/terms",   "expect": ["terms", "service", "agreement"] },
+    { "label": "Refunds Policy", "path": "/legal/refunds",  "expect": ["refund", "return", "policy"] },
+    { "label": "Buyer Guarantee","path": "/legal/guarantee","expect": ["guarantee", "buyer", "protection"] },
+    { "label": "Product Detail", "path": "/products/1",     "expect": ["product", "spiral", "shop"] },
+    { "label": "Store Detail",   "path": "/stores/1",       "expect": ["store", "location", "products"] }
+  ],
+  "httpOkStatusMax": 399,
+  "allowRedirects": true
+}

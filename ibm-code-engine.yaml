@@ -1,0 +1,60 @@
+# IBM Code Engine Application Configuration
+# Deploy with: ibmcloud ce app create -f ibm-code-engine.yaml
+
+apiVersion: codeengine.cloud.ibm.com/v1beta1
+kind: App
+metadata:
+  name: spiral-platform
+  labels:
+    app: spiral-platform
+    version: v1.0.0
+spec:
+  # Application scaling configuration
+  minScale: 0  # Scale to zero when idle
+  maxScale: 10 # Auto-scale up to 10 instances
+  
+  # Resource allocation per instance
+  resources:
+    requests:
+      cpu: 1000m      # 1 vCPU
+      memory: 2Gi     # 2GB RAM
+    limits:
+      cpu: 2000m      # Max 2 vCPU
+      memory: 4Gi     # Max 4GB RAM
+  
+  # Container configuration
+  image: icr.io/spiral-registry/spiral-platform:latest
+  port: 5000
+  
+  # Environment variables
+  env:
+    - name: NODE_ENV
+      value: production
+    - name: PORT
+      value: "5000"
+    - name: IBM_CLOUD_REGION
+      value: us-south
+    - name: SPIRAL_ENVIRONMENT
+      value: production
+  
+  # Health checks
+  probes:
+    readiness:
+      httpGet:
+        path: /api/check
+        port: 5000
+      initialDelaySeconds: 30
+      periodSeconds: 10
+    liveness:
+      httpGet:
+        path: /api/check
+        port: 5000
+      initialDelaySeconds: 60
+      periodSeconds: 30
+  
+  # Networking
+  imagePort: 5000
+  
+  # Auto-scaling triggers
+  concurrency: 100  # Requests per instance
+  concurrencyTarget: 70  # Target utilization %

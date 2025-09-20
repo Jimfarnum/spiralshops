@@ -20,7 +20,13 @@ import {
   ShoppingBag,
   Clock
 } from "lucide-react";
-import { format } from "date-fns";
+// Using native Date API instead of date-fns
+const formatDateDate = (date: string | Date, formatDateType: string = 'short') => {
+  const d = new Date(date);
+  if (formatDateType === 'PPp') return d.toLocaleString();
+  if (formatDateType === 'PP') return d.toLocaleDateString();
+  return d.toLocaleDateString();
+};
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -55,7 +61,7 @@ export default function InviteToShop() {
     e.preventDefault();
     if (!date || !location || !invitees.some(email => email.trim())) {
       toast({
-        title: "Missing Information",
+        title: "Missing InformatDateion",
         description: "Please fill in all required fields",
         variant: "destructive",
       });
@@ -75,7 +81,7 @@ export default function InviteToShop() {
           cartItems: [
             { id: 1, name: "Sample Product", price: 49.99, quantity: 1 }
           ],
-          tripName: `Shopping Trip - ${format(date, "PPP")}`,
+          tripName: `Shopping Trip - ${formatDate(date, "PPP")}`,
           mallId: "mall_1",
           storeId: "store_1",
         }),
@@ -226,7 +232,7 @@ export default function InviteToShop() {
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {date ? format(date, "PPP") : "Pick a date"}
+                      {date ? formatDate(date, "PPP") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">

@@ -45,8 +45,8 @@ interface Product {
 }
 
 export function ProductDetailPage() {
-  const [, params] = useRoute("/product/:productId");
-  const { productId } = params || {};
+  const [, params] = useRoute("/product/:id");
+  const { id: productId } = params || {};
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -401,7 +401,7 @@ export function ProductDetailPage() {
         <div className="mt-8">
           <h2 className="text-2xl font-bold text-[var(--spiral-navy)] mb-6">Bundle Deals & Suggestions</h2>
           <ProductBundles 
-            currentProductId={product.id}
+            currentProductId={parseInt(product.id)}
             currentProductCategory={product.category}
           />
         </div>

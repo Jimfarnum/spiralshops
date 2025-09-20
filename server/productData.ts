@@ -1,5 +1,5 @@
 // server/productData.ts
-import { dataService } from './dataService.ts';
+import { dataService } from "./dataService";
 
 // Async function to initialize and load product data
 async function initializeProductData() {

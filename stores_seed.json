@@ -1,0 +1,112 @@
+{
+  "docs": [
+    {
+      "type": "store",
+      "name": "North Loop Coffee",
+      "category": "Cafe",
+      "location": "Minneapolis, MN",
+      "zipCode": "55401",
+      "hours": "Mon-Fri 7am-7pm, Sat-Sun 8am-4pm",
+      "contact": "info@northloopcoffee.com, (612) 555-1010",
+      "rewards": "12 SPIRALS / $1",
+      "isBigBox": false,
+      "status": "active"
+    },
+    {
+      "type": "store",
+      "name": "Mill City Boutique",
+      "category": "Clothing",
+      "location": "Minneapolis, MN",
+      "zipCode": "55415",
+      "hours": "Mon-Sat 10am-8pm, Sun 11am-5pm",
+      "contact": "hello@millcityboutique.com, (612) 555-2020",
+      "rewards": "10 SPIRALS / $1",
+      "isBigBox": false,
+      "status": "active"
+    },
+    {
+      "type": "store",
+      "name": "Lakeside Books",
+      "category": "Books",
+      "location": "Minneapolis, MN",
+      "zipCode": "55408",
+      "hours": "Mon-Sat 9am-9pm, Sun 10am-6pm",
+      "contact": "orders@lakesidebooks.com, (612) 555-3030",
+      "rewards": "8 SPIRALS / $1",
+      "isBigBox": false,
+      "status": "active"
+    },
+    {
+      "type": "store",
+      "name": "LocalEats Grill",
+      "category": "Restaurant",
+      "location": "Minneapolis, MN",
+      "zipCode": "55404",
+      "hours": "Daily 11am-10pm",
+      "contact": "reservations@localeatsgrill.com, (612) 555-4040",
+      "rewards": "15 SPIRALS / $1",
+      "isBigBox": false,
+      "status": "active"
+    },
+    {
+      "type": "store",
+      "name": "Nicollet Shoes",
+      "category": "Footwear",
+      "location": "Minneapolis, MN",
+      "zipCode": "55403",
+      "hours": "Mon-Sat 10am-7pm, Sun Closed",
+      "contact": "support@nicolletshoes.com, (612) 555-5050",
+      "rewards": "9 SPIRALS / $1",
+      "isBigBox": false,
+      "status": "active"
+    },
+    {
+      "type": "store",
+      "name": "Uptown Threads",
+      "category": "Fashion",
+      "location": "Minneapolis, MN",
+      "zipCode": "55409",
+      "hours": "Mon-Sat 11am-9pm, Sun 12pm-5pm",
+      "contact": "contact@uptownthreads.com, (612) 555-6060",
+      "rewards": "11 SPIRALS / $1",
+      "isBigBox": false,
+      "status": "active"
+    },
+    {
+      "type": "store",
+      "name": "Stone Arch Market",
+      "category": "Grocery",
+      "location": "Minneapolis, MN",
+      "zipCode": "55414",
+      "hours": "Daily 7am-10pm",
+      "contact": "manager@stonearchmarket.com, (612) 555-7070",
+      "rewards": "6 SPIRALS / $1",
+      "isBigBox": false,
+      "status": "active"
+    },
+    {
+      "type": "store",
+      "name": "Artisan Goods Collective",
+      "category": "Gifts & Crafts",
+      "location": "Minneapolis, MN",
+      "zipCode": "55405",
+      "hours": "Mon-Sat 10am-6pm, Sun Closed",
+      "contact": "info@artisangoodscollective.com, (612) 555-8080",
+      "rewards": "14 SPIRALS / $1",
+      "isBigBox": false,
+      "status": "active"
+    },
+    {
+      "type": "store",
+      "name": "Target",
+      "category": "General Merchandise",
+      "location": "Minneapolis, MN",
+      "zipCode": "55402",
+      "hours": "Daily 8am-10pm",
+      "contact": "guest.services@target.com, (612) 555-9090",
+      "rewards": "5 SPIRALS / $1",
+      "isBigBox": true,
+      "status": "hidden"
+    }
+  ]
+}

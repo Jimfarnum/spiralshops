@@ -1,0 +1,20 @@
+# mode:
+#   observe = public pages only (no auth, no form submit)
+#   simulate = interact up to but NOT including payment (no real purchase)
+competitors:
+  - name: Amazon
+    domain: amazon.com
+    mode: observe
+    notes: "Heavily policed anti-bot. Stick to public flows; capture cart gating."
+  - name: Target
+    domain: target.com
+    mode: observe
+    notes: "Observe cart/checkout gating; record pickup options."
+  - name: Walmart
+    domain: walmart.com
+    mode: observe
+    notes: "Observe express checkout prompts; record memberships/benefits."
+  - name: Shopify
+    domain: shopify.com
+    mode: observe
+    notes: "Use generic storefront patterns (Shopify demo stores vary)."

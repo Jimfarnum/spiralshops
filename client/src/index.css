@@ -1,8 +1,101 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&family=OpenDyslexic:wght@400;700&display=swap');
 
+/* EMERGENCY ANDROID FLASH FIX - IMMEDIATE SPIRAL BRANDING */
+html {
+  background-color: #007B8A !important;
+  color: #FFFFFF !important;
+}
+
+* {
+  animation: none !important;
+  transition: none !important;
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+  -webkit-animation: none !important;
+  -webkit-transition: none !important;
+}
+
+/* STEP 2.5: EMERGENCY ANDROID FLASH FIX - Apply IMMEDIATELY */
+html, body {
+  background-color: #007B8A !important;   /* SPIRAL teal-blue */
+  color: #FFFFFF !important;
+  overflow-x: hidden !important;          /* prevent bottom streaming */
+  transition: none !important;
+  animation: none !important;
+}
+
+header, .header, h1, h2, h3 {
+  background-color: #007B8A !important;
+  color: #FFFFFF !important;
+}
+
+button, .btn, input[type=submit] {
+  background-color: #007B8A !important;
+  border: 2px solid #FFD700 !important;   /* gold accent */
+  color: #FFFFFF !important;
+  font-weight: bold !important;
+}
+
+button:hover, .btn:hover, input[type=submit]:hover {
+  background-color: #FFD700 !important;
+  color: #007B8A !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ✅ Mobile-First Enhancements */
+:root { 
+  --tap: 44px; 
+  --mobile-font: 16px;
+}
+
+/* Essential mobile interaction improvements */
+button, .btn, .tap, input[type=submit], input[type=button], [role=button] { 
+  min-height: var(--tap); 
+  min-width: var(--tap);
+  touch-action: manipulation; /* Prevents double-tap zoom on iOS */
+}
+
+/* Mobile typography scaling */
+html { 
+  font-size: var(--mobile-font); 
+}
+
+@media (max-width: 480px) { 
+  html { 
+    font-size: 15px; 
+  }
+  
+  /* Ensure form inputs are appropriately sized */
+  input, select, textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    min-height: var(--tap);
+  }
+}
+
+/* Image responsiveness */
+img { 
+  max-width: 100%; 
+  height: auto; 
+}
+
+/* Prevent horizontal scrolling */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Mobile cart improvements */
+.cart-summary {
+  @apply p-3 space-y-3;
+}
+
+@media (max-width: 480px) {
+  .cart-summary {
+    @apply px-2;
+  }
+}
 
 .section-description {
   color: #333333;
@@ -10,51 +103,58 @@
 }
 
 :root {
-  /* SPIRAL Professional Color Palette */
-  --background: #F5F3EF; /* Off-white background */
-  --foreground: #2C3E50; /* Deep navy primary */
-  --muted: #F5F3EF;
-  --muted-foreground: #2C3E50;
-  --popover: #FFFFFF;
-  --popover-foreground: #2C3E50;
-  --card: #FFFFFF;
-  --card-foreground: #2C3E50;
-  --border: #E0DDD8;
-  --input: #E0DDD8;
-  --primary: #2C3E50; /* Deep navy */
+  /* SPIRAL Brand Theme - Consistent Teal-Blue Identity */
+  --spiral-brand: #007B8A;   /* SPIRAL teal-blue */
+  --spiral-text: #FFFFFF;    /* White text */
+  --spiral-gold: #FFD700;    /* Gold CTA accent */
+  --spiral-gray: #F0F0F0;    /* Secondary text/muted */
+  
+  /* Core Theme Variables */
+  --background: #007B8A;
+  --foreground: #FFFFFF;
+  --muted: #F0F0F0;
+  --muted-foreground: #007B8A;
+  --popover: #007B8A;
+  --popover-foreground: #FFFFFF;
+  --card: #007B8A;
+  --card-foreground: #FFFFFF;
+  --border: #FFD700;
+  --input: #F0F0F0;
+  --primary: #007B8A;
   --primary-foreground: #FFFFFF;
-  --secondary: #A8BFAA; /* Sage green */
-  --secondary-foreground: #2C3E50;
-  --accent: #E27D60; /* Coral */
-  --accent-foreground: #FFFFFF;
+  --secondary: #F0F0F0;
+  --secondary-foreground: #007B8A;
+  --accent: #FFD700;
+  --accent-foreground: #007B8A;
   --destructive: #dc2626;
   --destructive-foreground: #FFFFFF;
-  --ring: #2C3E50;
-  --radius: 8px;
+  --ring: #FFD700;
+  --radius: 1rem;
   
-  /* SPIRAL Brand Colors */
-  --spiral-navy: #2C3E50;
-  --spiral-coral: #E27D60;
-  --spiral-gold: #F4B860;
-  --spiral-sage: #A8BFAA;
-  --spiral-cream: #F5F3EF;
+  /* Legacy Brand Colors (for compatibility) */
+  --spiral-navy: #007B8A;
+  --spiral-coral: #FFD700;
+  --spiral-sage: #F0F0F0;
+  --spiral-cream: #FFFFFF;
 }
 
-/* Professional Typography System with Mobile Responsiveness */
+/* SPIRAL Brand Typography System */
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  background-color: var(--spiral-cream);
-  color: var(--spiral-navy);
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  background-color: var(--spiral-brand) !important;
+  color: var(--spiral-text) !important;
+  overflow-x: hidden;
+  /* NO TRANSITIONS - INSTANT SPIRAL BRANDING */
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Poppins', system-ui, -apple-system, sans-serif;
   font-weight: 600;
   line-height: 1.3;
-  color: var(--spiral-navy);
+  color: var(--spiral-text) !important;
+  /* NO TRANSITIONS - INSTANT BRANDING */
 }
 
 /* Responsive Typography */
@@ -82,13 +182,45 @@ h3 {
   }
 }
 
-/* Button Typography with Mobile Optimization */
+/* SPIRAL Brand Button Styling */
 button, .btn {
   font-family: 'DM Sans', 'Work Sans', system-ui, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  min-height: 44px; /* Touch-friendly button size */
+  min-height: 44px;
   min-width: 44px;
+  background-color: var(--spiral-brand) !important;
+  color: var(--spiral-text) !important;
+  border: 1px solid var(--spiral-brand) !important;
+  transition: all 0.3s ease !important;
+}
+
+button:hover, .btn:hover {
+  background-color: var(--spiral-gray) !important;
+  color: var(--spiral-brand) !important;
+}
+
+.btn-primary, button[type="submit"] {
+  background-color: var(--spiral-brand) !important;
+  border: 2px solid var(--spiral-gold) !important;
+  color: var(--spiral-text) !important;
+  font-weight: bold !important;
+}
+
+.btn-primary:hover, button[type="submit"]:hover {
+  background-color: var(--spiral-gold) !important;
+  color: var(--spiral-brand) !important;
+}
+
+/* ANDROID FLASH FIX - Disable all transitions and animations */
+.android-no-transitions *, 
+.android-no-transitions *::before, 
+.android-no-transitions *::after {
+  transition: none !important;
+  animation: none !important;
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+  transform: none !important;
 }
 
 /* Mobile-specific improvements */
@@ -178,29 +310,48 @@ button, .btn {
 .card-modern {
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease-in-out;
+  transition: all 2s ease-in-out, transform 0.3s ease-in-out;
   border: 1px solid rgba(229, 231, 235, 0.8);
-  background: white;
+  background: var(--card);
+  color: var(--card-foreground);
 }
 
 .card-modern:hover {
   transform: translateY(-4px) scale(1.02);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border-color: rgba(226, 125, 96, 0.2);
+  border-color: var(--dynamic-accent);
 }
 
+/* Product cards maintain white background but allow text to adapt */
 .card-product {
   border-radius: 8px;
   box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   border: 1px solid rgba(229, 231, 235, 0.6);
-  background: white;
+  background: white !important; /* Keep product cards white */
 }
 
 .card-product:hover {
   transform: translateY(-2px) scale(1.01);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  border-color: rgba(226, 125, 96, 0.3);
+  border-color: var(--spiral-coral); /* Use brand color for product hover */
+}
+
+/* Product card text adapts for readability but maintains hierarchy */
+.card-product h3,
+.card-product .product-title {
+  color: var(--spiral-navy) !important;
+  transition: none !important;
+}
+
+.card-product .product-price {
+  color: var(--spiral-coral) !important;
+  transition: none !important;
+}
+
+.card-product .product-description {
+  color: #666 !important;
+  transition: none !important;
 }
 
 .section-modern {
@@ -223,11 +374,13 @@ button, .btn {
 }
 
 .section-box {
-  background: white;
+  background: var(--card);
+  color: var(--card-foreground);
   border-radius: 12px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(229, 231, 235, 0.8);
   padding: 2rem;
+  transition: all 2s ease-in-out;
 }
 
 @media (min-width: 768px) {
@@ -236,42 +389,132 @@ button, .btn {
   }
 }
 
-.button-primary {
-  background: var(--spiral-coral);
+/* Navigation and UI buttons use dynamic colors */
+.button-primary:not(.product-button) {
+  background: var(--dynamic-accent);
   color: white;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  transition: all 0.3s ease-in-out;
+  transition: background-color 2s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   border: none;
 }
 
-.button-primary:hover {
-  background: color-mix(in srgb, var(--spiral-coral) 90%, black);
+.button-primary:not(.product-button):hover {
+  background: color-mix(in srgb, var(--dynamic-accent) 85%, black);
   transform: translateY(-1px) scale(1.05);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-.button-secondary {
-  border: 2px solid var(--spiral-coral);
-  color: var(--spiral-coral);
+.button-secondary:not(.product-button) {
+  border: 2px solid var(--dynamic-accent);
+  color: var(--dynamic-accent);
   background: transparent;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  transition: all 0.3s ease-in-out;
+  transition: all 2s ease-in-out, transform 0.3s ease-in-out;
 }
 
-.button-secondary:hover {
-  background: var(--spiral-coral);
+.button-secondary:not(.product-button):hover {
+  background: var(--dynamic-accent);
   color: white;
   transform: translateY(-1px) scale(1.05);
 }
 
+/* Product buttons keep original brand colors */
+.button-primary.product-button {
+  background: var(--spiral-coral);
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.button-primary.product-button:hover {
+  background: color-mix(in srgb, var(--spiral-coral) 85%, black);
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
 /* Smooth transitions for all interactive elements */
 * {
-  transition: all 0.3s ease-in-out;
+  transition: color 0.3s ease-in-out, background-color 2s ease-in-out, border-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Enhanced dynamic color transition system */
+body, 
+.card-modern,
+.card-product,
+.section-box {
+  transition: all 2s ease-in-out;
+}
+
+/* Dynamic color system variables */
+:root {
+  --dynamic-background: #E8F5E8;
+  --dynamic-light-background: #F4FBF4;
+  --dynamic-text-primary: #1B4332;
+  --dynamic-text-secondary: #2D5A3D;
+  --dynamic-accent: #40916C;
+  --color-transition-duration: 2s;
+}
+
+/* ============================================
+   PRODUCT CONTENT PROTECTION
+   ============================================ */
+
+/* Protect product images from color changes */
+.product-image,
+.product-card img,
+[class*="product"] img,
+img[alt*="product" i],
+img[src*="product" i] {
+  transition: transform 0.3s ease-in-out !important;
+  /* No color filters or background changes */
+}
+
+/* Protect product cards from dynamic background changes while allowing text to adapt */
+.product-card {
+  background: white !important;
+  border: 1px solid rgba(229, 231, 235, 0.8) !important;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out !important;
+}
+
+.product-card h3,
+.product-card .product-title {
+  color: var(--foreground) !important;
+  transition: color 2s ease-in-out !important;
+}
+
+.product-card .product-price {
+  color: var(--spiral-coral) !important;
+  font-weight: 600 !important;
+  /* Keep original price color for consistency */
+}
+
+/* Protect brand elements */
+.logo,
+.brand-logo,
+[class*="spiral-logo"],
+.spiral-branding {
+  transition: none !important;
+  /* Preserve brand identity */
+}
+
+/* Navigation and general UI can change colors */
+nav,
+.header,
+.footer,
+.sidebar,
+.navigation-menu {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  transition: all 2s ease-in-out !important;
 }
 
 .dark {

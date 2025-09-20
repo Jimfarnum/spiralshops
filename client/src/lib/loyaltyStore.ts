@@ -19,8 +19,8 @@ interface LoyaltyState {
   
   // Actions
   addTransaction: (transaction: Omit<SpiralTransaction, 'id' | 'date'>) => void;
-  calculateSpiralsEarned: (amount: number, source: 'online_purchase' | 'in_person_purchase') => number;
-  getDoubleValue: (spirals: number) => number;
+  calculateSpiralsEarned: (amount: number, source: 'online_purchase' | 'in_person_purchase', multipliers?: { pickup?: boolean, invite?: boolean, event?: boolean }) => number;
+  getRedemptionValue: (spirals: number) => number;
   clearTransactions: () => void;
 }
 
@@ -62,16 +62,21 @@ export const useLoyaltyStore = create<LoyaltyState>()(
         });
       },
 
-      calculateSpiralsEarned: (amount: number, source: 'online_purchase' | 'in_person_purchase') => {
-        // 5 SPIRALs for every $100 spent online
-        // 10 SPIRALs for every $100 spent in person
-        const rate = source === 'online_purchase' ? 5 : 10;
-        return Math.floor((amount / 100) * rate);
+      calculateSpiralsEarned: (amount: number, source: 'online_purchase' | 'in_person_purchase', multipliers?: { pickup?: boolean, invite?: boolean, event?: boolean }) => {
+        // Base: 1 SPIRAL per $1 spent
+        let spirals = Math.floor(amount);
+        
+        // Apply multipliers
+        if (multipliers?.pickup) spirals *= 2; // 2x for pickup
+        if (multipliers?.invite) spirals *= 3; // 3x for invite  
+        if (multipliers?.event) spirals *= 5; // 5x for events
+        
+        return spirals;
       },
 
-      getDoubleValue: (spirals: number) => {
-        // SPIRALs earned online are worth double when redeemed in person
-        return spirals * 2;
+      getRedemptionValue: (spirals: number) => {
+        // 100 SPIRALs = $1 credit (1% cash-back equivalent)
+        return spirals / 100;
       },
 
       clearTransactions: () => {

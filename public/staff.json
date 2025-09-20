@@ -1,0 +1,113 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2025-01-09",
+  "agents": [
+    {
+      "humanName": "Clara",
+      "codeName": "Command", 
+      "title": "Chief Orchestrator",
+      "persona": "Coordinates missions end‑to‑end with calm precision.",
+      "duties": [
+        "Owns mission plan and sign‑off",
+        "Routes tasks to agents and resolves conflicts", 
+        "Sets SLAs and ensures objectives are met"
+      ],
+      "group": "Leadership",
+      "avatar": "/avatars/clara.svg"
+    },
+    {
+      "humanName": "Elias",
+      "codeName": "Conductor",
+      "title": "Agent Orchestrator", 
+      "persona": "Runs playbooks and sequences multi‑agent workflows.",
+      "duties": [
+        "Sequences workflows",
+        "Handles agent handoffs",
+        "Manages dependencies"
+      ],
+      "group": "Leadership",
+      "avatar": "/avatars/elias.svg"
+    },
+    {
+      "humanName": "Michael",
+      "codeName": "Harbor",
+      "title": "Mall Import Agent",
+      "persona": "Ingests tenant directories with meticulous accuracy.",
+      "duties": ["Scrape tenants", "Normalize fields", "Upload to SPIRAL Core"],
+      "group": "Task", 
+      "avatar": "/avatars/harbor.svg"
+    },
+    {
+      "humanName": "Amelia",
+      "codeName": "Librarian",
+      "title": "Classification Agent",
+      "persona": "Keeps the taxonomy clean and useful.",
+      "duties": ["Classify stores", "Deduplicate", "Assign tags"],
+      "group": "Task",
+      "avatar": "/avatars/librarian.svg"
+    },
+    {
+      "humanName": "David", 
+      "codeName": "Sentry",
+      "title": "Product Validation",
+      "persona": "Guards against bad data entering the system.",
+      "duties": ["Validate products", "Check pricing", "Flag duplicates"],
+      "group": "Task",
+      "avatar": "/avatars/sentry.svg"
+    },
+    {
+      "humanName": "Olivia",
+      "codeName": "Pathfinder", 
+      "title": "Shopper Simulation",
+      "persona": "Simulates real user journeys to test UX flows.",
+      "duties": ["Run user scenarios", "Test checkout flows", "Validate search"],
+      "group": "Simulation",
+      "avatar": "/avatars/pathfinder.svg"
+    },
+    {
+      "humanName": "Marcus",
+      "codeName": "Anvil",
+      "title": "Load Simulation",
+      "persona": "Stress‑tests the platform under heavy load.",
+      "duties": ["Load testing", "Performance validation", "Capacity planning"],
+      "group": "Simulation",
+      "avatar": "/avatars/anvil.svg"
+    },
+    {
+      "humanName": "Samantha",
+      "codeName": "IntegrationSim",
+      "title": "System Integration",
+      "persona": "Tests all integrations and third‑party connections.",
+      "duties": ["API testing", "Integration validation", "Third-party monitoring"],
+      "group": "Simulation", 
+      "avatar": "/avatars/integrationsim.svg"
+    },
+    {
+      "humanName": "Isabella",
+      "codeName": "Aegis",
+      "title": "Security Agent",
+      "persona": "Protects the platform from threats and vulnerabilities.",
+      "duties": ["Security monitoring", "Threat detection", "Compliance validation"],
+      "group": "Security",
+      "avatar": "/avatars/aegis.svg"
+    },
+    {
+      "humanName": "Noah",
+      "codeName": "Sherlock",
+      "title": "Fraud Detection", 
+      "persona": "Investigates suspicious activity and prevents fraud.",
+      "duties": ["Fraud analysis", "Pattern detection", "Risk assessment"],
+      "group": "Security",
+      "avatar": "/avatars/sherlock.svg"
+    },
+    {
+      "humanName": "Daniel",
+      "codeName": "Maestro",
+      "title": "Intelligence Analyst",
+      "persona": "Analyzes competitive intelligence and market trends.",
+      "duties": ["Market analysis", "Competitive intelligence", "Strategic insights"],
+      "group": "Security", 
+      "avatar": "/avatars/maestro.svg"
+    }
+  ]
+}

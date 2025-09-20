@@ -1,0 +1,62 @@
+{
+  "appInfo": {
+    "name": "SPIRAL Mobile",
+    "bundleId": "com.spiral.mobile",
+    "category": "Business",
+    "subcategory": "Productivity",
+    "contentRating": "4+",
+    "version": "1.0.0",
+    "buildNumber": "1"
+  },
+  "description": {
+    "short": "Real-time competitive intelligence and business monitoring platform",
+    "full": "SPIRAL Mobile provides business owners and executives with real-time competitive intelligence monitoring. Track competitor performance across major platforms including Amazon, Target, Walmart, and Shopify with AI-powered insights and automated analysis.\n\nKey Features:\n• Real-time competitive funnel monitoring\n• Automated competitor analysis with AI insights\n• Mobile admin dashboard for system health\n• Push notifications for performance alerts\n• Remote management capabilities\n• Secure business data synchronization\n• Cross-platform compatibility\n\nPerfect for:\n• Retail business owners\n• E-commerce managers\n• Marketing professionals\n• Business analysts\n• Competitive intelligence teams\n\nStay ahead of the competition with SPIRAL's advanced monitoring and analysis tools, all accessible from your iPhone."
+  },
+  "keywords": "retail,analytics,business intelligence,competitive analysis,ecommerce,monitoring,dashboard,spiral,business,productivity",
+  "supportURL": "https://spiral.com/support",
+  "privacyPolicyURL": "https://spiral.com/privacy",
+  "marketingURL": "https://spiral.com",
+  "screenshots": {
+    "iPhone": [
+      {
+        "size": "6.5 inch",
+        "files": ["dashboard-6.5.png", "analytics-6.5.png", "competitors-6.5.png", "alerts-6.5.png", "settings-6.5.png"]
+      },
+      {
+        "size": "5.5 inch", 
+        "files": ["dashboard-5.5.png", "analytics-5.5.png", "competitors-5.5.png", "alerts-5.5.png", "settings-5.5.png"]
+      }
+    ],
+    "iPad": [
+      {
+        "size": "12.9 inch",
+        "files": ["dashboard-ipad.png", "analytics-ipad.png", "competitors-ipad.png"]
+      }
+    ]
+  },
+  "appStoreFeatures": {
+    "supportsGameCenter": false,
+    "supportsInAppPurchases": false,
+    "requiresSubscription": true,
+    "supportsAppleWatch": false,
+    "supportsFamilySharing": true,
+    "supportsCarPlay": false,
+    "supportsARKit": false
+  },
+  "reviewNotes": "This app requires authentication to access business intelligence features. Test credentials can be provided if needed for review. The app connects to SPIRAL's secure API endpoints for real-time competitive data analysis.",
+  "demoCredentials": {
+    "username": "demo@spiral.com",
+    "password": "SpiralDemo2025!"
+  },
+  "technicalDetails": {
+    "minimumOSVersion": "13.4",
+    "deviceCompatibility": ["iPhone", "iPad"],
+    "languages": ["English"],
+    "fileSize": "45.2 MB",
+    "permissions": [
+      "Push Notifications",
+      "Background App Refresh",
+      "Network Access"
+    ]
+  }
+}

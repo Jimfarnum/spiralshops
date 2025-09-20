@@ -34,6 +34,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import SocialSharingEngine from '@/components/social-sharing-engine';
 import InviteCodeSystem from '@/components/invite-code-system';
+import ReferralWidget from '@/components/ReferralWidget';
 
 interface Order {
   id: string;
@@ -463,6 +464,19 @@ const Account = () => {
                         </div>
                       </div>
                     )}
+                  </CardContent>
+                </Card>
+
+                <Card className="shadow-lg border-0">
+                  <CardHeader>
+                    <CardTitle className="text-[var(--spiral-navy)] font-['Poppins'] flex items-center gap-2">
+                      <Share2 className="h-5 w-5" />
+                      Invite Friends & Earn
+                    </CardTitle>
+                    <CardDescription>Share SPIRAL with friends and both earn SPIRAL points</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ReferralWidget />
                   </CardContent>
                 </Card>
 

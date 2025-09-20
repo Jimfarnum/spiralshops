@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Gift, Star, Trophy, Zap } from 'lucide-react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import SpiralsExplainer from '@/components/SpiralsExplainer';
 
 const Spirals = () => {
   return (

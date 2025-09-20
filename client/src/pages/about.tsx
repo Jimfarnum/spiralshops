@@ -1,5 +1,6 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { Link } from "wouter";
 
 export default function About() {
   return (
@@ -29,29 +30,29 @@ export default function About() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-gold)] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Link href="/local-first" className="text-center group cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[var(--spiral-coral)] to-[var(--spiral-gold)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                     <span className="text-2xl">🏪</span>
                   </div>
-                  <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-2">Local First</h3>
+                  <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-2 group-hover:text-blue-600">Local First</h3>
                   <p className="text-gray-600">Supporting brick-and-mortar businesses in communities across America</p>
-                </div>
+                </Link>
 
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Link href="/loyalty-program" className="text-center group cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[var(--spiral-sage)] to-[var(--spiral-navy)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                     <span className="text-2xl">⭐</span>
                   </div>
-                  <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-2">Reward Loyalty</h3>
+                  <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-2 group-hover:text-purple-600">Reward Loyalty</h3>
                   <p className="text-gray-600">Earn SPIRALs with every purchase and redeem for exclusive perks</p>
-                </div>
+                </Link>
 
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Link href="/community" className="text-center group cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[var(--spiral-navy)] to-[var(--spiral-coral)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                     <span className="text-2xl">🤝</span>
                   </div>
-                  <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-2">Build Community</h3>
+                  <h3 className="text-xl font-bold text-[var(--spiral-navy)] mb-2 group-hover:text-orange-600">Build Community</h3>
                   <p className="text-gray-600">Share experiences and connect with fellow local shopping enthusiasts</p>
-                </div>
+                </Link>
               </div>
             </div>
           </div>

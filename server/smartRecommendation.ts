@@ -1,5 +1,6 @@
 import { storage } from "./storage";
 import { eq, and, desc, sql } from "drizzle-orm";
+import { getCachedRecommendations, setCachedRecommendations } from "./cache";
 
 export interface RecommendationRequest {
   userId?: string;
@@ -92,6 +93,12 @@ export class SmartRecommendationEngine {
   async getPersonalizedRecommendations(request: RecommendationRequest): Promise<RecommendationResult[]> {
     const { userId, productId, limit = 5, context = 'homepage' } = request;
     
+    // Check cache first for Amazon-level performance (<50ms)
+    const cached = getCachedRecommendations(userId, context);
+    if (cached) {
+      return cached.slice(0, limit);
+    }
+    
     let collaborativeResults: RecommendationResult[] = [];
     let contentResults: RecommendationResult[] = [];
 
@@ -126,6 +133,9 @@ export class SmartRecommendationEngine {
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
 
+    // Cache results for future requests
+    setCachedRecommendations(finalResults, userId, context);
+    
     return finalResults;
   }
 

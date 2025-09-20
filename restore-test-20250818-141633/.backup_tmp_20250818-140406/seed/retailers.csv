@@ -1,0 +1,52 @@
+slug,name,address,city,state,zip,phone,hours,category,acceptsSpirals,mallSlug,lat,lng
+red-wing-shoes-roseville,Red Wing Shoes,1595 County Rd B2 W,Roseville,MN,55113,651-555-1212,"Mon-Sat 10-8; Sun 11-6",Footwear,true,moa,45.006,-93.156
+northwoods-outfitters,Northwoods Outfitters,88 7th St W,St Paul,MN,55102,651-555-2121,"Mon-Sat 10-7; Sun 12-5",Outdoor,true,moa,44.944,-93.100
+artisan-coffee-co,Artisan Coffee Co,2240 Carter Ave,St Paul,MN,55108,651-555-3333,"Mon-Fri 6-6; Sat-Sun 7-4",Coffee & Tea,true,moa,44.978,-93.189
+metro-electronics,Metro Electronics,1145 Grand Ave,St Paul,MN,55105,651-555-4444,"Mon-Sat 10-8; Sun 12-5",Electronics,true,moa,44.940,-93.130
+central-books,Central Books,38 S Snelling Ave,St Paul,MN,55105,651-555-5555,"Mon-Sat 9-9; Sun 10-6",Books,true,moa,44.937,-93.166
+summit-cycles,Summit Cycles,679 Grand Ave,St Paul,MN,55105,651-555-6666,"Mon-Fri 10-7; Sat 9-6; Sun 11-5",Sporting Goods,true,moa,44.940,-93.140
+golden-harvest-foods,Golden Harvest Foods,1321 University Ave W,St Paul,MN,55104,651-555-7777,"Daily 7-10",Grocery,true,moa,44.956,-93.167
+vintage-threads,Vintage Threads,867 Grand Ave,St Paul,MN,55105,651-555-8888,"Mon-Sat 11-7; Sun 12-5",Clothing,true,moa,44.940,-93.145
+lakeside-pharmacy,Lakeside Pharmacy,2185 Ford Pkwy,St Paul,MN,55116,651-555-9999,"Mon-Fri 8-8; Sat 9-6; Sun 10-4",Health & Beauty,true,moa,44.914,-93.173
+workshop-brewing,Workshop Brewing,818 7th St W,St Paul,MN,55102,651-555-1010,"Mon-Thu 3-11; Fri-Sat 12-12; Sun 12-9",Restaurants,true,moa,44.944,-93.098
+minneapolis-music-store,Minneapolis Music Store,2426 University Ave SE,Minneapolis,MN,55414,612-555-1111,"Mon-Sat 10-8; Sun 12-6",Music & Instruments,true,downtown,44.973,-93.232
+riverfront-gallery,Riverfront Gallery,125 Main St SE,Minneapolis,MN,55414,612-555-2222,"Tue-Sat 10-6; Sun 12-5",Art & Crafts,true,downtown,44.981,-93.252
+urban-garden-center,Urban Garden Center,2700 Lyndale Ave S,Minneapolis,MN,55408,612-555-3333,"Mon-Sat 8-8; Sun 9-6",Home & Garden,true,uptown,44.948,-93.288
+midtown-deli,Midtown Deli,2822 Lyndale Ave S,Minneapolis,MN,55408,612-555-4444,"Mon-Sat 7-7; Sun 8-5",Food & Dining,true,uptown,44.946,-93.288
+creative-kids-toys,Creative Kids Toys,3001 Hennepin Ave,Minneapolis,MN,55408,612-555-5555,"Mon-Sat 10-7; Sun 11-5",Toys & Games,true,uptown,44.944,-93.297
+southside-bakery,Southside Bakery,3137 Lyndale Ave S,Minneapolis,MN,55408,612-555-6666,"Tue-Sat 6-6; Sun 7-4",Bakery,true,uptown,44.942,-93.288
+tech-hub-minneapolis,Tech Hub Minneapolis,1201 Harmon Pl,Minneapolis,MN,55403,612-555-7777,"Mon-Fri 9-7; Sat 10-5",Electronics,true,downtown,44.969,-93.274
+skyway-shoes,Skyway Shoes,80 S 8th St,Minneapolis,MN,55402,612-555-8888,"Mon-Sat 10-8; Sun 11-6",Footwear,true,downtown,44.975,-93.270
+nordeast-hardware,Nordeast Hardware,1201 Marshall St NE,Minneapolis,MN,55413,612-555-9999,"Mon-Sat 7-7; Sun 9-5",Hardware,true,nordeast,44.999,-93.253
+stone-arch-books,Stone Arch Books,219 SE Main St,Minneapolis,MN,55414,612-555-0101,"Mon-Sat 9-9; Sun 10-7",Books,true,downtown,44.982,-93.252
+mill-city-farmers-market,Mill City Farmers Market,704 S 2nd St,Minneapolis,MN,55401,612-555-0202,"Sat 8-1",Farmers Market,true,downtown,44.978,-93.259
+highland-pet-supply,Highland Pet Supply,2089 Ford Pkwy,St Paul,MN,55116,651-555-0303,"Mon-Sat 9-8; Sun 10-6",Pet Supplies,true,highland,44.914,-93.170
+como-florist,Como Florist,1376 Como Ave,St Paul,MN,55108,651-555-0404,"Mon-Sat 9-6; Sun 10-4",Flowers & Gifts,true,como,44.981,-93.182
+energy-park-fitness,Energy Park Fitness,1434 Energy Park Dr,St Paul,MN,55108,651-555-0505,"Mon-Fri 5-10; Sat-Sun 7-8",Fitness & Wellness,true,energy-park,44.983,-93.194
+macalester-college-bookstore,Macalester College Bookstore,1600 Grand Ave,St Paul,MN,55105,651-555-0606,"Mon-Fri 8-8; Sat 10-6; Sun 12-5",Books,true,macalester,44.940,-93.168
+west-side-market,West Side Market,149 Cesar Chavez St,St Paul,MN,55107,651-555-0707,"Daily 6-11",Grocery,true,west-side,44.928,-93.089
+frogtown-farm,Frogtown Farm,953 Minnehaha Ave W,St Paul,MN,55104,651-555-0808,"Mon-Sat 10-6",Urban Farm,true,frogtown,44.956,-93.138
+lowertown-lofts-market,Lowertown Lofts Market,215 4th St E,St Paul,MN,55101,651-555-0909,"Mon-Fri 7-8; Sat-Sun 8-7",Grocery,true,lowertown,44.949,-93.090
+cathedral-hill-antiques,Cathedral Hill Antiques,599 Selby Ave,St Paul,MN,55102,651-555-1000,"Wed-Sat 11-6; Sun 12-4",Antiques,true,cathedral-hill,44.946,-93.119
+rice-park-gallery,Rice Park Gallery,308 Prince St,St Paul,MN,55102,651-555-1100,"Tue-Sat 10-6",Art Gallery,true,downtown-stpaul,44.944,-93.093
+science-museum-shop,Science Museum Shop,120 W Kellogg Blvd,St Paul,MN,55102,651-555-1200,"Daily 9-5",Museum Shop,true,downtown-stpaul,44.943,-93.095
+grand-avenue-records,Grand Avenue Records,1513 Grand Ave,St Paul,MN,55105,651-555-1300,"Mon-Sat 10-8; Sun 12-6",Music & Records,true,grand-avenue,44.940,-93.167
+victorian-house-antiques,Victorian House Antiques,1666 Grand Ave,St Paul,MN,55105,651-555-1400,"Mon-Sat 10-6; Sun 12-5",Antiques,true,grand-avenue,44.940,-93.169
+summit-hill-pharmacy,Summit Hill Pharmacy,796 Grand Ave,St Paul,MN,55105,651-555-1500,"Mon-Fri 8-8; Sat 9-6; Sun 10-5",Pharmacy,true,summit-hill,44.940,-93.142
+crocus-hill-flowers,Crocus Hill Flowers,867 Grand Ave,St Paul,MN,55105,651-555-1600,"Mon-Sat 9-7; Sun 10-5",Florist,true,crocus-hill,44.940,-93.145
+minnehaha-creek-outfitters,Minnehaha Creek Outfitters,4444 Minnehaha Ave,Minneapolis,MN,55406,612-555-1700,"Mon-Sat 10-8; Sun 11-6",Outdoor Gear,true,longfellow,44.921,-93.231
+longfellow-market,Longfellow Market,4500 E 42nd St,Minneapolis,MN,55406,612-555-1800,"Daily 7-10",Grocery,true,longfellow,44.921,-93.230
+seward-cafe-coop,Seward Cafe Coop,2129 E Franklin Ave,Minneapolis,MN,55404,612-555-1900,"Daily 7-9",Cafe & Market,true,seward,44.962,-93.238
+powderhorn-park-market,Powderhorn Park Market,3400 Chicago Ave,Minneapolis,MN,55407,612-555-2000,"Mon-Sat 8-9; Sun 9-8",Grocery,true,powderhorn,44.934,-93.263
+whittier-alliance-shop,Whittier Alliance Shop,10 E 25th St,Minneapolis,MN,55404,612-555-2100,"Mon-Fri 10-6; Sat 11-5",Community Store,true,whittier,44.954,-93.271
+midtown-global-market,Midtown Global Market,920 E Lake St,Minneapolis,MN,55407,612-555-2200,"Daily 10-8",International Market,true,phillips,44.948,-93.256
+northeast-social,Northeast Social,1414 Marshall St NE,Minneapolis,MN,55413,612-555-2300,"Mon-Thu 4-11; Fri-Sat 4-12; Sun 4-10",Restaurant & Bar,true,northeast,44.999,-93.254
+sociable-cider-werks,Sociable Cider Werks,1500 Fillmore St NE,Minneapolis,MN,55413,612-555-2400,"Wed-Thu 4-10; Fri-Sat 12-11; Sun 12-8",Cidery,true,northeast,45.001,-93.251
+indeed-brewing,Indeed Brewing,711 15th Ave NE,Minneapolis,MN,55413,612-555-2500,"Mon-Thu 3-11; Fri-Sat 12-12; Sun 12-10",Brewery,true,northeast,44.995,-93.246
+art-attack,Art Attack,1515 Central Ave NE,Minneapolis,MN,55413,612-555-2600,"Tue-Sat 11-7; Sun 12-5",Art Supplies,true,northeast,44.997,-93.245
+northeast-wellness,Northeast Wellness,1818 Central Ave NE,Minneapolis,MN,55413,612-555-2700,"Mon-Fri 6-9; Sat-Sun 8-6",Wellness Center,true,northeast,45.000,-93.245
+bauhaus-brew-labs,Bauhaus Brew Labs,1315 Tyler St NE,Minneapolis,MN,55413,612-555-2800,"Mon-Thu 3-11; Fri-Sat 12-12; Sun 12-9",Brewery,true,northeast,44.996,-93.248
+able-seedhouse-brewery,Able Seedhouse + Brewery,1121 Quincy St NE,Minneapolis,MN,55413,612-555-2900,"Wed-Thu 4-10; Fri-Sat 12-11; Sun 12-8",Brewery,true,northeast,44.994,-93.250
+dangerous-man-brewing,Dangerous Man Brewing,1300 2nd St NE,Minneapolis,MN,55413,612-555-3000,"Mon-Thu 3-11; Fri-Sat 12-12; Sun 12-10",Brewery,true,northeast,44.992,-93.252
+612brew,612brew,945 Broadway St NE,Minneapolis,MN,55413,612-555-3100,"Wed-Thu 4-10; Fri-Sat 12-11; Sun 12-8",Brewery,true,northeast,44.989,-93.255
+tattersall-distilling,Tattersall Distilling,1620 Central Ave NE,Minneapolis,MN,55413,612-555-3200,"Tue-Thu 4-11; Fri-Sat 12-12; Sun 12-9",Distillery,true,northeast,44.998,-93.245

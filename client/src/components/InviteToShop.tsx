@@ -12,7 +12,7 @@ interface InviteToShopProps {
 
 const InviteToShop: React.FC<InviteToShopProps> = ({ tripId }) => {
   const [copied, setCopied] = useState(false);
-  const shareLink = `https://spiralshops.com/invite/${tripId || "tempTrip"}`;
+  const shareLink = `${window.location.origin}/invite/${tripId || "tempTrip"}`;
 
   const handleCopy = async () => {
     try {

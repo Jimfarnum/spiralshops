@@ -6,142 +6,112 @@ import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { CreditCard, MapPin, Truck, Zap, Shield, Check, Clock, Package } from 'lucide-react';
-
-interface CheckoutItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  retailer: string;
-  spiralsEarned: number;
-}
-
-interface PaymentMethod {
-  id: string;
-  type: 'card' | 'paypal' | 'applepay' | 'googlepay';
-  name: string;
-  details: string;
-  isDefault: boolean;
-}
-
-interface ShippingAddress {
-  id: string;
-  name: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  isDefault: boolean;
-}
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCartStore } from '@/stores/cartStore';
+import { CreditCard, MapPin, Truck, Zap, Shield, Check, Clock, Package, Star, Sparkles } from 'lucide-react';
+import { Link } from 'wouter';
 
 export default function OneClickCheckout() {
-  const [items, setItems] = useState<CheckoutItem[]>([]);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
-  const [addresses, setAddresses] = useState<ShippingAddress[]>([]);
   const [selectedPayment, setSelectedPayment] = useState('');
   const [selectedAddress, setSelectedAddress] = useState('');
   const [selectedShipping, setSelectedShipping] = useState('standard');
-  const [loading, setLoading] = useState(false);
-  const [processing, setProcessing] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const { items, getTotalPrice, clearCart } = useCartStore();
+  
+  // Mock user ID - in real app, get from auth
+  const userId = '1';
+
+  // Load saved payment methods
+  const { data: paymentMethods, isLoading: paymentLoading } = useQuery({
+    queryKey: ['/api/saved-payment-methods', userId],
+    queryFn: async () => {
+      const response = await fetch(`/api/saved-payment-methods/${userId}`);
+      if (!response.ok) throw new Error('Failed to load payment methods');
+      const data = await response.json();
+      return data.paymentMethods || [];
+    }
+  });
+
+  // Load saved addresses
+  const { data: addresses, isLoading: addressLoading } = useQuery({
+    queryKey: ['/api/saved-addresses', userId],
+    queryFn: async () => {
+      const response = await fetch(`/api/saved-addresses/${userId}`);
+      if (!response.ok) throw new Error('Failed to load addresses');
+      const data = await response.json();
+      return data.addresses || [];
+    }
+  });
+
+  // Set defaults when data loads
+  useEffect(() => {
+    if (paymentMethods?.length && !selectedPayment) {
+      const defaultMethod = paymentMethods.find((m: any) => m.isDefault);
+      setSelectedPayment(defaultMethod?.id || paymentMethods[0]?.id || '');
+    }
+  }, [paymentMethods, selectedPayment]);
 
   useEffect(() => {
-    loadCheckoutData();
-  }, []);
+    if (addresses?.length && !selectedAddress) {
+      const defaultAddress = addresses.find((a: any) => a.isDefault);
+      setSelectedAddress(defaultAddress?.id || addresses[0]?.id || '');
+    }
+  }, [addresses, selectedAddress]);
 
-  const loadCheckoutData = async () => {
-    setLoading(true);
-    
-    try {
-      // Mock data for demo
-      const mockItems: CheckoutItem[] = [
-        {
-          id: '1',
-          name: 'Wireless Bluetooth Headphones',
-          price: 89.99,
-          quantity: 1,
-          image: '/api/placeholder/300/300',
-          retailer: 'Tech Hub Electronics',
-          spiralsEarned: 150
-        },
-        {
-          id: '2',
-          name: 'Summer Fashion Dress',
-          price: 79.99,
-          quantity: 1,
-          image: '/api/placeholder/300/300',
-          retailer: 'Fashion Forward Boutique',
-          spiralsEarned: 200
-        }
-      ];
+  // One-click checkout mutation
+  const oneClickCheckoutMutation = useMutation({
+    mutationFn: async () => {
+      const cartItems = items.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+        store: item.store
+      }));
 
-      const mockPaymentMethods: PaymentMethod[] = [
-        {
-          id: 'card_1',
-          type: 'card',
-          name: 'Visa ending in 4242',
-          details: 'Expires 12/2027',
-          isDefault: true
-        },
-        {
-          id: 'paypal_1',
-          type: 'paypal',
-          name: 'PayPal',
-          details: 'user@example.com',
-          isDefault: false
-        },
-        {
-          id: 'apple_1',
-          type: 'applepay',
-          name: 'Apple Pay',
-          details: 'Touch ID or Face ID',
-          isDefault: false
-        }
-      ];
+      const response = await fetch('/api/one-click-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          cartItems,
+          paymentMethodId: selectedPayment,
+          addressId: selectedAddress,
+          shippingOption: selectedShipping
+        })
+      });
 
-      const mockAddresses: ShippingAddress[] = [
-        {
-          id: 'addr_1',
-          name: 'John Smith',
-          address: '123 Main Street',
-          city: 'San Francisco',
-          state: 'CA',
-          zip: '94102',
-          isDefault: true
-        },
-        {
-          id: 'addr_2',
-          name: 'John Smith (Work)',
-          address: '456 Market Street, Suite 300',
-          city: 'San Francisco',
-          state: 'CA',
-          zip: '94105',
-          isDefault: false
-        }
-      ];
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Checkout failed');
+      }
 
-      setItems(mockItems);
-      setPaymentMethods(mockPaymentMethods);
-      setAddresses(mockAddresses);
-      
-      // Set defaults
-      setSelectedPayment(mockPaymentMethods.find(p => p.isDefault)?.id || '');
-      setSelectedAddress(mockAddresses.find(a => a.isDefault)?.id || '');
-      
-    } catch (error) {
+      return response.json();
+    },
+    onSuccess: (data) => {
       toast({
-        title: "Loading Error",
-        description: "Could not load checkout data.",
+        title: "Order Completed! 🎉",
+        description: `Order ${data.orderId} processed in ${data.processingTime}. You earned ${data.spiralsEarned} SPIRALs!`,
+      });
+      
+      // Clear cart after successful checkout
+      clearCart();
+      
+      // Redirect to order confirmation
+      window.location.href = `/order-confirmation?orderId=${data.orderId}`;
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Checkout Failed",
+        description: error.message,
         variant: "destructive"
       });
-    } finally {
-      setLoading(false);
     }
-  };
+  });
 
-  const processOneClickCheckout = async () => {
+  const processOneClickCheckout = () => {
     if (!selectedPayment || !selectedAddress) {
       toast({
         title: "Missing Information",
@@ -151,33 +121,20 @@ export default function OneClickCheckout() {
       return;
     }
 
-    setProcessing(true);
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
+    if (items.length === 0) {
       toast({
-        title: "Order Placed Successfully!",
-        description: `Your order has been confirmed. You'll receive a confirmation email shortly.`,
-      });
-
-      // Redirect to order confirmation (in real app)
-      console.log('Order placed successfully');
-      
-    } catch (error) {
-      toast({
-        title: "Payment Failed",
-        description: "There was an issue processing your payment. Please try again.",
+        title: "Empty Cart",
+        description: "Please add items to your cart before checkout.",
         variant: "destructive"
       });
-    } finally {
-      setProcessing(false);
+      return;
     }
+
+    oneClickCheckoutMutation.mutate();
   };
 
-  const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const totalSpirals = items.reduce((sum, item) => sum + item.spiralsEarned, 0);
+  const subtotal = getTotalPrice();
+  const totalSpirals = Math.round(subtotal * 20); // 20 SPIRALs per dollar
   const shipping = selectedShipping === 'express' ? 9.99 : selectedShipping === 'overnight' ? 19.99 : 0;
   const tax = subtotal * 0.0875; // 8.75% tax
   const total = subtotal + shipping + tax;
@@ -206,12 +163,36 @@ export default function OneClickCheckout() {
     }
   ];
 
-  if (loading) {
+  const isLoading = paymentLoading || addressLoading;
+  const isProcessing = oneClickCheckoutMutation.isPending;
+
+  if (isLoading) {
     return (
       <div className="container mx-auto p-6">
-        <div className="flex justify-center items-center h-64">
+        <div className="flex flex-col justify-center items-center h-64 space-y-4">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+          <p className="text-gray-600">Loading your saved information...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="container mx-auto p-6 max-w-2xl">
+        <Card>
+          <CardContent className="p-12 text-center">
+            <Package className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
+            <p className="text-gray-600 mb-6">Add some items to your cart to use one-click checkout.</p>
+            <Link href="/products">
+              <Button className="bg-teal-600 hover:bg-teal-700">
+                <Package className="h-4 w-4 mr-2" />
+                Start Shopping
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -238,21 +219,22 @@ export default function OneClickCheckout() {
               {items.map((item) => (
                 <div key={item.id} className="flex gap-4 p-4 border rounded-lg">
                   <img
-                    src={item.image}
+                    src={item.image || '/api/placeholder/300/300'}
                     alt={item.name}
                     className="w-16 h-16 object-cover rounded"
                   />
                   <div className="flex-1">
                     <h4 className="font-semibold">{item.name}</h4>
-                    <p className="text-sm text-gray-600">{item.retailer}</p>
+                    <p className="text-sm text-gray-600">{item.store || 'SPIRAL Mall'}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <Badge className="bg-orange-100 text-orange-800">
-                        +{item.spiralsEarned} SPIRALs
+                        <Sparkles className="h-3 w-3 mr-1" />
+                        +{Math.round(item.price * item.quantity * 20)} SPIRALs
                       </Badge>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">${item.price}</p>
+                    <p className="font-semibold">${item.price.toFixed(2)}</p>
                     <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                   </div>
                 </div>
@@ -270,22 +252,44 @@ export default function OneClickCheckout() {
             </CardHeader>
             <CardContent>
               <RadioGroup value={selectedPayment} onValueChange={setSelectedPayment}>
-                {paymentMethods.map((method) => (
-                  <div key={method.id} className="flex items-center space-x-2 p-3 border rounded-lg">
-                    <RadioGroupItem value={method.id} id={method.id} />
-                    <Label htmlFor={method.id} className="flex-1 cursor-pointer">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{method.name}</p>
-                          <p className="text-sm text-gray-600">{method.details}</p>
+                {paymentMethods && paymentMethods.length > 0 ? (
+                  paymentMethods.map((method: any) => (
+                    <div key={method.id} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50">
+                      <RadioGroupItem value={method.id} id={method.id} />
+                      <Label htmlFor={method.id} className="flex-1 cursor-pointer">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <CreditCard className="h-5 w-5 text-gray-400" />
+                            <div>
+                              <p className="font-medium">
+                                {method.card ? `${method.card.brand.charAt(0).toUpperCase() + method.card.brand.slice(1)} •••• ${method.card.last4}` : method.type}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {method.card ? `Expires ${method.card.exp_month}/${method.card.exp_year}` : 'Saved payment method'}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {method.isDefault && (
+                              <Badge variant="outline" className="flex items-center gap-1">
+                                <Star className="h-3 w-3" />
+                                Default
+                              </Badge>
+                            )}
+                          </div>
                         </div>
-                        {method.isDefault && (
-                          <Badge variant="outline">Default</Badge>
-                        )}
-                      </div>
-                    </Label>
+                      </Label>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center p-6 border-2 border-dashed border-gray-300 rounded-lg">
+                    <CreditCard className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                    <p className="text-gray-600 mb-2">No saved payment methods</p>
+                    <Button variant="outline" size="sm">
+                      Add Payment Method
+                    </Button>
                   </div>
-                ))}
+                )}
               </RadioGroup>
             </CardContent>
           </Card>
@@ -300,24 +304,42 @@ export default function OneClickCheckout() {
             </CardHeader>
             <CardContent>
               <RadioGroup value={selectedAddress} onValueChange={setSelectedAddress}>
-                {addresses.map((address) => (
-                  <div key={address.id} className="flex items-center space-x-2 p-3 border rounded-lg">
-                    <RadioGroupItem value={address.id} id={address.id} />
-                    <Label htmlFor={address.id} className="flex-1 cursor-pointer">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{address.name}</p>
-                          <p className="text-sm text-gray-600">
-                            {address.address}, {address.city}, {address.state} {address.zip}
-                          </p>
+                {addresses && addresses.length > 0 ? (
+                  addresses.map((address: any) => (
+                    <div key={address.id} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50">
+                      <RadioGroupItem value={address.id} id={address.id} />
+                      <Label htmlFor={address.id} className="flex-1 cursor-pointer">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <MapPin className="h-5 w-5 text-gray-400" />
+                            <div>
+                              <p className="font-medium">{address.name}</p>
+                              <p className="text-sm text-gray-600">
+                                {address.address}, {address.city}, {address.state} {address.zip}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {address.isDefault && (
+                              <Badge variant="outline" className="flex items-center gap-1">
+                                <Star className="h-3 w-3" />
+                                Default
+                              </Badge>
+                            )}
+                          </div>
                         </div>
-                        {address.isDefault && (
-                          <Badge variant="outline">Default</Badge>
-                        )}
-                      </div>
-                    </Label>
+                      </Label>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center p-6 border-2 border-dashed border-gray-300 rounded-lg">
+                    <MapPin className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                    <p className="text-gray-600 mb-2">No saved addresses</p>
+                    <Button variant="outline" size="sm">
+                      Add Address
+                    </Button>
                   </div>
-                ))}
+                )}
               </RadioGroup>
             </CardContent>
           </Card>
@@ -423,14 +445,14 @@ export default function OneClickCheckout() {
           {/* One-Click Checkout Button */}
           <Button
             onClick={processOneClickCheckout}
-            disabled={processing || !selectedPayment || !selectedAddress}
-            className="w-full h-12 text-lg font-semibold"
+            disabled={isProcessing || !selectedPayment || !selectedAddress || items.length === 0}
+            className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white shadow-lg"
             size="lg"
           >
-            {processing ? (
+            {isProcessing ? (
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Processing...
+                Processing Payment...
               </div>
             ) : (
               <div className="flex items-center gap-2">
@@ -440,9 +462,15 @@ export default function OneClickCheckout() {
             )}
           </Button>
 
-          <div className="text-center text-sm text-gray-600">
-            <Clock className="w-4 h-4 inline mr-1" />
-            Secure checkout in under 10 seconds
+          <div className="flex items-center justify-center gap-4 mt-4">
+            <div className="text-center text-sm text-gray-600">
+              <Clock className="w-4 h-4 inline mr-1" />
+              Processing in &lt; 2 seconds
+            </div>
+            <div className="text-center text-sm text-gray-600">
+              <Shield className="w-4 h-4 inline mr-1" />
+              256-bit encrypted
+            </div>
           </div>
         </div>
       </div>

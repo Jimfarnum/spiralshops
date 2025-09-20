@@ -1,0 +1,13 @@
+{
+  "id": "spiral-env-2025",
+  "name": "SPIRAL v1.1.3 Environment",
+  "values": [
+    { "key": "baseUrl", "value": "http://localhost:5000", "enabled": true },
+    { "key": "shopperId", "value": "", "enabled": true },
+    { "key": "retailerId", "value": "", "enabled": true },
+    { "key": "mallId", "value": "", "enabled": true }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-09-12T00:00:00.000Z",
+  "_postman_exported_using": "Postman/11.0"
+}

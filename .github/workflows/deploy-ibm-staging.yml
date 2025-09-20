@@ -1,0 +1,48 @@
+name: Deploy to IBM Staging
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install IBM Cloud CLI
+        run: |
+          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+          ibmcloud plugin install code-engine -f
+          ibmcloud plugin install container-registry -f
+
+      - name: IBM Cloud login
+        env:
+          IBM_CLOUD_APIKEY: ${{ secrets.IBM_CLOUD_APIKEY }}
+        run: |
+          ibmcloud login --apikey "$IBM_CLOUD_APIKEY" -r us-south
+
+      - name: Build Docker image
+        run: docker build -t spiralshops:staging .
+
+      - name: Push to IBM Container Registry
+        env:
+          IBM_CR_NAMESPACE: ${{ secrets.IBM_CR_NAMESPACE }}
+        run: |
+          ibmcloud cr login
+          docker tag spiralshops:staging us.icr.io/${IBM_CR_NAMESPACE}/spiralshops:staging
+          docker push us.icr.io/${IBM_CR_NAMESPACE}/spiralshops:staging
+
+      - name: Deploy/update Code Engine app (staging)
+        env:
+          IBM_CR_NAMESPACE: ${{ secrets.IBM_CR_NAMESPACE }}
+        run: |
+          ibmcloud ce project select --name spiralshops-staging || ibmcloud ce project create --name spiralshops-staging
+          # Try create, else update
+          ibmcloud ce app create --name spiralshops-staging \
+            --image us.icr.io/${IBM_CR_NAMESPACE}/spiralshops:staging \
+            --cpu 1 --memory 2G --concurrency 50 --min-scale 1 --max-scale 5 \
+            --port 5000 --registry-secret icr-secret || \
+          ibmcloud ce app update --name spiralshops-staging \
+            --image us.icr.io/${IBM_CR_NAMESPACE}/spiralshops:staging

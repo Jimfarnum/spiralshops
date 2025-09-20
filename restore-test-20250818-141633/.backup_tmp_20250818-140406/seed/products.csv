@@ -1,0 +1,52 @@
+sku,retailerSlug,name,description,price,imageURL,category,stock
+RW-0803,red-wing-shoes-roseville,Classic Moc Boot,Heritage leather moc toe boot,289.99,https://picsum.photos/seed/rw803/800/800,Footwear,18
+NW-JKT-001,northwoods-outfitters,Thermal Trail Jacket,Insulated jacket for cold weather,149.99,https://picsum.photos/seed/nwjkt/800/800,Outerwear,42
+AC-ESP-001,artisan-coffee-co,Premium Espresso Blend,Dark roast coffee beans from South America,24.99,https://picsum.photos/seed/esp001/800/800,Coffee & Tea,75
+ME-TV-55,metro-electronics,55 inch 4K Smart TV,Ultra HD smart television with streaming apps,599.99,https://picsum.photos/seed/tv55/800/800,Electronics,12
+CB-NOVEL-001,central-books,Local Author Fiction Novel,Best-selling novel by local Minnesota author,16.99,https://picsum.photos/seed/novel001/800/800,Books,35
+SC-BIKE-001,summit-cycles,Mountain Bike Pro,Professional mountain bike for trail riding,1299.99,https://picsum.photos/seed/bike001/800/800,Sporting Goods,8
+GH-APPLE-001,golden-harvest-foods,Organic Honeycrisp Apples,Fresh organic apples from local farms,4.99,https://picsum.photos/seed/apple001/800/800,Grocery,200
+VT-DRESS-001,vintage-threads,Vintage Floral Dress,1970s inspired floral print dress,89.99,https://picsum.photos/seed/dress001/800/800,Clothing,15
+LP-VITAMIN-001,lakeside-pharmacy,Daily Multivitamin,Complete daily vitamin supplement,19.99,https://picsum.photos/seed/vitamin001/800/800,Health & Beauty,60
+WB-IPA-001,workshop-brewing,Hoppy IPA,Locally brewed India Pale Ale,8.99,https://picsum.photos/seed/ipa001/800/800,Beverages,45
+MMS-GUITAR-001,minneapolis-music-store,Acoustic Guitar Deluxe,Professional acoustic guitar with case,899.99,https://picsum.photos/seed/guitar001/800/800,Music & Instruments,6
+RG-PAINTING-001,riverfront-gallery,Local Artist Oil Painting,Original oil painting by Minneapolis artist,450.00,https://picsum.photos/seed/painting001/800/800,Art & Crafts,3
+UGC-SEEDS-001,urban-garden-center,Tomato Seed Starter Kit,Everything needed to grow tomatoes,12.99,https://picsum.photos/seed/seeds001/800/800,Home & Garden,85
+MD-SANDWICH-001,midtown-deli,Turkey Avocado Sandwich,Fresh turkey and avocado on artisan bread,11.99,https://picsum.photos/seed/sandwich001/800/800,Food & Dining,25
+CKT-PUZZLE-001,creative-kids-toys,Educational Puzzle Set,STEM learning puzzle for ages 6-12,29.99,https://picsum.photos/seed/puzzle001/800/800,Toys & Games,40
+SB-CROISSANT-001,southside-bakery,Butter Croissant,Fresh baked butter croissant,3.49,https://picsum.photos/seed/croissant001/800/800,Bakery,100
+THM-LAPTOP-001,tech-hub-minneapolis,Business Laptop,High-performance laptop for professionals,1199.99,https://picsum.photos/seed/laptop001/800/800,Electronics,15
+SS-HEELS-001,skyway-shoes,Professional Heels,Comfortable professional women's heels,129.99,https://picsum.photos/seed/heels001/800/800,Footwear,22
+NH-HAMMER-001,nordeast-hardware,Professional Hammer,Heavy-duty construction hammer,34.99,https://picsum.photos/seed/hammer001/800/800,Hardware,50
+SAB-MYSTERY-001,stone-arch-books,Mystery Novel Collection,Set of 3 bestselling mystery novels,39.99,https://picsum.photos/seed/mystery001/800/800,Books,28
+MCFM-HONEY-001,mill-city-farmers-market,Local Wildflower Honey,Raw honey from Minnesota beekeepers,18.99,https://picsum.photos/seed/honey001/800/800,Local Products,65
+HPS-FOOD-001,highland-pet-supply,Premium Dog Food,Organic dog food for all breeds,54.99,https://picsum.photos/seed/dogfood001/800/800,Pet Supplies,35
+CF-BOUQUET-001,como-florist,Spring Bouquet,Mixed spring flowers arrangement,39.99,https://picsum.photos/seed/bouquet001/800/800,Flowers & Gifts,20
+EPF-MEMBERSHIP-001,energy-park-fitness,Monthly Gym Membership,Full access to fitness facilities,49.99,https://picsum.photos/seed/gym001/800/800,Fitness & Wellness,100
+MCB-TEXTBOOK-001,macalester-college-bookstore,Psychology Textbook,College-level psychology textbook,189.99,https://picsum.photos/seed/textbook001/800/800,Books,18
+WSM-CHEESE-001,west-side-market,Artisan Cheese Selection,Local artisan cheese variety pack,24.99,https://picsum.photos/seed/cheese001/800/800,Grocery,30
+FF-VEGETABLES-001,frogtown-farm,Organic Vegetable Box,Weekly box of fresh organic vegetables,29.99,https://picsum.photos/seed/veggies001/800/800,Urban Farm,45
+LLM-BREAD-001,lowertown-lofts-market,Artisan Sourdough Bread,Fresh baked sourdough loaf,6.99,https://picsum.photos/seed/bread001/800/800,Grocery,60
+CHA-CHAIR-001,cathedral-hill-antiques,Victorian Chair,Authentic Victorian era dining chair,349.99,https://picsum.photos/seed/chair001/800/800,Antiques,2
+RPG-SCULPTURE-001,rice-park-gallery,Modern Sculpture,Contemporary art sculpture,1200.00,https://picsum.photos/seed/sculpture001/800/800,Art Gallery,1
+SMS-DINO-001,science-museum-shop,Dinosaur Model Kit,Educational dinosaur skeleton model,34.99,https://picsum.photos/seed/dino001/800/800,Educational,25
+GAR-VINYL-001,grand-avenue-records,Classic Rock Vinyl,Vintage vinyl record collection,79.99,https://picsum.photos/seed/vinyl001/800/800,Music & Records,15
+VHA-LAMP-001,victorian-house-antiques,Antique Table Lamp,Victorian era brass table lamp,189.99,https://picsum.photos/seed/lamp001/800/800,Antiques,4
+SHP-MEDICINE-001,summit-hill-pharmacy,Cold & Flu Relief,Over-the-counter cold medicine,12.99,https://picsum.photos/seed/medicine001/800/800,Pharmacy,80
+CHF-ROSES-001,crocus-hill-flowers,Dozen Red Roses,Fresh red roses with vase,59.99,https://picsum.photos/seed/roses001/800/800,Florist,30
+MCO-TENT-001,minnehaha-creek-outfitters,Camping Tent,4-person waterproof camping tent,249.99,https://picsum.photos/seed/tent001/800/800,Outdoor Gear,12
+LM-MILK-001,longfellow-market,Organic Whole Milk,Fresh organic milk from local dairy,4.99,https://picsum.photos/seed/milk001/800/800,Grocery,150
+SCC-COFFEE-001,seward-cafe-coop,Fair Trade Coffee,Ethically sourced coffee beans,16.99,https://picsum.photos/seed/coffee001/800/800,Cafe & Market,40
+PPM-PASTA-001,powderhorn-park-market,Artisan Pasta,Handmade pasta from local producer,8.99,https://picsum.photos/seed/pasta001/800/800,Grocery,55
+WAS-TSHIRT-001,whittier-alliance-shop,Community T-Shirt,Support local community t-shirt,19.99,https://picsum.photos/seed/tshirt001/800/800,Community Store,75
+MGM-SPICES-001,midtown-global-market,International Spice Set,World spices variety collection,29.99,https://picsum.photos/seed/spices001/800/800,International Market,35
+NS-BURGER-001,northeast-social,Artisan Burger,Grass-fed beef burger with fries,16.99,https://picsum.photos/seed/burger001/800/800,Restaurant & Bar,30
+SCW-CIDER-001,sociable-cider-werks,Apple Cider,Craft apple cider variety pack,19.99,https://picsum.photos/seed/cider001/800/800,Cidery,50
+IB-BEER-001,indeed-brewing,Craft Beer Selection,Local craft beer 6-pack,14.99,https://picsum.photos/seed/beer001/800/800,Brewery,40
+AA-PAINT-001,art-attack,Acrylic Paint Set,Professional artist acrylic paint set,49.99,https://picsum.photos/seed/paint001/800/800,Art Supplies,25
+NW-YOGA-001,northeast-wellness,Yoga Class Package,5-class yoga package deal,89.99,https://picsum.photos/seed/yoga001/800/800,Wellness Center,20
+BBL-PORTER-001,bauhaus-brew-labs,Dark Porter,Rich dark porter beer,7.99,https://picsum.photos/seed/porter001/800/800,Brewery,60
+ASB-LAGER-001,able-seedhouse-brewery,German Lager,Traditional German-style lager,6.99,https://picsum.photos/seed/lager001/800/800,Brewery,45
+DMB-STOUT-001,dangerous-man-brewing,Coffee Stout,Dark stout with coffee notes,8.99,https://picsum.photos/seed/stout001/800/800,Brewery,35
+612-PALE-001,612brew,Pale Ale,Refreshing American pale ale,7.49,https://picsum.photos/seed/pale001/800/800,Brewery,55
+TD-WHISKEY-001,tattersall-distilling,Small Batch Whiskey,Locally distilled small batch whiskey,79.99,https://picsum.photos/seed/whiskey001/800/800,Distillery,18

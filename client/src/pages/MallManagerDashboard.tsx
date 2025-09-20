@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import QRCodeGenerator from '@/components/QRCodeGenerator'
 import MallQrCampaignTemplates from '@/components/MallQrCampaignTemplates'
 import SpiralQRGenerator from '@/components/SpiralQRGenerator'
+import MallSpiralOverview from '@/components/mall/MallSpiralOverview'
 import { 
   Building2, 
   Users, 
@@ -21,7 +22,8 @@ import {
   Star,
   BarChart3,
   Settings,
-  QrCode
+  QrCode,
+  Coins
 } from 'lucide-react'
 
 interface EventData {
@@ -155,7 +157,7 @@ export default function MallManagerDashboard() {
         )}
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -213,17 +215,34 @@ export default function MallManagerDashboard() {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Mall SPIRALS Pool</p>
+                  <p className="text-2xl font-bold text-orange-600">89,450</p>
+                  <p className="text-xs text-green-600 flex items-center mt-1">
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    +2,340 this week
+                  </p>
+                </div>
+                <Coins className="w-8 h-8 text-orange-500" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="events">Events & Invites</TabsTrigger>
             <TabsTrigger value="retailers">Retailer Coordination</TabsTrigger>
             <TabsTrigger value="qr-marketing">QR Marketing</TabsTrigger>
             <TabsTrigger value="traffic">Traffic Insights</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="operations">Operations</TabsTrigger>
+            <TabsTrigger value="spiralmall">🏢 SPIRAL Malls</TabsTrigger>
           </TabsList>
 
           <TabsContent value="events" className="space-y-6">
@@ -545,6 +564,10 @@ export default function MallManagerDashboard() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="spiralmall">
+            <MallSpiralOverview />
           </TabsContent>
         </Tabs>
       </div>

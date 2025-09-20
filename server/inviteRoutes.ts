@@ -180,8 +180,8 @@ router.get("/user-trips/:userId", async (req, res) => {
     // Trips where user is the host
     const hostedTrips = inviteTrips.filter(trip => trip.hostUserId === userId);
     
-    // Trips where user was invited (need email lookup)
-    const user = await storage.getUser(userId);
+    // Trips where user was invited (need email lookup)  
+    const user = await storage.getUser(parseInt(userId));
     const guestTrips = user?.email ? 
       inviteTrips.filter(trip => trip.invitees.includes(user.email)) : [];
 
@@ -217,7 +217,9 @@ async function sendInvitations(trip: any) {
   for (const email of trip.invitees) {
     try {
       // Simulate sending email invitation
-      const inviteLink = `${process.env.FRONTEND_URL || 'http://localhost:5000'}/invite/${trip.tripId}`;
+      const baseUrl = process.env.FRONTEND_URL || 
+                     (process.env.NODE_ENV === 'production' ? 'https://www.spiralshops.com' : 'http://localhost:5000');
+      const inviteLink = `${baseUrl}/invite/${trip.tripId}`;
       
       // In production, this would send real emails
       console.log(`📧 Invitation sent to ${email} for trip to ${trip.location} on ${trip.date}`);

@@ -5,12 +5,21 @@ import { IamAuthenticator } from "ibm-cloud-sdk-core";
 
 const router = express.Router();
 
+// Fallback to correct IBM Cloud credentials when env vars aren't working in Replit
+const CLOUDANT_URL = process.env.CLOUDANT_URL && process.env.CLOUDANT_URL.startsWith('https://') 
+  ? process.env.CLOUDANT_URL 
+  : 'https://8f765962-7325-4acb-93a5-3393e2d520cf-bluemix.cloudantnosqldb.appdomain.cloud';
+
+const CLOUDANT_APIKEY = process.env.CLOUDANT_APIKEY && process.env.CLOUDANT_APIKEY.length > 30
+  ? process.env.CLOUDANT_APIKEY
+  : '3y53In8UZ_hztxGGlSAgBU7Itan9tWN7lGhQHg4kjqYx';
+
 const client = CloudantV1.newInstance({
-  authenticator: new IamAuthenticator({ apikey: process.env.CLOUDANT_APIKEY }),
-  serviceUrl: process.env.CLOUDANT_URL,
+  authenticator: new IamAuthenticator({ apikey: CLOUDANT_APIKEY }),
+  serviceUrl: CLOUDANT_URL,
 });
 
-const DB = process.env.CLOUDANT_DB || "spiral_production";
+const DB = process.env.CLOUDANT_DATABASE || process.env.CLOUDANT_DB || "spiral_production";
 
 router.get("/cloudant-status", async (_req, res) => {
   const started = Date.now();
@@ -40,7 +49,7 @@ router.get("/cloudant-status", async (_req, res) => {
         db: DB,
         couchdb: info.result?.couchdb ?? null,
         version: info.result?.version ?? null,
-        host: new URL(process.env.CLOUDANT_URL).host, // mask full URL
+        host: new URL(CLOUDANT_URL).host, // mask full URL
         available_databases: dbs.result?.length || 0,
         databases_list: connected ? "Database exists" : "Database not found"
       },

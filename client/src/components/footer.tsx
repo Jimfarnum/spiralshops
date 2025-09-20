@@ -1,4 +1,5 @@
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import LegalLinks from "./legal/LegalLinks";
 
 export default function Footer() {
   return (
@@ -68,11 +69,10 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-300 mt-12 pt-8 text-center text-gray-500">
-          <div className="flex flex-wrap justify-center gap-6 mb-4 text-sm">
-            <a href="/privacy-policy" className="hover:text-[var(--spiral-coral)] transition-colors">Privacy Policy</a>
-            <a href="/terms" className="hover:text-[var(--spiral-coral)] transition-colors">Terms of Service</a>
-            <a href="/accessibility" className="hover:text-[var(--spiral-coral)] transition-colors">Accessibility</a>
-            <a href="/sitemap" className="hover:text-[var(--spiral-coral)] transition-colors">Sitemap</a>
+          <div className="flex flex-wrap justify-center gap-6 mb-4">
+            <LegalLinks />
+            <a href="/accessibility" className="text-xs text-gray-600 hover:text-blue-600 underline">Accessibility</a>
+            <a href="/sitemap" className="text-xs text-gray-600 hover:text-blue-600 underline">Sitemap</a>
           </div>
           <p className="mb-2">&copy; 2025 SPIRAL. All rights reserved.</p>
           <p className="text-sm">Powered by SPIRAL. Supporting Local Stores Nationwide.</p>

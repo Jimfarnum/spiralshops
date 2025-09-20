@@ -1,0 +1,72 @@
+name: SPIRAL Security Scans
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"   # every 4 hours (UTC)
+  workflow_dispatch:
+
+jobs:
+  scans:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        run: npm ci || npm install
+
+      - name: npm audit (high+)
+        run: |
+          npm audit --audit-level=high || true
+          npm audit --json > npm-audit.json || true
+
+      - name: Snyk (optional)
+        if: ${{ secrets.SNYK_TOKEN != '' }}
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: "--severity-threshold=high --json-file-output=snyk.json"
+
+      - name: Install Newman
+        run: npm install -g newman newman-reporter-htmlextra
+
+      - name: Run Newman API security suite
+        run: |
+          newman run tests/postman/collections/spiral-api-security.json \
+            -e tests/postman/envs/production-spiral.json \
+            --timeout-request 120000 \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export newman.html || true
+
+      # ZAP Baseline Scan (non-blocking)
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: "https://spiralshops.com"
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a"
+        continue-on-error: true
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            npm-audit.json
+            snyk.json
+            newman.html
+            zap-*.* 
+            *zap*.html
+            *zap*.md

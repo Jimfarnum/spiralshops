@@ -1,0 +1,26 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "import"],
+  "extends": [
+    "eslint:recommended",
+    "@typescript-eslint/recommended"
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": { "extensions": [".ts", ".tsx", ".js", ".jsx"] }
+    }
+  },
+  "rules": {
+    "import/extensions": ["error", "ignorePackages", {
+      "ts": "never",
+      "tsx": "never", 
+      "js": "always",
+      "jsx": "always"
+    }],
+    "import/no-unresolved": "error",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn"
+  },
+  "ignorePatterns": ["dist/", "node_modules/", "**/*.d.ts"]
+}

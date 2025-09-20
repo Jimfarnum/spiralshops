@@ -1,1 +1,3 @@
-export declare const rateLimiter: import('express').RequestHandler;
+import { RequestHandler } from 'express';
+
+export declare const rateLimiter: RequestHandler;

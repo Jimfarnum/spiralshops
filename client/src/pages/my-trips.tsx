@@ -15,7 +15,13 @@ import {
   Gift,
   Star
 } from "lucide-react";
-import { format } from "date-fns";
+// Using native Date API instead of date-fns
+const formatDateDate = (date: string | Date, formatDateType: string = 'short') => {
+  const d = new Date(date);
+  if (formatDateType === 'PPp') return d.toLocaleString();
+  if (formatDateType === 'PP') return d.toLocaleDateString();
+  return d.toLocaleDateString();
+};
 import { useToast } from "@/hooks/use-toast";
 
 interface Trip {
@@ -87,9 +93,9 @@ export default function MyTrips() {
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDateDate = (dateString: string) => {
     try {
-      return format(new Date(dateString), "MMM d, yyyy");
+      return formatDate(new Date(dateString), "MMM d, yyyy");
     } catch {
       return dateString;
     }
@@ -159,7 +165,7 @@ export default function MyTrips() {
                     <CardContent className="space-y-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Calendar className="w-4 h-4" />
-                        {formatDate(trip.date)}
+                        {formatDateDate(trip.date)}
                       </div>
 
                       <div className="grid grid-cols-2 gap-2 text-sm">
@@ -234,7 +240,7 @@ export default function MyTrips() {
                     <CardContent className="space-y-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Calendar className="w-4 h-4" />
-                        {formatDate(trip.date)}
+                        {formatDateDate(trip.date)}
                       </div>
 
                       {trip.userResponse === 'accept' && (

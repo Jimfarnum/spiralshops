@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.production.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./dist/server-ts",
+    "rootDir": "./",
+    "skipLibCheck": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "strict": false
+  },
+  "include": [
+    "server/**/*",
+    "shared/**/*"
+  ]
+}

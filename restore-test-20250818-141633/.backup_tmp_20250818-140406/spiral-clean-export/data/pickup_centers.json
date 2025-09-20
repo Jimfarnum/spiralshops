@@ -1,0 +1,22 @@
+[
+  {
+    "id": "pc-001",
+    "name": "SPIRAL Center — Downtown",
+    "zip": "55101",
+    "address": "123 Main St",
+    "hours": "10–8",
+    "capacity": 200,
+    "lat": 44.9477,
+    "lng": -93.0936
+  },
+  {
+    "id": "pc-002",
+    "name": "SPIRAL Center — City Mall",
+    "zip": "55415",
+    "address": "500 Market Ave",
+    "hours": "10–9",
+    "capacity": 400,
+    "lat": 44.973,
+    "lng": -93.257
+  }
+]

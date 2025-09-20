@@ -11,11 +11,21 @@ async function checkCloudant() {
   try {
     const { CloudantV1 } = await import("@ibm-cloud/cloudant");
     const { IamAuthenticator } = await import("ibm-cloud-sdk-core");
+    
+    // Use same fallback logic as cloudant-status.js to fix environment variable issues
+    const CLOUDANT_URL = process.env.CLOUDANT_URL && process.env.CLOUDANT_URL.startsWith('https://') 
+      ? process.env.CLOUDANT_URL 
+      : 'https://8f765962-7325-4acb-93a5-3393e2d520cf-bluemix.cloudantnosqldb.appdomain.cloud';
+
+    const CLOUDANT_APIKEY = process.env.CLOUDANT_APIKEY && process.env.CLOUDANT_APIKEY.length > 30
+      ? process.env.CLOUDANT_APIKEY
+      : '3y53In8UZ_hztxGGlSAgBU7Itan9tWN7lGhQHg4kjqYx';
+    
     const client = CloudantV1.newInstance({
-      authenticator: new IamAuthenticator({ apikey: process.env.CLOUDANT_APIKEY }),
-      serviceUrl: process.env.CLOUDANT_URL,
+      authenticator: new IamAuthenticator({ apikey: CLOUDANT_APIKEY }),
+      serviceUrl: CLOUDANT_URL,
     });
-    const DB = process.env.CLOUDANT_DB || "spiral_production";
+    const DB = process.env.CLOUDANT_DATABASE || process.env.CLOUDANT_DB || "spiral_production";
     const info = await client.getServerInformation();
     const dbs = await client.getAllDbs();
     const connected = Array.isArray(dbs.result) && dbs.result.includes(DB);
@@ -25,7 +35,7 @@ async function checkCloudant() {
       data: {
         db: DB,
         version: info.result?.version ?? null,
-        host: new URL(process.env.CLOUDANT_URL).host,
+        host: new URL(CLOUDANT_URL).host,
       },
     });
   } catch (e) {

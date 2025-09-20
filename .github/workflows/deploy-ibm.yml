@@ -1,0 +1,37 @@
+name: Deploy to IBM Code Engine
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: us-south.icr.io/spiral/spiral-web:${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci
+      - run: npm run build --if-present
+      - name: Install IBM Cloud CLI
+        run: curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+      - name: IBM login
+        run: |
+          echo "${{ secrets.IBM_API_KEY }}" > /tmp/ibm.key
+          ibmcloud login --apikey @/tmp/ibm.key -r us-south
+          ibmcloud cr region-set us-south
+          ibmcloud cr login
+          ibmcloud cr namespace-add spiral || true
+      - name: Build & Push Image
+        run: |
+          docker build -t $IMAGE .
+          docker push $IMAGE
+      - name: Deploy to Code Engine
+        run: |
+          ibmcloud plugin install code-engine -f
+          ibmcloud ce project select --name spiral-prod || (ibmcloud ce project create --name spiral-prod && ibmcloud ce project select --name spiral-prod)
+          if ibmcloud ce app get --name spiral-web >/dev/null 2>&1; then
+            ibmcloud ce app update --name spiral-web --image $IMAGE
+          else
+            ibmcloud ce app create --name spiral-web --image $IMAGE --port 3000 --min-scale 0 --max-scale 10
+          fi

@@ -26,7 +26,43 @@ import {
   Target,
   Zap
 } from "lucide-react";
-import { format, addDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
+// Using native Date API instead of date-fns
+const formatDateDate = (date: string | Date, formatDateType: string = 'short') => {
+  const d = new Date(date);
+  if (formatDateType === 'PPp') return d.toLocaleString();
+  if (formatDateType === 'PP') return d.toLocaleDateString();
+  return d.toLocaleDateString();
+};
+
+const addDays = (date: Date, days: number) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
+const startOfWeek = (date: Date) => {
+  const result = new Date(date);
+  const day = result.getDay();
+  const diff = result.getDate() - day;
+  result.setDate(diff);
+  return result;
+};
+
+const endOfWeek = (date: Date) => {
+  const result = new Date(date);
+  const day = result.getDay();
+  const diff = result.getDate() + (6 - day);
+  result.setDate(diff);
+  return result;
+};
+
+const startOfMonth = (date: Date) => {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+};
+
+const endOfMonth = (date: Date) => {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+};
 import { useToast } from "@/hooks/use-toast";
 
 interface Perk {
@@ -226,7 +262,7 @@ export default function RetailerIncentiveScheduler() {
       } else if (perk.schedule.type === 'weekly' && perk.schedule.daysOfWeek) {
         return perk.schedule.daysOfWeek.includes(date.getDay());
       } else if (perk.schedule.type === 'oneTime') {
-        return format(date, 'yyyy-MM-dd') === format(perkStart, 'yyyy-MM-dd');
+        return formatDate(date, 'yyyy-MM-dd') === formatDate(perkStart, 'yyyy-MM-dd');
       }
       
       return false;
@@ -268,7 +304,7 @@ export default function RetailerIncentiveScheduler() {
       calendarDays.push(
         <div key={date.toISOString()} className="border border-gray-200 rounded-lg p-2 min-h-[120px]">
           <div className="font-semibold text-sm text-gray-600 mb-2">
-            {format(date, 'd')}
+            {formatDate(date, 'd')}
           </div>
           <div className="space-y-1">
             {dayPerks.slice(0, 3).map(perk => (
@@ -425,7 +461,7 @@ export default function RetailerIncentiveScheduler() {
                         <Input
                           id="startDate"
                           type="date"
-                          value={format(formData.startDate, 'yyyy-MM-dd')}
+                          value={formatDate(formData.startDate, 'yyyy-MM-dd')}
                           onChange={(e) => setFormData({...formData, startDate: new Date(e.target.value)})}
                         />
                       </div>
@@ -518,7 +554,7 @@ export default function RetailerIncentiveScheduler() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CalendarIcon className="h-5 w-5" />
-                    {format(selectedDate, 'MMMM yyyy')}
+                    {formatDate(selectedDate, 'MMMM yyyy')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>

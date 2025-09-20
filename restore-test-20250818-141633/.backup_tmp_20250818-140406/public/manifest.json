@@ -1,0 +1,115 @@
+{
+  "name": "SPIRAL - Local Shopping Platform",
+  "short_name": "SPIRAL",
+  "description": "Everything Local. Just for you. - Connect with local businesses and earn SPIRAL rewards",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#006d77",
+  "orientation": "portrait-primary",
+  "categories": ["shopping", "lifestyle", "business"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/generated-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/generated-icon.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Browse Stores",
+      "short_name": "Browse",
+      "description": "Discover local businesses near you",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/generated-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Shopping Cart",
+      "short_name": "Cart",
+      "description": "View your shopping cart",
+      "url": "/cart",
+      "icons": [
+        {
+          "src": "/generated-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "SPIRAL Rewards",
+      "short_name": "Rewards",  
+      "description": "Check your SPIRAL points balance",
+      "url": "/spirals",
+      "icons": [
+        {
+          "src": "/generated-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Mall Directory",
+      "short_name": "Malls",
+      "description": "Explore shopping malls",
+      "url": "/mall-directory",
+      "icons": [
+        {
+          "src": "/generated-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/generated-icon.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "SPIRAL homepage with local business discovery"
+    },
+    {
+      "src": "/generated-icon.png",
+      "sizes": "750x1334", 
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "SPIRAL mobile app showing shopping features"  
+    }
+  ],
+  "scope": "/",
+  "id": "spiral-local-shopping",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+spiral",
+      "url": "/?spiral=%s"
+    }
+  ]
+}

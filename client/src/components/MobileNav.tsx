@@ -19,7 +19,9 @@ import {
   Star,
   Truck,
   Phone,
-  Shield
+  Shield,
+  Rocket,
+  Activity
 } from 'lucide-react';
 
 interface MobileNavProps {
@@ -86,6 +88,25 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onToggle, onClose }) => {
       label: 'Profile', 
       path: '/profile',
       description: 'Account settings'
+    },
+    { 
+      icon: <Rocket className="w-5 h-5" />, 
+      label: 'Function Agent', 
+      path: '/platform-demo',
+      description: 'Platform demo',
+      badge: 'DEMO'
+    },
+    { 
+      icon: <Shield className="w-5 h-5" />, 
+      label: 'Trust', 
+      path: '/trust',
+      description: 'Security & reliability'
+    },
+    { 
+      icon: <Activity className="w-5 h-5" />, 
+      label: 'Admin', 
+      path: '/spiral-admin-login',
+      description: 'Admin dashboard'
     }
   ];
 
@@ -93,7 +114,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onToggle, onClose }) => {
     {
       icon: <Search className="w-4 h-4" />,
       label: 'Search',
-      path: '/search',
+      path: '/products',
       color: 'bg-blue-500'
     },
     {
@@ -110,9 +131,9 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onToggle, onClose }) => {
     },
     {
       icon: <Shield className="w-4 h-4" />,
-      label: 'Support',
-      path: '/support',
-      color: 'bg-purple-500'
+      label: 'Trust',
+      path: '/trust',
+      color: 'bg-green-500'
     }
   ];
 

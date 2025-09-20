@@ -3,11 +3,11 @@
 
 declare global {
   interface Window {
-    fbq: any;
-    twq: any;
-    ttq: any;
-    truthSocialConfig: any;
-    gtag: any;
+    fbq?: any;
+    twq?: any;
+    ttq?: any;
+    truthSocialConfig?: any;
+    gtag?: any;
   }
 }
 

@@ -1,0 +1,16 @@
+Product_ID,Store_Name,Store_Location,Store_Category,Product_Name,Price,Category,SKU_Barcode,Image_URL,Alt_Image_URL,Local_Business_Notes
+1,Downtown Electronics,Minneapolis MN,Electronics Store,Wireless Bluetooth Headphones,89.99,Electronics,DE-WBH-001,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: wireless headphones - Downtown Electronics branding
+2,TechWear Plus,St. Paul MN,Electronics Store,Smart Fitness Watch,299.99,Electronics,TW-SFW-002,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: fitness smartwatch - local tech retailer
+3,North Loop Coffee,Minneapolis MN,Coffee Shop,Organic Coffee Beans,24.99,Food & Beverage,NLC-OCB-003,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: organic coffee beans - North Loop Coffee branding
+4,Mill City Boutique,Minneapolis MN,Fashion Store,Designer Handbag,149.99,Fashion,MCB-DHB-004,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: designer handbag - Mill City Boutique local
+5,Artisan Chocolate Co,Stillwater MN,Specialty Food,Artisan Chocolate,19.99,Food & Beverage,ACC-ART-005,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: artisan chocolate - local chocolatier
+6,University Tech,Minneapolis MN,Electronics Store,Laptop Computer,899.99,Electronics,UT-LAP-006,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: laptop computer - University Tech store
+7,Vintage Revival,St. Paul MN,Vintage Store,Vintage Leather Jacket,259.99,Fashion,VR-VLJ-007,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: vintage leather jacket - Vintage Revival boutique
+8,Gourmet Corner,Edina MN,Specialty Food,Gourmet Cheese Set,34.99,Food & Beverage,GC-GCS-008,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: gourmet cheese - Gourmet Corner local
+9,Active Life Sports,Bloomington MN,Sporting Goods,Running Shoes,129.99,Fashion,ALS-RUN-009,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: running shoes - Active Life Sports store
+10,Home Brew Central,Minneapolis MN,Coffee Equipment,Home Espresso Machine,449.99,Electronics,HBC-ESP-010,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: espresso machine - Home Brew Central local
+11,Silk Road Boutique,St. Paul MN,Fashion Store,Silk Scarf,79.99,Fashion,SRB-SIL-011,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: silk scarf - Silk Road Boutique local
+12,Twin Cities Brewing,Minneapolis MN,Local Brewery,Craft Beer Set,39.99,Food & Beverage,TCB-CBS-012,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: craft beer set - Twin Cities Brewing local
+13,Sound Studio,St. Paul MN,Audio Store,Wireless Speaker,199.99,Electronics,SS-WSP-013,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: wireless speaker - Sound Studio local
+14,Cozy Threads,Minnetonka MN,Clothing Store,Wool Sweater,89.99,Fashion,CT-WSW-014,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: wool sweater - Cozy Threads boutique
+15,Tea Garden,Minneapolis MN,Tea Shop,Specialty Tea Collection,28.99,Food & Beverage,TG-STC-015,[ENTER IMAGE URL HERE],[OPTIONAL 2ND IMAGE],Search: specialty tea - Tea Garden local shop

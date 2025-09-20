@@ -1,0 +1,181 @@
+{
+  "timestamp": "2025-08-07T12:21:00.100Z",
+  "totalTests": 25,
+  "passedTests": 25,
+  "failedTests": 0,
+  "detailedResults": {
+    "Core APIs": [
+      {
+        "test": "Health Check",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:00.327Z"
+      },
+      {
+        "test": "Products API",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:00.447Z"
+      },
+      {
+        "test": "Featured Products",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:00.536Z"
+      },
+      {
+        "test": "Stores API",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:01.908Z"
+      },
+      {
+        "test": "Mall Events",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:01.925Z"
+      },
+      {
+        "test": "Promotions",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:01.951Z"
+      },
+      {
+        "test": "AI Recommendations",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.082Z"
+      },
+      {
+        "test": "Continental US Search",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.104Z"
+      }
+    ],
+    "AI Features": [
+      {
+        "test": "AI Retailer Categories",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.117Z"
+      },
+      {
+        "test": "Inventory Categories",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.135Z"
+      },
+      {
+        "test": "AI Image Search Status",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.211Z"
+      },
+      {
+        "test": "Visual Search Status",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.296Z"
+      }
+    ],
+    "Location Services": [
+      {
+        "test": "Continental US All Stores",
+        "status": "PASS",
+        "details": "Found 350 stores",
+        "timestamp": "2025-08-07T12:21:02.456Z"
+      },
+      {
+        "test": "State-specific Search (CA)",
+        "status": "PASS",
+        "details": "Found 24 stores",
+        "timestamp": "2025-08-07T12:21:02.503Z"
+      },
+      {
+        "test": "Category Filter (Electronics)",
+        "status": "PASS",
+        "details": "Found 92 stores",
+        "timestamp": "2025-08-07T12:21:02.595Z"
+      },
+      {
+        "test": "Near Me Search",
+        "status": "PASS",
+        "details": "Found 0 stores",
+        "timestamp": "2025-08-07T12:21:02.718Z"
+      }
+    ],
+    "Retailer Features": [
+      {
+        "test": "Business Categories",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.752Z"
+      },
+      {
+        "test": "Inventory Management",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.779Z"
+      },
+      {
+        "test": "Stripe Connect Status",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.894Z"
+      }
+    ],
+    "Shopper Features": [
+      {
+        "test": "Product Search",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.912Z"
+      },
+      {
+        "test": "Product Categories",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:02.954Z"
+      }
+    ],
+    "Payment Systems": [
+      {
+        "test": "Stripe Config",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:03.135Z"
+      },
+      {
+        "test": "SPIRAL Centers",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:03.166Z"
+      }
+    ],
+    "Advanced Features": [
+      {
+        "test": "Visual Search",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:03.327Z"
+      },
+      {
+        "test": "Mall Events",
+        "status": "PASS",
+        "details": "Status: 200",
+        "timestamp": "2025-08-07T12:21:03.358Z"
+      }
+    ]
+  },
+  "criticalIssues": [],
+  "recommendations": [],
+  "successRate": "100.00%",
+  "summary": {
+    "total": 25,
+    "passed": 25,
+    "failed": 0,
+    "successRate": "100.00%"
+  }
+}

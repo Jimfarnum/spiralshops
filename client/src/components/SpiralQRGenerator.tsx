@@ -209,7 +209,7 @@ export default function SpiralQRGenerator({
     setCampaignName(suggestion);
     // Generate a reasonable target URL based on the suggestion
     const urlFriendly = suggestion.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    setTargetUrl(`https://spiralshops.com/campaign/${urlFriendly}`);
+    setTargetUrl(`${window.location.origin}/campaign/${urlFriendly}`);
   };
 
   if (loading) {

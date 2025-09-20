@@ -6,6 +6,7 @@ import { useCartStore } from "@/lib/cartStore";
 import { useAuthStore } from "@/lib/authStore";
 import SpiralBalance from "./spiral-balance";
 import MobileNav from "./MobileNav";
+import TrustBadge from "./TrustBadge";
 
 export default function MobileHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,7 +23,7 @@ export default function MobileHeader() {
       <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100 md:hidden">
         <div className="flex items-center justify-between h-14 px-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <img 
               src="/spiral-blue.svg" 
               alt="SPIRAL Logo" 
@@ -34,17 +35,18 @@ export default function MobileHeader() {
           {/* Right Side Actions */}
           <div className="flex items-center gap-2">
             {/* Search Button */}
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigate('/search')}
-              className="p-2"
-            >
-              <Search className="w-5 h-5" />
-            </Button>
+            <Link to="/products">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="p-2"
+              >
+                <Search className="w-5 h-5" />
+              </Button>
+            </Link>
 
             {/* Cart Button */}
-            <Link href="/cart">
+            <Link to="/cart">
               <Button variant="ghost" size="sm" className="relative p-2">
                 <ShoppingCart className="w-5 h-5" />
                 {cartItemCount > 0 && (
@@ -62,6 +64,11 @@ export default function MobileHeader() {
               onClose={() => setIsMenuOpen(false)} 
             />
           </div>
+        </div>
+
+        {/* Trust Badge */}
+        <div className="px-4 py-2 border-t border-gray-100">
+          <TrustBadge />
         </div>
 
         {/* SPIRAL Balance Bar */}

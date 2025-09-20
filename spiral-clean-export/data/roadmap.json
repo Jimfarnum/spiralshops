@@ -1,0 +1,41 @@
+{
+  "phase": "Phase 1 — Competitive Gap Closing",
+  "items": [
+    {
+      "id": "cross_inventory",
+      "title": "Cross-Retailer Inventory Referencing (API + UI)",
+      "status": "done"
+    },
+    {
+      "id": "analytics_hub",
+      "title": "Retailer Analytics & Intelligence Hub (MVP)",
+      "status": "in_progress"
+    },
+    {
+      "id": "local_fulfillment",
+      "title": "Local Fulfillment Layer (couriers + returns + pickup)",
+      "status": "in_progress"
+    },
+    {
+      "id": "customer_ui",
+      "title": "Customer Cross-Retailer Shopping UI (ZIP-gated + ETA badges)",
+      "status": "done"
+    },
+    {
+      "id": "returns_ui",
+      "title": "Customer Returns Page (/returns)",
+      "status": "done"
+    },
+    {
+      "id": "rate_limit_cache",
+      "title": "Rate Limits + Quote Cache",
+      "status": "done"
+    },
+    {
+      "id": "postgres_migration",
+      "title": "Migrate JSON stores to Postgres",
+      "status": "todo"
+    }
+  ],
+  "last_updated": "2025-08-18T02:05:22.204Z"
+}

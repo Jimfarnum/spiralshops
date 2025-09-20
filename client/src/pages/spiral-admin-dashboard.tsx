@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'wouter';
+import AdminRecognitionControls from '@/components/AdminRecognitionControls';
+import AdminDailyReports from '@/components/AdminDailyReports';
 import { 
   Shield, 
   TestTube, 
@@ -17,7 +19,8 @@ import {
   Smartphone,
   Star,
   Package,
-  Wallet
+  Wallet,
+  TrendingUp
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -259,6 +262,17 @@ const adminTools = [
     route: '/feature-improvement-hub',
     category: 'Enterprise',
     status: 'active'
+  },
+
+  // Investor & Launch Management
+  {
+    id: 'investor-dashboard',
+    title: 'Investor Dashboard',
+    description: 'Generate investor-ready launch reports with SPIRAL branding and comprehensive metrics for pre-launch testing',
+    icon: TrendingUp,
+    route: '/admin/investor-dashboard',
+    category: 'Launch Management',
+    status: 'active'
   }
 ];
 
@@ -267,6 +281,7 @@ export default function SpiralAdminDashboard() {
   const [authPassword, setAuthPassword] = useState('');
   const [authCode, setAuthCode] = useState('');
   const [authError, setAuthError] = useState('');
+  const [showDailyReports, setShowDailyReports] = useState(false);
   const { toast } = useToast();
 
   const handleAdminLogin = () => {
@@ -494,6 +509,18 @@ export default function SpiralAdminDashboard() {
             </div>
           </div>
         ))}
+
+        {/* Recognition System Controls */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Recognition System Management</h2>
+          <AdminRecognitionControls />
+        </div>
+
+        {/* Daily Reports & Launch Checklist */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Launch Master Checklist & Daily Reports</h2>
+          <AdminDailyReports />
+        </div>
 
         {/* Platform Control Center Status */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

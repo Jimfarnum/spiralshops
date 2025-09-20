@@ -7,7 +7,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import TripNotifications from '@/components/TripNotifications';
 import RetailerPlanStatus from '@/components/RetailerPlanStatus';
 import RetailerOrderDashboard from '@/components/RetailerOrderDashboard';
-import { Store, Users, ShoppingCart, TrendingUp, Bell, Settings, CheckCircle } from 'lucide-react';
+import CampaignPack from '@/components/CampaignPack';
+import RetailerRecognition from '@/components/RetailerRecognition';
+import RetailerProgress from '@/components/RetailerProgress';
+import { Store, Users, ShoppingCart, TrendingUp, Bell, Settings, CheckCircle, Star, Award } from 'lucide-react';
 
 export default function RetailerDashboard() {
   const [activeTab, setActiveTab] = useState('trips');
@@ -43,6 +46,9 @@ export default function RetailerDashboard() {
     todaySales: 1247.50,
     weekSales: 8932.75,
     monthSales: 42156.30,
+    spiralBalance: 15780, // SPIRAL balance earned by retailer
+    spiralsPaidOut: 3240, // SPIRALs paid to customers
+    spiralsEarned: 890, // SPIRALs earned this week
     stripeCustomerId: "cus_demo_gold" // Demo customer ID for plan status
   };
 
@@ -93,7 +99,7 @@ export default function RetailerDashboard() {
         {/* Plan Status Section */}
         <RetailerPlanStatus stripeCustomerId={retailerData.stripeCustomerId} />
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
@@ -141,15 +147,36 @@ export default function RetailerDashboard() {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-orange-100 dark:bg-orange-900 rounded-lg">
+                  <Star className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">SPIRAL Balance</p>
+                  <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                    {retailerData.spiralBalance.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    +{retailerData.spiralsEarned} this week
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Dashboard Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="trips">Live Shopping Trips</TabsTrigger>
+            <TabsTrigger value="recognition">Recognition</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="inventory">Inventory</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="campaigns">Social Campaigns</TabsTrigger>
             <TabsTrigger value="customers">Customers</TabsTrigger>
           </TabsList>
 
@@ -159,6 +186,13 @@ export default function RetailerDashboard() {
               storeId={retailerData.storeId} 
               mallId={retailerData.mallId} 
             />
+          </TabsContent>
+
+          <TabsContent value="recognition" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <RetailerRecognition retailerId="retailer_1" />
+              <RetailerProgress retailerId="retailer_1" />
+            </div>
           </TabsContent>
 
           <TabsContent value="orders" className="space-y-6">
@@ -189,6 +223,10 @@ export default function RetailerDashboard() {
                 </p>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="campaigns" className="space-y-6">
+            <CampaignPack />
           </TabsContent>
 
           <TabsContent value="customers" className="space-y-6">

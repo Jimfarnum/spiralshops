@@ -27,7 +27,13 @@ import {
   User,
   CheckCircle
 } from 'lucide-react';
-import { format } from 'date-fns';
+// Using native Date API instead of date-fns
+const formatDateDate = (date: string | Date, formatDateType: string = 'short') => {
+  const d = new Date(date);
+  if (formatDateType === 'PPp') return d.toLocaleString();
+  if (formatDateType === 'PP') return d.toLocaleDateString();
+  return d.toLocaleDateString();
+};
 
 interface MallEventWithDetails {
   id: number;
@@ -365,11 +371,11 @@ export default function EventsPage() {
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <Calendar className="h-4 w-4" />
-                          {format(startDate, 'EEEE, MMMM d, yyyy')}
+                          {formatDate(startDate, 'EEEE, MMMM d, yyyy')}
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <Clock className="h-4 w-4" />
-                          {format(startDate, 'h:mm a')} - {format(endDate, 'h:mm a')}
+                          {formatDate(startDate, 'h:mm a')} - {formatDate(endDate, 'h:mm a')}
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <MapPin className="h-4 w-4" />

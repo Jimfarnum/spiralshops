@@ -1,126 +1,116 @@
-# SPIRAL Domain & DNS Configuration Guide
+# 🔧 Complete DNS Setup Guide - Both Domains Working
 
-## Primary Domain Setup: spiralshops.com
+## Current Status
+- **spiralmalls.com** - Working with valid SSL certificate
+- **spiralshops.com** - Needs DNS configuration to fix SSL issue
 
-### Step 1: Add Domain to Vercel
-1. Go to Vercel Dashboard → Your Project → Settings → Domains
-2. Add domain: `spiralshops.com`
-3. Add domain: `www.spiralshops.com` (redirect to primary)
+## DNS Records You Need to Add
 
-### Step 2: DNS Records Configuration
-Configure the following DNS records with your domain registrar:
+### **For spiralshops.com at GoDaddy:**
 
-**A Records:**
 ```
-Type: A
+Record Type: CNAME
 Name: @
-Value: 76.76.19.61
-TTL: 3600
-```
+Value: 27d4f357-044c-4271-84d2-b2bf67be7115-00-18jv7lspv4am.janeway.replit.dev
+TTL: 1 Hour
 
-**CNAME Records:**
-```
-Type: CNAME  
+Record Type: CNAME  
 Name: www
-Value: spiralshops.com
-TTL: 3600
+Value: 27d4f357-044c-4271-84d2-b2bf67be7115-00-18jv7lspv4am.janeway.replit.dev
+TTL: 1 Hour
 ```
 
-**Vercel DNS (Recommended):**
+## How This Fixes the SSL Issue
+
+### **Current Problem:**
+1. spiralshops.com has DNS pointing somewhere else
+2. That server has wrong SSL certificate
+3. Browser shows "NET::ERR_CERT_COMMON_NAME_INVALID"
+
+### **After DNS Fix:**
+1. spiralshops.com points to your Replit server
+2. Replit server redirects to spiralmalls.com
+3. Users reach working site with valid SSL
+4. No browser warnings
+
+## Quick Visual Guide
+
+### **GoDaddy DNS Manager Screenshot Guide:**
+1. **Login** → My Products → Find spiralshops.com
+2. **Click DNS** button next to domain name
+3. **Look for "Add Record"** button (usually prominent)
+4. **Select "CNAME"** from record type dropdown
+5. **Fill in exact values** from the table above
+6. **Click Save** for each record
+
+### **What Each Field Means:**
+- **Name/@:** This is the domain itself (spiralshops.com)
+- **Name/www:** This is www.spiralshops.com  
+- **Value:** Where the domain should point (your Replit server)
+- **TTL:** How long DNS servers cache the record (1 hour is good)
+
+## Alternative Approach (Simpler)
+
+If you want spiralshops.com to redirect directly without going through Replit:
+
 ```
-Type: CNAME
+Record Type: CNAME
 Name: @
-Value: cname.vercel-dns.com
-TTL: 3600
+Value: spiralmalls.com
+TTL: 1 Hour
 
-Type: CNAME
+Record Type: CNAME
 Name: www  
-Value: cname.vercel-dns.com
-TTL: 3600
+Value: spiralmalls.com
+TTL: 1 Hour
 ```
 
-### Step 3: SSL Certificate
-- Vercel automatically provisions Let's Encrypt SSL certificates
-- Wait 10-15 minutes for SSL propagation
-- Verify HTTPS: `https://spiralshops.com`
+This makes spiralshops.com immediately redirect to spiralmalls.com at the DNS level.
 
----
+## After You Add the Records
 
-## Optional Alias Domain: spiralmalls.com
+### **Wait Time:**
+- 15-30 minutes for initial propagation
+- Up to 24 hours for global propagation
 
-### DNS Configuration (if registering spiralmalls.com):
-```
-Type: CNAME
-Name: @
-Value: spiralshops.com
-TTL: 3600
+### **Test Results:**
+- Visit https://spiralshops.com
+- Should automatically redirect to https://spiralmalls.com
+- No SSL warnings or certificate errors
+- Seamless user experience
 
-Type: CNAME
-Name: www
-Value: spiralshops.com  
-TTL: 3600
-```
+### **Verify It's Working:**
+1. Clear browser cache
+2. Try spiralshops.com in incognito mode
+3. Test from mobile device
+4. Both domains should work without errors
 
-### Vercel Redirect Configuration:
-Add to vercel.json:
-```json
-{
-  "redirects": [
-    {
-      "source": "https://spiralmalls.com/:path*",
-      "destination": "https://spiralshops.com/:path*",
-      "permanent": true
-    }
-  ]
-}
-```
+## Remove Any Conflicting Records
 
----
+### **Delete These if They Exist:**
+- A records for @ or www
+- Other CNAME records for same names
+- AAAA records (IPv6)
+- Any forwarding rules that conflict
 
-## DNS Propagation Verification
+### **Keep These Records:**
+- MX records (for email)
+- TXT records (for verification)
+- NS records (nameservers)
 
-### Check DNS Status:
-```bash
-# Primary domain
-dig spiralshops.com
-nslookup spiralshops.com
+## What Happens After Setup
 
-# WWW subdomain  
-dig www.spiralshops.com
-nslookup www.spiralshops.com
-```
+### **User Experience:**
+1. User types spiralshops.com
+2. DNS resolves to your Replit server
+3. Server redirects to spiralmalls.com
+4. User sees working SPIRAL platform
+5. No SSL warnings anywhere
 
-### SSL Verification:
-```bash
-# Check SSL certificate
-curl -I https://spiralshops.com
-openssl s_client -connect spiralshops.com:443 -servername spiralshops.com
-```
+### **SEO Benefits:**
+- 301 redirect preserves search rankings
+- Both domains contribute to site authority
+- No duplicate content issues
+- Users can find site via either domain
 
-### Final Verification URLs:
-- ✅ https://spiralshops.com (primary)
-- ✅ https://www.spiralshops.com (redirect to primary)
-- ✅ https://spiralshops.com/api/health (API health check)
-- ✅ https://spiralshops.com/investor (investor demo page)
-
----
-
-## Troubleshooting
-
-### Common Issues:
-1. **DNS not propagating**: Wait 24-48 hours, check different DNS servers
-2. **SSL not ready**: Allow 15 minutes for Vercel SSL provisioning  
-3. **CNAME conflicts**: Remove any existing A records for @ when using CNAME
-4. **Redirect loops**: Ensure www CNAME points to apex domain, not Vercel
-
-### Support Commands:
-```bash
-# Check current DNS
-dig +short spiralshops.com
-dig +short www.spiralshops.com
-
-# Test HTTPS
-curl -s -o /dev/null -w "%{http_code}" https://spiralshops.com
-```
-
-**Status**: Domain configuration ready for Vercel deployment
+The DNS setup is the final piece to completely resolve the SSL certificate issue and ensure both domains work seamlessly.

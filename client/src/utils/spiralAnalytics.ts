@@ -109,9 +109,13 @@ export class SPIRALAnalytics {
       });
     }
 
-    // Facebook Pixel
-    if (window.fbq) {
-      window.fbq('track', 'PageView');
+    // Facebook Pixel (with proper initialization check)
+    if (window.fbq && typeof window.fbq === 'function') {
+      try {
+        window.fbq('track', 'PageView');
+      } catch (error) {
+        // Silently handle uninitialized pixel
+      }
     }
 
     // TikTok Pixel

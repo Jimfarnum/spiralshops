@@ -1,0 +1,16 @@
+# Checkpoint Optimization - Exclude large/temporary files from checkpoints
+*.log
+*.tmp
+.cache/
+.tmp/
+node_modules/.cache/
+dist/
+*.pid
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+thumbs.db
+*.swp
+*.swo
+*~

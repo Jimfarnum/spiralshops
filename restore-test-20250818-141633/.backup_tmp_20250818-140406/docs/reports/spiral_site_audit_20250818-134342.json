@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "report": "SPIRAL Site Audit & Optimization Plan",
+    "date": "2025-08-18",
+    "version": "1.0"
+  },
+  "gaps": {
+    "retailer_mall": ["pos_integrations", "retailer_analytics_basic", "mall_operator_dashboard"],
+    "shopper": ["unified_checkout_lt3_steps", "realtime_inventory_sync", "trust_surfaces", "reviews_engine", "personalization_discovery", "payments_variety"],
+    "growth_marketing": ["seo_schema", "content_engine", "lifecycle_messaging", "referral_loops"],
+    "platform": ["performance_speed", "accessibility", "security_pipeline", "observability"]
+  },
+  "plan_90d": {
+    "phase_1": {
+      "focus": "trust_and_friction",
+      "items": ["unified_checkout_mvp", "buyer_guarantee", "verified_local_badge", "returns_copy_flow", "analytics_ga4_sentry", "seo_foundations"],
+      "kpi_targets": {"cvr_delta_pct": 6, "abandon_delta_pct": -8, "refund_sla_hours": 24}
+    },
+    "phase_2": {
+      "focus": "personalization_and_lifecycle",
+      "items": ["shopper_onboarding_wallet", "recs_explore_mall", "email_sms_journeys", "reviews_seeding"],
+      "kpi_targets": {"aov_delta_pct": 5, "repeat_rate_delta_pct": 10, "reviews_per_mall_min": 50}
+    },
+    "phase_3": {
+      "focus": "scale_and_differentiation",
+      "items": ["mall_command_center", "pos_integrations_square_clover_lightspeed", "loyalty_local_hero", "bnpl_giftcards", "public_trust_dashboard"],
+      "kpi_targets": {"repeat_30d_delta_pct": 15, "pickup_on_time_pct": 95, "trust_survey_agree_pct": 70}
+    }
+  },
+  "ai_tools": {
+    "ops_product": ["ai_onboarding_assistant", "ai_shopper_concierge", "ai_funnel_optimizer", "anomaly_fraud_detection"],
+    "marketing_content": ["ai_copywriter", "ai_personalization", "ai_rnd_watcher"]
+  },
+  "apis": {
+    "payments": ["stripe", "paypal", "affirm_klarna_phase2"],
+    "pos_catalog": ["square_pos", "clover", "lightspeed", "shopify_import", "woocommerce_import"],
+    "comms_maps": ["sendgrid_mailgun", "twilio", "google_maps"],
+    "analytics_security": ["ga4", "amplitude_mixpanel", "sentry", "zap", "snyk", "npm_audit", "newman"]
+  },
+  "security": {
+    "headers": ["csp", "hsts", "secure_cookies"],
+    "ops": ["rate_limits", "daily_security_scans", "ticket_triage"],
+    "privacy": ["pii_minimization", "secrets_in_vault", "token_rotation"]
+  },
+  "hygiene": {
+    "ignore_paths": [
+      "agents/techwatch/reports/*/shots/",
+      "agents/funnels/out/*/shots/",
+      "node_modules/",
+      "dist/",
+      "build/",
+      ".cache/",
+      ".tmp/",
+      ".turbo/",
+      ".next/"
+    ]
+  }
+}

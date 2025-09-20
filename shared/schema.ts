@@ -150,6 +150,8 @@ export const insertRetailerSchema = createInsertSchema(retailers).omit({
   approved: true,
 });
 
+// Move promotion schema definitions after table definitions
+
 // Enhanced Users table with authentication and unique usernames
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -180,16 +182,73 @@ export const users = pgTable("users", {
 export const spiralTransactions = pgTable("spiral_transactions", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id),
-  type: text("type").notNull(), // 'earned' or 'redeemed'
+  type: text("type").notNull(), // 'earn' or 'redeem'
   amount: integer("amount").notNull(),
-  source: text("source").notNull(), // 'online_purchase', 'in_person_purchase', 'sharing', 'referral', 'event', 'bonus'
+  source: text("source").notNull(), // 'purchase', 'sharing', 'referral', 'event', 'bonus', 'redemption'
   description: text("description").notNull(),
   orderId: text("order_id"), // optional reference to order
-  storeId: integer("store_id").references(() => stores.id),
-  mallId: text("mall_id"), // for mall-specific bonuses
-  eventId: integer("event_id"), // for event-based bonuses
-  multiplier: decimal("multiplier", { precision: 3, scale: 2 }).default("1.00"),
+  storeId: integer("store_id"), // optional reference to store
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Promotions table (admin-controlled promotional campaigns)
+export const promotions = pgTable("promotions", {
+  id: serial("id").primaryKey(),
+  code: text("code").unique().notNull(),
+  name: text("name").notNull(),
+  multiplier: decimal("multiplier", { precision: 3, scale: 2 }).default("5.00"),
+  partners: text("partners").array().$type<string[]>().default([] as string[]),
+  categories: text("categories").array().$type<string[]>().default([] as string[]),
+  storeIds: text("store_ids").array().$type<string[]>().default([] as string[]),
+  mallIds: text("mall_ids").array().$type<string[]>().default([] as string[]),
+  startsAt: timestamp("starts_at").notNull(),
+  endsAt: timestamp("ends_at").notNull(),
+  active: boolean("active").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Promotion Requests table (partners submit, SPIRAL approves)
+export const promotionRequests = pgTable("promotion_requests", {
+  id: serial("id").primaryKey(),
+  requesterType: text("requester_type").notNull(), // 'mall', 'retailer', 'card_issuer', 'other'
+  requesterName: text("requester_name").notNull(),
+  requesterId: text("requester_id"),
+  contactEmail: text("contact_email").notNull(),
+  
+  // Desired promotion parameters
+  desiredMultiplier: decimal("desired_multiplier", { precision: 3, scale: 2 }).notNull(),
+  desiredStartsAt: timestamp("desired_starts_at").notNull(),
+  desiredEndsAt: timestamp("desired_ends_at").notNull(),
+  
+  // Targeting information
+  targetCategories: text("target_categories").array().$type<string[]>().default([] as string[]),
+  targetStoreIds: text("target_store_ids").array().$type<string[]>().default([] as string[]),
+  targetMallIds: text("target_mall_ids").array().$type<string[]>().default([] as string[]),
+  
+  // Business metrics
+  expectedGMV: decimal("expected_gmv", { precision: 12, scale: 2 }).default("0"),
+  sponsorCoveragePct: decimal("sponsor_coverage_pct", { precision: 5, scale: 2 }).default("0"),
+  description: text("description"),
+  
+  // Request status
+  status: text("status").default("pending"), // 'pending', 'approved', 'rejected', 'withdrawn'
+  
+  // AI Valuation results
+  valuationScore: decimal("valuation_score", { precision: 5, scale: 2 }).default("0"),
+  valuationRisk: text("valuation_risk").default("medium"), // 'low', 'medium', 'high'
+  effectiveCostPct: decimal("effective_cost_pct", { precision: 5, scale: 2 }).default("0"),
+  recommendedMultiplier: decimal("recommended_multiplier", { precision: 3, scale: 2 }),
+  recommendedDurationDays: integer("recommended_duration_days"),
+  valuationNotes: text("valuation_notes"),
+  
+  // Decision tracking
+  decidedBy: text("decided_by"),
+  decidedAt: timestamp("decided_at"),
+  decisionReason: text("decision_reason"),
+  
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Orders table for purchase tracking with split fulfillment support
@@ -254,7 +313,7 @@ export const wishlistItems = pgTable("wishlist_items", {
   alertPreferences: jsonb("alert_preferences").$type<{
     priceDrop: boolean;
     restock: boolean;
-  }>().notNull().default({ priceDrop: true, restock: true }),
+  }>().notNull().default({ priceDrop: true, restock: true } as { priceDrop: boolean; restock: boolean }),
   lastPrice: decimal("last_price", { precision: 10, scale: 2 }),
   isActive: boolean("is_active").default(true),
 });
@@ -2022,6 +2081,33 @@ export const followNotificationPreferencesRelations = relations(followNotificati
     references: [users.id],
   }),
 }));
+
+// Promotion schema definitions (after all table definitions)
+export const insertPromotionSchema = createInsertSchema(promotions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPromotionRequestSchema = createInsertSchema(promotionRequests).omit({
+  id: true,
+  valuationScore: true,
+  valuationRisk: true,
+  effectiveCostPct: true,
+  recommendedMultiplier: true,
+  recommendedDurationDays: true,
+  valuationNotes: true,
+  decidedBy: true,
+  decidedAt: true,
+  decisionReason: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type Promotion = typeof promotions.$inferSelect;
+export type NewPromotion = typeof promotions.$inferInsert;
+export type PromotionRequest = typeof promotionRequests.$inferSelect;
+export type NewPromotionRequest = typeof promotionRequests.$inferInsert;
 
 // Insert schemas for follow system
 export const insertRetailerFollowSystemSchema = createInsertSchema(retailerFollowSystem).omit({

@@ -1,241 +1,790 @@
-// Load environment variables from .env file
-import { config } from 'dotenv';
-config();
+import express from "express";
+import morgan from "morgan";
+import compression from "compression";
+import path from "path";
+import fs from "fs";
+import axios from "axios";
+import { applySecurity } from "./security.js";
+import { tenantMiddleware } from "./tenant.js";
+import { SpiralApi } from "./spiralApi.js";
 
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
-import { rateLimiter } from "./middleware/rateLimiter.js";
-import wishlistRoutes from "./api/wishlist";
-import intelligentWishlistRoutes from "./api/intelligent-wishlist";
-// @ts-ignore - JS modules without type declarations
-import aiOpsStatusRoutes from "./api/ai-ops-status.js";
-// @ts-ignore
-import businessCategoriesRoutes from "./api/business-categories.js";
-// @ts-ignore
-import aiRetailerOnboardingRoutes from "./api/ai-retailer-onboarding.js";
-// @ts-ignore
-import inventoryCategoriesRoutes from "./api/inventory-categories.js";
-// @ts-ignore
-import aiOpsDashboardRoutes from "./api/ai-ops-dashboard.js";
-// @ts-ignore
-import statusRoutes from "./routes/status.js";
-import performanceFixes from "./performance-fixes";
-import { registerOptimizedStoreRoutes } from "./optimized-store-routes";
+// 🔧 OpenAI for AI image generation with caching
+import OpenAI from "openai";
+// Use existing cache system instead
+// import { memoize } from "./cache.js";
+import { mountClara } from "./clara.js";
+import { mountMetrics } from "./metrics.js";
+import { cfg, loadMallTheme } from "./config.js";
+import { validateAndHealMultipleImages } from "./utils/imageHealing.js";
+
+// SPIRAL Core API routes
+import shopperRoutes from "./routes/shopper.js";
+import mallsRoutes from "./routes/malls.js";
+import ordersRoutes from "./routes/orders.js";
+import onboardingRoutes from "./routes/onboarding.js";
+import legalRoutes from "./routes/legal.js";
+import adminPromotionsRoutes from "./routes/adminPromotions.js";
+import retailerRoutes from "./routes/retailer.js";
+import seasonalPromotionsRoutes from "./routes/seasonalPromotions.js";
+import spiralsRouter from "./routes/spirals.js";
+import productsRoute from "./routes/products.js";
+
+// Enhanced PostgreSQL-backed routes
+import enhancedMallsRoutes from "./routes/enhancedMalls.js";
+import enhancedRetailersRoutes from "./routes/enhancedRetailers.js";
+import enhancedComplianceRoutes from "./routes/enhancedCompliance.js";
+
+// EJ AI Agent - PhD Level GTM Strategist
+import ejAgentRouter from "./routes/ejAgent.js";
+
+// Stripe Billing System imports
+import billing from "./routes/billing.js";
+import webhookRouter from "./routes/stripeWebhooks.js";
+import demoGated from "./routes/demoGated.js";
+import { retailerContext } from "./middleware/retailerContext.js";
+
+// Beta API routes
+import betaApiRouter from "./routes/betaApi.js";
+import shareApiRouter from "./routes/shareApi.js";
+
+// Vite development server setup
+import { createServer } from "http";
+import { setupVite } from "./vite.js";
 
 const app = express();
 
-// Apply performance monitoring and error handling FIRST
-performanceFixes.addPerformanceMiddleware(app);
-performanceFixes.addErrorHandling(app);
+// 🔧 Initialize OpenAI client for AI image generation
+const openaiClient = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// 🗂️ Setup static images directory and serving
+const staticImagesDir = path.join(process.cwd(), "static/images");
+if (!fs.existsSync(staticImagesDir)) {
+  fs.mkdirSync(staticImagesDir, { recursive: true });
+  console.log(`📁 Created static images directory: ${staticImagesDir}`);
+}
+app.use("/images", express.static(staticImagesDir));
+console.log("🖼️ Static images directory mounted at /images");
 
-// Add rate limiting to all API routes
-app.use('/api', rateLimiter);
+// --- Image Normalizer Middleware ---
+function absolutize(image: string, req: any) {
+  if (!image || typeof image !== "string")
+    return `https://via.placeholder.com/300?text=No+Image`;
+  if (/^https?:\/\//.test(image)) return image;
+  const base = process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
+  const p = image.startsWith("/") ? image : "/" + image;
+  return base + p;
+}
 
-app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+function normalize(payload: any, req: any) {
+  const arr = Array.isArray(payload)
+    ? payload
+    : payload && Array.isArray(payload.items)
+    ? payload.items
+    : null;
+  if (!arr) return payload;
+  return arr.map((p) => ({ ...p, image: absolutize(p.image, req) }));
+}
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
+// Apply to products and discover endpoints
+app.use(["/api/products", "/api/discover"], (req, res, next) => {
+  const original = res.json.bind(res);
+  res.json = (body: any) => {
+    try {
+      return original(normalize(body, req));
+    } catch {
+      return original(body);
     }
-  });
-
+  };
   next();
 });
 
-(async () => {
-  // Register wishlist routes
-  app.use("/api", wishlistRoutes);
-  
-  // Register intelligent wishlist routes
-  app.use("/api", intelligentWishlistRoutes);
-  
-  // Register AI Ops status routes
-  app.use("/api", aiOpsStatusRoutes);
-  
-  // Register business categories routes
-  app.use("/api", businessCategoriesRoutes);
-  
-  // Register AI retailer onboarding routes
-  app.use("/api", aiRetailerOnboardingRoutes);
-  
-  // Register inventory categories routes
-  app.use("/api", inventoryCategoriesRoutes);
-  
-  // Register AI Ops dashboard routes
-  app.use("/api", aiOpsDashboardRoutes);
-  
-  // Register comprehensive status routes
-  app.use(statusRoutes);
-  
-  // Register Beta Testing routes
-  const betaTestingRoutes = await import('./routes/betaTesting.js');
-  app.use("/api/beta", betaTestingRoutes.default);
-  
-  // Register Stripe Testing routes
-  const stripeTestRoutes = await import('./routes/stripeTest.js');
-  app.use("/api/stripe-test", stripeTestRoutes.default);
-  
-  // Register Cloudant Status routes
-  // @ts-ignore
-  const cloudantStatusRoutes = await import('./routes/cloudant-status.js');
-  app.use("/api", cloudantStatusRoutes.default);
-  
-  // Register optimized store routes BEFORE main routes for performance
-  registerOptimizedStoreRoutes(app);
-  
-  const server = await registerRoutes(app);
-
-  // Initialize AI Ops GPT System
+// Object Storage serving for public images
+import { ObjectStorageService } from "./objectStorage.js";
+app.get("/public-objects/:filePath(*)", async (req, res) => {
+  const filePath = req.params.filePath;
+  const objectStorageService = new ObjectStorageService();
   try {
-    // @ts-ignore
-    const { default: aiOps } = await import('./ai-ops.js');
-    console.log("✅ SPIRAL AI Ops GPT system initialized successfully");
-  } catch (error: any) {
-    console.log("⚠️ AI Ops initialization error:", error.message);
+    const file = await objectStorageService.searchPublicObject(filePath);
+    if (!file) {
+      return res.status(404).json({ error: "File not found" });
+    }
+    objectStorageService.downloadObject(file, res);
+  } catch (error) {
+    console.error("Error searching for public object:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
+});
 
-  // Initialize AI Dashboard Agents
+// 🔧 Optimized download image helper with enhanced verification
+async function downloadImage(url: string, filePath: string): Promise<boolean> {
   try {
-    // @ts-ignore
-    const aiDashboardAgentsRouter = await import('./routes/ai-dashboard-agents.js');
-    app.use('/api', aiDashboardAgentsRouter.default);
-    console.log('✅ AI Dashboard Agents registered: MallManager, Retailer, Shopper');
-  } catch (error: any) {
-    console.log("⚠️ AI Dashboard Agents initialization error:", error.message);
+    console.log(`📥 Downloading image to: ${filePath}`);
+    const response = await axios.get(url, { 
+      responseType: "arraybuffer",
+      timeout: 15000,
+      maxRedirects: 5
+    });
+    
+    // Ensure directory exists
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    
+    // Write file with binary buffer handling for better reliability
+    fs.writeFileSync(filePath, Buffer.from(response.data), "binary");
+    console.log(`💾 Saved image at ${filePath}`);
+    
+    // Enhanced verification: check file exists AND has content
+    if (fs.existsSync(filePath)) {
+      const stats = fs.statSync(filePath);
+      if (stats.size > 0) {
+        console.log(`✅ Successfully cached AI image: ${path.basename(filePath)} (${stats.size} bytes)`);
+        return true;
+      } else {
+        console.error(`⚠️ File saved but has 0 bytes: ${filePath}`);
+        return false;
+      }
+    } else {
+      console.error(`⚠️ File verification failed for ${filePath}`);
+      return false;
+    }
+  } catch (err) {
+    console.error("❌ Image download/save failed:", err.message);
+    return false;
   }
+}
 
-  // Initialize SOAP G Central Brain System
+// CRITICAL on Vercel/IBM to avoid https redirect loops
+app.set("trust proxy", true);
+
+// Optional: force HTTPS (safe w/ trust proxy) - skip for localhost in development
+app.use((req, res, next) => {
+  const isDev = process.env.NODE_ENV === 'development';
+  const isLocalhost = req.hostname === 'localhost' || req.hostname === '127.0.0.1';
+  if (isDev && isLocalhost) return next(); // Allow HTTP for local development
+  
+  const xfProto = req.headers["x-forwarded-proto"];
+  if (req.secure || xfProto === "https") return next();
+  return res.redirect(308, `https://${req.headers.host}${req.originalUrl}`);
+});
+
+// Optional: canonical host (set CANONICAL_HOST env or remove this block)
+const CANON = process.env.CANONICAL_HOST; // e.g., "spiralshops.com"
+app.use((req, res, next) => {
+  if (!CANON) return next();
+  const host = (req.headers.host || "").toLowerCase();
+  if (host !== CANON) return res.redirect(308, `https://${CANON}${req.originalUrl}`);
+  next();
+});
+
+// Security/infra
+applySecurity(app);
+app.use(morgan("tiny"));
+app.use(compression());
+
+// CRITICAL: Mount Stripe webhook BEFORE JSON parsers for signature verification
+// This prevents JSON parsing from consuming the raw body needed for signature verification
+app.use("/api/billing/webhook", express.raw({ type: "application/json" }), webhookRouter);
+console.log("✅ Stripe webhook endpoint mounted at /api/billing/webhook (BEFORE JSON parsers)");
+
+// Global parsers (mounted AFTER webhook to avoid interfering with signature verification)
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: false }));
+
+// Retailer context middleware (for billing system)
+app.use(retailerContext);
+
+// Tenant context
+app.use(tenantMiddleware);
+
+// Health (JSON only)
+app.get("/healthz", (_req, res) =>
+  res.type("application/json").status(200).json({
+    ok: true, service: "spiral-mall-integration", env: cfg.env, mode: "beta", ts: Date.now()
+  })
+);
+
+// APIs (JSON) — BEFORE static
+app.get("/api/health", (req: any, res) =>
+  res.type("application/json").json({ ok: true, mall: req.mallId || cfg.mallId, ts: Date.now() })
+);
+
+app.get("/api/theme", (req: any, res) =>
+  res.type("application/json").json(loadMallTheme(req.mallId || cfg.mallId!))
+);
+
+// SPIRAL Core API endpoints
+app.use("/api/shopper", shopperRoutes);
+app.use("/api/malls", mallsRoutes);
+app.use("/api/orders", ordersRoutes);
+app.use("/api/onboarding", onboardingRoutes);
+app.use("/api/legal", legalRoutes);
+app.use("/api/admin/promotions", adminPromotionsRoutes);
+app.use("/api/retailer", retailerRoutes);
+app.use("/api/seasonal", seasonalPromotionsRoutes);
+app.use("/api/spirals", spiralsRouter);
+app.use("/api/products", productsRoute);
+console.log("✅ SPIRALS loyalty system router mounted at /api/spirals");
+
+// Enhanced PostgreSQL-backed API endpoints
+app.use("/api/v2/malls", enhancedMallsRoutes);
+app.use("/api/v2/retailers", enhancedRetailersRoutes);
+app.use("/api/v2/compliance", enhancedComplianceRoutes);
+console.log("✅ Enhanced PostgreSQL routes mounted at /api/v2/*");
+
+// EJ AI Agent - PhD Level GTM Strategist
+app.use("/api/ej", ejAgentRouter);
+console.log("✅ EJ AI Agent (PhD GTM Strategist) mounted at /api/ej");
+
+// Stripe Billing System routes (webhook already mounted before JSON parsers)
+app.use("/api/billing", billing);
+app.use("/api/gated", demoGated);
+console.log("✅ Stripe Billing System (Free/Silver/Gold) mounted at /api/billing");
+
+// Beta API System
+app.use("/api/beta", betaApiRouter);
+console.log("✅ Beta API System mounted at /api/beta");
+
+// Share API System  
+app.use("/api/share", shareApiRouter);
+console.log("✅ Share API System mounted at /api/share");
+
+// AI Image Generation System
+import generateImagesRouter from "./routes/generateImages.js";
+app.use("/api/images", generateImagesRouter);
+console.log("✅ AI Image Generation System mounted at /api/images");
+
+// Product Images Download/Upload System
+app.get("/api/download/product-images-template", (req, res) => {
+  const csvPath = path.join(__dirname, "../SPIRAL_Product_Images_Template.csv");
+  res.download(csvPath, "SPIRAL_Product_Images_Template.csv");
+});
+
+app.get("/api/download/image-instructions", (req, res) => {
+  const mdPath = path.join(__dirname, "../IMAGE_UPLOAD_INSTRUCTIONS.md");
+  res.download(mdPath, "SPIRAL_Image_Upload_Instructions.md");
+});
+
+console.log("✅ Product Images Download System mounted at /api/download");
+
+// ✅ Add normalization function at top of server
+const PLACEHOLDER_IMAGE = "https://via.placeholder.com/300x400.png?text=No+Image";
+
+function normalizeProducts(products: any[]) {
+  if (!Array.isArray(products)) return products;
+  return products.map(p => ({
+    ...p,
+    image: p.image && p.image.trim() !== "" ? p.image : PLACEHOLDER_IMAGE
+  }));
+}
+
+// 🔧 SPIRAL AI Image Pre-Generator - Runs at startup to cache all product images
+async function preGenerateImages() {
+  console.log("🔄 Starting AI pre-generation for products...");
+  
   try {
-    // @ts-ignore
-    const soapGRouter = await import('./routes/soap-g-central-brain.js');
-    app.use('/api', soapGRouter.default);
-    console.log('🧠 SOAP G Central Brain routes mounted at /api');
-    console.log('✅ Mall Manager AI, Retailer AI, Shopper Engagement AI');
-    console.log('✅ Social Media AI, Marketing & Partnerships AI, Admin AI');
-  } catch (error: any) {
-    console.log("⚠️ SOAP G Central Brain initialization error:", error.message);
-  }
+    // Get all products from SpiralApi
+    const productsResponse = await SpiralApi.products("", {});
+    const products = Array.isArray(productsResponse) ? productsResponse : productsResponse.products || [];
+    
+    console.log(`🎨 Pre-generating images for ${products.length} products...`);
+    
+    for (const product of products) {
+      // 🔒 Security: Sanitize product ID to prevent path traversal
+      const sanitizedId = String(product.id).replace(/[^A-Za-z0-9_-]/g, '');
+      if (!sanitizedId) {
+        console.warn(`⚠️ Skipping product with invalid ID: ${product.id}`);
+        continue;
+      }
+      
+      const fileName = `beta-${sanitizedId}.png`;
+      const filePath = path.join(staticImagesDir, fileName);
+      
+      // 🔒 Security: Verify file path is within allowed directory
+      if (!filePath.startsWith(staticImagesDir)) {
+        console.warn(`⚠️ Security: Blocked path traversal attempt for ${product.name}`);
+        continue;
+      }
 
-  // Initialize Invite to Shop routes
+      // Check if already cached
+      if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
+        console.log(`⚡ Cache hit for ${product.name}`);
+        continue;
+      }
+
+      try {
+        console.log(`🎨 Generating AI image for: ${product.name}`);
+        
+        const result = await openaiClient.images.generate({
+          model: "dall-e-2",
+          prompt: `Professional product photo of ${product.name}, clean white background, high quality, commercial photography style`,
+          size: "512x512",
+          n: 1,
+        });
+
+        const imageUrl = result.data[0].url;
+        const downloadSuccess = await downloadImage(imageUrl, filePath);
+
+        if (downloadSuccess && fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
+          console.log(`✅ Pre-generated AI image for ${product.name}`);
+        } else {
+          throw new Error("File did not save correctly");
+        }
+      } catch (err) {
+        console.error(`⚠️ Could not generate image for ${product.name}:`, err.message);
+        // Continue to next product - placeholders will be handled in API
+      }
+    }
+    
+    console.log("🎯 Pre-generation complete!");
+  } catch (err) {
+    console.error("❌ Pre-generation failed:", err.message);
+  }
+}
+
+// 🔧 Enhanced AI image generation with timeout and parallel processing (kept for compatibility)
+async function attachAIImages(products: any[]) {
+  // Now just attaches cached images or placeholders - no generation
+  for (const product of products) {
+    // 🔒 Security: Sanitize product ID to prevent path traversal
+    const sanitizedId = String(product.id).replace(/[^A-Za-z0-9_-]/g, '');
+    if (!sanitizedId) {
+      product.image = `https://via.placeholder.com/512x512.png?text=${encodeURIComponent(product.name)}`;
+      continue;
+    }
+    
+    const fileName = `beta-${sanitizedId}.png`;
+    const filePath = path.join(staticImagesDir, fileName);
+    
+    // 🔒 Security: Verify file path is within allowed directory
+    if (!filePath.startsWith(staticImagesDir)) {
+      product.image = `https://via.placeholder.com/512x512.png?text=${encodeURIComponent(product.name)}`;
+      continue;
+    }
+    
+    if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
+      // Use object storage for Beta products, local images for others
+      product.image = fileName.startsWith('beta-') ? `/public-objects/${fileName}` : `/images/${fileName}`;
+    } else {
+      product.image = `https://via.placeholder.com/512x512.png?text=${encodeURIComponent(product.name)}`;
+    }
+  }
+  
+  return products;
+}
+
+// 🔧 AI Image Cache Monitoring Endpoint - Enhanced Status & Statistics  
+app.get("/api/memory-status", async (req: any, res) => {
   try {
-    // @ts-ignore
-    const inviteToShopRouter = await import('./routes/inviteToShop.js');
-    app.use('/api/invite-to-shop', inviteToShopRouter.default);
-    console.log('✅ Invite to Shop AI-enhanced workflow routes loaded successfully');
-  } catch (error: any) {
-    console.log("⚠️ Invite to Shop routes initialization error:", error.message);
+    const files = fs.readdirSync(staticImagesDir);
+    const cachedImageFiles = files.filter(f => f.endsWith('.png'));
+    
+    // Get detailed file info
+    const imageDetails = cachedImageFiles.map(fileName => {
+      const filePath = path.join(staticImagesDir, fileName);
+      const stats = fs.statSync(filePath);
+      return {
+        fileName,
+        size: stats.size,
+        created: stats.birthtime.toISOString(),
+        productId: fileName.replace('beta-', '').replace('.png', '')
+      };
+    });
+    
+    const totalCacheSize = imageDetails.reduce((sum, img) => sum + img.size, 0);
+    
+    // 🆕 Enhanced monitoring: Get product image status like Beta code
+    let productImageStatus = [];
+    try {
+      const productsResponse = await SpiralApi.products(req.mallId, {});
+      const products = Array.isArray(productsResponse) ? productsResponse : productsResponse.products || [];
+      
+      productImageStatus = products.map((product: any) => {
+        const sanitizedId = String(product.id).replace(/[^A-Za-z0-9_-]/g, '');
+        const fileName = `beta-${sanitizedId}.png`;
+        const filePath = path.join(staticImagesDir, fileName);
+        const hasCache = fs.existsSync(filePath) && fs.statSync(filePath).size > 0;
+        
+        return {
+          productId: product.id,
+          name: product.name,
+          hasCache,
+          imageUrl: hasCache ? (fileName.startsWith('beta-') ? `/public-objects/${fileName}` : `/images/${fileName}`) : null,
+          cacheFileName: hasCache ? fileName : null
+        };
+      });
+    } catch (err) {
+      console.error("❌ Could not fetch product status:", err.message);
+    }
+    
+    res.json({
+      status: "operational", 
+      cacheDirectory: staticImagesDir,
+      cachedImages: cachedImageFiles.length,
+      totalCacheSize: `${(totalCacheSize / 1024 / 1024).toFixed(2)} MB`,
+      imageDetails,
+      productImageStatus, // 🆕 Enhanced: Shows which products have cached images
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error("❌ Memory status check failed:", err.message);
+    res.status(500).json({ 
+      error: "Failed to check cache status",
+      cacheDirectory: staticImagesDir,
+      timestamp: new Date().toISOString()
+    });
   }
+});
 
-  // Initialize QR Code routes
+// 🆕 Force Refresh Endpoint - Regenerates ALL Product Images (Based on Beta Code)
+app.post("/api/beta-refresh-images", async (req: any, res) => {
+  // 🔒 Security: Admin authentication required
+  const adminToken = req.headers["x-admin-token"] || req.headers["authorization"]?.replace("Bearer ", "");
+  const expectedToken = process.env.ADMIN_PASS || process.env.STAFF_TOKEN;
+  
+  if (!adminToken || adminToken !== expectedToken) {
+    return res.status(401).json({ 
+      error: "Unauthorized: Admin access required",
+      message: "Force refresh requires admin authentication" 
+    });
+  }
+  
+  console.log("♻️ Force refresh triggered by admin: regenerating all SPIRAL product images...");
+  
   try {
-    // @ts-ignore
-    const qrInviteRouter = await import('./routes/qrInviteRoutes.js');
-    app.use('/api/qr', qrInviteRouter.default);
-    console.log('✅ QR Code generation and analytics routes loaded successfully');
-  } catch (error: any) {
-    console.log("⚠️ QR routes initialization error:", error.message);
-  }
+    // Get all products from SpiralApi (not hardcoded like Beta code)
+    const productsResponse = await SpiralApi.products(req.mallId, {});
+    const products = Array.isArray(productsResponse) ? productsResponse : productsResponse.products || [];
+    
+    const results = [];
+    
+    for (const product of products) {
+      // 🔒 Security: Sanitize product ID to prevent path traversal (our existing security)
+      const sanitizedId = String(product.id).replace(/[^A-Za-z0-9_-]/g, '');
+      if (!sanitizedId) {
+        console.warn(`⚠️ Skipping product with invalid ID: ${product.id}`);
+        results.push({
+          productId: product.id,
+          name: product.name,
+          status: "skipped",
+          reason: "Invalid product ID"
+        });
+        continue;
+      }
+      
+      // Use Beta naming convention (beta-{id}.png)
+      const fileName = `beta-${sanitizedId}.png`;
+      const filePath = path.join(staticImagesDir, fileName);
+      
+      // 🔒 Security: Verify file path is within allowed directory (our existing security)
+      if (!filePath.startsWith(staticImagesDir)) {
+        console.warn(`⚠️ Security: Blocked path traversal attempt for ${product.name}`);
+        results.push({
+          productId: product.id,
+          name: product.name,
+          status: "blocked",
+          reason: "Security: Path traversal attempt"
+        });
+        continue;
+      }
 
-  // Initialize QR Campaign Templates routes
+      try {
+        console.log(`🔄 Force refreshing AI image for: ${product.name}`);
+        
+        // 🔧 Fixed: Use dall-e-2 instead of Beta's incorrect "gpt-image-1"
+        const result = await openaiClient.images.generate({
+          model: "dall-e-2",
+          prompt: `Professional product photo of ${product.name}, clean white background, high quality, commercial photography style`,
+          size: "512x512",
+          n: 1,
+        });
+
+        const imageUrl = result.data[0].url;
+        const downloadSuccess = await downloadImage(imageUrl, filePath);
+
+        if (downloadSuccess && fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
+          console.log(`✅ Force refreshed AI image for ${product.name}`);
+          results.push({
+            productId: product.id,
+            name: product.name,
+            status: "refreshed",
+            imageUrl: fileName.startsWith('beta-') ? `/public-objects/${fileName}` : `/images/${fileName}`,
+            fileName: fileName
+          });
+        } else {
+          throw new Error("File did not save correctly");
+        }
+      } catch (err) {
+        console.error(`⚠️ Refresh failed for ${product.name}:`, err.message);
+        results.push({
+          productId: product.id,
+          name: product.name,
+          status: "failed",
+          error: err.message
+        });
+      }
+    }
+    
+    const successCount = results.filter(r => r.status === "refreshed").length;
+    const failureCount = results.filter(r => r.status === "failed").length;
+    
+    console.log(`🎯 Force refresh complete! ${successCount} succeeded, ${failureCount} failed`);
+    
+    res.json({ 
+      status: "ok", 
+      message: `Force refresh complete: ${successCount} succeeded, ${failureCount} failed`,
+      totalProducts: products.length,
+      successCount,
+      failureCount,
+      results,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error("❌ Force refresh failed:", err.message);
+    res.status(500).json({
+      status: "error",
+      error: err.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ✅ Products API with pre-cached images (instant response)
+app.get("/api/products", async (req: any, res) => {
   try {
-    // @ts-ignore
-    const qrCampaignTemplatesRouter = await import('./routes/qrCampaignTemplates.js');
-    app.use('/api/qr', qrCampaignTemplatesRouter.default);
-    console.log('✅ QR Campaign Templates routes loaded successfully');
-  } catch (error: any) {
-    console.log("⚠️ QR Campaign Templates routes initialization error:", error.message);
-  }
+    const productsResponse = await SpiralApi.products(req.mallId, req.query as any);
+    let products = Array.isArray(productsResponse) ? productsResponse : productsResponse.products || [];
 
-  // Initialize Internal Platform Monitor
+    // 🚀 Attach pre-cached images (instant, no generation delay)
+    products = await attachAIImages(products);
+
+    const response = products.map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      image: p.image,
+    }));
+
+    res.json(response);
+  } catch (err) {
+    console.error("❌ Error fetching products:", err);
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
+});
+
+// ✅ Health/test route with product count
+app.get("/api/test", async (req: any, res) => {
   try {
-    // @ts-ignore
-    const internalMonitorRouter = await import('./routes/internal-platform-monitor.js');
-    app.use('/api/internal-monitor', internalMonitorRouter.default);
-    console.log('🤖 Internal Platform AI Agent routes loaded successfully');
-    console.log('✅ Continuous monitoring: UI/UX, bottlenecks, crash points, onboarding');
-  } catch (error: any) {
-    console.log("⚠️ Internal Platform Monitor initialization error:", error.message);
+    const productsResponse = await SpiralApi.products(req.mallId, req.query as any);
+    const products = Array.isArray(productsResponse) ? productsResponse : productsResponse.products || [];
+    res.json({ 
+      status: "ok", 
+      products: products.length,
+      ai_images: "enabled",
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.json({ 
+      status: "error", 
+      products: 0,
+      ai_images: "enabled",
+      error: err.message
+    });
   }
+});
 
-  // Initialize Site Testing Agent
-  try {
-    // @ts-ignore
-    const siteTestingRouter = await import('./routes/site-testing-agent.js');
-    app.use('/api/site-testing', siteTestingRouter.default);
-    console.log('🧪 Site Testing AI Agent routes loaded successfully');
-    console.log('✅ Real-time user journey testing: Homepage, Products, Stores, Signup flows');
-  } catch (error: any) {
-    console.log("⚠️ Site Testing Agent initialization error:", error.message);
-  }
-
-  // Initialize Continuous Optimization Agent
-  try {
-    // @ts-ignore
-    const continuousOptimizationRouter = await import('./routes/continuous-optimization-agent.js');
-    app.use('/api/continuous-optimization', continuousOptimizationRouter.default);
-    console.log('🔄 Continuous Optimization AI Agent routes loaded successfully');
-    console.log('✅ Automated performance monitoring, testing, and optimization');
-  } catch (error: any) {
-    console.log("⚠️ Continuous Optimization Agent initialization error:", error.message);
-  }
-
-  // Initialize Admin Command Center
-  try {
-    const adminCommandCenterRouter = require('./routes/adminCommandCenter.js');
-    app.use('/api/admin-command-center', adminCommandCenterRouter);
-    console.log('🎛️ Admin Command Center initialized with enhanced KPI collection');
-  } catch (error: any) {
-    console.log("⚠️ Admin Command Center initialization error:", error.message);
-  }
-
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
+// ✅ Test product route for image verification  
+app.get("/api/test-product", (req, res) => {
+  res.json({
+    id: 999,
+    name: "Test Product",
+    price: 0,
+    image: "https://spiralshops-cdn.com/images/test-image.png"
   });
+});
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
+// ✅ Discover endpoint (flat array, same shape as products)
+app.get("/api/discover", async (req: any, res) => {
+  try {
+    const productsResponse = await SpiralApi.products(req.mallId, req.query as any);
+    let products = Array.isArray(productsResponse) ? productsResponse : productsResponse.products || [];
+
+    // 🚀 Attach pre-cached images (instant, no generation delay)
+    products = await attachAIImages(products);
+
+    // Return flat array format (same as products endpoint)
+    res.json(products);
+  } catch (err) {
+    console.error("❌ Error fetching discover products:", err);
+    res.status(500).json({ error: "Failed to fetch discover products" });
+  }
+});
+
+// ✅ Plans endpoint (Stripe Price IDs from env)
+app.get("/api/plans", (req, res) => {
+  res.json([
+    { name: "Silver", id: process.env.STRIPE_PRICE_SILVER || "price_missing_silver" },
+    { name: "Gold", id: process.env.STRIPE_PRICE_GOLD || "price_missing_gold" },
+  ]);
+});
+
+// Featured Products API with Image Healing
+app.get("/api/products/featured", async (req: any, res, next) => {
+  try {
+    const allProducts = await SpiralApi.products(req.mallId, req.query as any);
+    
+    // Filter for featured products
+    const featuredProducts = (Array.isArray(allProducts) ? allProducts : allProducts.products || [])
+      .slice(0, 6)
+      .map((product: any) => ({
+        ...product,
+        featured: true,
+        discount: Math.floor(Math.random() * 30) + 10, // 10-40% discount
+        originalPrice: (product.price * 1.2).toFixed(2)
+      }));
+    
+    // Apply image healing to ensure all products have valid images
+    const healedProducts = await validateAndHealMultipleImages(featuredProducts);
+    
+    res.type("application/json").json({
+      success: true,
+      products: healedProducts,
+      total: healedProducts.length
+    });
+  } catch (e) { 
+    console.error('Featured products error:', e);
+    next(e); 
+  }
+});
+
+app.get("/api/stores", async (req: any, res, next) => {
+  try { res.type("application/json").json(await SpiralApi.stores(req.mallId, req.query as any)); }
+  catch (e) { next(e); }
+});
+
+app.get("/api/search", async (req: any, res, next) => {
+  try {
+    const q = String(req.query.q || "");
+    res.type("application/json").json(await SpiralApi.search(req.mallId, q));
+  } catch (e) { next(e); }
+});
+
+/**
+ * --- SPIRAL Phase 2 Test Routes ---
+ * These endpoints feed mock/demo JSON for frontend validation
+ */
+
+// Entities (stores + malls)
+app.get("/test/entities", (req, res) => {
+  res.json({
+    ok: true,
+    entities: [
+      { type: "store", name: "North Loop Coffee", category: "Cafe", zipCode: "55401" },
+      { type: "mall", name: "Mall of America", location: "Bloomington, MN" }
+    ]
+  });
+});
+
+// Rewards (shopper rewards dashboard)
+app.get("/test/rewards", (req, res) => {
+  const txs = [
+    { id: "tx1", earned: 200, txnType: "earn", store: "North Loop Coffee", ts: "2025-09-01T10:00:00Z" },
+    { id: "tx2", redeemed: 100, txnType: "redeem", store: "Mill City Boutique", ts: "2025-09-05T14:30:00Z" }
+  ];
+
+  res.json({
+    ok: true,
+    rewards: {
+      balance: 1500,
+      lifetimeEarned: 2000,
+      lifetimeRedeemed: 500,
+      recent: txs
+    }
+  });
+});
+
+// Mall events
+app.get("/test/events", (req, res) => {
+  res.json({
+    ok: true,
+    events: [
+      { mall: "Mall of America", title: "Makers Market", date: "2025-10-05", description: "Pop-up artisans." },
+      { mall: "Ridgedale Center", title: "Fall Fashion Night", date: "2025-10-18", description: "Runway + discounts." }
+    ]
+  });
+});
+
+// Combined dashboard (entities + rewards + events)
+app.get("/test/dashboard", (req, res) => {
+  res.json({
+    ok: true,
+    dashboard: {
+      entities: [
+        { type: "store", name: "North Loop Coffee", category: "Cafe", zipCode: "55401" },
+        { type: "mall", name: "Mall of America", location: "Bloomington, MN" }
+      ],
+      rewards: {
+        balance: 1500,
+        lifetimeEarned: 2000,
+        lifetimeRedeemed: 500,
+        recent: [
+          { id: "tx1", earned: 200, txnType: "earn", store: "North Loop Coffee", ts: "2025-09-01T10:00:00Z" },
+          { id: "tx2", redeemed: 100, txnType: "redeem", store: "Mill City Boutique", ts: "2025-09-05T14:30:00Z" }
+        ]
+      },
+      events: [
+        { mall: "Mall of America", title: "Makers Market", date: "2025-10-05", description: "Pop-up artisans." },
+        { mall: "Ridgedale Center", title: "Fall Fashion Night", date: "2025-10-18", description: "Runway + discounts." }
+      ]
+    }
+  });
+});
+
+// Clara + Metrics (JSON) — BEFORE static & SPA
+mountClara(app);
+mountMetrics(app);
+
+// Static AFTER APIs
+app.use("/static", express.static("dist", { fallthrough: false, immutable: true, maxAge: "30d" }));
+app.use("/avatars", express.static("public/avatars", { fallthrough: true, maxAge: "30d" }));
+
+// SPA fallback is handled by Vite middleware in setupVite() - no need for custom fallback
+
+// Error handler — JSON for API paths
+app.use((err: any, req: express.Request, res: express.Response, _next: any) => {
+  const wantsJson = req.path.startsWith("/api") || req.path === "/healthz";
+  const status = Number(err?.status || 500);
+  const payload = { ok: false, error: String(err?.message || err || "Internal Error") };
+  if (wantsJson) return res.status(status).type("application/json").json(payload);
+  res.status(status).send(payload.error);
+});
+
+// Setup Vite development server for SPA routing
+async function startServer() {
+  const httpServer = createServer(app);
+  
+  if (process.env.NODE_ENV === 'development') {
+    // Mount Vite middleware for dev server + SPA fallback
+    await setupVite(app, httpServer);
+    console.log("✅ Vite development middleware mounted");
   } else {
-    serveStatic(app);
+    // In production, serve static files and SPA fallback would be handled differently
+    console.log("✅ Production mode - static serving");
   }
+  
+  httpServer.listen(cfg.port, () => console.log(`🚀 Server running on port ${cfg.port}`));
+}
 
-  // Use PORT environment variable (Replit injects this) or fallback to 5000
-  // This serves both the API and the client.
-  const PORT = process.env.PORT || 5000;
-  server.listen({
-    port: PORT,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`Server listening on ${PORT}`);
-  });
+// 🚀 SPIRAL AI Pre-Generator Startup: Pre-generate images BEFORE serving requests
+(async () => {
+  try {
+    // Pre-generate all product images at startup
+    await preGenerateImages();
+    
+    // Then start the server
+    await startServer();
+  } catch (err) {
+    console.error("❌ Failed to start server:", err);
+    process.exit(1);
+  }
 })();

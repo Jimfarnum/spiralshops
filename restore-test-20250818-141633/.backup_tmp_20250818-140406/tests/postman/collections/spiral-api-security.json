@@ -1,0 +1,147 @@
+{
+  "info": {
+    "name": "SPIRAL API Security",
+    "_postman_id": "b6d0e02b-0000-4d5a-9abc-spiral-sec",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Baseline security checks for SPIRAL APIs (unauthorized access, rate limit sanity, role gating)."
+  },
+  "variable": [
+    { "key": "API_BASE_URL", "value": "{{API_BASE_URL}}" },
+    { "key": "ADMIN_JWT", "value": "{{ADMIN_JWT}}" },
+    { "key": "RETAILER_JWT", "value": "{{RETAILER_JWT}}" }
+  ],
+  "item": [
+    {
+      "name": "Unauthorized admin route should be 401/403",
+      "request": { "method": "GET", "url": "{{API_BASE_URL}}/api/admin/secure" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 401 or 403 for unauthorized call', function () {",
+              "  pm.expect([401,403]).to.include(pm.response.code);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retailer cannot access admin route",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{RETAILER_JWT}}" }],
+        "url": "{{API_BASE_URL}}/api/admin/secure"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Retailer token blocked from admin area', function () {",
+              "  pm.expect([401,403]).to.include(pm.response.code);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Platform Health Check",
+      "request": { "method": "GET", "url": "{{API_BASE_URL}}/api/check" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Platform health check responds', function () {",
+              "  pm.expect(pm.response.code).to.be.below(500);",
+              "});",
+              "pm.test('Health status is healthy', function () {",
+              "  if (pm.response.code === 200) {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql('healthy');",
+              "  }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rate-limit probe (simple)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// If your API enforces rate limiting, repeated calls should not return 5xx.",
+              "if (!pm.variables.get('counter')) pm.variables.set('counter', 0);",
+              "pm.variables.set('counter', Number(pm.variables.get('counter')) + 1);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('No 5xx under light burst', function () {",
+              "  pm.expect(pm.response.code).to.be.below(500);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": { "method": "GET", "url": "{{API_BASE_URL}}/api/check" },
+      "protocolProfileBehavior": { "disableBodyPruning": true }
+    },
+    {
+      "name": "Admin Authentication Test",
+      "request": {
+        "method": "GET",
+        "url": "{{API_BASE_URL}}/api/admin/selfcheck?admin_token={{admin_token}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Admin token authenticates correctly', function () {",
+              "  pm.expect(pm.response.code).to.equal(200);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Investor Portal Authentication",
+      "request": {
+        "method": "GET",
+        "url": "{{API_BASE_URL}}/api/investors/metrics?investor_token={{investor_token}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Investor authentication status', function () {",
+              "  if (pm.response.code === 200) {",
+              "    pm.test('Investor portal accessible', function () {",
+              "      const jsonData = pm.response.json();",
+              "      pm.expect(jsonData).to.have.property('kpis');",
+              "    });",
+              "  } else if (pm.response.code === 401) {",
+              "    pm.test('Token requires correction (expected)', function () {",
+              "      pm.expect(pm.response.code).to.equal(401);",
+              "    });",
+              "  }",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

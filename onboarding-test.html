@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPIRAL Onboarding & Marketing Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        button { padding: 10px 20px; margin: 10px 5px; background: #007cba; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #005a87; }
+        pre { background: #f5f5f5; padding: 15px; border-radius: 4px; overflow-x: auto; max-height: 300px; }
+        h2 { color: #333; margin-top: 0; }
+        input, select { padding: 6px; margin: 5px; }
+        #msg { width: 280px; }
+    </style>
+</head>
+<body>
+    <h1>SPIRAL Platform - Onboarding & Marketing Testing</h1>
+    
+    <section>
+        <h2>Onboarding (Retailers & Malls)</h2>
+        <button onclick="listRetApps()">List Retailer Apps</button>
+        <button onclick="listMallApps()">List Mall Apps</button>
+        <pre id="appsOut"></pre>
+        <button onclick="demoRetailerApply()">Demo Retailer Apply</button>
+        <button onclick="demoMallApply()">Demo Mall Apply</button>
+        <pre id="applyOut"></pre>
+    </section>
+
+    <section>
+        <h2>Security & Marketing</h2>
+        <button onclick="secScan()">Run Security Scan</button>
+        <pre id="secOut"></pre>
+
+        <input id="msg" value="Hello from SPIRAL!" style="padding:6px; width:280px">
+        <select id="chan">
+            <option value="x">X</option>
+            <option value="tiktok">TikTok</option>
+            <option value="instagram">Instagram</option>
+            <option value="facebook">Facebook</option>
+            <option value="truth">Truth Social</option>
+        </select>
+        <button onclick="mkPost()">Create Social Post</button>
+        <pre id="mktOut"></pre>
+    </section>
+
+    <script>
+        // Helper function to build API URLs
+        function u(path) {
+            return window.location.origin + path;
+        }
+
+        async function listRetApps() { 
+            try {
+                const r = await fetch(u('/api/retailers/apps')); 
+                const data = await r.json();
+                document.getElementById('appsOut').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('appsOut').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function listMallApps() { 
+            try {
+                const r = await fetch(u('/api/malls/apps')); 
+                const data = await r.json();
+                document.getElementById('appsOut').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('appsOut').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function demoRetailerApply() {
+            try {
+                const body = {
+                    business_name: "Demo Boutique",
+                    categories: ["apparel", "gifts"],
+                    shipping_free_us: true,
+                    shipping_carriers: ["USPS", "UPS"],
+                    bopis: true, 
+                    pos_sync: true, 
+                    gift_cards: true,
+                    returns: "30 days, unworn with tags",
+                    contact: { 
+                        name: "Alex Retailer", 
+                        email: "alex@example.com" 
+                    }
+                };
+                const r = await fetch(u('/api/retailers/apply'), {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(body)
+                });
+                const data = await r.json();
+                document.getElementById('applyOut').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('applyOut').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function demoMallApply() {
+            try {
+                const body = {
+                    mall_name: "Northside Galleria",
+                    city: "Minneapolis", 
+                    state: "MN",
+                    contact: { 
+                        name: "Mall Ops", 
+                        email: "ops@example.com" 
+                    },
+                    wants_spiral_center: true
+                };
+                const r = await fetch(u('/api/malls/apply'), {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(body)
+                });
+                const data = await r.json();
+                document.getElementById('applyOut').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('applyOut').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function secScan() { 
+            try {
+                const r = await fetch(u('/api/security/scan'), { method: 'POST' }); 
+                const data = await r.json();
+                document.getElementById('secOut').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('secOut').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function mkPost() {
+            try {
+                const r = await fetch(u('/api/marketing/post'), {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        channel: document.getElementById('chan').value, 
+                        message: document.getElementById('msg').value 
+                    })
+                });
+                const data = await r.json();
+                document.getElementById('mktOut').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('mktOut').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        // Auto-load data on page load
+        window.addEventListener('load', () => {
+            console.log('🚀 SPIRAL Onboarding & Marketing Test Interface Loaded');
+        });
+    </script>
+</body>
+</html>

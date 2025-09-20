@@ -1,0 +1,45 @@
+node_modules
+dist
+.DS_Store
+server/public
+vite.config.ts.*
+*.tar.gz# deps & builds
+node_modules/
+dist/
+build/
+.next/
+.cache/
+
+# env & secrets
+.env
+.env.*
+!.env.example
+# logs & OS junk
+*.log
+logs/
+Thumbs.db
+# heavy/out-of-repl dirs - checkpoint optimization
+attached_assets/
+security-reports/
+backups/
+_to-migrate/
+_external-storage-ready/
+
+# Additional checkpoint optimization
+*.tar.gz
+*.zip
+*.PNG
+*.jpg
+*.jpeg
+*.png
+dist/
+build/
+.cache/
+
+# Large documentation files
+*documentation*.tar.gz
+*assets*.tar.gz
+*SPIRAL_COMPLETE*.md
+agents/techwatch/reports/*/shots/
+agents/funnels/out/*/shots/
+agents/funnels/out/*.png

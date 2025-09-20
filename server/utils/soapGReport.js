@@ -1,8 +1,17 @@
 // SOAP G Reporting Helper for QR Code Activities
 export default async function soapGReport({ agent, action, data }) {
   try {
-    // Internal SOAP G endpoint for cross-agent reporting
-    const response = await fetch(`${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/api/soap-g/cross-agent-report`, {
+    // Internal SOAP G endpoint for cross-agent reporting  
+    let baseUrl = 'http://localhost:5000';
+    if (process.env.REPLIT_DEV_DOMAIN) {
+      const domain = process.env.REPLIT_DEV_DOMAIN.trim();
+      if (domain.startsWith('http://') || domain.startsWith('https://')) {
+        baseUrl = domain;
+      } else {
+        baseUrl = `https://${domain}`;
+      }
+    }
+    const response = await fetch(`${baseUrl}/api/soap-g/cross-agent-report`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",

@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { ShoppingCart, CreditCard, Shield, ArrowLeft, Package } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useCartStore } from '@/lib/cartStore';
+import SpiralsExplainer from '@/components/SpiralsExplainer';
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
@@ -321,6 +322,9 @@ export default function Checkout() {
                   <p className="text-sm text-green-700">
                     💰 You'll earn <strong>{Math.floor(total * 5)}</strong> SPIRAL points with this purchase!
                   </p>
+                  <div className="mt-2">
+                    <SpiralsExplainer triggerText="How SPIRALS work" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
