@@ -79,6 +79,8 @@ Preferred server configuration: Simplified JavaScript server using `node server/
 - ✅ **Legal Document Integration**: All legal pages accessible via /legal/ routes, footer integration with LegalLinks component, redirect system for backward compatibility
 - **Status**: Full-stack SPIRAL platform with cross-platform mobile apps, memory optimization, complete navigation, 18 AI agents, iPhone/Android deployment ready, checkpoint issue resolved with clean export solution, strategic audit system operational, comprehensive backup and restore testing systems deployed, 21-day beta launch framework implemented, permanent SSL certificate security solution deployed with comprehensive monitoring, **production deployment issues completely resolved, Minnesota LLC legal framework fully operational**
 
+**Note**: GitHub integration not using Replit's connector system - manual git configuration may be needed if push issues persist with cached credentials from previous account.
+
 ## External Dependencies
 
 - **React Ecosystem**: React, React DOM, React Hook Form
