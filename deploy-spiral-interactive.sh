@@ -5,7 +5,7 @@ set -euo pipefail
 APP_NAME="spiralshops-app"
 BUILD_NAME="spiralshops-build"
 PROJECT_NAME="spiralshops-proj"
-GITHUB_TOKEN="REMOVED"
+GITHUB_TOKEN="$GITHUB_TOKEN"
 REPO_URL="https://github.com/spiralshopsplatform/shopspiral.git"
 PORT=5000
 CPU="1"
