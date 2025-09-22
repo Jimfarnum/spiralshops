@@ -9,7 +9,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-const ENABLE_FALLBACK = process.env.TS_FALLBACK === 'true';
+const ENABLE_FALLBACK = process.env.TS_FALLBACK !== 'false'; // Default to true, disable with TS_FALLBACK=false
 
 console.log('🔨 TypeScript Build Pipeline Starting...');
 console.log(`📋 Fallback mode: ${ENABLE_FALLBACK ? 'enabled' : 'disabled (fail on TS errors)'}`);
