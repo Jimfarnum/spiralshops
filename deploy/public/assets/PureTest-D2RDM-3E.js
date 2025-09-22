@@ -1,1 +1,0 @@
-import{j as e}from"./index-sTi6BLPu.js";function r(){return e.jsx("div",{style:{backgroundColor:"#000000",color:"#FFFFFF",height:"100vh",display:"flex",justifyContent:"center",alignItems:"center",fontFamily:"sans-serif"},children:e.jsx("h1",{children:"SPIRAL Pure Background Test"})})}export{r as default};

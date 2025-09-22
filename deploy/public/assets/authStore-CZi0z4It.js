@@ -1,1 +1,0 @@
-import{a9 as t,aa as s,aN as r}from"./index-sTi6BLPu.js";const u=t()(s(a=>({user:null,isAuthenticated:!1,login:e=>{a({user:e,isAuthenticated:!0})},logout:()=>{a({user:null,isAuthenticated:!1})}}),{name:"spiral-auth-storage",storage:r(()=>localStorage)}));export{u};
