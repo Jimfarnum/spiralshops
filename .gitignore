@@ -169,3 +169,4 @@ agents/funnels/out/*.png
 
 # Agentic refs
 external/
+.vercel
