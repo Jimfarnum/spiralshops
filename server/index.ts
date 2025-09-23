@@ -277,6 +277,8 @@ app.get("/api/download/image-instructions", (req, res) => {
 
 console.log("✅ Product Images Download System mounted at /api/download");
 
+// 🔧 Remove duplicate /api/products/featured route - using canonical router implementation
+
 // ✅ Add normalization function at top of server
 const PLACEHOLDER_IMAGE = "https://via.placeholder.com/300x400.png?text=No+Image";
 
@@ -673,34 +675,7 @@ app.get("/api/plans", (req, res) => {
   ]);
 });
 
-// Featured Products API with Image Healing
-app.get("/api/products/featured", async (req: any, res, next) => {
-  try {
-    const allProducts = await SpiralApi.products(req.mallId, req.query as any);
-    
-    // Filter for featured products
-    const featuredProducts = (Array.isArray(allProducts) ? allProducts : allProducts.products || [])
-      .slice(0, 6)
-      .map((product: any) => ({
-        ...product,
-        featured: true,
-        discount: Math.floor(Math.random() * 30) + 10, // 10-40% discount
-        originalPrice: (product.price * 1.2).toFixed(2)
-      }));
-    
-    // Apply image healing to ensure all products have valid images
-    const healedProducts = await validateAndHealMultipleImages(featuredProducts);
-    
-    res.type("application/json").json({
-      success: true,
-      products: healedProducts,
-      total: healedProducts.length
-    });
-  } catch (e) { 
-    console.error('Featured products error:', e);
-    next(e); 
-  }
-});
+// 🔧 REMOVED: Duplicate /api/products/featured route - using canonical implementation in server/routes/products.ts
 
 app.get("/api/stores", async (req: any, res, next) => {
   try { res.type("application/json").json(await SpiralApi.stores(req.mallId, req.query as any)); }
