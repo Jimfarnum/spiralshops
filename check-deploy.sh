@@ -1,9 +1,11 @@
 #!/bin/bash
 # Check Spiralshops Vercel deployment
 
-DEPLOY_INFO=$(vercel ls spiralshops --limit=1 --json 2>/dev/null)
+# Get latest deployment info using vercel inspect on production
+DEPLOY_INFO=$(vercel inspect spiralshops --prod --json 2>/dev/null)
+
 URL=$(echo $DEPLOY_INFO | grep -o '"url":"[^"]*' | cut -d'"' -f4)
-STATE=$(echo $DEPLOY_INFO | grep -o '"state":"[^"]*' | cut -d'"' -f4)
+STATE=$(echo $DEPLOY_INFO | grep -o '"readyState":"[^"]*' | cut -d'"' -f4)
 DEPLOY_UID=$(echo $DEPLOY_INFO | grep -o '"uid":"[^"]*' | cut -d'"' -f4)
 COMMIT=$(echo $DEPLOY_INFO | grep -o '"commit":"[^"]*' | cut -d'"' -f4)
 
