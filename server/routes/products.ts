@@ -50,20 +50,13 @@ router.get("/", async (req, res) => {
     const formatted = products.map((p: any) => {
       const sanitizedId = String(p.id).replace(/[^A-Za-z0-9_-]/g, '');
       const fileName = `beta-${sanitizedId}.png`;
-      const filePath = path.join(staticImagesDir, fileName);
       
-      // Check if AI-generated image exists
-      if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
-        return {
-          ...p,
-          image: `/images/${fileName}` // Use 'image' field, not 'imageUrl'
-        };
-      } else {
-        return {
-          ...p,
-          image: '/images/default-product.png'
-        };
-      }
+      // 🚀 PRODUCTION FIX: Use object storage URLs for all AI-generated images
+      // These images are now uploaded to object storage and accessible via /public-objects/
+      return {
+        ...p,
+        image: `/public-objects/${fileName}` // Use object storage URLs for production compatibility
+      };
     });
 
     res.json(formatted);
@@ -91,20 +84,13 @@ router.get("/featured", async (req, res) => {
     const formatted = products.map((p: any) => {
       const sanitizedId = String(p.id).replace(/[^A-Za-z0-9_-]/g, '');
       const fileName = `beta-${sanitizedId}.png`;
-      const filePath = path.join(staticImagesDir, fileName);
       
-      // Check if AI-generated image exists
-      if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
-        return {
-          ...p,
-          image: `/images/${fileName}` // Use 'image' field with proper path
-        };
-      } else {
-        return {
-          ...p,
-          image: '/images/default-product.png'
-        };
-      }
+      // 🚀 PRODUCTION FIX: Use object storage URLs for featured products
+      // AI images are uploaded to object storage and accessible via /public-objects/
+      return {
+        ...p,
+        image: `/public-objects/${fileName}` // Production-ready object storage URLs
+      };
     });
 
     res.json(formatted);
