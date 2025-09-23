@@ -60,7 +60,7 @@ import { setupVite } from "./vite.js";
 const app = express();
 
 // 🔧 Initialize OpenAI client for AI image generation  
-// Deploy trigger: 2025-09-23T22:00:00Z - FIXED vercel.json routing + domain config
+// Deploy trigger: 2025-09-23T22:18:00Z - FIXED BUILD SYSTEM + fallback mode working
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
