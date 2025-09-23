@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "builds": [
+    {
+      "src": "server/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/dist/index.js"
+    },
+    {
+      "src": "/public-objects/(.*)",
+      "dest": "/static/images/$1"
+    },
+    {
+      "src": "/images/(.*)",
+      "dest": "/static/images/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "functions": {
+    "dist/index.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
