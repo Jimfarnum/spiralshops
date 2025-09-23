@@ -16,6 +16,8 @@ import {
   costProtection, 
   aiOperationLogger 
 } from '../middleware/security.js';
+import { validateInput, csvDataSchema, productImageSchema, sanitizeTextInputs, setAISecurityHeaders } from '../middleware/inputValidation.js';
+import { aiAuditLogger, securityAlertMiddleware } from '../middleware/auditLogging.js';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const router = express.Router();
@@ -34,7 +36,8 @@ async function downloadAndStoreImage(imageUrl: string, fileName: string): Promis
       throw new Error(`Failed to download image: ${imageResponse.statusText}`);
     }
     
-    const imageBuffer = await imageResponse.buffer();
+    const imageArrayBuffer = await imageResponse.arrayBuffer();
+    const imageBuffer = Buffer.from(imageArrayBuffer);
     
     // Upload to public object storage
     const storedPath = await objectStorageService.uploadFileToPublic(fileName, imageBuffer, 'image/png');
@@ -48,12 +51,17 @@ async function downloadAndStoreImage(imageUrl: string, fileName: string): Promis
   }
 }
 
-// 🔒 PROTECTED: Generate images for all products in CSV
+// 🔒 FULLY SECURED: Generate images for all products in CSV
 router.post('/auto-generate-product-images', 
+  setAISecurityHeaders,
+  securityAlertMiddleware,
+  sanitizeTextInputs,
+  validateInput(csvDataSchema),
   requireAdminAuth,
   aiEndpointLimiter,
   costProtection,
   aiOperationLogger('auto-generate-product-images'),
+  aiAuditLogger('auto-generate-product-images', 2.50), // High-cost operation
   async (req, res) => {
     try {
       console.log('🎨 Starting SECURED automated product image generation...');

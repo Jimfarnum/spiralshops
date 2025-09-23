@@ -34,6 +34,9 @@ import enhancedMallsRoutes from "./routes/enhancedMalls.js";
 import enhancedRetailersRoutes from "./routes/enhancedRetailers.js";
 import enhancedComplianceRoutes from "./routes/enhancedCompliance.js";
 
+// Security monitoring routes
+import securityHealthRoutes from "./routes/securityHealth.js";
+
 // EJ AI Agent - PhD Level GTM Strategist
 import ejAgentRouter from "./routes/ejAgent.js";
 
