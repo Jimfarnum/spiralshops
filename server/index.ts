@@ -47,6 +47,9 @@ import { retailerContext } from "./middleware/retailerContext.js";
 import betaApiRouter from "./routes/betaApi.js";
 import shareApiRouter from "./routes/shareApi.js";
 
+// 🔒 Security middleware for AI endpoints
+import { adminRefreshLimiter, requireAdminAuth, costProtection, aiOperationLogger } from './middleware/security.js';
+
 // Vite development server setup
 import { createServer } from "http";
 import { setupVite } from "./vite.js";
@@ -436,30 +439,30 @@ app.get("/api/memory-status", async (req: any, res) => {
   }
 });
 
-// 🆕 Force Refresh Endpoint - Regenerates ALL Product Images (Based on Beta Code)
-app.post("/api/beta-refresh-images", async (req: any, res) => {
-  // 🔒 Security: Admin authentication required
-  const adminToken = req.headers["x-admin-token"] || req.headers["authorization"]?.replace("Bearer ", "");
-  const expectedToken = process.env.ADMIN_PASS || process.env.STAFF_TOKEN;
+// 🔒 SECURE Force Refresh Endpoint - Regenerates ALL Product Images with Object Storage
+app.post("/api/beta-refresh-images", 
+  requireAdminAuth,
+  adminRefreshLimiter,
+  costProtection,
+  aiOperationLogger('beta-refresh-images'),
+  async (req: any, res) => {
   
-  if (!adminToken || adminToken !== expectedToken) {
-    return res.status(401).json({ 
-      error: "Unauthorized: Admin access required",
-      message: "Force refresh requires admin authentication" 
-    });
-  }
-  
-  console.log("♻️ Force refresh triggered by admin: regenerating all SPIRAL product images...");
+  console.log("🔒 SECURE force refresh triggered by admin: regenerating all SPIRAL product images with object storage...");
   
   try {
+    // Initialize object storage service for secure image storage
+    const { ObjectStorageService } = await import('./objectStorage.js');
+    const objectStorageService = new ObjectStorageService();
+    
     // Get all products from SpiralApi (not hardcoded like Beta code)
     const productsResponse = await SpiralApi.products(req.mallId, {});
     const products = Array.isArray(productsResponse) ? productsResponse : productsResponse.products || [];
     
     const results = [];
+    let successCount = 0;
     
     for (const product of products) {
-      // 🔒 Security: Sanitize product ID to prevent path traversal (our existing security)
+      // 🔒 Security: Sanitize product ID to prevent path traversal
       const sanitizedId = String(product.id).replace(/[^A-Za-z0-9_-]/g, '');
       if (!sanitizedId) {
         console.warn(`⚠️ Skipping product with invalid ID: ${product.id}`);
@@ -471,27 +474,11 @@ app.post("/api/beta-refresh-images", async (req: any, res) => {
         });
         continue;
       }
-      
-      // Use Beta naming convention (beta-{id}.png)
-      const fileName = `beta-${sanitizedId}.png`;
-      const filePath = path.join(staticImagesDir, fileName);
-      
-      // 🔒 Security: Verify file path is within allowed directory (our existing security)
-      if (!filePath.startsWith(staticImagesDir)) {
-        console.warn(`⚠️ Security: Blocked path traversal attempt for ${product.name}`);
-        results.push({
-          productId: product.id,
-          name: product.name,
-          status: "blocked",
-          reason: "Security: Path traversal attempt"
-        });
-        continue;
-      }
 
       try {
-        console.log(`🔄 Force refreshing AI image for: ${product.name}`);
+        console.log(`🔄 SECURE force refreshing AI image for: ${product.name}`);
         
-        // 🔧 Fixed: Use dall-e-2 instead of Beta's incorrect "gpt-image-1"
+        // 🔧 Generate image with secure OpenAI API
         const result = await openaiClient.images.generate({
           model: "dall-e-2",
           prompt: `Professional product photo of ${product.name}, clean white background, high quality, commercial photography style`,
@@ -500,22 +487,33 @@ app.post("/api/beta-refresh-images", async (req: any, res) => {
         });
 
         const imageUrl = result.data[0].url;
-        const downloadSuccess = await downloadImage(imageUrl, filePath);
-
-        if (downloadSuccess && fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
-          console.log(`✅ Force refreshed AI image for ${product.name}`);
-          results.push({
-            productId: product.id,
-            name: product.name,
-            status: "refreshed",
-            imageUrl: `/images/${fileName}`,
-            fileName: fileName
-          });
-        } else {
-          throw new Error("File did not save correctly");
+        
+        // 🔒 SECURE: Download and store in object storage instead of local filesystem
+        const imageResponse = await fetch(imageUrl);
+        if (!imageResponse.ok) {
+          throw new Error(`Failed to download image: ${imageResponse.statusText}`);
         }
+        
+        const imageArrayBuffer = await imageResponse.arrayBuffer();
+        const imageBuffer = Buffer.from(imageArrayBuffer);
+        const fileName = `beta-${sanitizedId}.png`;
+        
+        // Store securely in object storage
+        const storedPath = await objectStorageService.uploadFileToPublic(fileName, imageBuffer, 'image/png');
+        
+        console.log(`✅ SECURE force refreshed AI image for ${product.name}: ${storedPath}`);
+        successCount++;
+        results.push({
+          productId: product.id,
+          name: product.name,
+          status: "refreshed",
+          imageUrl: storedPath, // Object storage path
+          fileName: fileName,
+          secureStorage: true
+        });
+
       } catch (err) {
-        console.error(`⚠️ Refresh failed for ${product.name}:`, err.message);
+        console.error(`⚠️ SECURE refresh failed for ${product.name}:`, err.message);
         results.push({
           productId: product.id,
           name: product.name,
@@ -523,20 +521,26 @@ app.post("/api/beta-refresh-images", async (req: any, res) => {
           error: err.message
         });
       }
+      
+      // Rate limiting: delay between requests to avoid overwhelming OpenAI API
+      if (products.indexOf(product) < products.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
     }
     
-    const successCount = results.filter(r => r.status === "refreshed").length;
     const failureCount = results.filter(r => r.status === "failed").length;
     
-    console.log(`🎯 Force refresh complete! ${successCount} succeeded, ${failureCount} failed`);
+    console.log(`🎯 SECURE force refresh complete! ${successCount} succeeded, ${failureCount} failed`);
     
     res.json({ 
       status: "ok", 
-      message: `Force refresh complete: ${successCount} succeeded, ${failureCount} failed`,
+      message: `SECURE force refresh complete: ${successCount} succeeded, ${failureCount} failed`,
       totalProducts: products.length,
       successCount,
       failureCount,
       results,
+      securityEnabled: true,
+      objectStorageEnabled: true,
       timestamp: new Date().toISOString()
     });
   } catch (err) {
