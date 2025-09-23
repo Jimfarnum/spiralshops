@@ -18,5 +18,5 @@ elif [ "$STATE" = "ERROR" ]; then
   echo "🔎 Check logs at: https://vercel.com/spiral-s-projects/spiralshops/$DEPLOY_UID"
 else
   echo "⏳ Deployment still in progress..."
-  vercel logs $URL
+  vercel logs https://$URL
 fi
