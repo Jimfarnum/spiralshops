@@ -1,4 +1,5 @@
 // SPIRAL Security Middleware - Comprehensive SSL and Domain Management
+import rateLimit from 'express-rate-limit';
 import { detectEnvironment, getSSLConfig, validateDomain, DOMAIN_CONFIG } from '../config/domains.js';
 
 export function configureSecurityHeaders(app) {
@@ -130,4 +131,76 @@ export function configureSecurityHeaders(app) {
       next();
     }
   });
+}
+
+// Rate limiting for admin endpoints
+export const adminRefreshLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours
+  max: 3, // Maximum 3 refresh requests per day per IP
+  message: {
+    error: 'Too many refresh requests',
+    message: 'Maximum 3 refresh requests per day allowed',
+    retryAfter: 86400
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Admin authentication middleware
+export function requireAdminAuth(req, res, next) {
+  const adminToken = req.headers['x-admin-token'] || 
+                    req.headers['authorization']?.replace('Bearer ', '');
+  
+  const expectedToken = process.env.ADMIN_PASS || 
+                       process.env.STAFF_TOKEN || 
+                       process.env.ADMIN_SECRET;
+  
+  // Ensure admin token is configured
+  if (!expectedToken) {
+    return res.status(500).json({
+      error: 'Server configuration error',
+      message: 'Admin authentication not properly configured'
+    });
+  }
+  
+  // Validate admin token
+  if (!adminToken || adminToken !== expectedToken) {
+    return res.status(401).json({
+      error: 'Unauthorized access',
+      message: 'Valid admin token required for this operation'
+    });
+  }
+  
+  next();
+}
+
+// Cost protection middleware for expensive operations
+export function costProtection(req, res, next) {
+  const userAgent = req.headers['user-agent'] || '';
+  
+  // Block automated requests that might drive up costs
+  if (userAgent.includes('bot') || userAgent.includes('crawler')) {
+    return res.status(403).json({
+      error: 'Access denied',
+      message: 'Automated requests not allowed for this endpoint'
+    });
+  }
+  
+  next();
+}
+
+// AI operation logging middleware
+export function aiOperationLogger(operation) {
+  return (req, res, next) => {
+    console.log(`🤖 AI Operation: ${operation} - IP: ${req.ip} - Time: ${new Date().toISOString()}`);
+    
+    // Add timing
+    const startTime = Date.now();
+    res.on('finish', () => {
+      const duration = Date.now() - startTime;
+      console.log(`✅ AI Operation ${operation} completed in ${duration}ms - Status: ${res.statusCode}`);
+    });
+    
+    next();
+  };
 }
