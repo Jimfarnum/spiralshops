@@ -280,12 +280,46 @@ console.log("✅ Product Images Download System mounted at /api/download");
 // ✅ Add normalization function at top of server
 const PLACEHOLDER_IMAGE = "https://via.placeholder.com/300x400.png?text=No+Image";
 
+// Helper function to normalize image paths
+function normalizePath(imagePath: string | undefined | null): string {
+  if (!imagePath || imagePath.trim() === '') return '/images/default-product.png';
+  
+  const cleanPath = imagePath.trim();
+  
+  // If it's already a proper /images/ path, return it
+  if (cleanPath.startsWith('/images/')) return cleanPath;
+  
+  // Convert static/images/ or /static/images/ to /images/
+  if (cleanPath.includes('static/images/')) {
+    return cleanPath.replace(/.*static\/images\//, '/images/');
+  }
+  
+  // If it's just a filename, prepend /images/
+  if (!cleanPath.startsWith('/')) {
+    return `/images/${cleanPath}`;
+  }
+  
+  // If it starts with /images but no slash, fix it
+  if (cleanPath.startsWith('images/')) {
+    return `/${cleanPath}`;
+  }
+  
+  return cleanPath;
+}
+
 function normalizeProducts(products: any[]) {
   if (!Array.isArray(products)) return products;
-  return products.map(p => ({
-    ...p,
-    image: p.image && p.image.trim() !== "" ? p.image : PLACEHOLDER_IMAGE
-  }));
+  return products.map(p => {
+    // Coalesce image/imageUrl/images[0] and normalize the path
+    const imageSource = p.image || p.imageUrl || (p.images?.[0] ?? '');
+    const normalizedImage = normalizePath(imageSource);
+    
+    return {
+      ...p,
+      image: normalizedImage, // Always use 'image' field
+      imageUrl: normalizedImage // Set both for compatibility
+    };
+  });
 }
 
 // 🔧 SPIRAL AI Image Pre-Generator - Runs at startup to cache all product images
@@ -758,6 +792,11 @@ mountMetrics(app);
 // Static AFTER APIs
 app.use("/static", express.static("dist", { fallthrough: false, immutable: true, maxAge: "30d" }));
 app.use("/avatars", express.static("public/avatars", { fallthrough: true, maxAge: "30d" }));
+
+// Fallback route for legacy /static/images paths -> redirect to /images
+app.use("/static/images", (req, res) => {
+  res.redirect(308, req.originalUrl.replace('/static/images', '/images'));
+});
 
 // SPA fallback is handled by Vite middleware in setupVite() - no need for custom fallback
 
