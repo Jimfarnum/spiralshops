@@ -60,7 +60,7 @@ import { setupVite } from "./vite.js";
 const app = express();
 
 // 🔧 Initialize OpenAI client for AI image generation  
-// Deploy trigger: 2025-09-23T19:15:30Z - FORCE spiralshops.com AI images FINAL
+// Deploy trigger: 2025-09-23T20:39:00Z - FIXED vercel.json deployment config
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
