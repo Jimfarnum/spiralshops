@@ -60,7 +60,7 @@ import { setupVite } from "./vite.js";
 const app = express();
 
 // 🔧 Initialize OpenAI client for AI image generation  
-// Deploy trigger: 2025-09-23T22:18:00Z - FIXED BUILD SYSTEM + fallback mode working
+// Deploy trigger: 2025-09-23T22:25:00Z - FIXED 161 TYPESCRIPT ERRORS + BUILD WORKING
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });

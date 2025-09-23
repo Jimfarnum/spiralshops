@@ -132,23 +132,11 @@ export const aiRetailerApplications = pgTable("ai_retailer_applications", {
   approvedAt: timestamp("approved_at"),
 });
 
-export const insertAiRetailerApplicationSchema = createInsertSchema(aiRetailerApplications).omit({
-  id: true,
-  submittedAt: true,
-  reviewedAt: true,
-  approvedAt: true,
-});
+export const insertAiRetailerApplicationSchema = createInsertSchema(aiRetailerApplications).omit(['id', 'submittedAt', 'reviewedAt', 'approvedAt']);
 
-export const insertStoreSchema = createInsertSchema(stores).omit({
-  id: true,
-  rating: true,
-  reviewCount: true,
-});
+export const insertStoreSchema = createInsertSchema(stores).omit(['id', 'rating', 'reviewCount']);
 
-export const insertRetailerSchema = createInsertSchema(retailers).omit({
-  id: true,
-  approved: true,
-});
+export const insertRetailerSchema = createInsertSchema(retailers).omit(['id', 'approved']);
 
 // Move promotion schema definitions after table definitions
 
