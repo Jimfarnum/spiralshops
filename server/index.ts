@@ -249,10 +249,10 @@ console.log("✅ Beta API System mounted at /api/beta");
 app.use("/api/share", shareApiRouter);
 console.log("✅ Share API System mounted at /api/share");
 
-// AI Image Generation System
+// 🔒 SECURE AI Image Generation System
 import generateImagesRouter from "./routes/generateImages.js";
 app.use("/api/images", generateImagesRouter);
-console.log("✅ AI Image Generation System mounted at /api/images");
+console.log("✅ SECURE AI Image Generation System mounted at /api/images");
 
 // Product Images Download/Upload System
 app.get("/api/download/product-images-template", (req, res) => {
