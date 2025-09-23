@@ -363,8 +363,8 @@ async function attachAIImages(products: any[]) {
     }
     
     if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
-      // Use object storage for Beta products, local images for others
-      product.image = fileName.startsWith('beta-') ? `/public-objects/${fileName}` : `/images/${fileName}`;
+      // Serve all cached images via /images/ static route
+      product.image = `/images/${fileName}`;
     } else {
       product.image = `https://via.placeholder.com/512x512.png?text=${encodeURIComponent(product.name)}`;
     }
@@ -409,7 +409,7 @@ app.get("/api/memory-status", async (req: any, res) => {
           productId: product.id,
           name: product.name,
           hasCache,
-          imageUrl: hasCache ? (fileName.startsWith('beta-') ? `/public-objects/${fileName}` : `/images/${fileName}`) : null,
+          imageUrl: hasCache ? `/images/${fileName}` : null,
           cacheFileName: hasCache ? fileName : null
         };
       });
@@ -508,7 +508,7 @@ app.post("/api/beta-refresh-images", async (req: any, res) => {
             productId: product.id,
             name: product.name,
             status: "refreshed",
-            imageUrl: fileName.startsWith('beta-') ? `/public-objects/${fileName}` : `/images/${fileName}`,
+            imageUrl: `/images/${fileName}`,
             fileName: fileName
           });
         } else {
