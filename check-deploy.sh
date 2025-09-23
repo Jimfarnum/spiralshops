@@ -1,13 +1,12 @@
 #!/bin/bash
-# Check Spiralshops Vercel deployment
+# Check Spiralshops Vercel deployment with jq parsing
 
-# Get latest deployment info using vercel inspect on production
 DEPLOY_INFO=$(vercel inspect spiralshops --prod --json 2>/dev/null)
 
-URL=$(echo $DEPLOY_INFO | grep -o '"url":"[^"]*' | cut -d'"' -f4)
-STATE=$(echo $DEPLOY_INFO | grep -o '"readyState":"[^"]*' | cut -d'"' -f4)
-DEPLOY_UID=$(echo $DEPLOY_INFO | grep -o '"uid":"[^"]*' | cut -d'"' -f4)
-COMMIT=$(echo $DEPLOY_INFO | grep -o '"commit":"[^"]*' | cut -d'"' -f4)
+URL=$(echo $DEPLOY_INFO | jq -r '.url')
+STATE=$(echo $DEPLOY_INFO | jq -r '.readyState')
+DEPLOY_UID=$(echo $DEPLOY_INFO | jq -r '.uid')
+COMMIT=$(echo $DEPLOY_INFO | jq -r '.meta.githubCommitSha // ""')
 
 echo "🌍 Deployment: https://$URL"
 echo "🔑 Commit: $COMMIT"
