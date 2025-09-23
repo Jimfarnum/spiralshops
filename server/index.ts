@@ -60,7 +60,7 @@ import { setupVite } from "./vite.js";
 const app = express();
 
 // 🔧 Initialize OpenAI client for AI image generation  
-// Deploy trigger: 2025-09-23T22:25:00Z - FIXED 161 TYPESCRIPT ERRORS + BUILD WORKING
+// Deploy trigger: 2025-09-23T22:27:00Z - FORCE FRESH DEPLOYMENT with fixed routing
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
