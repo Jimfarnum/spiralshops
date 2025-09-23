@@ -4,19 +4,11 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
-      "source": "/public-objects/(.*)",
-      "destination": "/static/images/$1"
-    },
-    {
       "source": "/images/(.*)", 
       "destination": "/static/images/$1"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/api/index.js"
-    },
-    {
-      "source": "/(.*)",
+      "source": "/((?!api|public-objects|images|static).*)",
       "destination": "/index.html"
     }
   ],
