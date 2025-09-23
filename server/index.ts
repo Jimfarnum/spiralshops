@@ -60,6 +60,7 @@ import { setupVite } from "./vite.js";
 const app = express();
 
 // 🔧 Initialize OpenAI client for AI image generation
+// Deploy trigger: 2025-09-23T18:19:30Z - spiralshops.com AI image system
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
