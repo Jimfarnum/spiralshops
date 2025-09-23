@@ -238,6 +238,10 @@ app.use("/api/v2/retailers", enhancedRetailersRoutes);
 app.use("/api/v2/compliance", enhancedComplianceRoutes);
 console.log("✅ Enhanced PostgreSQL routes mounted at /api/v2/*");
 
+// 🔒 Security Health & Monitoring
+app.use("/api/security", securityHealthRoutes);
+console.log("✅ Security Health & Monitoring mounted at /api/security");
+
 // EJ AI Agent - PhD Level GTM Strategist
 app.use("/api/ej", ejAgentRouter);
 console.log("✅ EJ AI Agent (PhD GTM Strategist) mounted at /api/ej");
