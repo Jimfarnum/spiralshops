@@ -21,6 +21,7 @@
     "@google-cloud/vision": "^5.3.3",
     "@hookform/resolvers": "^3.10.0",
     "@ibm-cloud/cloudant": "^0.12.9",
+    "@ibm-cloud/watsonx-ai": "^1.6.13",
     "@jridgewell/trace-mapping": "^0.3.25",
     "@mozilla/readability": "^0.6.0",
     "@neondatabase/serverless": "^0.10.4",

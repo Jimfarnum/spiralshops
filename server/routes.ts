@@ -73,6 +73,8 @@ import cloudantNewFunctionsRouter from "./routes/cloudant-new-functions.js";
 // Security and marketing endpoints
 import { runSecurityScan } from './routes/security.js';
 import { createSocialPost } from './routes/marketing.js';
+// IBM WatsonX.ai integration
+import watsonxRouter from './routes/watsonx.js';
 // Onboarding and partnership endpoints
 import { applyRetailer, listRetailerApplications } from './routes/retailers.js';
 import { applyMall, listMallApplications } from './routes/malls.js';
