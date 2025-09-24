@@ -60,7 +60,7 @@ import { setupVite } from "./vite.js";
 const app = express();
 
 // 🔧 Initialize OpenAI client for AI image generation  
-// Deploy trigger: 2025-09-23T23:36:00Z - SERVER FILE FIXED + DEPLOYMENT READY
+// Deploy trigger: 2025-09-24T00:02:00Z - VERCEL CONFIG FIXED - FRONTEND/BACKEND SPLIT
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });

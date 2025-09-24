@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "TS_FALLBACK=true npm run build",
-  "outputDirectory": "dist",
+  "outputDirectory": "dist/public",
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -14,10 +14,6 @@
     {
       "source": "/public-objects/(.*)",
       "destination": "/api/images/public-objects/$1"
-    },
-    {
-      "source": "/((?!api|public-objects|images|static|_next).*)",
-      "destination": "/index.html"
     }
   ],
   "functions": {
