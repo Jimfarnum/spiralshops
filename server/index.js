@@ -48,17 +48,7 @@ app.use((req, res, next) => {
     });
   });
 
-  // Sample products endpoint
-  // ❌ DISABLED: Conflicting with server/index.ts
-  // app.get('/api/products', (req, res) => {
-    res.json({
-      products: [
-        { id: 1, name: "Wireless Bluetooth Headphones", price: 89.99, category: "Electronics" },
-        { id: 2, name: "Smart Fitness Watch", price: 299.99, category: "Electronics" },
-        { id: 3, name: "Organic Coffee Beans", price: 24.99, category: "Food & Beverage" }
-      ]
-    });
-  });
+  // ❌ REMOVED: Conflicting route fully eliminated
 
   // Enhanced Clara AI Agent & Knowledge Base System
   try {

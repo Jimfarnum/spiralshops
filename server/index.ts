@@ -95,12 +95,31 @@ function normalize(payload: any, req: any) {
   return arr.map((p) => ({ ...p, image: absolutize(p.image, req) }));
 }
 
-// Apply to products and discover endpoints
+// Apply to products and discover endpoints with imageUrl/image_url aliases
 app.use(["/api/products", "/api/discover"], (req, res, next) => {
   const original = res.json.bind(res);
   res.json = (body: any) => {
     try {
-      return original(normalize(body, req));
+      // Enhanced normalization with imageUrl/image_url aliases
+      const enrichProduct = (p: any) => {
+        const normalized = { ...p, image: absolutize(p.image, req) };
+        return {
+          ...normalized,
+          imageUrl: p.imageUrl ?? normalized.image,     // camelCase compatibility
+          image_url: p.image_url ?? normalized.image    // snake_case compatibility  
+        };
+      };
+      
+      let enrichedBody = body;
+      if (Array.isArray(body)) {
+        enrichedBody = body.map(enrichProduct);
+      } else if (body && Array.isArray(body.products)) {
+        enrichedBody = { ...body, products: body.products.map(enrichProduct) };
+      } else if (body && Array.isArray(body.items)) {
+        enrichedBody = { ...body, items: body.items.map(enrichProduct) };
+      }
+      
+      return original(enrichedBody);
     } catch {
       return original(body);
     }
