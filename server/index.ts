@@ -97,39 +97,30 @@ function normalize(payload: any, req: any) {
 
 // Apply to products and discover endpoints with imageUrl/image_url aliases
 app.use(["/api/products", "/api/discover"], (req, res, next) => {
-  console.log(`🔧 Middleware triggered for ${req.path}`);
   const original = res.json.bind(res);
   res.json = (body: any) => {
     try {
-      console.log(`🔧 Processing response body type:`, Array.isArray(body) ? 'array' : typeof body);
       // Enhanced normalization with imageUrl/image_url aliases
       const enrichProduct = (p: any) => {
         const normalized = { ...p, image: absolutize(p.image, req) };
-        const enriched = {
+        return {
           ...normalized,
           imageUrl: p.imageUrl ?? normalized.image,     // camelCase compatibility
           image_url: p.image_url ?? normalized.image    // snake_case compatibility  
         };
-        console.log(`🔧 Product enriched:`, { name: p.name, hasImageUrl: 'imageUrl' in enriched, hasImage_url: 'image_url' in enriched });
-        return enriched;
       };
       
       let enrichedBody = body;
       if (Array.isArray(body)) {
-        console.log(`🔧 Processing array of ${body.length} items`);
         enrichedBody = body.map(enrichProduct);
       } else if (body && Array.isArray(body.products)) {
-        console.log(`🔧 Processing body.products array of ${body.products.length} items`);
         enrichedBody = { ...body, products: body.products.map(enrichProduct) };
       } else if (body && Array.isArray(body.items)) {
-        console.log(`🔧 Processing body.items array`);
         enrichedBody = { ...body, items: body.items.map(enrichProduct) };
       }
       
-      console.log(`🔧 Sending enriched response`);
       return original(enrichedBody);
     } catch (err) {
-      console.error(`🔧 Middleware error:`, err);
       return original(body);
     }
   };
