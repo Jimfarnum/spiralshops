@@ -1201,7 +1201,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const userResponse = { ...user };
     delete userResponse.passwordHash;
 
-    res.standard({
+    res.json({
+      success: true,
       message: 'Login successful',
       user: userResponse,
       token
@@ -1213,10 +1214,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Return user data from token (already validated by middleware)
     res.json({
       user: {
-        id: req.user.userId,
-        email: req.user.email,
-        username: req.user.username,
-        userType: req.user.userType,
+        id: req.user?.userId || 0,
+        email: req.user?.email || '',
+        username: req.user?.username || '',
+        userType: req.user?.userType || 'user',
         // Add more user fields as needed from database
         firstName: 'Demo',
         lastName: 'User',
@@ -2475,7 +2476,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const { dataService } = await import('./dataService.js');
           // Updated to use correct method name
           const fallbackProducts = await dataService.getProductList?.() || [];
-          const productsArray = Array.isArray(fallbackProducts) ? fallbackProducts : (fallbackProducts.products || []);
+          const productsArray = Array.isArray(fallbackProducts) ? fallbackProducts : [];
           const normalizedFallback = normalizeProducts(productsArray);
           return res.json({ success: true, products: normalizedFallback });
         } catch (fallbackError) {
@@ -2500,7 +2501,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const { dataService } = await import('./dataService.js');
         // Updated to use correct method name
         const fallbackProducts = await dataService.getProductList?.() || [];
-        const productsArray = Array.isArray(fallbackProducts) ? fallbackProducts : (fallbackProducts.products || []);
+        const productsArray = Array.isArray(fallbackProducts) ? fallbackProducts : [];
         const normalizedFallback = normalizeProducts(productsArray);
         res.json({ success: true, products: normalizedFallback });
       } catch (fallbackError) {
@@ -3611,13 +3612,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     }
 
-    if (category && category !== 'all') {
+    if (category && typeof category === 'string' && category !== 'all') {
       filteredStores = filteredStores.filter(store => 
         store.category.toLowerCase().includes(category.toLowerCase())
       );
     }
 
-    if (query) {
+    if (query && typeof query === 'string') {
       const searchTerms = query.toLowerCase().split(' ');
       filteredStores = filteredStores.filter(store => {
         const searchableText = `${store.name} ${store.description} ${store.category}`.toLowerCase();
