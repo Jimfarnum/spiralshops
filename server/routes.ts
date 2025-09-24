@@ -63,10 +63,15 @@ const PLACEHOLDER_IMAGE = "https://via.placeholder.com/300x400.png?text=No+Image
 
 // ✅ Normalize product images to ensure every product has a valid image URL
 function normalizeProducts(products: any[]) {
-  return products.map(p => ({
-    ...p,
-    image: p.image && p.image.trim() !== "" ? p.image : PLACEHOLDER_IMAGE
-  }));
+  return products.map(p => {
+    const normalizedImage = p.image && p.image.trim() !== "" ? p.image : PLACEHOLDER_IMAGE;
+    return {
+      ...p,
+      image: normalizedImage,
+      imageUrl: normalizedImage,  // camelCase compatibility
+      image_url: normalizedImage  // snake_case compatibility for external scripts
+    };
+  });
 }
 // Cloudant-powered new functions
 import cloudantNewFunctionsRouter from "./routes/cloudant-new-functions.js";
