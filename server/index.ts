@@ -79,9 +79,10 @@ function absolutize(image: string, req: any) {
   if (!image || typeof image !== "string")
     return `https://via.placeholder.com/300?text=No+Image`;
   if (/^https?:\/\//.test(image)) return image;
-  const base = process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
+  // FIX: Use relative paths instead of BASE_URL to prevent cross-origin issues
+  // This ensures images resolve on whatever host serves the page (spiralshops.com or Replit)
   const p = image.startsWith("/") ? image : "/" + image;
-  return base + p;
+  return p; // Return relative path, not absolute URL
 }
 
 function normalize(payload: any, req: any) {
@@ -215,6 +216,13 @@ app.get("/healthz", (_req, res) =>
 app.get("/api/health", (req: any, res) =>
   res.type("application/json").json({ ok: true, mall: req.mallId || cfg.mallId, ts: Date.now() })
 );
+
+// FIX: Add missing placeholder route for image fallbacks
+app.get("/api/placeholder/:width/:height", (req, res) => {
+  const { width, height } = req.params;
+  const placeholderUrl = `https://via.placeholder.com/${width}x${height}?text=SPIRAL+Image`;
+  res.redirect(placeholderUrl);
+});
 
 app.get("/api/theme", (req: any, res) =>
   res.type("application/json").json(loadMallTheme(req.mallId || cfg.mallId!))
