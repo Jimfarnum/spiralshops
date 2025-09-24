@@ -1604,8 +1604,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Onboarding endpoints - Must be before generic /api/retailers routes
   app.post('/api/retailers/apply', applyRetailer);
   app.get('/api/retailers/apps', listRetailerApplications);
-  app.post('/api/malls/apply', applyMall);
-  app.get('/api/malls/apps', listMallApplications);
+  app.use('/api/malls', mallsRouter);
 
   // Partnership endpoints
   app.get('/api/partnerships/list/:type', listPartnershipsByType);
@@ -2849,13 +2848,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       let offers = FREE_SHIPPING_OFFERS.filter(offer => offer.isActive);
       
-      if (retailerId) {
+      if (retailerId && typeof retailerId === 'string') {
         offers = offers.filter(offer => 
           offer.offeredBy !== 'seller' || offer.entityId === parseInt(retailerId)
         );
       }
       
-      if (zip) {
+      if (zip && typeof zip === 'string') {
         offers = offers.filter(offer => 
           offer.eligibleZipCodes === 'nationwide' || 
           offer.eligibleZipCodes.includes(zip)
@@ -3563,25 +3562,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     let filteredStores = [...continentalStores];
 
     // Apply filters
-    if (scope === 'city' && city) {
+    if (scope === 'city' && city && typeof city === 'string') {
       filteredStores = filteredStores.filter(store => 
         store.city.toLowerCase().includes(city.toLowerCase())
       );
-    } else if (scope === 'state' && state) {
+    } else if (scope === 'state' && state && typeof state === 'string') {
       filteredStores = filteredStores.filter(store => 
         store.state.toLowerCase() === state.toLowerCase()
       );
     }
     
     // State filtering regardless of scope
-    if (state && scope !== 'city') {
+    if (state && typeof state === 'string' && scope !== 'city') {
       filteredStores = filteredStores.filter(store => 
         store.state.toLowerCase() === state.toLowerCase()
       );
     }
     
     // City filtering regardless of scope  
-    if (city && scope !== 'state') {
+    if (city && typeof city === 'string' && scope !== 'state') {
       filteredStores = filteredStores.filter(store => 
         store.city.toLowerCase().includes(city.toLowerCase())
       );
