@@ -3,10 +3,10 @@
 // SPIRAL Image Diagnostics - Professional Version
 // Replaces brittle shell script with proper Node.js diagnostics
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const http = require('http');
+import fs from 'fs';
+import path from 'path';
+import https from 'https';
+import http from 'http';
 
 console.log('🔎 SPIRAL Image System Diagnostics\n');
 

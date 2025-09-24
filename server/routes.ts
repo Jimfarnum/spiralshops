@@ -1283,13 +1283,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ];
     }
 
-    res.standard({
+    res.json({
+      success: true,
       cloudant_status: status
     });
   });
 
   // Protected shopper-only endpoint example
-  app.get('/api/shopper/profile', authSystem.authenticateUser, authSystem.requireShopper, (req, res) => {
+  app.get('/api/shopper/profile', authSystem.authenticateUser, authSystem.requireShopper, (req: any, res: any) => {
     res.json({
       message: 'This is a shopper-only endpoint',
       user: req.user
@@ -1297,7 +1298,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Protected retailer-only endpoint example
-  app.get('/api/retailer/dashboard', authSystem.authenticateUser, authSystem.requireRetailer, (req, res) => {
+  app.get('/api/retailer/dashboard', authSystem.authenticateUser, authSystem.requireRetailer, (req: any, res: any) => {
     res.json({
       message: 'This is a retailer-only endpoint',
       user: req.user
@@ -3810,9 +3811,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Get all stores and calculate distances
     const allStores = await storage.getStores();
     const storesWithDistance = allStores.map(store => {
-      const distance = calculateDistance(userLat, userLng, store.lat, store.lng);
+      // Add coordinates from store data
+      const storeLat = store.coordinates?.latitude || 44.9537;
+      const storeLng = store.coordinates?.longitude || -93.0900;
+      const distance = calculateDistance(userLat, userLng, storeLat, storeLng);
       return {
         ...store,
+        lat: storeLat,
+        lng: storeLng,
         distance: parseFloat(distance.toFixed(2)),
         distanceText: formatDistance(distance)
       };
