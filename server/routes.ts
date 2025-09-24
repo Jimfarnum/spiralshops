@@ -2712,14 +2712,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Products API
-  app.get("/api/products", async (req, res) => {
-    try {
-      const products = await recommendationEngine.getAllProducts();
-      res.json(products);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch products" });
-    }
-  });
+  // ❌ DISABLED: Conflicting route - handled in server/index.ts
+  // app.get("/api/products", async (req, res) => {
+  //   try {
+  //     const products = await recommendationEngine.getAllProducts();
+  //     res.json(products);
+  //   } catch (error) {
+  //     res.status(500).json({ message: "Failed to fetch products" });
+  //   }
+  // });
 
   // Users API
   app.get("/api/users", async (req, res) => {
