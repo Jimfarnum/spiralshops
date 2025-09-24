@@ -49,7 +49,8 @@ app.use((req, res, next) => {
   });
 
   // Sample products endpoint
-  app.get('/api/products', (req, res) => {
+  // ❌ DISABLED: Conflicting with server/index.ts
+  // app.get('/api/products', (req, res) => {
     res.json({
       products: [
         { id: 1, name: "Wireless Bluetooth Headphones", price: 89.99, category: "Electronics" },
