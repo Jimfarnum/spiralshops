@@ -619,6 +619,8 @@ app.get("/api/products", async (req: any, res) => {
       name: p.name,
       price: p.price,
       image: p.image,
+      imageUrl: p.image,  // camelCase compatibility
+      image_url: p.image  // snake_case compatibility for external scripts
     }));
 
     res.json(response);

@@ -58,9 +58,14 @@ async function main() {
   try {
     const result = await checkAPI(`${baseURL}/api/products`);
     
-    if (result.status === 200 && result.data.products) {
-      const products = result.data.products.slice(0, 3);
-      console.log(`✅ API responding with ${result.data.products.length} products`);
+    // Handle both array and {products: []} response formats
+    const products = Array.isArray(result.data) ? result.data.slice(0, 3) : 
+                    (result.data.products || []).slice(0, 3);
+    const totalCount = Array.isArray(result.data) ? result.data.length : 
+                      (result.data.products || []).length;
+    
+    if (result.status === 200 && products.length > 0) {
+      console.log(`✅ API responding with ${totalCount} products`);
       
       products.forEach((product, i) => {
         console.log(`   Product ${i + 1}: ${product.name}`);
