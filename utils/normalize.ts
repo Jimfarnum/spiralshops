@@ -1,22 +1,20 @@
-/**
- * normalizeProduct
- * ----------------
- * Ensures every product object returned by the API has consistent image fields.
- * - Always returns `image`, `imageUrl`, and `image_url`
- * - Rewrites legacy "/public-objects/" paths into "/images/"
- * - Falls back to "/images/default.png" if no image is provided
- */
 export function normalizeProduct(p: any) {
-  const baseImage =
-    (p.image && p.image.replace("/public-objects/", "/images/")) ||
-    "/images/default.png";
+  const DEFAULT_IMG = "/images/default.png";
+
+  function resolveImage(raw?: string | null): string {
+    if (!raw) return DEFAULT_IMG;
+    if (raw.startsWith("http")) return raw;
+    // normalize legacy paths to /images
+    const cleaned = raw.replace(/^\/?(public-objects|static|public)?\/?/, "");
+    return `/images/${cleaned}`;
+  }
+
+  const img = resolveImage(p.image || p.imageUrl || p.image_url);
 
   return {
-    id: p.id,
-    name: p.name,
-    price: p.price,
-    image: baseImage,
-    imageUrl: baseImage,
-    image_url: baseImage,
+    ...p,
+    image: img,
+    imageUrl: img,
+    image_url: img,
   };
 }
