@@ -58,21 +58,8 @@ import { runSelfCheck } from "./selfcheck.js";
 import { investorAuth } from "./investor_auth.js";
 import { attachInvestorRoutes } from "./investors.js";
 
-// ✅ Default placeholder for missing product images  
-const PLACEHOLDER_IMAGE = "https://via.placeholder.com/300x400.png?text=No+Image";
-
-// ✅ Normalize product images to ensure every product has a valid image URL
-function normalizeProducts(products: any[]) {
-  return products.map(p => {
-    const normalizedImage = p.image && p.image.trim() !== "" ? p.image : PLACEHOLDER_IMAGE;
-    return {
-      ...p,
-      image: normalizedImage,
-      imageUrl: normalizedImage,  // camelCase compatibility
-      image_url: normalizedImage  // snake_case compatibility for external scripts
-    };
-  });
-}
+// ✅ Import unified normalizer (single source of truth)
+import { normalizeProduct } from "./utils/normalize.js";
 // Cloudant-powered new functions
 import cloudantNewFunctionsRouter from "./routes/cloudant-new-functions.js";
 // Security and marketing endpoints
@@ -2470,7 +2457,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
       
       // Apply image normalization to ensure all products have valid images
-      const normalizedProducts = normalizeProducts(paginatedProducts);
+      const normalizedProducts = paginatedProducts.map(normalizeProduct);
       
       // If no products found, try DataService fallback
       if (normalizedProducts.length === 0 && !search && !category) {
@@ -2479,7 +2466,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Updated to use correct method name
           const fallbackProducts = await dataService.getProductList?.() || [];
           const productsArray = Array.isArray(fallbackProducts) ? fallbackProducts : [];
-          const normalizedFallback = normalizeProducts(productsArray);
+          const normalizedFallback = productsArray.map(normalizeProduct);
           return res.json({ success: true, products: normalizedFallback });
         } catch (fallbackError) {
           console.warn('DataService fallback failed:', fallbackError);
@@ -2504,7 +2491,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Updated to use correct method name
         const fallbackProducts = await dataService.getProductList?.() || [];
         const productsArray = Array.isArray(fallbackProducts) ? fallbackProducts : [];
-        const normalizedFallback = normalizeProducts(productsArray);
+        const normalizedFallback = productsArray.map(normalizeProduct);
         res.json({ success: true, products: normalizedFallback });
       } catch (fallbackError) {
         res.status(500).json({ error: "Failed to fetch products" });

@@ -595,25 +595,9 @@ app.post("/api/beta-refresh-images",
 });
 
 // ✅ Products API with unified normalization (instant response)
-import { normalizeProduct } from "../server/utils/normalize.js";
+import { normalizeProduct } from "./utils/normalize.js";
 
-app.get("/api/products", async (req: any, res) => {
-  try {
-    const productsResponse = await SpiralApi.products(req.mallId, req.query as any);
-    let products = Array.isArray(productsResponse) ? productsResponse : productsResponse.products || [];
-
-    // 🚀 Attach pre-cached images (instant, no generation delay)
-    products = await attachAIImages(products);
-
-    // ✅ Apply unified normalization for consistent API responses
-    const response = products.map(normalizeProduct);
-
-    res.json(response);
-  } catch (err) {
-    console.error("❌ Error fetching products:", err);
-    res.status(500).json({ error: "Failed to fetch products" });
-  }
-});
+// ✅ REMOVED: Duplicate /api/products handler - now handled by canonical router in server/routes.ts
 
 // ✅ Health/test route with product count
 app.get("/api/test", async (req: any, res) => {
