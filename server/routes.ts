@@ -2355,75 +2355,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Featured Products API - CRITICAL FIX (With Image Healing)
-// DISABLED DUPLICATE:   app.get("/api/products/featured", async (req, res) => {
-    try {
-      const allProducts = await getProducts();
-      const featuredProducts = allProducts.slice(0, 6).map(product => ({
-        ...product,
-        featured: true,
-        discount: Math.floor(Math.random() * 30) + 10, // 10-40% discount
-        originalPrice: (product.price * 1.2).toFixed(2)
-      }));
-      
-      // Apply image healing to ensure all products have valid images
-      const healedProducts = await validateAndHealMultipleImages(featuredProducts);
-      
-      res.json({
-        success: true,
-        products: healedProducts,
-        total: healedProducts.length
-      });
-    } catch (error) {
-      console.error('Featured products error:', error);
-      res.status(500).json({ error: "Failed to fetch featured products" });
-    }
-  });
+  // Featured Products API - DISABLED (handled by separate router)
+  // REMOVED: Duplicate /api/products/featured route
 
-  // Product Search API - CRITICAL FIX (With Image Healing)
-// DISABLED DUPLICATE:   app.get("/api/products/search", async (req, res) => {
-    try {
-      const { q, limit = 20, offset = 0 } = req.query;
-      const allProducts = await getProducts();
-      
-      if (!q) {
-        const limitedProducts = allProducts.slice(0, parseInt(limit as string));
-        const healedProducts = await validateAndHealMultipleImages(limitedProducts);
-        
-        return res.json({
-          success: true,
-          products: healedProducts,
-          total: allProducts.length,
-          query: ""
-        });
-      }
-      
-      const searchTerm = (q as string).toLowerCase();
-      const filteredProducts = allProducts.filter(product =>
-        product.name.toLowerCase().includes(searchTerm) ||
-        product.description.toLowerCase().includes(searchTerm) ||
-        product.category.toLowerCase().includes(searchTerm)
-      );
-      
-      const startIndex = parseInt(offset as string);
-      const endIndex = startIndex + parseInt(limit as string);
-      const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-      
-      // Apply image healing to search results
-      const healedProducts = await validateAndHealMultipleImages(paginatedProducts);
-      
-      res.json({
-        success: true,
-        products: healedProducts,
-        total: filteredProducts.length,
-        query: searchTerm,
-        hasMore: endIndex < filteredProducts.length
-      });
-    } catch (error) {
-      console.error('Product search error:', error);
-      res.status(500).json({ error: "Failed to search products" });
-    }
-  });
+  // Product Search API - DISABLED (handled by separate router)
+  // REMOVED: Duplicate /api/products/search route
 
   // Product Catalog API Routes (Data Loaded from DataService) - With Image Normalization  
   /* DISABLED DUPLICATE: 
@@ -2500,72 +2436,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   */
 
-// DISABLED DUPLICATE:   app.get("/api/products/:id", async (req, res) => {
-    try {
-      const productId = parseInt(req.params.id);
-      const allProducts = await getProducts();
-      const product = allProducts.find(p => p.id === productId);
-      
-      if (!product) {
-        return res.status(404).json({ error: "Product not found" });
-      }
-
-      // Enhanced product detail with additional information
-      const enhancedProduct = {
-        ...product,
-        reviews: [
-          {
-            id: 1,
-            rating: 5,
-            comment: "Excellent product! Great quality and fast delivery.",
-            author: "Alex M.",
-            date: "2025-07-20",
-            verified: true
-          },
-          {
-            id: 2,
-            rating: 4,
-            comment: "Good value for money. Would recommend.",
-            author: "Sarah K.",
-            date: "2025-07-15",
-            verified: true
-          },
-          {
-            id: 3,
-            rating: 5,
-            comment: "Perfect! Exactly what I was looking for.",
-            author: "Mike R.",
-            date: "2025-07-12",
-            verified: true
-          }
-        ],
-        specifications: {
-          brand: "Local Premium",
-          warranty: "1 Year Manufacturer Warranty",
-          shipping: "Free shipping on orders over $50",
-          returnPolicy: "30-day return policy",
-          availability: product.inStock ? "In Stock" : "Out of Stock"
-        },
-        relatedProducts: allProducts
-          .filter(p => p.category === product.category && p.id !== product.id)
-          .slice(0, 4)
-          .map(p => ({
-            id: p.id,
-            name: p.name,
-            price: p.price,
-            image: p.imageUrl,
-            rating: p.ratings?.average || 4.0
-          })),
-        estimatedDelivery: "2-3 business days",
-        availableQuantity: product.stockLevel || 0
-      };
-      
-      res.json(enhancedProduct);
-    } catch (error) {
-      console.error("Error fetching product:", error);
-      res.status(500).json({ error: "Failed to fetch product" });
-    }
-  });
+  // Product Detail API - DISABLED (handled by separate router)
+  // REMOVED: Duplicate /api/products/:id route
 
   app.get("/api/categories", async (req, res) => {
     const startTime = Date.now();
