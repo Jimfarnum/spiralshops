@@ -4,7 +4,8 @@
  */
 
 export function normalizeProduct(p: any) {
-  const imageUrl = p.image || p.imageUrl || "/images/default.png";
+  // Extract image URL with multiple fallbacks
+  const imageUrl = p.image || p.imageUrl || p.image_url || "/images/default.png";
   
   return {
     id: p.id,
@@ -13,7 +14,7 @@ export function normalizeProduct(p: any) {
     category: p.category,
     description: p.description,
     image: imageUrl,           // Original field
-    imageUrl: imageUrl,        // camelCase compatibility
+    imageUrl: imageUrl,        // camelCase compatibility  
     image_url: imageUrl        // snake_case compatibility for external scripts
   };
 }

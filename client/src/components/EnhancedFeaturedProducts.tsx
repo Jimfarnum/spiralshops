@@ -51,7 +51,7 @@ export default function EnhancedFeaturedProducts() {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image,
+      image: product.imageUrl || product.image_url || product.image || "/images/default.png",
       category: product.category
     });
     
@@ -128,11 +128,11 @@ export default function EnhancedFeaturedProducts() {
             {/* Product Image */}
             <div className="relative overflow-hidden">
               <img
-                src={product.image}
+                src={product.imageUrl || product.image_url || product.image || "/images/default.png"}
                 alt={product.name}
                 className="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/api/placeholder/300/200";
+                  (e.target as HTMLImageElement).src = "/images/default.png";
                 }}
               />
               
