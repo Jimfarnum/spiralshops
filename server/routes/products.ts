@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
+import { normalizeProduct } from "../utils/normalize.js";
 
 const router = express.Router();
 
@@ -53,10 +54,24 @@ router.get("/", async (req, res) => {
       
       // 🚀 PRODUCTION FIX: Use object storage URLs for all AI-generated images
       // These images are now uploaded to object storage and accessible via /public-objects/
-      return {
+      const productWithImage = {
         ...p,
-        image: `/public-objects/${fileName}` // Use object storage URLs for production compatibility
+        image: `/public-objects/${fileName}`, // Use object storage URLs for production compatibility
+        description: `High-quality ${p.name.toLowerCase()} perfect for your needs` // Add description
       };
+      
+      // ✅ Apply unified normalization for consistent API contract
+      const normalized = normalizeProduct(productWithImage);
+      
+      // 🛡️ DEFENSIVE CONTRACT GUARD: Ensure all required fields are present
+      if (!normalized.imageUrl || !normalized.image_url || !normalized.description) {
+        console.warn(`⚠️ Normalization incomplete for product ${normalized.id}, patching...`);
+        normalized.imageUrl = normalized.imageUrl || normalized.image;
+        normalized.image_url = normalized.image_url || normalized.image;  
+        normalized.description = normalized.description || `High-quality ${normalized.name.toLowerCase()} perfect for your needs`;
+      }
+      
+      return normalized;
     });
 
     res.json(formatted);
@@ -87,10 +102,24 @@ router.get("/featured", async (req, res) => {
       
       // 🚀 PRODUCTION FIX: Use object storage URLs for featured products
       // AI images are uploaded to object storage and accessible via /public-objects/
-      return {
+      const productWithImage = {
         ...p,
-        image: `/public-objects/${fileName}` // Production-ready object storage URLs
+        image: `/public-objects/${fileName}`, // Production-ready object storage URLs
+        description: `Featured ${p.name.toLowerCase()} - top choice for shoppers` // Add description
       };
+      
+      // ✅ Apply unified normalization for consistent API contract  
+      const normalized = normalizeProduct(productWithImage);
+      
+      // 🛡️ DEFENSIVE CONTRACT GUARD: Ensure all required fields are present  
+      if (!normalized.imageUrl || !normalized.image_url || !normalized.description) {
+        console.warn(`⚠️ Normalization incomplete for featured product ${normalized.id}, patching...`);
+        normalized.imageUrl = normalized.imageUrl || normalized.image;
+        normalized.image_url = normalized.image_url || normalized.image;
+        normalized.description = normalized.description || `Featured ${normalized.name.toLowerCase()} - top choice for shoppers`;
+      }
+      
+      return normalized;
     });
 
     res.json(formatted);
