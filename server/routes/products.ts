@@ -38,26 +38,36 @@ router.get("/", async (req, res) => {
     const staticImagesDir = path.join(process.cwd(), "static", "images");
     
     const products = [
-      { id: 1, name: "Wireless Bluetooth Headphones", price: 79.99, category: "Electronics" },
-      { id: 2, name: "Smart Fitness Watch", price: 199.99, category: "Electronics" },
-      { id: 3, name: "Organic Coffee Beans", price: 12.99, category: "Food" },
-      { id: 4, name: "Designer Handbag", price: 149.99, category: "Fashion" },
-      { id: 5, name: "Artisan Chocolate", price: 8.99, category: "Food" },
-      { id: 101, name: "Beta Denim Jacket", price: 89.99, category: "Fashion" },
-      { id: 102, name: "Beta Hiking Boots", price: 129.99, category: "Footwear" },
-      { id: 103, name: "Beta Coffee Mug", price: 14.99, category: "Home" }
+      { id: 1, name: "Wireless Bluetooth Headphones - Premium Sound", price: 79.99, category: "Electronics" },
+      { id: 2, name: "Smart Phone Case - Protective & Stylish", price: 24.99, category: "Electronics" },
+      { id: 3, name: "Laptop Stand - Ergonomic Aluminum Design", price: 45.00, category: "Electronics" },
+      { id: 4, name: "LED String Lights - Outdoor Waterproof", price: 19.99, category: "Home & Garden" },
+      { id: 5, name: "Ceramic Plant Pot Set - Modern Design", price: 34.99, category: "Home & Garden" },
+      { id: 6, name: "Cotton T-Shirt - Organic Soft Comfort", price: 18.99, category: "Clothing & Accessories" },
+      { id: 7, name: "Running Sneakers - Lightweight Athletic", price: 89.99, category: "Clothing & Accessories" },
+      { id: 8, name: "Leather Wallet - Minimalist RFID Blocking", price: 32.99, category: "Clothing & Accessories" }
     ];
 
+    // Map product names to actual generated image filenames
+    const imageMap = {
+      "Wireless Bluetooth Headphones - Premium Sound": "Wireless_Bluetooth_Headphones_b3a5653e.png",
+      "Smart Phone Case - Protective & Stylish": "Smart_Phone_Case_7c312bb2.png", 
+      "Laptop Stand - Ergonomic Aluminum Design": "Laptop_Stand_Aluminum_f6a508a7.png",
+      "LED String Lights - Outdoor Waterproof": "LED_String_Lights_0ee3ac9e.png",
+      "Ceramic Plant Pot Set - Modern Design": "Ceramic_Plant_Pot_Set_05a974b5.png",
+      "Cotton T-Shirt - Organic Soft Comfort": "Organic_Cotton_T-Shirt_0e3aa578.png",
+      "Running Sneakers - Lightweight Athletic": "Running_Sneakers_Athletic_f36bb48b.png",
+      "Leather Wallet - Minimalist RFID Blocking": "Leather_Wallet_RFID_7580bf82.png"
+    };
+
     const formatted = products.map((p: any) => {
-      const sanitizedId = String(p.id).replace(/[^A-Za-z0-9_-]/g, '');
-      const fileName = `beta-${sanitizedId}.png`;
+      const imageFileName = imageMap[p.name] || "default-product.png";
       
-      // 🚀 PRODUCTION FIX: Use object storage URLs for all AI-generated images
-      // These images are now uploaded to object storage and accessible via /public-objects/
+      // ✅ FIXED: Use /images/ URLs that serve from static/images directory
       const productWithImage = {
         ...p,
-        image: `/public-objects/${fileName}`, // Use object storage URLs for production compatibility
-        description: `High-quality ${p.name.toLowerCase()} perfect for your needs` // Add description
+        image: `/images/${imageFileName}`, // Use correct image paths for real generated images
+        description: `High-quality ${p.name.toLowerCase()} available at local SPIRAL verified stores.` // Add description
       };
       
       // ✅ Apply unified normalization for consistent API contract
@@ -88,23 +98,31 @@ router.get("/featured", async (req, res) => {
     const staticImagesDir = path.join(process.cwd(), "static", "images");
     
     const products = [
-      { id: 1, name: "Wireless Bluetooth Headphones", price: 79.99, category: "Electronics", featured: true },
-      { id: 2, name: "Smart Fitness Watch", price: 199.99, category: "Electronics", featured: true },
-      { id: 3, name: "Organic Coffee Beans", price: 12.99, category: "Food", featured: true },
-      { id: 4, name: "Designer Handbag", price: 149.99, category: "Fashion", featured: true },
-      { id: 5, name: "Artisan Chocolate", price: 8.99, category: "Food", featured: true },
-      { id: 101, name: "Beta Denim Jacket", price: 89.99, category: "Fashion", featured: true }
+      { id: 1, name: "Wireless Bluetooth Headphones - Premium Sound", price: 79.99, category: "Electronics", featured: true },
+      { id: 2, name: "Smart Phone Case - Protective & Stylish", price: 24.99, category: "Electronics", featured: true },
+      { id: 3, name: "Laptop Stand - Ergonomic Aluminum Design", price: 45.00, category: "Electronics", featured: true },
+      { id: 4, name: "LED String Lights - Outdoor Waterproof", price: 19.99, category: "Home & Garden", featured: true },
+      { id: 5, name: "Ceramic Plant Pot Set - Modern Design", price: 34.99, category: "Home & Garden", featured: true },
+      { id: 6, name: "Cotton T-Shirt - Organic Soft Comfort", price: 18.99, category: "Clothing & Accessories", featured: true }
     ];
 
+    // Map product names to actual generated image filenames
+    const imageMap = {
+      "Wireless Bluetooth Headphones - Premium Sound": "Wireless_Bluetooth_Headphones_b3a5653e.png",
+      "Smart Phone Case - Protective & Stylish": "Smart_Phone_Case_7c312bb2.png",
+      "Laptop Stand - Ergonomic Aluminum Design": "Laptop_Stand_Aluminum_f6a508a7.png",
+      "LED String Lights - Outdoor Waterproof": "LED_String_Lights_0ee3ac9e.png",
+      "Ceramic Plant Pot Set - Modern Design": "Ceramic_Plant_Pot_Set_05a974b5.png",
+      "Cotton T-Shirt - Organic Soft Comfort": "Organic_Cotton_T-Shirt_0e3aa578.png"
+    };
+
     const formatted = products.map((p: any) => {
-      const sanitizedId = String(p.id).replace(/[^A-Za-z0-9_-]/g, '');
-      const fileName = `beta-${sanitizedId}.png`;
+      const imageFileName = imageMap[p.name] || "default-product.png";
       
-      // 🚀 PRODUCTION FIX: Use object storage URLs for featured products
-      // AI images are uploaded to object storage and accessible via /public-objects/
+      // ✅ FIXED: Use /images/ URLs for featured products with real generated images
       const productWithImage = {
         ...p,
-        image: `/public-objects/${fileName}`, // Production-ready object storage URLs
+        image: `/images/${imageFileName}`, // Use correct image paths for real generated images
         description: `Featured ${p.name.toLowerCase()} - top choice for shoppers` // Add description
       };
       
