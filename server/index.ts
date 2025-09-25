@@ -595,7 +595,7 @@ app.post("/api/beta-refresh-images",
 });
 
 // ✅ Products API with unified normalization (instant response)
-import { normalizeProduct } from "./utils/normalize.js";
+import { normalizeProduct } from "../server/utils/normalize.js";
 
 app.get("/api/products", async (req: any, res) => {
   try {
