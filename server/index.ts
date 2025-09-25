@@ -202,9 +202,27 @@ app.get("/healthz", (_req, res) =>
 );
 
 // APIs (JSON) — BEFORE static
-app.get("/api/health", (req: any, res) =>
-  res.type("application/json").json({ ok: true, mall: req.mallId || cfg.mallId, ts: Date.now() })
-);
+// 🌐 Enhanced Public API Health Check (always accessible, no auth required)
+app.get("/api/health", (req: any, res) => {
+  res.type("application/json").json({
+    status: "healthy",
+    ok: true,
+    mall: req.mallId || cfg.mallId,
+    timestamp: new Date().toISOString(),
+    ts: Date.now(),
+    version: "1.0",
+    environment: process.env.NODE_ENV || "development",
+    cors_enabled: true,
+    public_access: true,
+    api_endpoints: {
+      products: "/api/products",
+      featured: "/api/products/featured", 
+      stores: "/api/stores",
+      health: "/api/health",
+      docs: "/api/docs"
+    }
+  });
+});
 
 // FIX: Add missing placeholder route for image fallbacks
 app.get("/api/placeholder/:width/:height", (req, res) => {
@@ -216,6 +234,75 @@ app.get("/api/placeholder/:width/:height", (req, res) => {
 app.get("/api/theme", (req: any, res) =>
   res.type("application/json").json(loadMallTheme(req.mallId || cfg.mallId!))
 );
+
+// 📚 Public API Documentation Endpoint (no auth required)
+app.get("/api/docs", (req, res) => {
+  res.type("application/json").json({
+    title: "SPIRAL Public API",
+    version: "1.0",
+    description: "Public API for accessing SPIRAL shopping platform data with full CORS support",
+    base_url: req.protocol + '://' + req.get('host'),
+    last_updated: new Date().toISOString(),
+    endpoints: [
+      {
+        path: "/api/products",
+        method: "GET", 
+        description: "Get all products with normalized image URLs",
+        response: "Array of products with image, imageUrl, image_url, description fields",
+        public: true,
+        auth_required: false
+      },
+      {
+        path: "/api/products/featured",
+        method: "GET",
+        description: "Get featured products",
+        response: "Array of featured products with full normalization",
+        public: true,
+        auth_required: false
+      },
+      {
+        path: "/api/stores", 
+        method: "GET",
+        description: "Get all participating stores",
+        response: "Array of store information",
+        public: true,
+        auth_required: false
+      },
+      {
+        path: "/api/health",
+        method: "GET", 
+        description: "API health check and status",
+        response: "API status, configuration, and available endpoints",
+        public: true,
+        auth_required: false
+      },
+      {
+        path: "/api/docs",
+        method: "GET", 
+        description: "API documentation and usage guide",
+        response: "Complete API documentation with endpoints and examples",
+        public: true,
+        auth_required: false
+      }
+    ],
+    cors_configuration: {
+      enabled: true,
+      origins: "*",
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+      headers: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization", "X-API-Key"],
+      credentials: true,
+      max_age: "86400"
+    },
+    rate_limits: {
+      default: "1000 requests per hour",
+      burst: "100 requests per minute"
+    },
+    usage_examples: {
+      javascript: "fetch('" + req.protocol + "://" + req.get('host') + "/api/products').then(r => r.json())",
+      curl: "curl -H 'Origin: https://yoursite.com' " + req.protocol + "://" + req.get('host') + "/api/products"
+    }
+  });
+});
 
 // SPIRAL Core API endpoints
 app.use("/api/shopper", shopperRoutes);
