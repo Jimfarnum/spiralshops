@@ -2245,8 +2245,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     app.post('/api/alerts/mark-sent', wishlistAlertRoutes.markAlertsSent);
     
     // Testing endpoints
-    app.post('/api/products/simulate-price-change', wishlistAlertRoutes.simulatePriceChange);
-    app.get('/api/products/prices', wishlistAlertRoutes.getProductPrices);
+// DISABLED DUPLICATE:     app.post('/api/products/simulate-price-change', wishlistAlertRoutes.simulatePriceChange);
+// DISABLED DUPLICATE:     app.get('/api/products/prices', wishlistAlertRoutes.getProductPrices);
     
     console.log('✅ SPIRAL wishlist alert routes loaded successfully');
   } catch (err) {
@@ -2356,7 +2356,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Featured Products API - CRITICAL FIX (With Image Healing)
-  app.get("/api/products/featured", async (req, res) => {
+// DISABLED DUPLICATE:   app.get("/api/products/featured", async (req, res) => {
     try {
       const allProducts = await getProducts();
       const featuredProducts = allProducts.slice(0, 6).map(product => ({
@@ -2381,7 +2381,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Product Search API - CRITICAL FIX (With Image Healing)
-  app.get("/api/products/search", async (req, res) => {
+// DISABLED DUPLICATE:   app.get("/api/products/search", async (req, res) => {
     try {
       const { q, limit = 20, offset = 0 } = req.query;
       const allProducts = await getProducts();
@@ -2427,7 +2427,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Product Catalog API Routes (Data Loaded from DataService) - With Image Normalization  
   /* DISABLED DUPLICATE: 
-  app.get("/api/products", async (req, res) => {
+// DISABLED DUPLICATE:   app.get("/api/products", async (req, res) => {
     try {
       const { category, search, limit = 20, offset = 0 } = req.query;
       const allProducts = await getProducts();
@@ -2500,7 +2500,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   */
 
-  app.get("/api/products/:id", async (req, res) => {
+// DISABLED DUPLICATE:   app.get("/api/products/:id", async (req, res) => {
     try {
       const productId = parseInt(req.params.id);
       const allProducts = await getProducts();
@@ -2702,7 +2702,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Products API
   // ❌ DISABLED: Conflicting route - handled in server/index.ts
-  // app.get("/api/products", async (req, res) => {
+// DISABLED DUPLICATE:   // app.get("/api/products", async (req, res) => {
   //   try {
   //     const products = await recommendationEngine.getAllProducts();
   //     res.json(products);
