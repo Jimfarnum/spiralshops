@@ -696,7 +696,16 @@ app.post("/api/beta-refresh-images",
 // ✅ Products API with unified normalization (instant response)
 import { normalizeProduct } from "./utils/normalize.js";
 
-// ✅ REMOVED: Duplicate /api/products handler - now handled by canonical router in server/routes.ts
+app.get("/api/products", async (req, res) => {
+  try {
+    const products = await db.query("SELECT * FROM products");
+    console.log("✅ Using normalized /api/products route");
+    res.json(products.map((p: any) => normalizeProduct(p)));
+  } catch (err) {
+    console.error("❌ Error in /api/products:", err);
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
+});
 
 // ✅ Health/test route with product count
 app.get("/api/test", async (req: any, res) => {
