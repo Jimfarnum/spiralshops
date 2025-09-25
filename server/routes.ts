@@ -2245,8 +2245,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     app.post('/api/alerts/mark-sent', wishlistAlertRoutes.markAlertsSent);
     
     // Testing endpoints
-// DISABLED DUPLICATE:     app.post('/api/products/simulate-price-change', wishlistAlertRoutes.simulatePriceChange);
-// DISABLED DUPLICATE:     app.get('/api/products/prices', wishlistAlertRoutes.getProductPrices);
+// DISABLED DUPLICATE: // DISABLED DUPLICATE:     app.post('/api/products/simulate-price-change', wishlistAlertRoutes.simulatePriceChange);
+// DISABLED DUPLICATE: // DISABLED DUPLICATE:     app.get('/api/products/prices', wishlistAlertRoutes.getProductPrices);
     
     console.log('✅ SPIRAL wishlist alert routes loaded successfully');
   } catch (err) {
@@ -2356,14 +2356,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Featured Products API - DISABLED (handled by separate router)
-  // REMOVED: Duplicate /api/products/featured route
+// DISABLED DUPLICATE:   // REMOVED: Duplicate /api/products/featured route
 
   // Product Search API - DISABLED (handled by separate router)
-  // REMOVED: Duplicate /api/products/search route
+// DISABLED DUPLICATE:   // REMOVED: Duplicate /api/products/search route
 
   // Product Catalog API Routes (Data Loaded from DataService) - With Image Normalization  
   /* DISABLED DUPLICATE: 
-// DISABLED DUPLICATE:   app.get("/api/products", async (req, res) => {
+// DISABLED DUPLICATE: // DISABLED DUPLICATE:   app.get("/api/products", async (req, res) => {
     try {
       const { category, search, limit = 20, offset = 0 } = req.query;
       const allProducts = await getProducts();
@@ -2437,7 +2437,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   */
 
   // Product Detail API - DISABLED (handled by separate router)
-  // REMOVED: Duplicate /api/products/:id route
+// DISABLED DUPLICATE:   // REMOVED: Duplicate /api/products/:id route
 
   app.get("/api/categories", async (req, res) => {
     const startTime = Date.now();
@@ -2574,7 +2574,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Products API
   // ❌ DISABLED: Conflicting route - handled in server/index.ts
-// DISABLED DUPLICATE:   // app.get("/api/products", async (req, res) => {
+// DISABLED DUPLICATE: // DISABLED DUPLICATE:   // app.get("/api/products", async (req, res) => {
   //   try {
   //     const products = await recommendationEngine.getAllProducts();
   //     res.json(products);

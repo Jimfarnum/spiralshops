@@ -700,10 +700,11 @@ app.get("/api/products", async (req: any, res) => {
   try {
     const productsResponse = await SpiralApi.products(req.mallId, req.query as any);
     const products = Array.isArray(productsResponse) ? productsResponse : productsResponse.products || [];
-    console.log("✅ Using normalized /api/products route");
-    res.json(products.map((p: any) => normalizeProduct(p)));
-  } catch (err) {
-    console.error("❌ Error in /api/products:", err);
+    const normalized = products.map((p: any) => normalizeProduct(p));
+    res.setHeader("x-spiral-route", "normalized-index-ts");
+    res.json(normalized);
+  } catch (e) {
+    console.error("❌ /api/products error:", e);
     res.status(500).json({ error: "Failed to fetch products" });
   }
 });
