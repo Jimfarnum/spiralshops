@@ -59,6 +59,18 @@ import { setupVite } from "./vite.js";
 
 const app = express();
 
+// ⚡ Favicon optimization - prevent excessive requests
+app.get('/favicon.ico', (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+  res.setHeader('Content-Type', 'image/x-icon');
+  try {
+    res.sendFile(path.join(process.cwd(), 'public', 'favicon.ico'));
+  } catch (error) {
+    res.status(204).end(); // No content if favicon missing
+  }
+});
+
+
 // 🔧 Initialize OpenAI client for AI image generation  
 // FORCE DEPLOY: 2025-09-24T01:05:00Z - FIXING RAW CODE ISSUE - CLEAN REBUILD
 const openaiClient = new OpenAI({
