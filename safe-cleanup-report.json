@@ -1,0 +1,35 @@
+{
+  "timestamp": "2025-09-25T17:14:48.846Z",
+  "safeToApply": false,
+  "validationResults": [
+    {
+      "test": "TypeScript Compilation",
+      "result": "FAIL",
+      "message": "spawnSync /bin/sh ETIMEDOUT..."
+    },
+    {
+      "test": "Route availability: /api/health",
+      "result": "PASS",
+      "message": "Route definition found in source"
+    },
+    {
+      "test": "Route availability: /api/products",
+      "result": "PASS",
+      "message": "Route definition found in source"
+    },
+    {
+      "test": "Route availability: /api/products/featured",
+      "result": "WARN",
+      "message": "Route definition not explicitly found"
+    },
+    {
+      "test": "Import validation: index.ts",
+      "result": "PASS",
+      "message": "All imports appear valid"
+    }
+  ],
+  "backupsCreated": [
+    "./server/index.ts"
+  ],
+  "recommendation": "Fix issues before deployment"
+}
