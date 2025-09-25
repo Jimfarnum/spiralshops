@@ -1,0 +1,225 @@
+{
+  "timestamp": "2025-09-25T17:33:28.289Z",
+  "platform": "SPIRAL E-commerce Platform",
+  "test_type": "100% Functionality Validation",
+  "overall_score": 56,
+  "scores": {
+    "api_endpoints": 44,
+    "frontend_components": 0,
+    "enhanced_features": 80,
+    "system_health": 100
+  },
+  "detailed_results": {
+    "api_endpoints": [
+      {
+        "endpoint": "/api/health",
+        "status_code": 200,
+        "status_pass": true,
+        "keys_pass": true,
+        "performance_pass": true,
+        "response_time": 71,
+        "data_size": 333,
+        "overall_pass": true
+      },
+      {
+        "endpoint": "/api/products",
+        "status_code": 200,
+        "status_pass": true,
+        "keys_pass": true,
+        "performance_pass": true,
+        "response_time": 94,
+        "data_size": 2127,
+        "overall_pass": true
+      },
+      {
+        "endpoint": "/api/products/featured",
+        "status_code": 200,
+        "status_pass": true,
+        "keys_pass": true,
+        "performance_pass": true,
+        "response_time": 103,
+        "data_size": 1592,
+        "overall_pass": true
+      },
+      {
+        "endpoint": "/api/stores",
+        "status_code": 200,
+        "status_pass": true,
+        "keys_pass": false,
+        "performance_pass": true,
+        "response_time": 109,
+        "data_size": 379,
+        "overall_pass": false
+      },
+      {
+        "endpoint": "/api/mall-events",
+        "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+        "overall_pass": false
+      },
+      {
+        "endpoint": "/api/promotions",
+        "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+        "overall_pass": false
+      },
+      {
+        "endpoint": "/api/recommend?context=homepage&limit=5",
+        "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+        "overall_pass": false
+      },
+      {
+        "endpoint": "/api/trust/public",
+        "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+        "overall_pass": false
+      },
+      {
+        "endpoint": "/api/docs",
+        "status_code": 200,
+        "status_pass": true,
+        "keys_pass": true,
+        "performance_pass": true,
+        "response_time": 252,
+        "data_size": 1672,
+        "overall_pass": true
+      }
+    ],
+    "frontend_components": [
+      {
+        "component": "App.tsx",
+        "exists": false,
+        "valid": false
+      },
+      {
+        "component": "header.tsx",
+        "exists": false,
+        "valid": false
+      },
+      {
+        "component": "footer.tsx",
+        "exists": false,
+        "valid": false
+      },
+      {
+        "component": "EnhancedFeaturedProducts.tsx",
+        "exists": false,
+        "valid": false
+      },
+      {
+        "component": "home.tsx",
+        "exists": false,
+        "valid": false
+      },
+      {
+        "component": "store.tsx",
+        "exists": false,
+        "valid": false
+      },
+      {
+        "component": "queryClient.ts",
+        "exists": false,
+        "valid": false
+      },
+      {
+        "component": "cartStore.ts",
+        "exists": false,
+        "valid": false
+      }
+    ],
+    "enhanced_features": [
+      {
+        "name": "Image URL Normalization",
+        "active": true,
+        "test_method": "file_check"
+      },
+      {
+        "name": "Enhanced CORS Configuration",
+        "active": false,
+        "test_method": "file_check"
+      },
+      {
+        "name": "API Documentation System",
+        "active": [
+          {
+            "path": "/api/products",
+            "method": "GET",
+            "description": "Get all products with normalized image URLs",
+            "response": "Array of products with image, imageUrl, image_url, description fields",
+            "public": true,
+            "auth_required": false
+          },
+          {
+            "path": "/api/products/featured",
+            "method": "GET",
+            "description": "Get featured products",
+            "response": "Array of featured products with full normalization",
+            "public": true,
+            "auth_required": false
+          },
+          {
+            "path": "/api/stores",
+            "method": "GET",
+            "description": "Get all participating stores",
+            "response": "Array of store information",
+            "public": true,
+            "auth_required": false
+          },
+          {
+            "path": "/api/health",
+            "method": "GET",
+            "description": "API health check and status",
+            "response": "API status, configuration, and available endpoints",
+            "public": true,
+            "auth_required": false
+          },
+          {
+            "path": "/api/docs",
+            "method": "GET",
+            "description": "API documentation and usage guide",
+            "response": "Complete API documentation with endpoints and examples",
+            "public": true,
+            "auth_required": false
+          }
+        ],
+        "test_method": "api_test"
+      },
+      {
+        "name": "Real-time Health Monitoring",
+        "active": true,
+        "test_method": "api_test"
+      },
+      {
+        "name": "Product Search & Featured Products",
+        "active": true,
+        "test_method": "api_test"
+      }
+    ],
+    "system_health": [
+      {
+        "name": "Server Response Time",
+        "passed": true,
+        "value": 1,
+        "unit": "ms"
+      },
+      {
+        "name": "Database Connectivity",
+        "passed": true,
+        "value": "Connected",
+        "unit": ""
+      },
+      {
+        "name": "CORS Functionality",
+        "passed": true,
+        "value": "Enabled",
+        "unit": ""
+      },
+      {
+        "name": "Memory Usage",
+        "passed": true,
+        "value": 8,
+        "unit": "MB"
+      }
+    ],
+    "performance_metrics": {},
+    "overall_score": 0
+  },
+  "recommendation": "Major fixes needed before deployment"
+}
