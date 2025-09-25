@@ -8,7 +8,7 @@ export function normalizeProduct(p: any) {
     // Fix: Prevent double /images/ prefix
     if (raw.startsWith("/images/")) return raw;
     
-    // Remove legacy prefixes and clean up  
+    // Normalize legacy paths to /images/
     const cleaned = raw.replace(/^\/?(public-objects|static|public|images)?\/?/, "");
     return `/images/${cleaned}`;
   }
