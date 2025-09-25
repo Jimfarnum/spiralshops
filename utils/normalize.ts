@@ -4,12 +4,7 @@ export function normalizeProduct(p: any) {
   function resolveImage(raw?: string | null): string {
     if (!raw) return DEFAULT_IMG;
     if (raw.startsWith("http")) return raw;
-    
-    // Fix: Prevent double /images/ prefix
-    if (raw.startsWith("/images/")) return raw;
-    
-    // Normalize legacy paths to /images/
-    const cleaned = raw.replace(/^\/?(public-objects|static|public|images)?\/?/, "");
+    const cleaned = raw.replace(/^\/?(public-objects|static|public)?\/?/, "");
     return `/images/${cleaned}`;
   }
 
