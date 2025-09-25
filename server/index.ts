@@ -696,9 +696,10 @@ app.post("/api/beta-refresh-images",
 // ✅ Products API with unified normalization (instant response)
 import { normalizeProduct } from "./utils/normalize.js";
 
-app.get("/api/products", async (req, res) => {
+app.get("/api/products", async (req: any, res) => {
   try {
-    const products = await db.query("SELECT * FROM products");
+    const productsResponse = await SpiralApi.products(req.mallId, req.query as any);
+    const products = Array.isArray(productsResponse) ? productsResponse : productsResponse.products || [];
     console.log("✅ Using normalized /api/products route");
     res.json(products.map((p: any) => normalizeProduct(p)));
   } catch (err) {
