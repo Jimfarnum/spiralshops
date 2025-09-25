@@ -656,7 +656,7 @@ app.get("/api/discover", async (req: any, res) => {
     products = await attachAIImages(products);
 
     // Return flat array format (same as products endpoint)
-    res.json(products);
+    res.json(products.map(normalizeProduct));
   } catch (err) {
     console.error("❌ Error fetching discover products:", err);
     res.status(500).json({ error: "Failed to fetch discover products" });

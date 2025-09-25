@@ -2439,6 +2439,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Product Catalog API Routes (Data Loaded from DataService) - With Image Normalization  
+  /* DISABLED DUPLICATE: 
   app.get("/api/products", async (req, res) => {
     try {
       const { category, search, limit = 20, offset = 0 } = req.query;
@@ -2510,6 +2511,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     }
   });
+  */
 
   app.get("/api/products/:id", async (req, res) => {
     try {
