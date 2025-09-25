@@ -95,37 +95,7 @@ function normalize(payload: any, req: any) {
   return arr.map((p) => ({ ...p, image: absolutize(p.image, req) }));
 }
 
-// Apply to products and discover endpoints with imageUrl/image_url aliases
-app.use(["/api/products", "/api/discover"], (req, res, next) => {
-  const original = res.json.bind(res);
-  res.json = (body: any) => {
-    try {
-      // Enhanced normalization with imageUrl/image_url aliases
-      const enrichProduct = (p: any) => {
-        const normalized = { ...p, image: absolutize(p.image, req) };
-        return {
-          ...normalized,
-          imageUrl: p.imageUrl ?? normalized.image,     // camelCase compatibility
-          image_url: p.image_url ?? normalized.image    // snake_case compatibility  
-        };
-      };
-      
-      let enrichedBody = body;
-      if (Array.isArray(body)) {
-        enrichedBody = body.map(enrichProduct);
-      } else if (body && Array.isArray(body.products)) {
-        enrichedBody = { ...body, products: body.products.map(enrichProduct) };
-      } else if (body && Array.isArray(body.items)) {
-        enrichedBody = { ...body, items: body.items.map(enrichProduct) };
-      }
-      
-      return original(enrichedBody);
-    } catch (err) {
-      return original(body);
-    }
-  };
-  next();
-});
+// ✅ Unified normalization now handled by normalizeProduct function
 
 // Object Storage serving for public images
 import { ObjectStorageService } from "./objectStorage.js";
@@ -624,7 +594,9 @@ app.post("/api/beta-refresh-images",
   }
 });
 
-// ✅ Products API with pre-cached images (instant response)
+// ✅ Products API with unified normalization (instant response)
+import { normalizeProduct } from "./utils/normalize.js";
+
 app.get("/api/products", async (req: any, res) => {
   try {
     const productsResponse = await SpiralApi.products(req.mallId, req.query as any);
@@ -633,14 +605,8 @@ app.get("/api/products", async (req: any, res) => {
     // 🚀 Attach pre-cached images (instant, no generation delay)
     products = await attachAIImages(products);
 
-    const response = products.map((p: any) => ({
-      id: p.id,
-      name: p.name,
-      price: p.price,
-      image: p.image,
-      imageUrl: p.image,  // camelCase compatibility
-      image_url: p.image  // snake_case compatibility for external scripts
-    }));
+    // ✅ Apply unified normalization for consistent API responses
+    const response = products.map(normalizeProduct);
 
     res.json(response);
   } catch (err) {
