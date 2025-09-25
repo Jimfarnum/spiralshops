@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
-import { normalizeProduct } from "../utils/normalize.js";
+import { normalizeProduct } from "../../utils/normalize.js";
 
 const router = express.Router();
 
@@ -61,27 +61,27 @@ router.get("/", async (req, res) => {
     };
 
     const formatted = products.map((p: any) => {
-      const imageFileName = imageMap[p.name] || "default-product.png";
+      // Map product names to actual generated image filenames
+      const imageMap: { [key: string]: string } = {
+        "Wireless Bluetooth Headphones - Premium Sound": "Wireless_Bluetooth_Headphones_b3a5653e.png",
+        "Smart Phone Case - Protective & Stylish": "Smart_Phone_Case_7c312bb2.png", 
+        "Laptop Stand - Ergonomic Aluminum Design": "Laptop_Stand_Aluminum_f6a508a7.png",
+        "LED String Lights - Outdoor Waterproof": "LED_String_Lights_0ee3ac9e.png",
+        "Ceramic Plant Pot Set - Modern Design": "Ceramic_Plant_Pot_Set_05a974b5.png",
+        "Cotton T-Shirt - Organic Soft Comfort": "Organic_Cotton_T-Shirt_0e3aa578.png",
+        "Running Sneakers - Lightweight Athletic": "Running_Sneakers_Athletic_f36bb48b.png",
+        "Leather Wallet - Minimalist RFID Blocking": "Leather_Wallet_RFID_7580bf82.png"
+      };
       
-      // ✅ FIXED: Use /images/ URLs that serve from static/images directory
+      const imageFileName = imageMap[p.name] || "default.png";
       const productWithImage = {
         ...p,
-        image: `/images/${imageFileName}`, // Use correct image paths for real generated images
-        description: `High-quality ${p.name.toLowerCase()} available at local SPIRAL verified stores.` // Add description
+        image: `/images/${imageFileName}`,
+        description: `High-quality ${p.name.toLowerCase()} available at local SPIRAL verified stores.`
       };
       
       // ✅ Apply unified normalization for consistent API contract
-      const normalized = normalizeProduct(productWithImage);
-      
-      // 🛡️ DEFENSIVE CONTRACT GUARD: Ensure all required fields are present
-      if (!normalized.imageUrl || !normalized.image_url || !normalized.description) {
-        console.warn(`⚠️ Normalization incomplete for product ${normalized.id}, patching...`);
-        normalized.imageUrl = normalized.imageUrl || normalized.image;
-        normalized.image_url = normalized.image_url || normalized.image;  
-        normalized.description = normalized.description || `High-quality ${normalized.name.toLowerCase()} perfect for your needs`;
-      }
-      
-      return normalized;
+      return normalizeProduct(productWithImage);
     });
 
     res.json(formatted);
@@ -117,27 +117,25 @@ router.get("/featured", async (req, res) => {
     };
 
     const formatted = products.map((p: any) => {
-      const imageFileName = imageMap[p.name] || "default-product.png";
+      // Map product names to actual generated image filenames
+      const imageMap: { [key: string]: string } = {
+        "Wireless Bluetooth Headphones - Premium Sound": "Wireless_Bluetooth_Headphones_b3a5653e.png",
+        "Smart Phone Case - Protective & Stylish": "Smart_Phone_Case_7c312bb2.png",
+        "Laptop Stand - Ergonomic Aluminum Design": "Laptop_Stand_Aluminum_f6a508a7.png",
+        "LED String Lights - Outdoor Waterproof": "LED_String_Lights_0ee3ac9e.png",
+        "Ceramic Plant Pot Set - Modern Design": "Ceramic_Plant_Pot_Set_05a974b5.png",
+        "Cotton T-Shirt - Organic Soft Comfort": "Organic_Cotton_T-Shirt_0e3aa578.png"
+      };
       
-      // ✅ FIXED: Use /images/ URLs for featured products with real generated images
+      const imageFileName = imageMap[p.name] || "default.png";
       const productWithImage = {
         ...p,
-        image: `/images/${imageFileName}`, // Use correct image paths for real generated images
-        description: `Featured ${p.name.toLowerCase()} - top choice for shoppers` // Add description
+        image: `/images/${imageFileName}`,
+        description: `Featured ${p.name.toLowerCase()} - top choice for shoppers`
       };
       
       // ✅ Apply unified normalization for consistent API contract  
-      const normalized = normalizeProduct(productWithImage);
-      
-      // 🛡️ DEFENSIVE CONTRACT GUARD: Ensure all required fields are present  
-      if (!normalized.imageUrl || !normalized.image_url || !normalized.description) {
-        console.warn(`⚠️ Normalization incomplete for featured product ${normalized.id}, patching...`);
-        normalized.imageUrl = normalized.imageUrl || normalized.image;
-        normalized.image_url = normalized.image_url || normalized.image;
-        normalized.description = normalized.description || `Featured ${normalized.name.toLowerCase()} - top choice for shoppers`;
-      }
-      
-      return normalized;
+      return normalizeProduct(productWithImage);
     });
 
     res.json(formatted);
