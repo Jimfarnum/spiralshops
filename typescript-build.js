@@ -62,7 +62,20 @@ try {
     console.log('✅ Fallback build completed with esbuild');
   }
 
-  // Step 4: Verify final output
+  // Step 4: Copy images to build
+  console.log('🖼️ Copying images to build...');
+  const imagesSrc = './public/images';
+  const imagesDest = './dist/public/images';
+  
+  if (fs.existsSync(imagesSrc)) {
+    fs.mkdirSync(imagesDest, { recursive: true });
+    fs.cpSync(imagesSrc, imagesDest, { recursive: true });
+    console.log('✅ Images copied to build');
+  } else {
+    console.log('⚠️ No images directory found');
+  }
+
+  // Step 5: Verify final output
   console.log('🔍 Verifying build output...');
   const serverPath = './dist/index.js';
   const publicPath = './dist/public';
