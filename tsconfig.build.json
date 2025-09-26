@@ -1,18 +1,30 @@
 {
-  "extends": "./tsconfig.production.json",
+  "extends": "./tsconfig.server.json",
   "compilerOptions": {
     "noEmit": false,
-    "outDir": "./dist/server-ts",
+    "outDir": "./dist",
     "rootDir": "./",
     "skipLibCheck": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": false,
-    "strict": false
+    "strict": false,
+    "declaration": false,
+    "sourceMap": false,
+    "removeComments": true
   },
   "include": [
     "server/**/*",
     "shared/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "client/**/*",
+    "dist/**/*",
+    "**/*.test.ts",
+    "**/test/**",
+    "**/*.spec.ts",
+    "**/*.d.ts"
   ]
 }

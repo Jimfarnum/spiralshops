@@ -27,30 +27,20 @@ try {
   execSync('npx vite build', { stdio: 'inherit' });
   console.log('✅ Frontend build completed');
 
-  // Step 3: TypeScript server compilation (STRICT)
+  // Step 3: TypeScript server compilation (DIRECT TO DIST)
   console.log('🔧 Compiling server with TypeScript...');
   try {
     execSync('npx tsc --project tsconfig.build.json', { 
       stdio: 'inherit' 
     });
     
-    // Success path - use TypeScript compiled output
-    console.log('✅ TypeScript compilation successful');
-    
-    const tsServerIndex = './dist/server-ts/server/index.js';
+    // Check if direct compilation worked
+    const directServerIndex = './dist/server/index.js';
     const finalServerIndex = './dist/index.js';
     
-    if (fs.existsSync(tsServerIndex)) {
-      fs.copyFileSync(tsServerIndex, finalServerIndex);
-      
-      // Copy shared modules if they exist
-      const sharedTsPath = './dist/server-ts/shared';
-      const sharedFinalPath = './dist/shared';
-      if (fs.existsSync(sharedTsPath)) {
-        fs.cpSync(sharedTsPath, sharedFinalPath, { recursive: true });
-      }
-      
-      console.log('✅ TypeScript-compiled server ready at dist/index.js');
+    if (fs.existsSync(directServerIndex)) {
+      fs.copyFileSync(directServerIndex, finalServerIndex);
+      console.log('✅ TypeScript compilation successful (direct to dist)');
     } else {
       throw new Error('TypeScript compilation did not produce expected output');
     }
