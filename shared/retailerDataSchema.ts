@@ -173,11 +173,23 @@ export const retailerIntegrationsRelations = relations(retailerIntegrations, ({ 
 }));
 
 // Zod Schemas for API validation
-export const insertRetailerProductSchema = createInsertSchema(retailerProducts).omit(['id', 'createdAt', 'updatedAt']);
+export const insertRetailerProductSchema = createInsertSchema(retailerProducts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
 
-export const insertRetailerIntegrationSchema = createInsertSchema(retailerIntegrations).omit(['id', 'createdAt', 'updatedAt']);
+export const insertRetailerIntegrationSchema = createInsertSchema(retailerIntegrations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
 
-export const insertProductCategorySchema = createInsertSchema(productCategories).omit(['id', 'createdAt', 'updatedAt']);
+export const insertProductCategorySchema = createInsertSchema(productCategories).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
 
 // Type exports
 export type RetailerProduct = typeof retailerProducts.$inferSelect;
