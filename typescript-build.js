@@ -9,13 +9,14 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-const ENABLE_FALLBACK = true; // ALWAYS enabled for deployment safety
-const FORCE_ESBUILD = process.env.DEPLOYMENT === '1' || process.env.REPLIT_DEPLOYMENT === '1';
+// FORCE ESBUILD AS PRIMARY - TypeScript is unstable
+const USE_TYPESCRIPT = process.env.USE_TYPESCRIPT === 'true'; // Only use TS if explicitly requested
+const PRIMARY_METHOD = USE_TYPESCRIPT ? 'TypeScript (risky)' : 'esbuild (safe)';
 
-console.log('🚀 DEPLOYMENT-SAFE Build Pipeline');
-console.log('================================');
-console.log(`📋 Deployment mode: ${FORCE_ESBUILD ? 'YES (using esbuild)' : 'NO (trying TypeScript first)'}`);
-console.log('📋 Fallback mode: ALWAYS ENABLED');
+console.log('🚀 BULLETPROOF Build Pipeline');
+console.log('============================');
+console.log(`📋 Primary method: ${PRIMARY_METHOD}`);
+console.log('📋 Deployment safety: MAXIMUM');
 
 try {
   // Step 1: Clean build directory
@@ -30,15 +31,9 @@ try {
   execSync('npx vite build', { stdio: 'inherit' });
   console.log('✅ Frontend build completed');
 
-  // Step 3: Server compilation - Use esbuild in deployment, try TypeScript locally
-  if (FORCE_ESBUILD) {
-    console.log('🔧 DEPLOYMENT MODE: Building server with esbuild...');
-    execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --minify`, { 
-      stdio: 'inherit' 
-    });
-    console.log('✅ Deployment build completed with esbuild');
-  } else {
-    console.log('🔧 LOCAL MODE: Attempting TypeScript compilation...');
+  // Step 3: Server compilation - esbuild FIRST for deployment safety
+  if (USE_TYPESCRIPT) {
+    console.log('🔧 RISKY MODE: Attempting TypeScript compilation (explicitly requested)...');
     try {
       execSync('npx tsc --project tsconfig.build.json', { 
         stdio: 'inherit' 
@@ -56,13 +51,18 @@ try {
       }
       
     } catch (tsError) {
-      console.error('❌ TypeScript compilation failed');
-      console.log('⚠️  Auto-fallback to esbuild (guaranteed success)...');
+      console.error('❌ TypeScript compilation failed - switching to esbuild');
       execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --minify`, { 
         stdio: 'inherit' 
       });
-      console.log('✅ Fallback build completed with esbuild');
+      console.log('✅ Emergency fallback build completed with esbuild');
     }
+  } else {
+    console.log('🔧 SAFE MODE: Building server with esbuild (primary method)...');
+    execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --minify`, { 
+      stdio: 'inherit' 
+    });
+    console.log('✅ Safe build completed with esbuild');
   }
 
   // Step 4: Copy images to build
