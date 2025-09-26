@@ -78,26 +78,52 @@ try {
     console.log('⚠️ No images directory found');
   }
 
-  // Step 5: Verify final output
-  console.log('🔍 Verifying build output...');
+  // Step 5: CRITICAL DEPLOYMENT VERIFICATION
+  console.log('🔍 CRITICAL: Verifying build output for deployment...');
   const serverPath = './dist/index.js';
   const publicPath = './dist/public';
   
   if (!fs.existsSync(serverPath)) {
-    throw new Error('❌ Build verification failed: dist/index.js not found');
+    console.error('❌ CRITICAL FAILURE: dist/index.js does NOT exist!');
+    console.error('   This will cause deployment to fail!');
+    console.error('   Attempting emergency server build...');
+    
+    // Emergency server build with detailed verification
+    try {
+      execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --minify --target=node18`, { 
+        stdio: 'inherit' 
+      });
+      
+      if (fs.existsSync('./dist/index.js')) {
+        console.log('✅ Emergency build successful - dist/index.js created');
+      } else {
+        throw new Error('❌ Emergency build failed - deployment will fail');
+      }
+    } catch (emergencyError) {
+      console.error('❌ Emergency build failed:', emergencyError.message);
+      throw emergencyError;
+    }
   }
   
   if (!fs.existsSync(publicPath)) {
-    throw new Error('❌ Build verification failed: dist/public not found');
+    console.error('❌ Build verification failed: dist/public not found');
+    throw new Error('Frontend build failed');
   }
 
   const serverSize = (fs.statSync(serverPath).size / 1024).toFixed(1);
-  const buildMethod = fs.existsSync('./dist/server-ts') ? 'TypeScript (tsc)' : 'esbuild';
+  const buildMethod = USE_TYPESCRIPT ? 'TypeScript (risky)' : 'esbuild (safe)';
   
   console.log(`🎉 Build completed successfully!`);
-  console.log(`   📄 Server: dist/index.js (${serverSize}KB)`);
-  console.log(`   🌐 Frontend: dist/public/`);
+  console.log(`   📄 Server: dist/index.js (${serverSize}KB) ✅ DEPLOYMENT READY`);
+  console.log(`   🌐 Frontend: dist/public/ ✅`);
   console.log(`   🔧 Method: ${buildMethod}`);
+  
+  // Final deployment readiness check
+  if (parseFloat(serverSize) < 50) {
+    console.error('⚠️  WARNING: Server file suspiciously small - may be corrupted');
+  }
+  
+  console.log('🚀 DEPLOYMENT VERIFICATION: dist/index.js exists and ready!');
   
 } catch (error) {
   console.error('❌ Build pipeline failed:', error.message);
