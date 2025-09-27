@@ -15,6 +15,7 @@ const PRIMARY_METHOD = USE_TYPESCRIPT ? 'TypeScript (risky)' : 'esbuild (safe)';
 
 console.log('🚀 BULLETPROOF Build Pipeline');
 console.log('============================');
+console.log('🛠️ Starting build at', new Date().toISOString());
 console.log(`📋 Primary method: ${PRIMARY_METHOD}`);
 console.log('📋 Deployment safety: MAXIMUM');
 
@@ -134,6 +135,7 @@ try {
   }
   
   console.log('🚀 DEPLOYMENT VERIFICATION: dist/index.js exists and ready!');
+  console.log('✅ Build complete at', new Date().toISOString());
   
 } catch (error) {
   console.error('❌ Build pipeline failed:', error.message);

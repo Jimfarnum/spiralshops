@@ -200,6 +200,28 @@ console.log("✅ Stripe webhook endpoint mounted at /api/billing/webhook (BEFORE
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: false }));
 
+// Runtime image directory self-healing for deployment reliability
+try {
+  // ES module compatible directory resolution
+  const currentDir = path.dirname(new URL(import.meta.url).pathname);
+  const imgDir = path.join(currentDir, "../public/images");
+  
+  if (!fs.existsSync(imgDir)) {
+    fs.mkdirSync(imgDir, { recursive: true });
+    console.log("🛠️ Created missing public/images directory at runtime");
+  }
+  const defaultImg = path.join(imgDir, "default.png");
+  if (!fs.existsSync(defaultImg)) {
+    fs.writeFileSync(defaultImg, "PNG fallback (No Image)");
+    console.log("🛠️ Created missing default.png at runtime");
+  }
+  const files = fs.readdirSync(imgDir);
+  console.log(`🖼️ Runtime image directory check: ${files.length} file(s) in /public/images`);
+  if (files.length > 0) console.log("Sample image:", files[0]);
+} catch (err) {
+  console.error("❌ Runtime image directory error:", err);
+}
+
 // Retailer context middleware (for billing system)
 app.use(retailerContext);
 
