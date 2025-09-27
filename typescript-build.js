@@ -18,6 +18,16 @@ console.log('============================');
 console.log(`📋 Primary method: ${PRIMARY_METHOD}`);
 console.log('📋 Deployment safety: MAXIMUM');
 
+console.log('🔍 DEPLOYMENT ENVIRONMENT CHECK:');
+try {
+  console.log(`   Node.js: ${process.version}`);
+  console.log(`   npm: ${execSync('npm -v', { encoding: 'utf8' }).trim()}`);
+  console.log(`   esbuild available: ${execSync('npx esbuild --version', { encoding: 'utf8' }).trim()}`);
+  console.log(`   vite available: ${execSync('npx vite --version', { encoding: 'utf8' }).trim()}`);
+} catch (envError) {
+  console.error('⚠️  Environment check failed:', envError.message);
+}
+
 try {
   // Step 1: Clean build directory
   console.log('🧹 Cleaning dist directory...');
@@ -52,14 +62,14 @@ try {
       
     } catch (tsError) {
       console.error('❌ TypeScript compilation failed - switching to esbuild');
-      execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --minify`, { 
+      execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --minify --target=node18`, { 
         stdio: 'inherit' 
       });
       console.log('✅ Emergency fallback build completed with esbuild');
     }
   } else {
-    console.log('🔧 SAFE MODE: Building server with esbuild (primary method)...');
-    execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --minify`, { 
+    console.log('🔧 SAFE MODE: Building server with esbuild (deterministic output)...');
+    execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --minify --target=node18`, { 
       stdio: 'inherit' 
     });
     console.log('✅ Safe build completed with esbuild');
@@ -90,7 +100,7 @@ try {
     
     // Emergency server build with detailed verification
     try {
-      execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --minify --target=node18`, { 
+      execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --minify --target=node18`, { 
         stdio: 'inherit' 
       });
       
