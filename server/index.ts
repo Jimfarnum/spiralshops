@@ -4,6 +4,11 @@ import compression from "compression";
 import path from "path";
 import fs from "fs";
 import axios from "axios";
+import { fileURLToPath } from "url";
+
+// ES Module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import { applySecurity } from "./security.js";
 import { tenantMiddleware } from "./tenant.js";
 import { SpiralApi } from "./spiralApi.js";
@@ -905,8 +910,20 @@ async function startServer() {
     await setupVite(app, httpServer);
     console.log("✅ Vite development middleware mounted");
   } else {
-    // In production, serve static files and SPA fallback would be handled differently
-    console.log("✅ Production mode - static serving");
+    // In production, serve static files and SPA fallback
+    app.use(express.static(path.join(__dirname, "public"), { 
+      fallthrough: true, 
+      maxAge: "30d" 
+    }));
+    
+    // SPA fallback for all non-API routes
+    app.get("*", (req, res) => {
+      if (!req.path.startsWith("/api")) {
+        res.sendFile(path.join(__dirname, "public", "index.html"));
+      }
+    });
+    
+    console.log("✅ Production mode - static serving enabled");
   }
   
   httpServer.listen(cfg.port, () => console.log(`🚀 Server running on port ${cfg.port}`));
