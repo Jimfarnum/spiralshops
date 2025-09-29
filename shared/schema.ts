@@ -6,6 +6,15 @@ import { relations } from "drizzle-orm";
 // Re-export retailer data tables
 export * from "./retailerDataSchema";
 
+// Push notification subscriptions
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: serial("id").primaryKey(),
+  endpoint: text("endpoint").notNull().unique(),
+  keys: jsonb("keys").notNull(),
+  expirationTime: text("expiration_time"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const stores = pgTable("stores", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
