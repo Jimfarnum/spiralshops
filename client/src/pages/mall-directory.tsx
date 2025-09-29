@@ -218,7 +218,7 @@ export default function MallDirectoryPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
-                {allCategories.map(category => (
+                {allCategories.map((category: string) => (
                   <SelectItem key={category} value={category}>
                     {category.charAt(0).toUpperCase() + category.slice(1)}
                   </SelectItem>
