@@ -37,10 +37,21 @@ try {
   }
   fs.mkdirSync('./dist', { recursive: true });
 
-  // Step 2: Build frontend
+  // Step 2: Build frontend with timeout protection
   console.log('🎨 Building frontend with Vite...');
-  execSync('npx vite build', { stdio: 'inherit' });
-  console.log('✅ Frontend build completed');
+  try {
+    execSync('timeout 120s npx vite build', { stdio: 'inherit', timeout: 125000 });
+    console.log('✅ Frontend build completed');
+  } catch (frontendError) {
+    if (frontendError.status === 124) {
+      console.error('❌ Frontend build timed out after 120s');
+      console.log('🔄 Retrying with optimized settings...');
+      execSync('npx vite build --mode production --minify false', { stdio: 'inherit' });
+      console.log('✅ Frontend build completed (optimized fallback)');
+    } else {
+      throw frontendError;
+    }
+  }
 
   // Step 3: Server compilation - esbuild FIRST for deployment safety
   if (USE_TYPESCRIPT) {
@@ -63,16 +74,42 @@ try {
       
     } catch (tsError) {
       console.error('❌ TypeScript compilation failed - switching to esbuild');
-      execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --minify --target=node18`, { 
-        stdio: 'inherit' 
-      });
-      console.log('✅ Emergency fallback build completed with esbuild');
+      try {
+        execSync(`timeout 60s npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --minify --target=node18`, { 
+          stdio: 'inherit',
+          timeout: 65000
+        });
+        console.log('✅ Emergency fallback build completed with esbuild');
+      } catch (fallbackError) {
+        if (fallbackError.status === 124) {
+          console.error('❌ Fallback esbuild also timed out, using minimal build...');
+          execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --target=node18`, { 
+            stdio: 'inherit' 
+          });
+          console.log('✅ Minimal emergency build completed');
+        } else {
+          throw fallbackError;
+        }
+      }
     }
   } else {
     console.log('🔧 SAFE MODE: Building server with esbuild (deterministic output)...');
-    execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --minify --target=node18`, { 
-      stdio: 'inherit' 
-    });
+    try {
+      execSync(`timeout 60s npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --minify --target=node18`, { 
+        stdio: 'inherit',
+        timeout: 65000
+      });
+    } catch (esbuildError) {
+      if (esbuildError.status === 124) {
+        console.error('❌ esbuild timed out, trying without minification...');
+        execSync(`npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js --target=node18`, { 
+          stdio: 'inherit' 
+        });
+        console.log('✅ Server build completed (no minification)');
+      } else {
+        throw esbuildError;
+      }
+    }
     console.log('✅ Safe build completed with esbuild');
   }
 
