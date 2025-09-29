@@ -783,6 +783,71 @@ app.get('/api/notifications', (req, res) => {
   res.json([]); // Return empty array instead of 404
 });
 
+// ✅ Additional placeholders to prevent loading hangs
+app.get('/api/flags', (req, res) => {
+  res.json({}); // Return empty object for feature flags
+});
+
+app.post('/api/invite', (req, res) => {
+  res.json({ success: true, message: "Invite sent" });
+});
+
+app.get('/api/mall-location-search', (req, res) => {
+  res.json([]); // Return empty array for mall searches
+});
+
+app.post('/api/share/compose', (req, res) => {
+  res.json({ success: true, url: "#" });
+});
+
+app.get('/api/retailer-perks', (req, res) => {
+  res.json([]); // Return empty array for retailer perks
+});
+
+app.post('/api/retailer-perks', (req, res) => {
+  res.json({ success: true, id: 1 });
+});
+
+app.delete('/api/retailer-perks/:id', (req, res) => {
+  res.json({ success: true });
+});
+
+app.post('/api/retailer-perks/:id/toggle', (req, res) => {
+  res.json({ success: true, active: true });
+});
+
+app.post('/api/invite-trip', (req, res) => {
+  res.json({ success: true, tripId: "trip123" });
+});
+
+app.get('/api/events', (req, res) => {
+  res.json([]); // Return empty array for events
+});
+
+app.get('/api/events/:id', (req, res) => {
+  res.json({ id: req.params.id, title: "Sample Event", date: new Date() });
+});
+
+app.post('/api/events/:id/rsvp', (req, res) => {
+  res.json({ success: true, rsvped: true });
+});
+
+app.delete('/api/events/:id/rsvp', (req, res) => {
+  res.json({ success: true, rsvped: false });
+});
+
+app.get('/api/admin/events/pending', (req, res) => {
+  res.json([]); // Return empty array for admin events
+});
+
+app.get('/api/admin/events/:id/rsvps', (req, res) => {
+  res.json([]); // Return empty array for event RSVPs
+});
+
+app.get('/api/invite/user-trips/:userId', (req, res) => {
+  res.json([]); // Return empty array for user trips
+});
+
 // ✅ Discover endpoint (flat array, same shape as products)
 app.get("/api/discover", async (req: any, res) => {
   try {
