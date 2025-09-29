@@ -90,6 +90,10 @@ const StoreDetails = lazy(() => import("@/pages/store-details"));
 // Lazy load other features
 const Events = lazy(() => import("@/pages/events"));
 const About = lazy(() => import("@/pages/about"));
+const MallDirectory = lazy(() => import("@/pages/mall-directory"));
+const AccessibilitySettings = lazy(() => import("@/pages/accessibility-settings"));
+const AnalyticsDashboard = lazy(() => import("@/pages/analytics-dashboard"));
+const ComingSoon = lazy(() => import("@/pages/coming-soon"));
 
 // SPIRAL value proposition pages
 const Community = lazy(() => import("@/pages/community"));
@@ -275,6 +279,10 @@ function App() {
               {/* Other pages */}
               <Route path="/events" component={Events} />
               <Route path="/about" component={About} />
+              <Route path="/mall-directory" component={MallDirectory} />
+              <Route path="/accessibility-settings" component={AccessibilitySettings} />
+              <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
+              <Route path="/coming-soon" component={ComingSoon} />
               <Route path="/trust" component={TrustPage} />
               <Route path="/pure-test" component={PureTest} />
               

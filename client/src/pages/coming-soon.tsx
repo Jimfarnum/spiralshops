@@ -74,3 +74,14 @@ export const DeliveryOptionsPage = () => (
     icon={Truck}
   />
 );
+
+// Default export for router lazy loading
+const ComingSoon = () => (
+  <ComingSoonPage
+    title="Coming Soon"
+    description="Exciting new features are on the way! Stay tuned for updates."
+    icon={Star}
+  />
+);
+
+export default ComingSoon;
