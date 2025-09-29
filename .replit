@@ -4,7 +4,7 @@ hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["bash", "docker", "ibmcloud-cli", "jq", "rsync", "unzip", "zip", "stripe-cli", "temurin-jre-bin-20", "unixtools.ping"]
+packages = ["bash", "docker", "ibmcloud-cli", "jq", "rsync", "unzip", "zip", "stripe-cli", "temurin-jre-bin-20", "unixtools.ping", "nano"]
 
 [deployment]
 deploymentTarget = "autoscale"
