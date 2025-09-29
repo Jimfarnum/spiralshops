@@ -57,6 +57,9 @@ import { retailerContext } from "./middleware/retailerContext.js";
 import betaApiRouter from "./routes/betaApi.js";
 import shareApiRouter from "./routes/shareApi.js";
 
+// Push Notifications
+import notificationsRouter from "./routes/notifications.js";
+
 // 🔒 Security middleware for AI endpoints
 import { adminRefreshLimiter, requireAdminAuth, costProtection, aiOperationLogger } from './middleware/security.js';
 
@@ -389,6 +392,10 @@ console.log("✅ Beta API System mounted at /api/beta");
 // Share API System  
 app.use("/api/share", shareApiRouter);
 console.log("✅ Share API System mounted at /api/share");
+
+// 🔔 Push Notifications
+app.use("/api/notifications", notificationsRouter);
+console.log("✅ Push Notifications System mounted at /api/notifications");
 
 // 🔒 SECURE AI Image Generation System
 import generateImagesRouter from "./routes/generateImages.js";
