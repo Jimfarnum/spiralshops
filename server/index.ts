@@ -179,6 +179,11 @@ app.use((req, res, next) => {
   const isLocalhost = req.hostname === 'localhost' || req.hostname === '127.0.0.1';
   if (isDev && isLocalhost) return next(); // Allow HTTP for local development
   
+  // Skip HTTPS redirect for static assets to prevent redirect loops
+  if (req.path.startsWith('/assets/') || req.path.startsWith('/images/') || req.path.endsWith('.js') || req.path.endsWith('.css') || req.path.endsWith('.png') || req.path.endsWith('.ico')) {
+    return next();
+  }
+  
   const xfProto = req.headers["x-forwarded-proto"];
   if (req.secure || xfProto === "https") return next();
   return res.redirect(308, `https://${req.headers.host}${req.originalUrl}`);
@@ -913,15 +918,33 @@ async function startServer() {
     console.log("✅ Vite development middleware mounted");
   } else {
     // In production, serve static files and SPA fallback
-    app.use(express.static(path.join(__dirname, "public"), { 
+    const publicPath = path.join(__dirname, "public");
+    console.log(`📁 Production static path: ${publicPath}`);
+    
+    // Verify static files exist
+    const indexPath = path.join(publicPath, "index.html");
+    if (fs.existsSync(indexPath)) {
+      console.log(`✅ Found index.html at: ${indexPath}`);
+    } else {
+      console.error(`❌ Missing index.html at: ${indexPath}`);
+    }
+    
+    app.use(express.static(publicPath, { 
       fallthrough: true, 
-      maxAge: "30d" 
+      maxAge: "30d",
+      setHeaders: (res, path) => {
+        // Ensure proper MIME types
+        if (path.endsWith('.js')) res.setHeader('Content-Type', 'application/javascript');
+        if (path.endsWith('.css')) res.setHeader('Content-Type', 'text/css');
+        if (path.endsWith('.html')) res.setHeader('Content-Type', 'text/html');
+      }
     }));
     
     // SPA fallback for all non-API routes
     app.get("*", (req, res) => {
-      if (!req.path.startsWith("/api")) {
-        res.sendFile(path.join(__dirname, "public", "index.html"));
+      if (!req.path.startsWith("/api") && !req.path.startsWith("/images")) {
+        console.log(`📄 SPA fallback for: ${req.path}`);
+        res.sendFile(indexPath);
       }
     });
     
