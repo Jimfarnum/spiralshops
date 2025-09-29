@@ -5,10 +5,9 @@ import "./index.css";
 // PWA Service Worker Registration
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then(() => console.log("✅ PWA ready"))
-      .catch(err => console.error("PWA failed", err));
+    navigator.serviceWorker.register("/sw.js").catch(err => {
+      console.error("SW registration failed:", err);
+    });
   });
 }
 
