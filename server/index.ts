@@ -774,6 +774,15 @@ app.get("/api/test-product", (req, res) => {
   });
 });
 
+// ✅ CRITICAL: Missing API endpoints that cause "SPIRAL Loading..." hangs
+app.get('/api/wishlist', (req, res) => {
+  res.json([]); // Return empty array instead of 404
+});
+
+app.get('/api/notifications', (req, res) => {
+  res.json([]); // Return empty array instead of 404
+});
+
 // ✅ Discover endpoint (flat array, same shape as products)
 app.get("/api/discover", async (req: any, res) => {
   try {
