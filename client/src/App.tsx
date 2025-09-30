@@ -189,7 +189,7 @@ function App() {
           <Suspense fallback={<LoadingSpinner />}>
             <Switch>
               {/* Core routes - highest priority */}
-              <Route path="/" component={WishlistPage} />
+              <Route path="/" component={Home} />
               <Route path="/products" component={ProductsPage} />
               <Route path="/search" component={ProductSearch} />
               <Route path="/cart" component={Cart} />
