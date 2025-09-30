@@ -95,6 +95,14 @@ const AccessibilitySettings = lazy(() => import("@/pages/accessibility-settings"
 const AnalyticsDashboard = lazy(() => import("@/pages/analytics-dashboard"));
 const ComingSoon = lazy(() => import("@/pages/coming-soon"));
 
+// Lazy load Features dropdown pages
+const ShopperOnboarding = lazy(() => import("@/pages/shopper-onboarding"));
+const EnhancedProfileSettings = lazy(() => import("@/pages/enhanced-profile-settings"));
+const MallGiftCardSystem = lazy(() => import("@/pages/mall-gift-card-system"));
+const MultiMallCart = lazy(() => import("@/pages/multi-mall-cart"));
+const MobileResponsiveTest = lazy(() => import("@/pages/mobile-responsive-test"));
+const SpiralTodoProgress = lazy(() => import("@/pages/spiral-todo-progress"));
+
 // SPIRAL value proposition pages
 const Community = lazy(() => import("@/pages/community"));
 const LocalFirst = lazy(() => import("@/pages/local-first"));
@@ -274,6 +282,14 @@ function App() {
               {/* Social features */}
               <Route path="/social-feed" component={SocialFeed} />
               <Route path="/social-rewards" component={SocialRewards} />
+
+              {/* Features dropdown pages */}
+              <Route path="/shopper-onboarding" component={ShopperOnboarding} />
+              <Route path="/enhanced-profile-settings" component={EnhancedProfileSettings} />
+              <Route path="/mall-gift-card-system" component={MallGiftCardSystem} />
+              <Route path="/multi-mall-cart" component={MultiMallCart} />
+              <Route path="/mobile-responsive-test" component={MobileResponsiveTest} />
+              <Route path="/spiral-todo-progress" component={SpiralTodoProgress} />
 
               {/* Other pages */}
               <Route path="/events" component={Events} />
