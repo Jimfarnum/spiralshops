@@ -10,17 +10,18 @@ if (loadingEl) loadingEl.remove();
 const loadStyle = document.getElementById("spiral-load-style");
 if (loadStyle) loadStyle.remove();
 
-// PWA Service Worker Registration
+// Clear service worker cache and unregister to fix routing issue
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js")
-      .then(() => {
-        registerPush().catch(console.error);
-      })
-      .catch(err => {
-        console.error("SW registration failed:", err);
-      });
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(registration => registration.unregister());
   });
+  
+  // Clear all caches
+  if ('caches' in window) {
+    caches.keys().then(names => {
+      names.forEach(name => caches.delete(name));
+    });
+  }
 }
 
 createRoot(document.getElementById("root")!).render(<App />);

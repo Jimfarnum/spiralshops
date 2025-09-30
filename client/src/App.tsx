@@ -181,7 +181,6 @@ function App() {
         <CartRestoreNotification />
         <ShareReminder />
         <MallContextSync />
-        <WishlistNotifications />
         <BreadcrumbSchema />
         <BrandThemeApplier />
         
