@@ -106,43 +106,43 @@ export default function Header() {
                   <Link to="/multi-mall-cart" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🛒 Multi-Mall Cart
                   </Link>
-                  <Link href="/mobile-responsive-test" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/mobile-responsive-test" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     📱 Mobile Testing
                   </Link>
-                  <Link href="/spiral-todo-progress" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/spiral-todo-progress" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     📊 Progress Dashboard
                   </Link>
-                  <Link href="/comprehensive-feature-testing" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/comprehensive-feature-testing" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🧪 Feature Testing
                   </Link>
-                  <Link href="/wishlist-alerts-system" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/wishlist-alerts-system" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🔔 Wishlist Alerts
                   </Link>
-                  <Link href="/tiered-spirals-engine" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/tiered-spirals-engine" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     ⭐ Tiered SPIRALS
                   </Link>
-                  <Link href="/qr-pickup-system" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/qr-pickup-system" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     📱 QR Pickup
                   </Link>
-                  <Link href="/retailer-automation-flow" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/retailer-automation-flow" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🏪 Retailer Setup
                   </Link>
-                  <Link href="/gift-card-balance-checker" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/gift-card-balance-checker" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     💳 Gift Card Balance
                   </Link>
-                  <Link href="/push-notification-settings" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/push-notification-settings" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🔔 Notifications
                   </Link>
-                  <Link href="/admin-test-dashboard" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/admin-test-dashboard" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🔧 Admin Tests
                   </Link>
-                  <Link href="/mobile-app-base" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/mobile-app-base" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     📱 Mobile App Base
                   </Link>
-                  <Link href="/gpt-integration-demo" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/gpt-integration-demo" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     🧠 GPT Integration
                   </Link>
-                  <Link href="/vercel-ibm-integration" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <Link to="/vercel-ibm-integration" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
                     ☁️ Vercel & IBM
                   </Link>
                 </div>
@@ -229,12 +229,12 @@ export default function Header() {
                 >
                   Get Started
                 </Button>
-                <Link href="/login">
+                <Link to="/login">
                   <Button variant="ghost" size="sm" className="hover:bg-gray-100 text-sm">
                     Sign In
                   </Button>
                 </Link>
-                <Link href="/signup">
+                <Link to="/signup">
                   <Button size="sm" className="bg-[hsl(183,100%,23%)] hover:bg-[hsl(183,60%,40%)] text-white px-3 py-1.5 rounded-full font-medium text-sm">
                     Sign Up
                   </Button>

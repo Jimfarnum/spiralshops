@@ -102,6 +102,17 @@ const MallGiftCardSystem = lazy(() => import("@/pages/mall-gift-card-system"));
 const MultiMallCart = lazy(() => import("@/pages/multi-mall-cart"));
 const MobileResponsiveTest = lazy(() => import("@/pages/mobile-responsive-test"));
 const SpiralTodoProgress = lazy(() => import("@/pages/spiral-todo-progress"));
+const ComprehensiveFeatureTesting = lazy(() => import("@/pages/comprehensive-feature-testing"));
+const WishlistAlertsSystem = lazy(() => import("@/pages/wishlist-alerts-system"));
+const TieredSpiralsEngine = lazy(() => import("@/pages/tiered-spirals-engine"));
+const QrPickupSystem = lazy(() => import("@/pages/qr-pickup-system"));
+const RetailerAutomationFlow = lazy(() => import("@/pages/retailer-automation-flow"));
+const GiftCardBalanceChecker = lazy(() => import("@/pages/gift-card-balance-checker"));
+const PushNotificationSettings = lazy(() => import("@/pages/push-notification-settings"));
+const AdminTestDashboard = lazy(() => import("@/pages/admin-test-dashboard"));
+const MobileAppBase = lazy(() => import("@/pages/mobile-app-base"));
+const GptIntegrationDemo = lazy(() => import("@/pages/gpt-integration-demo"));
+const VercelIbmIntegration = lazy(() => import("@/pages/vercel-ibm-integration"));
 
 // SPIRAL value proposition pages
 const Community = lazy(() => import("@/pages/community"));
@@ -290,6 +301,17 @@ function App() {
               <Route path="/multi-mall-cart" component={MultiMallCart} />
               <Route path="/mobile-responsive-test" component={MobileResponsiveTest} />
               <Route path="/spiral-todo-progress" component={SpiralTodoProgress} />
+              <Route path="/comprehensive-feature-testing" component={ComprehensiveFeatureTesting} />
+              <Route path="/wishlist-alerts-system" component={WishlistAlertsSystem} />
+              <Route path="/tiered-spirals-engine" component={TieredSpiralsEngine} />
+              <Route path="/qr-pickup-system" component={QrPickupSystem} />
+              <Route path="/retailer-automation-flow" component={RetailerAutomationFlow} />
+              <Route path="/gift-card-balance-checker" component={GiftCardBalanceChecker} />
+              <Route path="/push-notification-settings" component={PushNotificationSettings} />
+              <Route path="/admin-test-dashboard" component={AdminTestDashboard} />
+              <Route path="/mobile-app-base" component={MobileAppBase} />
+              <Route path="/gpt-integration-demo" component={GptIntegrationDemo} />
+              <Route path="/vercel-ibm-integration" component={VercelIbmIntegration} />
 
               {/* Other pages */}
               <Route path="/events" component={Events} />
