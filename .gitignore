@@ -1,0 +1,174 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Production builds
+dist/
+build/
+.next/
+out/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+.nyc_output
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Cache directories
+.cache/
+.npm
+.eslintcache
+.parcel-cache
+.node_repl_history
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# IDE directories
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+.tmp
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Test files
+test-results/
+playwright-report/
+test-results.xml
+
+# Large files and archives
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+*.PNG
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.pdf
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Documentation build
+docs/_build/
+docs/build/
+
+# Replit specific
+.replit
+replit.nix
+.upm/
+.breakpoints
+
+# IBM Cloud deployment
+Bluemix_CLI/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Kubernetes
+*.yaml.backup
+*.yml.backup
+
+# Monitoring and logs
+monitoring/
+spiral_test_log.json
+
+# Build artifacts
+server/public/
+public/build/
+public/static/js/*.js.map
+public/static/css/*.css.map
+
+# Runtime directories
+runtime/
+run/
+
+# Heavy/out-of-repl dirs - checkpoint optimization
+attached_assets/
+security-reports/
+backups/
+_to-migrate/
+_external-storage-ready/
+restore-test-*/
+spiral-clean-export/
+
+# Large documentation files
+*documentation*.tar.gz
+*assets*.tar.gz
+*SPIRAL_COMPLETE*.md
+*DEPLOYMENT*.md
+*CHECKPOINT*.md
+*COMPLETE*.md
+*EXTERNAL*.md
+*FINAL*.md
+*PERFORMANCE*.md
+*PHASE*.md
+*PLATFORM*.md
+*PRODUCTION*.md
+*QUICK_ACTIONS*.md
+
+# AI agent outputs
+agents/techwatch/reports/*/shots/
+agents/funnels/out/*/shots/
+agents/funnels/out/*.png
+
+# Agentic refs
+external/
+.vercel
+
+.git.backup.*

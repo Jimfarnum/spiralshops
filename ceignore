@@ -1,0 +1,11 @@
+# Ignore large external repos
+external/
+# Ignore git metadata
+.git/
+.gitignore
+# Ignore local junk
+__pycache__/
+node_modules/
+*.log
+*.tmp
+*.swp

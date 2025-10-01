@@ -1,0 +1,86 @@
+{
+  "timestamp": "2025-07-31T21:43:51.149Z",
+  "summary": {
+    "total": 15,
+    "passed": 14,
+    "failed": 1,
+    "successRate": "93.3"
+  },
+  "details": [
+    {
+      "name": "Core Stores API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Products API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Categories API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "AI Retailer Review API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "AI Application Submission",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "SPIRAL Centers API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Advanced Logistics API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Subscription Services API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Enhanced Features API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Smart Search API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Enhanced Wallet API",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "GPT Integration Health",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Security Verification",
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "name": "Admin Test Routes",
+      "status": "FAIL",
+      "error": "HTTP 401: Unauthorized"
+    },
+    {
+      "name": "SPIRAL 100% Compatibility",
+      "status": "PASS",
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+1a6af3b0cb7dfbde5bad4690c9d9dbbc0fd4949c 7e4aaf7d3bb93dd2724f4221f6d5de6a171bb4cf deploy-spiral-interactive.sh
+d49b4f178b80181c4879636b3898734d958e8083 a480a0d54c205d1663368ded0c6a9b5770764b0b deploy-spiral.sh

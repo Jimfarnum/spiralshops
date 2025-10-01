@@ -1,0 +1,16 @@
+node_modules
+.git
+.replit
+attached_assets
+deploy
+*.md
+*.sh
+*.log
+*.bak
+test
+tests
+docs
+documentation
+mobile-app
+.env.local
+.DS_Store

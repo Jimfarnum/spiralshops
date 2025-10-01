@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and API endpoints
+Disallow: /admin/
+Disallow: /api/
+
+# Disallow testing and internal pages
+Disallow: /test-*
+Disallow: /demo-*
+Disallow: /*-test
+Disallow: /*-demo
+
+# Disallow user account pages
+Disallow: /account/
+Disallow: /profile/
+Disallow: /checkout/
+Disallow: /cart/
+
+# Allow specific demo paths for SEO
+Allow: /demo/shopper
+Allow: /demo/retailer  
+Allow: /demo/mall
+Allow: /demo/admin
+
+# Sitemap location
+Sitemap: https://spiralshops.com/sitemap.xml

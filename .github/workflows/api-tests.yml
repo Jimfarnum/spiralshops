@@ -1,0 +1,37 @@
+name: SPIRAL API Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Newman (Postman CLI)
+        run: npm install -g newman newman-reporter-html
+
+      - name: Run SPIRAL API Tests
+        run: |
+          mkdir -p reports
+          newman run postman/spiral-collection.json \
+            -e postman/spiral-environment.json \
+            --reporters cli,html \
+            --reporter-html-export reports/spiral-test-report.html
+
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: spiral-test-report
+          path: reports/spiral-test-report.html

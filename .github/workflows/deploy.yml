@@ -1,0 +1,25 @@
+name: Deploy to IBM Code Engine
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install deps & build
+        run: npm ci && npm run build
+
+      - name: Run Stores API verifier
+        run: node scripts/verify-stores-api.js || exit 1
+
+      - name: Deploy to IBM Code Engine
+        run: ./deploy-to-ibm.sh production

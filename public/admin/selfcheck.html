@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPIRAL — Self-Check Suite</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+body{
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  margin: 22px;
+  color: #0b1220;
+  background: #f8fafc;
+  line-height: 1.5;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+h1 { color: #1e293b; margin-bottom: 2rem; }
+.card{
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px;
+  margin: 16px 0;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.badge{
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 500;
+  display: inline-block;
+  margin: 4px 0;
+}
+.pass{
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+.fail{
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+.pending{
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #d97706;
+}
+.small{ color: #6b7280; font-size: 0.9rem; margin-top: 8px; }
+table{
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+th, td{
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 8px;
+  text-align: left;
+}
+th {
+  background: #f8fafc;
+  font-weight: 600;
+  color: #374151;
+}
+input, button{
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+button{
+  background: #1f2937;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+button:hover{ background: #374151; }
+button:disabled{ background: #9ca3af; cursor: not-allowed; }
+.input-group { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.token-input { min-width: 300px; flex: 1; }
+pre{
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  overflow: auto;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+.stat {
+  text-align: center;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+.stat-value { font-size: 24px; font-weight: bold; color: #1f2937; }
+.stat-label { font-size: 12px; color: #6b7280; text-transform: uppercase; }
+.loading { text-align: center; padding: 40px; color: #6b7280; }
+.error-detail { color: #dc2626; font-size: 13px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🔍 SPIRAL Self-Check Suite</h1>
+  
+  <div class="card">
+    <h3>Authentication</h3>
+    <p>Provide your admin token to run comprehensive system tests.</p>
+    <div class="input-group">
+      <input id="tok" placeholder="Enter ADMIN_TOKEN" class="token-input">
+      <button id="runBtn" onclick="run()">Run Self-Check</button>
+    </div>
+    <div class="small">This performs live HTTP tests against your SPIRAL platform endpoints.</div>
+  </div>
+
+  <div class="card" id="resultsCard" style="display: none;">
+    <h3>Test Results</h3>
+    <div id="summary" class="badge pending">Running tests...</div>
+    <div class="stats">
+      <div class="stat">
+        <div id="totalTests" class="stat-value">—</div>
+        <div class="stat-label">Total Tests</div>
+      </div>
+      <div class="stat">
+        <div id="passedTests" class="stat-value">—</div>
+        <div class="stat-label">Passed</div>
+      </div>
+      <div class="stat">
+        <div id="failedTests" class="stat-value">—</div>
+        <div class="stat-label">Failed</div>
+      </div>
+    </div>
+    
+    <table id="tbl">
+      <thead>
+        <tr>
+          <th>Test Name</th>
+          <th>Status</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" id="rawCard" style="display: none;">
+    <h3>Raw JSON Output</h3>
+    <div class="small">Full test results in JSON format for debugging and automation.</div>
+    <pre id="raw">—</pre>
+  </div>
+</div>
+
+<script>
+function qp(k) { 
+  const u = new URL(window.location); 
+  return u.searchParams.get(k); 
+}
+
+// Pre-fill token if provided via URL
+document.getElementById('tok').value = qp('admin_token') || '';
+
+async function run() {
+  const token = document.getElementById('tok').value.trim();
+  if (!token) {
+    alert('Please provide an admin token');
+    return;
+  }
+
+  const runBtn = document.getElementById('runBtn');
+  const resultsCard = document.getElementById('resultsCard');
+  const rawCard = document.getElementById('rawCard');
+  
+  // Show loading state
+  runBtn.disabled = true;
+  runBtn.textContent = 'Running Tests...';
+  resultsCard.style.display = 'block';
+  rawCard.style.display = 'block';
+  
+  document.getElementById('summary').className = 'badge pending';
+  document.getElementById('summary').textContent = 'Running tests...';
+  
+  try {
+    const url = '/api/selfcheck/run?admin_token=' + encodeURIComponent(token);
+    const r = await fetch(url);
+    const data = await r.json();
+    
+    if (!r.ok) {
+      throw new Error(data.error || 'API request failed');
+    }
+    
+    // Update summary
+    const allPass = data.pass;
+    const passedCount = (data.results || []).filter(t => t.pass).length;
+    const failedCount = (data.results || []).filter(t => !t.pass).length;
+    
+    document.getElementById('summary').className = 'badge ' + (allPass ? 'pass' : 'fail');
+    document.getElementById('summary').textContent = allPass ? '✅ ALL TESTS PASSED' : '❌ SOME TESTS FAILED';
+    
+    // Update stats
+    document.getElementById('totalTests').textContent = data.test_count || data.results?.length || 0;
+    document.getElementById('passedTests').textContent = passedCount;
+    document.getElementById('failedTests').textContent = failedCount;
+    
+    // Update table
+    const tb = document.querySelector('#tbl tbody');
+    tb.innerHTML = '';
+    (data.results || []).forEach(test => {
+      const tr = document.createElement('tr');
+      const statusBadge = test.pass 
+        ? '<span class="badge pass">✅ PASS</span>' 
+        : '<span class="badge fail">❌ FAIL</span>';
+      
+      let detailContent = '';
+      if (typeof test.detail === 'object') {
+        detailContent = '<pre>' + JSON.stringify(test.detail, null, 2) + '</pre>';
+      } else {
+        detailContent = test.detail;
+        if (!test.pass) {
+          detailContent = '<div class="error-detail">' + detailContent + '</div>';
+        }
+      }
+      
+      tr.innerHTML = `
+        <td><strong>${test.name}</strong></td>
+        <td>${statusBadge}</td>
+        <td>${detailContent}</td>
+      `;
+      tb.appendChild(tr);
+    });
+    
+    // Update raw output
+    document.getElementById('raw').textContent = JSON.stringify(data, null, 2);
+    
+  } catch (error) {
+    document.getElementById('summary').className = 'badge fail';
+    document.getElementById('summary').textContent = '❌ ERROR: ' + error.message;
+    document.getElementById('raw').textContent = 'Error: ' + error.message;
+  } finally {
+    runBtn.disabled = false;
+    runBtn.textContent = 'Run Self-Check';
+  }
+}
+
+// Auto-run if token is provided in URL
+if (qp('admin_token')) {
+  setTimeout(run, 500);
+}
+</script>
+</body>
+</html>

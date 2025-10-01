@@ -1,0 +1,244 @@
+{
+  "timestamp": "2025-09-25T17:38:12.943Z",
+  "platform": "SPIRAL E-commerce Platform",
+  "test_suite_version": "1.0.0",
+  "summary": {
+    "total_tests": 30,
+    "passed": 22,
+    "warned": 2,
+    "failed": 6,
+    "success_rate": 73
+  },
+  "category_results": {
+    "api_endpoints": [
+      {
+        "test": "GET /api/health",
+        "status": "PASS",
+        "details": "Status: 200, Data: 10 fields",
+        "responseTime": 70,
+        "timestamp": "2025-09-25T17:38:12.655Z"
+      },
+      {
+        "test": "GET /api/products",
+        "status": "PASS",
+        "details": "Status: 200, Data: 8 fields",
+        "responseTime": 11,
+        "timestamp": "2025-09-25T17:38:12.669Z"
+      },
+      {
+        "test": "GET /api/products/featured",
+        "status": "PASS",
+        "details": "Status: 200, Data: 6 fields",
+        "responseTime": 3,
+        "timestamp": "2025-09-25T17:38:12.673Z"
+      },
+      {
+        "test": "GET /api/stores",
+        "status": "PASS",
+        "details": "Status: 200, Data: 2 fields",
+        "responseTime": 2,
+        "timestamp": "2025-09-25T17:38:12.676Z"
+      },
+      {
+        "test": "GET /api/mall-events",
+        "status": "PASS",
+        "details": "Status: 200, Non-JSON response",
+        "responseTime": 17,
+        "timestamp": "2025-09-25T17:38:12.701Z"
+      },
+      {
+        "test": "GET /api/promotions",
+        "status": "PASS",
+        "details": "Status: 200, Non-JSON response",
+        "responseTime": 23,
+        "timestamp": "2025-09-25T17:38:12.728Z"
+      },
+      {
+        "test": "GET /api/recommend?context=homepage&limit=5",
+        "status": "PASS",
+        "details": "Status: 200, Non-JSON response",
+        "responseTime": 21,
+        "timestamp": "2025-09-25T17:38:12.756Z"
+      },
+      {
+        "test": "GET /api/trust/public",
+        "status": "PASS",
+        "details": "Status: 200, Non-JSON response",
+        "responseTime": 28,
+        "timestamp": "2025-09-25T17:38:12.788Z"
+      },
+      {
+        "test": "GET /api/docs",
+        "status": "PASS",
+        "details": "Status: 200, Data: 9 fields",
+        "responseTime": 5,
+        "timestamp": "2025-09-25T17:38:12.795Z"
+      }
+    ],
+    "frontend_components": [
+      {
+        "test": "Component: App.tsx",
+        "status": "FAIL",
+        "details": "Component file does not exist",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.838Z"
+      },
+      {
+        "test": "Component: main.tsx",
+        "status": "FAIL",
+        "details": "Component file does not exist",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.838Z"
+      },
+      {
+        "test": "Component: home.tsx",
+        "status": "FAIL",
+        "details": "Component file does not exist",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.838Z"
+      },
+      {
+        "test": "Component: header.tsx",
+        "status": "FAIL",
+        "details": "Component file does not exist",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.839Z"
+      },
+      {
+        "test": "Component: footer.tsx",
+        "status": "FAIL",
+        "details": "Component file does not exist",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.839Z"
+      },
+      {
+        "test": "Component: EnhancedFeaturedProducts.tsx",
+        "status": "FAIL",
+        "details": "Component file does not exist",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.839Z"
+      },
+      {
+        "test": "Frontend Accessibility",
+        "status": "PASS",
+        "details": "Frontend homepage loads successfully",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.853Z"
+      }
+    ],
+    "enhanced_features": [
+      {
+        "test": "CORS Configuration",
+        "status": "PASS",
+        "details": "CORS is enabled and reported in health check",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.800Z"
+      },
+      {
+        "test": "API Documentation System",
+        "status": "PASS",
+        "details": "5 documented endpoints",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.810Z"
+      },
+      {
+        "test": "Image URL Normalization",
+        "status": "PASS",
+        "details": "Products have normalized image URLs",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.825Z"
+      },
+      {
+        "test": "Product Search",
+        "status": "PASS",
+        "details": "Search endpoint responds to query parameters",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.829Z"
+      }
+    ],
+    "database_connectivity": [
+      {
+        "test": "Database Health Check",
+        "status": "PASS",
+        "details": "Database reported as healthy in health endpoint",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.833Z"
+      },
+      {
+        "test": "Data Retrieval",
+        "status": "PASS",
+        "details": "Successfully retrieved 8 products",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.837Z"
+      }
+    ],
+    "security_features": [
+      {
+        "test": "Security Headers",
+        "status": "PASS",
+        "details": "3/3 security headers present",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.855Z"
+      }
+    ],
+    "performance_metrics": [
+      {
+        "test": "Health Check Speed",
+        "status": "PASS",
+        "details": "Response time: 1ms (under 100ms)",
+        "responseTime": 1,
+        "timestamp": "2025-09-25T17:38:12.857Z"
+      },
+      {
+        "test": "Featured Products Speed",
+        "status": "PASS",
+        "details": "Response time: 2ms (under 500ms)",
+        "responseTime": 2,
+        "timestamp": "2025-09-25T17:38:12.859Z"
+      },
+      {
+        "test": "Homepage Load Speed",
+        "status": "PASS",
+        "details": "Response time: 14ms (under 1000ms)",
+        "responseTime": 14,
+        "timestamp": "2025-09-25T17:38:12.873Z"
+      }
+    ],
+    "error_handling": [
+      {
+        "test": "Non-existent Endpoint",
+        "status": "WARN",
+        "details": "Unexpected status 200 for invalid request",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.891Z"
+      },
+      {
+        "test": "Invalid Product ID",
+        "status": "WARN",
+        "details": "Unexpected status 200 for invalid request",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.910Z"
+      }
+    ],
+    "image_functionality": [
+      {
+        "test": "Static Image Serving",
+        "status": "PASS",
+        "details": "Static images (SVG logo) serve correctly",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.917Z"
+      },
+      {
+        "test": "Asset Image Serving",
+        "status": "PASS",
+        "details": "Asset images serve correctly",
+        "responseTime": null,
+        "timestamp": "2025-09-25T17:38:12.938Z"
+      }
+    ]
+  },
+  "recommendations": [
+    "Multiple issues detected - review failed tests",
+    "Fix critical failures before considering deployment"
+  ]
+}

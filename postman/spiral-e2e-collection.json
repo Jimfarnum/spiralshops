@@ -1,0 +1,142 @@
+{
+  "info": {
+    "name": "SPIRAL End-to-End Smoke Test v1.1.3",
+    "_postman_id": "spiral-e2e-tests-2025",
+    "description": "Onboarding → SPIRALS → Dashboards. Full smoke test with summary report.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Shopper Onboarding",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test Shopper\",\n  \"email\": \"shopper@example.com\",\n  \"password\": \"Test1234\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/api/onboarding/shopper", "host": ["{{baseUrl}}"], "path": ["api", "onboarding", "shopper"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Shopper Onboarding - Status 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set('shopperId', json.id);",
+              "let summary = pm.collectionVariables.get('summary') || {};",
+              "summary['Shopper Onboarding'] = { pass: pm.response.code === 200, time: pm.response.responseTime };",
+              "pm.collectionVariables.set('summary', summary);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "SPIRALS Balance Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/shopper/{{shopperId}}/spirals/balance",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "shopper", "{{shopperId}}", "spirals", "balance"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"SPIRALS Balance - Status 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const bal = pm.response.json();",
+              "pm.test(\"SPIRALS Balance - Welcome Bonus >= 500\", function () {",
+              "    pm.expect(bal.balance).to.be.at.least(500);",
+              "});",
+              "let summary = pm.collectionVariables.get('summary') || {};",
+              "summary['SPIRALS Balance'] = { pass: Object.values(pm.tests).every(v => v === true), time: pm.response.responseTime };",
+              "pm.collectionVariables.set('summary', summary);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retailer Dashboard",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/retailer/{{retailerId}}/dashboard?role=retailer",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "retailer", "{{retailerId}}", "dashboard"],
+          "query": [{ "key": "role", "value": "retailer" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Retailer Dashboard - Status 200\", function () { pm.response.to.have.status(200); });",
+              "let summary = pm.collectionVariables.get('summary') || {};",
+              "summary['Retailer Dashboard'] = { pass: pm.response.code === 200, time: pm.response.responseTime };",
+              "pm.collectionVariables.set('summary', summary);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mall Dashboard",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/malls/{{mallId}}/dashboard?role=mall",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "malls", "{{mallId}}", "dashboard"],
+          "query": [{ "key": "role", "value": "mall" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Mall Dashboard - Status 200\", function () { pm.response.to.have.status(200); });",
+              "let summary = pm.collectionVariables.get('summary') || {};",
+              "summary['Mall Dashboard'] = { pass: pm.response.code === 200, time: pm.response.responseTime };",
+              "pm.collectionVariables.set('summary', summary);"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": ["pm.collectionVariables.set('summary', {});"]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "if (pm.info.eventName === 'iteration') {",
+          "   const summary = pm.collectionVariables.get('summary') || {};",
+          "   console.log('=== SPIRAL End-to-End Summary ===');",
+          "   Object.keys(summary).forEach(k => {",
+          "       const r = summary[k];",
+          "       console.log(`${k}: ${r.pass ? '✅ PASS' : '❌ FAIL'} | ${r.time}ms`);",
+          "   });",
+          "}"
+        ]
+      }
+    }
+  ]
+}

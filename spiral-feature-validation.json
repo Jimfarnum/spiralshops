@@ -1,0 +1,275 @@
+{
+  "timestamp": "2025-07-31T19:33:59.237Z",
+  "summary": {
+    "total": 24,
+    "passed": 14,
+    "failed": 10,
+    "successRate": 58.3
+  },
+  "categories": {
+    "Core Pages": {
+      "total": 4,
+      "passed": 2,
+      "features": [
+        {
+          "name": "Homepage",
+          "status": "FAIL"
+        },
+        {
+          "name": "Products Page",
+          "status": "PASS"
+        },
+        {
+          "name": "Shopping Cart",
+          "status": "FAIL"
+        },
+        {
+          "name": "Checkout System",
+          "status": "PASS"
+        }
+      ]
+    },
+    "AI Features": {
+      "total": 4,
+      "passed": 3,
+      "features": [
+        {
+          "name": "AI Retailer Signup",
+          "status": "FAIL"
+        },
+        {
+          "name": "AI Review Demo",
+          "status": "PASS"
+        },
+        {
+          "name": "Admin Applications",
+          "status": "PASS"
+        },
+        {
+          "name": "AI Retailer Routes",
+          "status": "PASS"
+        }
+      ]
+    },
+    "Advanced Features": {
+      "total": 4,
+      "passed": 2,
+      "features": [
+        {
+          "name": "SPIRAL Centers",
+          "status": "FAIL"
+        },
+        {
+          "name": "Advanced Logistics",
+          "status": "PASS"
+        },
+        {
+          "name": "Subscription Services",
+          "status": "FAIL"
+        },
+        {
+          "name": "100% Compatibility Test",
+          "status": "PASS"
+        }
+      ]
+    },
+    "Components": {
+      "total": 3,
+      "passed": 1,
+      "features": [
+        {
+          "name": "Header Navigation",
+          "status": "PASS"
+        },
+        {
+          "name": "Mobile Navigation",
+          "status": "FAIL"
+        },
+        {
+          "name": "SPIRAL Balance",
+          "status": "FAIL"
+        }
+      ]
+    },
+    "Backend": {
+      "total": 4,
+      "passed": 3,
+      "features": [
+        {
+          "name": "AI Retailer Routes",
+          "status": "PASS"
+        },
+        {
+          "name": "Core API Routes",
+          "status": "PASS"
+        },
+        {
+          "name": "Advanced Features Routes",
+          "status": "FAIL"
+        },
+        {
+          "name": "Database Schema",
+          "status": "PASS"
+        }
+      ]
+    },
+    "State Management": {
+      "total": 3,
+      "passed": 2,
+      "features": [
+        {
+          "name": "Cart Store",
+          "status": "PASS"
+        },
+        {
+          "name": "Auth Store",
+          "status": "PASS"
+        },
+        {
+          "name": "Loyalty Store",
+          "status": "FAIL"
+        }
+      ]
+    },
+    "Configuration": {
+      "total": 3,
+      "passed": 2,
+      "features": [
+        {
+          "name": "App Configuration",
+          "status": "PASS"
+        },
+        {
+          "name": "Vite Configuration",
+          "status": "FAIL"
+        },
+        {
+          "name": "TypeScript Configuration",
+          "status": "PASS"
+        }
+      ]
+    }
+  },
+  "allFeatures": [
+    {
+      "name": "Homepage",
+      "status": "FAIL",
+      "details": "Validation returned false"
+    },
+    {
+      "name": "Products Page",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Shopping Cart",
+      "status": "FAIL",
+      "details": "Validation returned false"
+    },
+    {
+      "name": "Checkout System",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "AI Retailer Signup",
+      "status": "FAIL",
+      "details": "Validation returned false"
+    },
+    {
+      "name": "AI Review Demo",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Admin Applications",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "SPIRAL Centers",
+      "status": "FAIL",
+      "details": "Validation returned false"
+    },
+    {
+      "name": "Advanced Logistics",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Subscription Services",
+      "status": "FAIL",
+      "details": "Validation returned false"
+    },
+    {
+      "name": "100% Compatibility Test",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Header Navigation",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Mobile Navigation",
+      "status": "FAIL",
+      "details": "Validation returned false"
+    },
+    {
+      "name": "SPIRAL Balance",
+      "status": "FAIL",
+      "details": "Validation returned false"
+    },
+    {
+      "name": "AI Retailer Routes",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Core API Routes",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Advanced Features Routes",
+      "status": "FAIL",
+      "details": "Validation returned false"
+    },
+    {
+      "name": "Database Schema",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Cart Store",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Auth Store",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Loyalty Store",
+      "status": "FAIL",
+      "details": "Validation returned false"
+    },
+    {
+      "name": "App Configuration",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Vite Configuration",
+      "status": "FAIL",
+      "details": "Validation returned false"
+    },
+    {
+      "name": "TypeScript Configuration",
+      "status": "PASS",
+      "details": true
+    }
+  ]
+}

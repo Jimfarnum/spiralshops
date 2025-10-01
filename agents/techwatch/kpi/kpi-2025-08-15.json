@@ -1,0 +1,20 @@
+{
+  "generated": "2025-08-15T01:31:44.208Z",
+  "reportDate": "2025-08-15T01:31:43.809Z",
+  "platform": "SPIRAL Local Commerce Platform",
+  "totalItems": 20,
+  "initiateCount": 0,
+  "watchCount": 20,
+  "discardCount": 0,
+  "projectedRevenueImpact": 0,
+  "totalEffortWeeks": 0,
+  "riskScore": 0,
+  "roiScore": 0,
+  "strategicAlignment": {
+    "alignmentScore": 0,
+    "alignedCount": 0,
+    "totalCount": 0
+  },
+  "topPriorities": [],
+  "roadmap": {}
+}

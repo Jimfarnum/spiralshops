@@ -1,0 +1,23 @@
+export const SEEDED_SPECIALTY = [
+  "Vinyl Records",
+  "CDs, Cassettes & Vintage Media",
+  "Retro Gaming Consoles & Games",
+  "Collectible Books & Comics",
+  "Used Sporting Goods",
+  "Vintage/Collectible Sports Gear",
+  "Outdoor Recreation (canoes, camping, antiques)",
+  "Cowboy Hats & Boots",
+  "Vintage Clothing & Apparel",
+  "Handcrafted Jewelry",
+  "Upcycled Fashion & Accessories",
+  "Pottery & Ceramics",
+  "Artisan Crafts & Handcrafted Goods",
+  "Antiques & Collectibles",
+  "Repurposed & Recycled Furniture",
+  "Local Art Galleries & Studios",
+  "Flower Shops & Floral Design",
+  "Gift & Curio Shops",
+  "Memorabilia (sports, music, cultural)",
+  "Specialty Musical Instruments",
+  "Cultural/Regional Goods"
+];

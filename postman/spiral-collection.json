@@ -1,0 +1,123 @@
+{
+  "info": {
+    "name": "SPIRAL v1.1.3 Master Flow",
+    "_postman_id": "spiral-collection-2025",
+    "description": "End-to-end onboarding → approval → order → SPIRALS balance flow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Shopper Onboarding",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/onboarding/shopper", "host": ["{{baseUrl}}"], "path": ["api", "onboarding", "shopper"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test Shopper\",\n  \"email\": \"shopper@example.com\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let json = pm.response.json();",
+              "pm.environment.set('shopperId', json.id);",
+              "pm.test('Shopper onboarded successfully', function(){ pm.expect(json).to.have.property('id'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Retailer Onboarding",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/onboarding/retailer", "host": ["{{baseUrl}}"], "path": ["api", "onboarding", "retailer"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Demo Retailer\",\n  \"location\": \"Minneapolis, MN\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let json = pm.response.json();",
+              "pm.environment.set('retailerId', json.id);",
+              "pm.test('Retailer onboarded successfully', function(){ pm.expect(json).to.have.property('id'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mall Onboarding",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/onboarding/mall", "host": ["{{baseUrl}}"], "path": ["api", "onboarding", "mall"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Mall of America\",\n  \"location\": \"Bloomington, MN\",\n  \"contactEmail\": \"mall@example.com\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let json = pm.response.json();",
+              "pm.environment.set('mallId', json.id);",
+              "pm.test('Mall onboarded successfully', function(){ pm.expect(json).to.have.property('id'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Order (Fast Buy)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/orders", "host": ["{{baseUrl}}"], "path": ["api", "orders"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"shopperId\": \"{{shopperId}}\",\n  \"retailerId\": \"{{retailerId}}\",\n  \"items\": [ { \"sku\": \"SKU123\", \"qty\": 1 } ],\n  \"useSpirals\": true\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let json = pm.response.json();",
+              "pm.test('Order created successfully', function(){ pm.expect(json).to.have.property('orderId'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Check SPIRALS Balance",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/shopper/spirals/balance?shopperId={{shopperId}}", "host": ["{{baseUrl}}"], "path": ["api","shopper","spirals","balance"], "query": [ { "key": "shopperId", "value": "{{shopperId}}" } ] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let json = pm.response.json();",
+              "pm.test('Balance check returns SPIRALS', function(){ pm.expect(json).to.have.property('balance'); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

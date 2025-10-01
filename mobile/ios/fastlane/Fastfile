@@ -1,0 +1,77 @@
+# SPIRAL Mobile iOS Deployment Automation with Fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Run tests"
+  lane :test do
+    run_tests(scheme: "SpiralMobile")
+  end
+
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    # Increment build number
+    increment_build_number(xcodeproj: "SpiralMobile.xcodeproj")
+    
+    # Build the app
+    build_app(
+      scheme: "SpiralMobile",
+      configuration: "Release",
+      export_method: "app-store"
+    )
+    
+    # Upload to TestFlight
+    upload_to_testflight(
+      beta_app_feedback_email: "support@spiral.com",
+      beta_app_description: "Latest SPIRAL Mobile competitive intelligence updates",
+      demo_account_required: true,
+      notes: "New features: Enhanced competitive analysis, improved mobile dashboard, optimized performance"
+    )
+    
+    # Send notification
+    slack(
+      message: "SPIRAL Mobile iOS build uploaded to TestFlight! 🚀",
+      success: true
+    ) if ENV["SLACK_URL"]
+  end
+
+  desc "Submit to App Store"
+  lane :release do
+    # Build the app
+    build_app(
+      scheme: "SpiralMobile", 
+      configuration: "Release",
+      export_method: "app-store"
+    )
+    
+    # Upload to App Store
+    upload_to_app_store(
+      force: true,
+      reject_if_possible: true,
+      metadata_path: "./metadata",
+      skip_screenshots: false,
+      skip_binary_upload: false,
+      skip_app_version_update: false
+    )
+  end
+
+  desc "Update screenshots"
+  lane :screenshots do
+    capture_screenshots(scheme: "SpiralMobile")
+    upload_to_app_store(skip_binary_upload: true, skip_metadata: true)
+  end
+
+  desc "Match certificates"
+  lane :certificates do
+    match(type: "development")
+    match(type: "appstore")
+  end
+
+  error do |lane, exception|
+    # Send error notification
+    slack(
+      message: "SPIRAL Mobile iOS deployment failed: #{exception.message}",
+      success: false
+    ) if ENV["SLACK_URL"]
+  end
+end

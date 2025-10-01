@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-08-06T12:54:01.951Z",
+  "summary": {
+    "totalEndpoints": 6,
+    "standardized": 6,
+    "successRate": 100
+  },
+  "results": [
+    {
+      "endpoint": "Username Check",
+      "url": "/api/auth/check-username?username=testuser",
+      "status": 200,
+      "hasStandardFormat": true,
+      "success": true,
+      "hasData": true,
+      "duration": "0ms",
+      "timestamp": 1754484841550
+    },
+    {
+      "endpoint": "Email Check",
+      "url": "/api/auth/check-email?email=test@example.com",
+      "status": 200,
+      "hasStandardFormat": true,
+      "success": true,
+      "hasData": true,
+      "duration": "0ms",
+      "timestamp": 1754484841565
+    },
+    {
+      "endpoint": "Retailers List",
+      "url": "/api/retailers",
+      "status": 200,
+      "hasStandardFormat": true,
+      "success": true,
+      "hasData": true,
+      "duration": "222ms",
+      "timestamp": 1754484841790
+    },
+    {
+      "endpoint": "Store Search",
+      "url": "/api/stores/search?zipCode=12345",
+      "status": 200,
+      "hasStandardFormat": true,
+      "success": true,
+      "hasData": true,
+      "duration": "75ms",
+      "timestamp": 1754484841868
+    },
+    {
+      "endpoint": "Categories",
+      "url": "/api/categories",
+      "status": 200,
+      "hasStandardFormat": true,
+      "success": true,
+      "hasData": true,
+      "duration": "0ms",
+      "timestamp": 1754484841872
+    },
+    {
+      "endpoint": "AI Recommendations",
+      "url": "/api/recommend",
+      "status": 200,
+      "hasStandardFormat": true,
+      "success": true,
+      "hasData": true,
+      "duration": "73ms",
+      "timestamp": 1754484841949
+    }
+  ]
+}

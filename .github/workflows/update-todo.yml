@@ -1,0 +1,33 @@
+name: Update SPIRAL ToDo
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  update-todo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Newman (Postman CLI)
+        run: npm install -g newman
+
+      - name: Run Postman Tests
+        run: newman run spiral-collection.json -e spiral-environment.json --reporters cli,json --reporter-json-export results.json
+
+      - name: Update spiral-todo.json
+        if: success()
+        run: node .github/scripts/update-todo.js
+
+      - name: Commit updated ToDo file
+        if: success()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add spiral-todo.json
+          git commit -m "Auto-update spiral-todo.json after successful tests" || echo "No changes to commit"
+          git push

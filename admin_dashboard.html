@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head><title>SPIRAL Admin Dashboard</title></head>
+<body>
+  <h1>SPIRAL Admin Dashboard</h1>
+  <button onclick="testHealth()">Test Health</button>
+  <button onclick="testEntities()">Test Entities</button>
+  <button onclick="testRewards()">Test Rewards</button>
+  <pre id="out"></pre>
+<script>
+async function testHealth() {
+  const res = await fetch('/health');
+  document.getElementById('out').innerText = JSON.stringify(await res.json(), null, 2);
+}
+async function testEntities() {
+  const res = await fetch('/api/entities?category=Cafe', { headers: { "X-Staff-Token": "spiral-staff" } });
+  document.getElementById('out').innerText = JSON.stringify(await res.json(), null, 2);
+}
+async function testRewards() {
+  const res = await fetch('/api/rewards/demo-user-001', { headers: { "X-Staff-Token": "spiral-staff" } });
+  document.getElementById('out').innerText = JSON.stringify(await res.json(), null, 2);
+}
+</script>
+</body>
+</html>

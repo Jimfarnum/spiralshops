@@ -1,0 +1,32 @@
+SPIRAL Quick Restore Readiness Report
+Timestamp: 20250818-141633
+Backup ZIP: spiral-backup-20250818-140406.zip
+ZIP Size: 
+Extract Path: restore-test-20250818-141633/.backup_tmp_20250818-140406
+
+File Checks:
+  - OK package.json exists
+  - OK server/index.js exists
+  - OK dev script exists
+
+Directory Structure:
+total 2708
+drwxr-xr-x 1 runner runner  13942 Aug 18 14:04 .
+drwxr-xr-x 1 runner runner    128 Aug 18 14:16 ..
+-rw------- 1 runner runner 277114 Jul 16 15:15 5f2ddb9c-bed6-466a-a305-c06542e7cf4b.png (1).PNG
+-rw-r--r-- 1 runner runner    433 Aug 15 20:55 admin_cookies.txt
+-rw-r--r-- 1 runner runner   8772 Jul 30 10:42 ADMIN_EXTERNAL_SERVICES_REPORT.md
+-rw-r--r-- 1 runner runner   2404 Aug 15 20:50 admin-login-test.js
+drwxr-xr-x 1 runner runner     32 Aug 15 18:17 agents
+drwxr-xr-x 1 runner runner    576 Aug 18 14:01 attached_assets
+drwxr-xr-x 1 runner runner     30 Aug 18 01:24 backups
+drwxr-xr-x 1 runner runner      0 Aug 18 14:02 .backup_tmp_20250818-140256
+drwxr-xr-x 1 runner runner      0 Aug 18 14:04 .backup_tmp_20250818-140406
+-rw-r--r-- 1 runner runner   3124 Jul 30 00:16 build-script.js
+-rw-r--r-- 1 runner runner   1868 Aug 18 01:42 CHECKPOINT_FIX_COMPLETE.md
+-rw-r--r-- 1 runner runner   1505 Aug 18 02:06 CHECKPOINT_SOLUTION_COMPLETE.md
+-rw-r--r-- 1 runner runner   1524 Aug 18 03:12 CHECKPOINT_SOLUTION_SUMMARY.md
+drwxr-xr-x 1 runner runner     38 Aug  1 15:04 client
+-rw-r--r-- 1 runner runner  14844 Aug  2 21:09 complete-invite-to-shop-integration-test.js
+-rw-r--r-- 1 runner runner   1553 Aug 18 02:20 COMPLETE_SOLUTION_READY.md
+-rw-r--r-- 1 runner runner    459 Jul 16 00:28 components.json

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPIRAL Orders & Shipments Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        button { padding: 10px 20px; margin: 10px 5px; background: #007cba; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #005a87; }
+        pre { background: #f5f5f5; padding: 15px; border-radius: 4px; overflow-x: auto; max-height: 300px; }
+        h2 { color: #333; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <h1>SPIRAL Platform - Orders & Shipments Testing</h1>
+    
+    <section>
+        <h2>Orders & Shipments</h2>
+        <button onclick="mkOrder()">Create Order</button>
+        <pre id="orderOut"></pre>
+
+        <button onclick="mkShipment()">Create Shipment (for last order)</button>
+        <pre id="shipOut"></pre>
+
+        <button onclick="trk()">Track (fake)</button>
+        <pre id="trkOut"></pre>
+    </section>
+
+    <script>
+        let LAST_ORDER_ID = "";
+        let LAST_TRACKING = "TRK1234567X";
+
+        // Helper function to build API URLs
+        function u(path) {
+            return window.location.origin + path;
+        }
+
+        async function mkOrder() {
+            try {
+                const orderData = {
+                    userId: 1,
+                    items: [
+                        { productId: 1, quantity: 2, price: 29.99 },
+                        { productId: 3, quantity: 1, price: 49.99 }
+                    ],
+                    total: 109.97,
+                    status: 'pending'
+                };
+
+                const r = await fetch(u('/api/orders'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (!r.ok) {
+                    throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+                }
+
+                const result = await r.json();
+                LAST_ORDER_ID = result.id || `ORD-${Date.now()}`;
+                
+                document.getElementById('orderOut').textContent = 
+                    `✅ Order Created!\nOrder ID: ${LAST_ORDER_ID}\n\n` + 
+                    JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('orderOut').textContent = 
+                    `❌ Error creating order:\n${error.message}`;
+            }
+        }
+
+        async function mkShipment() {
+            if (!LAST_ORDER_ID) {
+                document.getElementById('shipOut').textContent = 
+                    '⚠️ Please create an order first!';
+                return;
+            }
+
+            try {
+                LAST_TRACKING = `USPS${Date.now().toString().slice(-8)}`;
+                
+                const shipmentData = {
+                    orderId: LAST_ORDER_ID,
+                    carrier: "USPS",
+                    service: "Priority Mail",
+                    tracking: LAST_TRACKING,
+                    cost: 8.50,
+                    estDays: 2
+                };
+
+                const r = await fetch(u('/api/shipments/create'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(shipmentData)
+                });
+
+                if (!r.ok) {
+                    throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+                }
+
+                const result = await r.json();
+                
+                document.getElementById('shipOut').textContent = 
+                    `✅ Shipment Created!\nTracking: ${LAST_TRACKING}\n\n` + 
+                    JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('shipOut').textContent = 
+                    `❌ Error creating shipment:\n${error.message}`;
+            }
+        }
+
+        async function trk() {
+            if (!LAST_TRACKING) {
+                document.getElementById('trkOut').textContent = 
+                    '⚠️ Please create a shipment first!';
+                return;
+            }
+
+            try {
+                const r = await fetch(u('/api/shipments/track'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tracking: LAST_TRACKING })
+                });
+
+                if (!r.ok) {
+                    throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+                }
+
+                const result = await r.json();
+                
+                // Also get shipments for the order
+                let orderShipments = '';
+                if (LAST_ORDER_ID) {
+                    try {
+                        const orderR = await fetch(u(`/api/shipments/order/${LAST_ORDER_ID}`));
+                        if (orderR.ok) {
+                            const orderShips = await orderR.json();
+                            orderShipments = `\n\n📦 All shipments for order ${LAST_ORDER_ID}:\n` + 
+                                           JSON.stringify(orderShips, null, 2);
+                        }
+                    } catch (e) {
+                        orderShipments = `\n\n⚠️ Could not fetch order shipments: ${e.message}`;
+                    }
+                }
+                
+                document.getElementById('trkOut').textContent = 
+                    `🚚 Tracking Result:\n${JSON.stringify(result, null, 2)}${orderShipments}`;
+            } catch (error) {
+                document.getElementById('trkOut').textContent = 
+                    `❌ Error tracking shipment:\n${error.message}`;
+            }
+        }
+
+        // Auto-populate order ID on page load for testing
+        window.addEventListener('load', () => {
+            LAST_ORDER_ID = `ORD-${Date.now()}`;
+            console.log('🚀 SPIRAL Orders & Shipments Test Interface Loaded');
+            console.log(`📋 Auto-generated Order ID: ${LAST_ORDER_ID}`);
+        });
+    </script>
+</body>
+</html>

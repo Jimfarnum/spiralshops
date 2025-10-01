@@ -1,0 +1,24 @@
+name: SPIRAL Build & Smoke
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  verify-and-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 18 }
+      - run: npm ci
+      - run: npm run build
+      - run: node scripts/verify-build.js
+      - name: Run smoke tests
+        env: { BASE_URL: https://spiralshops.com }
+        run: |
+          chmod +x scripts/smoke-test.sh || true
+          if [ -f scripts/smoke-test.sh ]; then
+            bash scripts/smoke-test.sh "$BASE_URL"
+          else
+            echo "No smoke-test.sh found; skipping"
+          fi

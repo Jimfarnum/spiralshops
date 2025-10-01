@@ -1,0 +1,819 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&family=OpenDyslexic:wght@400;700&display=swap');
+
+/* EMERGENCY ANDROID FLASH FIX - IMMEDIATE SPIRAL BRANDING */
+html {
+  background-color: #007B8A !important;
+  color: #FFFFFF !important;
+}
+
+* {
+  animation: none !important;
+  transition: none !important;
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+  -webkit-animation: none !important;
+  -webkit-transition: none !important;
+}
+
+/* STEP 2.5: EMERGENCY ANDROID FLASH FIX - Apply IMMEDIATELY */
+html, body {
+  background-color: #007B8A !important;   /* SPIRAL teal-blue */
+  color: #FFFFFF !important;
+  overflow-x: hidden !important;          /* prevent bottom streaming */
+  transition: none !important;
+  animation: none !important;
+}
+
+header, .header, h1, h2, h3 {
+  background-color: #007B8A !important;
+  color: #FFFFFF !important;
+}
+
+button, .btn, input[type=submit] {
+  background-color: #007B8A !important;
+  border: 2px solid #FFD700 !important;   /* gold accent */
+  color: #FFFFFF !important;
+  font-weight: bold !important;
+}
+
+button:hover, .btn:hover, input[type=submit]:hover {
+  background-color: #FFD700 !important;
+  color: #007B8A !important;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ✅ Mobile-First Enhancements */
+:root { 
+  --tap: 44px; 
+  --mobile-font: 16px;
+}
+
+/* Essential mobile interaction improvements */
+button, .btn, .tap, input[type=submit], input[type=button], [role=button] { 
+  min-height: var(--tap); 
+  min-width: var(--tap);
+  touch-action: manipulation; /* Prevents double-tap zoom on iOS */
+}
+
+/* Mobile typography scaling */
+html { 
+  font-size: var(--mobile-font); 
+}
+
+@media (max-width: 480px) { 
+  html { 
+    font-size: 15px; 
+  }
+  
+  /* Ensure form inputs are appropriately sized */
+  input, select, textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    min-height: var(--tap);
+  }
+}
+
+/* Image responsiveness */
+img { 
+  max-width: 100%; 
+  height: auto; 
+}
+
+/* Prevent horizontal scrolling */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Mobile cart improvements */
+.cart-summary {
+  @apply p-3 space-y-3;
+}
+
+@media (max-width: 480px) {
+  .cart-summary {
+    @apply px-2;
+  }
+}
+
+.section-description {
+  color: #333333;
+  font-weight: 400;
+}
+
+:root {
+  /* SPIRAL Brand Theme - Consistent Teal-Blue Identity */
+  --spiral-brand: #007B8A;   /* SPIRAL teal-blue */
+  --spiral-text: #FFFFFF;    /* White text */
+  --spiral-gold: #FFD700;    /* Gold CTA accent */
+  --spiral-gray: #F0F0F0;    /* Secondary text/muted */
+  
+  /* Core Theme Variables */
+  --background: #007B8A;
+  --foreground: #FFFFFF;
+  --muted: #F0F0F0;
+  --muted-foreground: #007B8A;
+  --popover: #007B8A;
+  --popover-foreground: #FFFFFF;
+  --card: #007B8A;
+  --card-foreground: #FFFFFF;
+  --border: #FFD700;
+  --input: #F0F0F0;
+  --primary: #007B8A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F0F0F0;
+  --secondary-foreground: #007B8A;
+  --accent: #FFD700;
+  --accent-foreground: #007B8A;
+  --destructive: #dc2626;
+  --destructive-foreground: #FFFFFF;
+  --ring: #FFD700;
+  --radius: 1rem;
+  
+  /* Legacy Brand Colors (for compatibility) */
+  --spiral-navy: #007B8A;
+  --spiral-coral: #FFD700;
+  --spiral-sage: #F0F0F0;
+  --spiral-cream: #FFFFFF;
+}
+
+/* SPIRAL Brand Typography System */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  background-color: var(--spiral-brand) !important;
+  color: var(--spiral-text) !important;
+  overflow-x: hidden;
+  /* NO TRANSITIONS - INSTANT SPIRAL BRANDING */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--spiral-text) !important;
+  /* NO TRANSITIONS - INSTANT BRANDING */
+}
+
+/* Responsive Typography */
+h1 {
+  font-size: clamp(24px, 5vw, 32px);
+}
+
+h2 {
+  font-size: clamp(20px, 4vw, 24px);
+}
+
+h3 {
+  font-size: clamp(18px, 3.5vw, 20px);
+}
+
+/* Mobile-first responsive utilities */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* SPIRAL Brand Button Styling */
+button, .btn {
+  font-family: 'DM Sans', 'Work Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 44px;
+  min-width: 44px;
+  background-color: var(--spiral-brand) !important;
+  color: var(--spiral-text) !important;
+  border: 1px solid var(--spiral-brand) !important;
+  transition: all 0.3s ease !important;
+}
+
+button:hover, .btn:hover {
+  background-color: var(--spiral-gray) !important;
+  color: var(--spiral-brand) !important;
+}
+
+.btn-primary, button[type="submit"] {
+  background-color: var(--spiral-brand) !important;
+  border: 2px solid var(--spiral-gold) !important;
+  color: var(--spiral-text) !important;
+  font-weight: bold !important;
+}
+
+.btn-primary:hover, button[type="submit"]:hover {
+  background-color: var(--spiral-gold) !important;
+  color: var(--spiral-brand) !important;
+}
+
+/* ANDROID FLASH FIX - Disable all transitions and animations */
+.android-no-transitions *, 
+.android-no-transitions *::before, 
+.android-no-transitions *::after {
+  transition: none !important;
+  animation: none !important;
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+  transform: none !important;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  button, .btn {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 12px 16px;
+  }
+}
+
+/* Touch-friendly interactive elements */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile navigation styles */
+@media (max-width: 768px) {
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+  
+  .mobile-menu-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 280px;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .mobile-menu-open .mobile-menu-content {
+    transform: translateX(0);
+  }
+  
+  /* Mobile-specific layout improvements */
+  .mobile-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .mobile-card {
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mobile-button {
+    min-height: 48px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .mobile-input {
+    min-height: 48px;
+    padding: 12px 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    border-radius: 0.75rem;
+  }
+}
+
+/* Modern Layout Utilities */
+.container-spacing {
+  padding: 2rem 1rem;
+}
+
+.section-spacing {
+  margin-bottom: 4rem;
+}
+
+.card-modern {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 2s ease-in-out, transform 0.3s ease-in-out;
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  background: var(--card);
+  color: var(--card-foreground);
+}
+
+.card-modern:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: var(--dynamic-accent);
+}
+
+/* Product cards maintain white background but allow text to adapt */
+.card-product {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border: 1px solid rgba(229, 231, 235, 0.6);
+  background: white !important; /* Keep product cards white */
+}
+
+.card-product:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-color: var(--spiral-coral); /* Use brand color for product hover */
+}
+
+/* Product card text adapts for readability but maintains hierarchy */
+.card-product h3,
+.card-product .product-title {
+  color: var(--spiral-navy) !important;
+  transition: none !important;
+}
+
+.card-product .product-price {
+  color: var(--spiral-coral) !important;
+  transition: none !important;
+}
+
+.card-product .product-description {
+  color: #666 !important;
+  transition: none !important;
+}
+
+.section-modern {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+  .section-modern {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-modern {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.section-box {
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  padding: 2rem;
+  transition: all 2s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .section-box {
+    padding: 3rem;
+  }
+}
+
+/* Navigation and UI buttons use dynamic colors */
+.button-primary:not(.product-button) {
+  background: var(--dynamic-accent);
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: background-color 2s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.button-primary:not(.product-button):hover {
+  background: color-mix(in srgb, var(--dynamic-accent) 85%, black);
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.button-secondary:not(.product-button) {
+  border: 2px solid var(--dynamic-accent);
+  color: var(--dynamic-accent);
+  background: transparent;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: all 2s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.button-secondary:not(.product-button):hover {
+  background: var(--dynamic-accent);
+  color: white;
+  transform: translateY(-1px) scale(1.05);
+}
+
+/* Product buttons keep original brand colors */
+.button-primary.product-button {
+  background: var(--spiral-coral);
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.button-primary.product-button:hover {
+  background: color-mix(in srgb, var(--spiral-coral) 85%, black);
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: color 0.3s ease-in-out, background-color 2s ease-in-out, border-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Enhanced dynamic color transition system */
+body, 
+.card-modern,
+.card-product,
+.section-box {
+  transition: all 2s ease-in-out;
+}
+
+/* Dynamic color system variables */
+:root {
+  --dynamic-background: #E8F5E8;
+  --dynamic-light-background: #F4FBF4;
+  --dynamic-text-primary: #1B4332;
+  --dynamic-text-secondary: #2D5A3D;
+  --dynamic-accent: #40916C;
+  --color-transition-duration: 2s;
+}
+
+/* ============================================
+   PRODUCT CONTENT PROTECTION
+   ============================================ */
+
+/* Protect product images from color changes */
+.product-image,
+.product-card img,
+[class*="product"] img,
+img[alt*="product" i],
+img[src*="product" i] {
+  transition: transform 0.3s ease-in-out !important;
+  /* No color filters or background changes */
+}
+
+/* Protect product cards from dynamic background changes while allowing text to adapt */
+.product-card {
+  background: white !important;
+  border: 1px solid rgba(229, 231, 235, 0.8) !important;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out !important;
+}
+
+.product-card h3,
+.product-card .product-title {
+  color: var(--foreground) !important;
+  transition: color 2s ease-in-out !important;
+}
+
+.product-card .product-price {
+  color: var(--spiral-coral) !important;
+  font-weight: 600 !important;
+  /* Keep original price color for consistency */
+}
+
+/* Protect brand elements */
+.logo,
+.brand-logo,
+[class*="spiral-logo"],
+.spiral-branding {
+  transition: none !important;
+  /* Preserve brand identity */
+}
+
+/* Navigation and general UI can change colors */
+nav,
+.header,
+.footer,
+.sidebar,
+.navigation-menu {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  transition: all 2s ease-in-out !important;
+}
+
+.dark {
+  --background: hsl(210, 22%, 15%);
+  --foreground: hsl(42, 15%, 96%);
+  --muted: hsl(210, 22%, 20%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(210, 22%, 18%);
+  --popover-foreground: hsl(42, 15%, 96%);
+  --card: hsl(210, 22%, 18%);
+  --card-foreground: hsl(42, 15%, 96%);
+  --border: hsl(210, 22%, 25%);
+  --input: hsl(210, 22%, 25%);
+  --primary: hsl(42, 15%, 96%);
+  --primary-foreground: hsl(210, 22%, 22%);
+  --secondary: hsl(210, 22%, 20%);
+  --secondary-foreground: hsl(42, 15%, 96%);
+  --accent: hsl(14, 65%, 65%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(42, 15%, 96%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', 'Poppins', system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .spiral-blue {
+    color: var(--spiral-blue);
+  }
+  
+  .bg-spiral-blue {
+    background-color: var(--spiral-blue);
+  }
+  
+  .bg-spiral-blue-dark {
+    background-color: var(--spiral-blue-dark);
+  }
+  
+  .bg-spiral-blue-light {
+    background-color: var(--spiral-blue-light);
+  }
+  
+  .text-spiral-blue {
+    color: var(--spiral-blue);
+  }
+  
+  .text-spiral-blue-light {
+    color: var(--spiral-blue-light);
+  }
+  
+  .border-spiral-blue {
+    border-color: var(--spiral-blue);
+  }
+  
+  .hover\:bg-spiral-blue-dark:hover {
+    background-color: var(--spiral-blue-dark);
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY FEATURES
+   ============================================ */
+
+/* Accessibility CSS Variables */
+:root {
+  --accessibility-font-scale: 1;
+  --accessibility-target-size: 40px;
+  --accessibility-animation-duration: 0.3s;
+  --motion-preference: no-preference;
+}
+
+/* High Contrast Mode */
+.accessibility-high-contrast {
+  --spiral-navy: #000000;
+  --spiral-coral: #FF6B00;
+  --spiral-gold: #FFD700;
+  --spiral-sage: #008000;
+  --spiral-cream: #FFFFFF;
+  --background: #FFFFFF;
+  --foreground: #000000;
+  --muted: #F0F0F0;
+  --muted-foreground: #000000;
+  --border: #000000;
+  --input: #FFFFFF;
+  --ring: #FF6B00;
+}
+
+.accessibility-high-contrast * {
+  border-color: #000000 !important;
+}
+
+.accessibility-high-contrast button,
+.accessibility-high-contrast [role="button"] {
+  border: 2px solid #000000 !important;
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+.accessibility-high-contrast button:hover,
+.accessibility-high-contrast [role="button"]:hover {
+  background-color: #FF6B00 !important;
+  color: #FFFFFF !important;
+}
+
+/* Large Text Mode */
+.accessibility-large-text {
+  font-size: calc(100% * var(--accessibility-font-scale, 1.2));
+}
+
+.accessibility-large-text * {
+  font-size: inherit !important;
+}
+
+.accessibility-large-text .text-xs { font-size: 14.4px !important; }
+.accessibility-large-text .text-sm { font-size: 16.8px !important; }
+.accessibility-large-text .text-base { font-size: 19.2px !important; }
+.accessibility-large-text .text-lg { font-size: 21.6px !important; }
+.accessibility-large-text .text-xl { font-size: 24px !important; }
+.accessibility-large-text .text-2xl { font-size: 28.8px !important; }
+.accessibility-large-text .text-3xl { font-size: 36px !important; }
+.accessibility-large-text .text-4xl { font-size: 43.2px !important; }
+
+/* Dyslexia-Friendly Font - Imported at top of file */
+
+.accessibility-dyslexia-font {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+}
+
+.accessibility-dyslexia-font * {
+  font-family: inherit !important;
+}
+
+/* Reduced Motion */
+.accessibility-reduced-motion *,
+.accessibility-reduced-motion *::before,
+.accessibility-reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Larger Click Targets */
+.accessibility-larger-targets button,
+.accessibility-larger-targets [role="button"],
+.accessibility-larger-targets a,
+.accessibility-larger-targets input,
+.accessibility-larger-targets select,
+.accessibility-larger-targets textarea {
+  min-height: var(--accessibility-target-size, 48px) !important;
+  min-width: var(--accessibility-target-size, 48px) !important;
+  padding: 12px 16px !important;
+}
+
+.accessibility-larger-targets .h-4,
+.accessibility-larger-targets .w-4 {
+  height: 20px !important;
+  width: 20px !important;
+}
+
+/* Sticky Hover Effects */
+.accessibility-sticky-hover *:hover {
+  transition-duration: 2s !important;
+}
+
+/* Slower Animations */
+.accessibility-slow-animations * {
+  animation-duration: var(--accessibility-animation-duration, 0.8s) !important;
+  transition-duration: var(--accessibility-animation-duration, 0.8s) !important;
+}
+
+/* Simplified Layout */
+.accessibility-simplified-layout .shadow-lg,
+.accessibility-simplified-layout .shadow-md,
+.accessibility-simplified-layout .shadow-sm {
+  box-shadow: none !important;
+  border: 1px solid #CCCCCC !important;
+}
+
+.accessibility-simplified-layout .rounded-lg,
+.accessibility-simplified-layout .rounded-xl,
+.accessibility-simplified-layout .rounded-2xl {
+  border-radius: 4px !important;
+}
+
+.accessibility-simplified-layout .gradient,
+.accessibility-simplified-layout [class*="gradient"] {
+  background: transparent !important;
+}
+
+/* Enhanced Focus Indicators */
+.accessibility-focus-indicators *:focus,
+.accessibility-focus-indicators *:focus-visible {
+  outline: 3px solid #FF6B00 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 0 5px rgba(255, 107, 0, 0.3) !important;
+}
+
+.accessibility-focus-indicators button:focus,
+.accessibility-focus-indicators [role="button"]:focus {
+  background-color: #FFF5F0 !important;
+}
+
+/* Visual Alerts */
+.accessibility-visual-alerts {
+  /* Visual feedback for actions */
+}
+
+.accessibility-visual-alerts .toast,
+.accessibility-visual-alerts [role="alert"] {
+  border: 3px solid #FF6B00 !important;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip Links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000000;
+  color: #FFFFFF;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 9999;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* High Motion Preference Override */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print Accessibility */
+@media print {
+  .accessibility-high-contrast {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .accessibility-high-contrast * {
+    background: transparent !important;
+    color: black !important;
+    border-color: black !important;
+  }
+}
+
+/* SPIRALSHOPS CORRECTION: Modal and Onboarding Z-Index Management */
+.modal-popup {
+  z-index: 10; /* lower than the onboarding container */
+}
+
+.onboarding-step {
+  z-index: 50;
+}
+
+.share-on-x {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+}

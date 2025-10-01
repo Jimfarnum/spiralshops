@@ -1,0 +1,59 @@
+name: SPIRAL API Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Newman (Postman CLI)
+        run: npm install -g newman
+
+      # === Onboarding Flow Tests ===
+      - name: Run SPIRAL Onboarding Tests
+        run: |
+          newman run postman/SPIRAL-Onboarding.postman_collection.json \
+            --env-var baseUrl=http://localhost:5000
+
+      # === Orders & Loyalty Tests ===
+      - name: Run SPIRAL Orders & Loyalty Tests
+        run: |
+          newman run postman/SPIRAL-Orders-Loyalty.postman_collection.json \
+            --env-var baseUrl=http://localhost:5000
+
+      # === Shopper Services Tests ===
+      - name: Run SPIRAL Shopper Tests
+        run: |
+          newman run postman/SPIRAL-Shopper.postman_collection.json \
+            --env-var baseUrl=http://localhost:5000
+
+      # === Mall Platform Tests ===
+      - name: Run SPIRAL Mall Tests
+        run: |
+          newman run postman/SPIRAL-Malls.postman_collection.json \
+            --env-var baseUrl=http://localhost:5000
+
+      # === Admin Promotions Tests ===
+      - name: Run SPIRAL Promotions Tests
+        run: |
+          newman run postman/SPIRAL-Promotions-Test.postman_collection.json \
+            --env-var baseUrl=http://localhost:5000
+
+      # === Legal Compliance Tests ===
+      - name: Run SPIRAL Legal Consent Tests
+        run: |
+          newman run postman/SPIRAL-Legal.postman_collection.json \
+            --env-var baseUrl=http://localhost:5000

@@ -1,0 +1,62 @@
+{
+  "id": "spiral-prod-env",
+  "name": "SPIRAL Production Environment",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "https://spiralshops.com",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "api_base",
+      "value": "{{base_url}}/api",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "API_BASE_URL",
+      "value": "https://spiralshops.com",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "admin_token",
+      "value": "136a652548aa5ae81bffdc9bca394006d602bb8d2a50aa602bb6b17cc852b22f",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "investor_token",
+      "value": "spiral-demo-2025-stonepath-67c9",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "ADMIN_JWT",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "RETAILER_JWT",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "test_user_id",
+      "value": "1",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "test_store_id",
+      "value": "1",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_using": "Postman/10.x"
+}

@@ -1,0 +1,7 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192'>
+    <rect width='100%' height='100%' rx='24' fill='#FEF3F2'/>
+    <circle cx='96' cy='84' r='44' fill='white' stroke='#FDA29B' stroke-width='3'/>
+    <circle cx='80' cy='74' r='6' fill='#EF4444'/><circle cx='112' cy='74' r='6' fill='#EF4444'/>
+    <path d='M72 96 Q96 114 120 96' stroke='#EF4444' stroke-width='3' fill='none' stroke-linecap='round'/>
+    <text x='96' y='170' text-anchor='middle' font-family='Inter, system-ui' font-size='22' font-weight='600' fill='#334155'>A</text>
+  </svg>
