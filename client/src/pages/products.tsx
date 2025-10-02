@@ -9,7 +9,8 @@ import { useCartStore } from '@/lib/cartStore';
 import { Link } from 'wouter';
 import { 
   Search, Filter, Grid, List, Star, MapPin, Store as StoreIcon,
-  ShoppingCart, Heart, Package, ArrowUpDown
+  ShoppingCart, Heart, Package, ArrowUpDown, CheckCircle, Shield, 
+  TrendingUp, Users, Award, Sparkles
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { SocialPixelManager } from '@/utils/socialPixels';
@@ -370,6 +371,142 @@ const ProductsPage = () => {
         </div>
       </div>
 
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-blue-600 to-blue-800 text-white">
+        <div className="max-w-7xl mx-auto px-4 py-16">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Headline & CTAs */}
+            <div>
+              <h2 className="text-5xl font-bold mb-4">
+                Everything Local.<br />Just for You.
+              </h2>
+              <p className="text-xl mb-6 text-blue-100">
+                Discover amazing products from local stores near you. Earn SPIRAL rewards with every purchase.
+              </p>
+              
+              {/* Value Props */}
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-300" />
+                  <span>Earn 1 SPIRAL per $1 spent (100 SPIRALs = $1 credit)</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Shield className="w-5 h-5 text-green-300" />
+                  <span>Secure checkout with buyer protection</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="w-5 h-5 text-green-300" />
+                  <span>Support local businesses in your community</span>
+                </div>
+              </div>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-4">
+                <Button 
+                  size="lg" 
+                  className="bg-white text-blue-700 hover:bg-blue-50"
+                  onClick={() => {
+                    setContentTab('products');
+                    // Scroll to products section smoothly
+                    setTimeout(() => {
+                      const productsSection = document.querySelector('[data-testid="tab-content-products"]');
+                      productsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                    // Track conversion event
+                    SocialPixelManager.trackFacebookEvent('InitiateCheckout', {
+                      content_category: 'CTA',
+                      content_name: 'Shop Local Deals'
+                    });
+                  }}
+                  data-testid="button-shop-local-deals"
+                  aria-label="Browse local products and deals"
+                >
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  Shop Local Deals
+                </Button>
+                <Link href="/loyalty">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="border-2 border-white text-white hover:bg-white/10"
+                    onClick={() => {
+                      // Track loyalty page visit
+                      SocialPixelManager.trackFacebookEvent('ViewContent', {
+                        content_category: 'Loyalty',
+                        content_name: 'Explore Loyalty Rewards'
+                      });
+                    }}
+                    data-testid="button-explore-loyalty"
+                    aria-label="Learn about SPIRAL loyalty rewards program"
+                  >
+                    <Star className="w-5 h-5 mr-2" />
+                    Explore Loyalty Rewards
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Column - Featured Benefits */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+              <h3 className="text-2xl font-bold mb-6">Why Shop SPIRAL?</h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-white/20 rounded-lg p-2">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="font-semibold mb-1">10,000+ Happy Members</div>
+                    <div className="text-sm text-blue-100">Join a thriving community of local shoppers</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="bg-white/20 rounded-lg p-2">
+                    <StoreIcon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="font-semibold mb-1">500+ Verified Stores</div>
+                    <div className="text-sm text-blue-100">Discover trusted local businesses</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="bg-white/20 rounded-lg p-2">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="font-semibold mb-1">$2M+ Rewards Earned</div>
+                    <div className="text-sm text-blue-100">Real savings for real shoppers</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Social Proof Strip */}
+      <div className="bg-white border-y">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <Award className="w-5 h-5 text-blue-600" />
+              <span><strong>Trusted</strong> by 10,000+ shoppers</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-blue-600" />
+              <span><strong>Secure</strong> checkout guaranteed</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-blue-600" />
+              <span><strong>Free returns</strong> on all orders</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              <span><strong>Earn rewards</strong> with every purchase</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Feature Navigation + Content Tabs */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Feature Navigation Links - Top Row */}
@@ -471,7 +608,7 @@ const ProductsPage = () => {
                             <CardTitle className="text-base font-semibold line-clamp-1">
                               {store.name}
                             </CardTitle>
-                            {store.isVerified && <VerifiedBadge tier={store.verificationTier as any} />}
+                            {store.isVerified && <VerifiedBadge isVerified={true} tier={store.verificationTier as any} />}
                           </div>
                           <Badge variant="secondary" className="text-xs">
                             {store.category}
