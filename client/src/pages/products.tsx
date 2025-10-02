@@ -544,6 +544,80 @@ const ProductsPage = () => {
             </TabsList>
 
           <TabsContent value="products">
+            {/* Featured Collections */}
+            <div className="mb-12">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">🔥 Featured Collections</h3>
+                  <p className="text-gray-600">Curated selections from top-rated local stores</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Collection 1: Best Sellers */}
+                <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200 hover:shadow-lg transition-shadow cursor-pointer"
+                      onClick={() => {
+                        setSelectedCategory('all');
+                        setSortBy('rating');
+                      }}>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="bg-orange-500 rounded-full p-2">
+                        <TrendingUp className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-lg">Best Sellers</h4>
+                        <p className="text-sm text-gray-600">Top-rated products</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-700">Discover what everyone's buying from local stores</p>
+                  </CardContent>
+                </Card>
+
+                {/* Collection 2: Near You */}
+                <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 hover:shadow-lg transition-shadow cursor-pointer"
+                      onClick={() => {
+                        setContentTab('stores');
+                      }}>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="bg-blue-500 rounded-full p-2">
+                        <MapPin className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-lg">Near You</h4>
+                        <p className="text-sm text-gray-600">Local favorites</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-700">Shop from verified stores in your neighborhood</p>
+                  </CardContent>
+                </Card>
+
+                {/* Collection 3: Earn 2x SPIRALs */}
+                <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 hover:shadow-lg transition-shadow cursor-pointer"
+                      onClick={() => {
+                        toast({
+                          title: "🎉 Double Rewards!",
+                          description: "Pickup orders earn 2x SPIRAL rewards",
+                          duration: 3000,
+                        });
+                      }}>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="bg-green-500 rounded-full p-2">
+                        <Sparkles className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-lg">Earn 2x SPIRALs</h4>
+                        <p className="text-sm text-gray-600">Pickup rewards</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-700">Double your rewards with in-store pickup</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
             <div className="flex items-center justify-between mb-6">
               <p className="text-gray-600" data-testid="text-products-count">
                 Showing {filteredProducts.length} of {products.length} products
