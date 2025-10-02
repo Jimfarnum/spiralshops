@@ -43,14 +43,14 @@ interface Store {
   distance?: string;
 }
 
-// Feature and content tab metadata
-const FEATURE_TABS = [
-  { id: 'shopping', label: 'Shopping', icon: ShoppingCart },
-  { id: 'loyalty', label: 'Loyalty Program', icon: Star },
-  { id: 'centers', label: 'SPIRAL Centers', icon: MapPin },
-  { id: 'logistics', label: 'Delivery & Logistics', icon: Package },
-  { id: 'social', label: 'Social Features', icon: Heart },
-  { id: 'giftcards', label: 'Gift Cards', icon: StoreIcon },
+// Feature navigation links
+const FEATURE_LINKS = [
+  { id: 'shopping', label: 'Shopping', icon: ShoppingCart, path: '/products' },
+  { id: 'loyalty', label: 'Loyalty Program', icon: Star, path: '/loyalty' },
+  { id: 'centers', label: 'SPIRAL Centers', icon: MapPin, path: '/spiral-centers' },
+  { id: 'logistics', label: 'Delivery & Logistics', icon: Package, path: '/advanced-logistics' },
+  { id: 'social', label: 'Social Features', icon: Heart, path: '/social-feed' },
+  { id: 'giftcards', label: 'Gift Cards', icon: StoreIcon, path: '/wallet' },
 ];
 
 const CONTENT_TABS = [
@@ -67,7 +67,6 @@ const ProductsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('relevance');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [featureTab, setFeatureTab] = useState('shopping');
   const [contentTab, setContentTab] = useState('products');
 
   const { data: products = [], isLoading: isLoadingProducts } = useQuery({
@@ -364,29 +363,30 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      {/* Two-Tier Tabs */}
+      {/* Feature Navigation + Content Tabs */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Feature Tabs - Top Level */}
-        <Tabs value={featureTab} onValueChange={setFeatureTab} className="w-full">
-          <TabsList className="flex flex-wrap justify-start gap-2 h-auto bg-transparent p-0 mb-4">
-            {FEATURE_TABS.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <TabsTrigger 
-                  key={tab.id} 
-                  value={tab.id}
-                  className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-                  data-testid={`tab-feature-${tab.id}`}
+        {/* Feature Navigation Links - Top Row */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {FEATURE_LINKS.map((feature) => {
+            const Icon = feature.icon;
+            const isActive = feature.id === 'shopping'; // Active on products page
+            return (
+              <Link key={feature.id} href={feature.path}>
+                <Button
+                  variant={isActive ? 'default' : 'outline'}
+                  className="flex items-center gap-2"
+                  data-testid={`nav-feature-${feature.id}`}
                 >
                   <Icon className="w-4 h-4" />
-                  {tab.label}
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
-          
-          {/* Content Tabs - Second Level */}
-          <Tabs value={contentTab} onValueChange={setContentTab} className="w-full mt-6">
+                  {feature.label}
+                </Button>
+              </Link>
+            );
+          })}
+        </div>
+        
+        {/* Content Tabs - Second Row */}
+        <Tabs value={contentTab} onValueChange={setContentTab} className="w-full">
             <TabsList className="grid w-full max-w-2xl grid-cols-4 mb-8">
               {CONTENT_TABS.map((tab) => (
                 <TabsTrigger 
@@ -498,26 +498,35 @@ const ProductsPage = () => {
 
           <TabsContent value="about">
             <Card className="p-6">
-              <h2 className="text-2xl font-bold mb-4">About {FEATURE_TABS.find(t => t.id === featureTab)?.label}</h2>
+              <h2 className="text-2xl font-bold mb-4">About SPIRAL Shopping</h2>
               <div className="prose max-w-none">
-                {featureTab === 'shopping' && (
-                  <p>Discover local products from independent retailers in your area. Shop directly from local stores and support your community.</p>
-                )}
-                {featureTab === 'loyalty' && (
-                  <p>Earn SPIRALs with every purchase! Get 1 SPIRAL per $1 spent, with 2x for pickup, 3x for invites, and 5x for events. Redeem 100 SPIRALs for $1 credit.</p>
-                )}
-                {featureTab === 'centers' && (
-                  <p>SPIRAL Centers are physical hubs in malls providing pickup, returns, and community events for local shoppers.</p>
-                )}
-                {featureTab === 'logistics' && (
-                  <p>Advanced delivery options including Ship to Me, In-Store Pickup, and Ship to Mall SPIRAL Center with route optimization.</p>
-                )}
-                {featureTab === 'social' && (
-                  <p>Share your purchases, invite friends to shop, and earn rewards through our social features and referral program.</p>
-                )}
-                {featureTab === 'giftcards' && (
-                  <p>Purchase and send mall gift cards that can be used at any participating retailer in the SPIRAL network.</p>
-                )}
+                <p className="text-lg mb-4">
+                  Discover local products from independent retailers in your area. Shop directly from local stores and support your community.
+                </p>
+                <p className="text-gray-600 mb-4">
+                  SPIRAL connects you with trusted local retailers and malls across the United States. Browse thousands of products, 
+                  earn loyalty rewards with every purchase, and enjoy flexible delivery options including in-store pickup and SPIRAL Center delivery.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  <div>
+                    <h3 className="font-semibold mb-2">✨ Key Features</h3>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+                      <li>Shop from local independent retailers</li>
+                      <li>Earn SPIRALs loyalty rewards</li>
+                      <li>Multiple delivery options</li>
+                      <li>Verified store ratings</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">🎁 Benefits</h3>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+                      <li>Support your local community</li>
+                      <li>Get exclusive local deals</li>
+                      <li>Same-day pickup available</li>
+                      <li>Secure transactions guaranteed</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </Card>
           </TabsContent>
@@ -534,7 +543,6 @@ const ProductsPage = () => {
           </TabsContent>
 
         </Tabs>
-      </Tabs>
       </div>
     </div>
   );
