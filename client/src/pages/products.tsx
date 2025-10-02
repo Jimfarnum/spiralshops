@@ -381,22 +381,22 @@ const ProductsPage = () => {
                 Everything Local.<br />Just for You.
               </h2>
               <p className="text-xl mb-6 text-blue-100">
-                Discover amazing products from local stores near you. Earn SPIRAL rewards with every purchase.
+                Shop from brick-and-mortar retailers across America. Build community. Keep dollars local.
               </p>
               
               {/* Value Props */}
               <div className="space-y-3 mb-8">
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-300" />
-                  <span>Earn 1 SPIRAL per $1 spent (100 SPIRALs = $1 credit)</span>
+                  <StoreIcon className="w-5 h-5 text-green-300" />
+                  <span>Support brick-and-mortar stores nationwide</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Shield className="w-5 h-5 text-green-300" />
-                  <span>Secure checkout with buyer protection</span>
+                  <Users className="w-5 h-5 text-green-300" />
+                  <span>Strengthen your local community</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <TrendingUp className="w-5 h-5 text-green-300" />
-                  <span>Support local businesses in your community</span>
+                  <span>Keep money circulating in your neighborhood</span>
                 </div>
               </div>
 
@@ -448,33 +448,33 @@ const ProductsPage = () => {
 
             {/* Right Column - Featured Benefits */}
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-              <h3 className="text-2xl font-bold mb-6">Why Shop SPIRAL?</h3>
+              <h3 className="text-2xl font-bold mb-6">The SPIRAL Mission</h3>
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="bg-white/20 rounded-lg p-2">
-                    <Users className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="font-semibold mb-1">10,000+ Happy Members</div>
-                    <div className="text-sm text-blue-100">Join a thriving community of local shoppers</div>
-                  </div>
-                </div>
                 <div className="flex items-start gap-3">
                   <div className="bg-white/20 rounded-lg p-2">
                     <StoreIcon className="w-6 h-6" />
                   </div>
                   <div>
-                    <div className="font-semibold mb-1">500+ Verified Stores</div>
-                    <div className="text-sm text-blue-100">Discover trusted local businesses</div>
+                    <div className="font-semibold mb-1">Brick-and-Mortar First</div>
+                    <div className="text-sm text-blue-100">Real stores, real people, real community</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="bg-white/20 rounded-lg p-2">
-                    <Sparkles className="w-6 h-6" />
+                    <Users className="w-6 h-6" />
                   </div>
                   <div>
-                    <div className="font-semibold mb-1">$2M+ Rewards Earned</div>
-                    <div className="text-sm text-blue-100">Real savings for real shoppers</div>
+                    <div className="font-semibold mb-1">Coast to Coast</div>
+                    <div className="text-sm text-blue-100">Supporting local retailers across America</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="bg-white/20 rounded-lg p-2">
+                    <TrendingUp className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="font-semibold mb-1">Economic Impact</div>
+                    <div className="text-sm text-blue-100">Keep dollars working in your community</div>
                   </div>
                 </div>
               </div>
@@ -500,8 +500,8 @@ const ProductsPage = () => {
               <span><strong>Free returns</strong> on all orders</span>
             </div>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-blue-600" />
-              <span><strong>Earn rewards</strong> with every purchase</span>
+              <StoreIcon className="w-5 h-5 text-blue-600" />
+              <span><strong>Support local</strong> businesses nationwide</span>
             </div>
           </div>
         </div>
@@ -593,26 +593,26 @@ const ProductsPage = () => {
                   </CardContent>
                 </Card>
 
-                {/* Collection 3: Earn 2x SPIRALs */}
+                {/* Collection 3: Community Impact */}
                 <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 hover:shadow-lg transition-shadow cursor-pointer"
                       onClick={() => {
                         toast({
-                          title: "🎉 Double Rewards!",
-                          description: "Pickup orders earn 2x SPIRAL rewards",
+                          title: "🌟 Community First",
+                          description: "Every purchase supports your local economy",
                           duration: 3000,
                         });
                       }}>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="bg-green-500 rounded-full p-2">
-                        <Sparkles className="w-6 h-6 text-white" />
+                        <Heart className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-bold text-lg">Earn 2x SPIRALs</h4>
-                        <p className="text-sm text-gray-600">Pickup rewards</p>
+                        <h4 className="font-bold text-lg">Shop With Purpose</h4>
+                        <p className="text-sm text-gray-600">Build community</p>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-700">Double your rewards with in-store pickup</p>
+                    <p className="text-sm text-gray-700">Your purchases strengthen local businesses</p>
                   </CardContent>
                 </Card>
               </div>
