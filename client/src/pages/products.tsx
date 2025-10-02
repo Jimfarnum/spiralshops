@@ -295,78 +295,15 @@ const ProductsPage = () => {
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <img 
-                src="/spiral-blue.svg" 
-                alt="SPIRAL Logo" 
-                className="w-16 h-16 object-contain"
-              />
-              <h1 className="text-3xl font-bold text-gray-900">
-                SPIRAL - Local Commerce Platform
-              </h1>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                data-testid="button-view-grid"
-              >
-                <Grid className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-                data-testid="button-view-list"
-              >
-                <List className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Search and Filters */}
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Search products, stores, or malls..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                  data-testid="input-search"
-                />
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                data-testid="select-category"
-              >
-                <option value="all">All Categories</option>
-                {categories.map((category: any) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                data-testid="select-sort"
-              >
-                <option value="relevance">Sort by Relevance</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Customer Rating</option>
-                <option value="name">Name A-Z</option>
-              </select>
-            </div>
+          <div className="flex items-center gap-4">
+            <img 
+              src="/spiral-blue.svg" 
+              alt="SPIRAL Logo" 
+              className="w-16 h-16 object-contain"
+            />
+            <h1 className="text-3xl font-bold text-gray-900">
+              SPIRAL - Local Commerce Platform
+            </h1>
           </div>
         </div>
       </div>
@@ -544,6 +481,67 @@ const ProductsPage = () => {
             </TabsList>
 
           <TabsContent value="products">
+            {/* Search and Filters for Products */}
+            <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
+              <div className="flex flex-col lg:flex-row gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      placeholder="Search products..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                      data-testid="input-search-products"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-4 flex-wrap">
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    data-testid="select-category"
+                  >
+                    <option value="all">All Categories</option>
+                    {categories.map((category: any) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    data-testid="select-sort"
+                  >
+                    <option value="relevance">Sort by Relevance</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Customer Rating</option>
+                    <option value="name">Name A-Z</option>
+                  </select>
+                  <Button
+                    variant={viewMode === 'grid' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                    data-testid="button-view-grid"
+                  >
+                    <Grid className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === 'list' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setViewMode('list')}
+                    data-testid="button-view-list"
+                  >
+                    <List className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             {/* Featured Collections */}
             <div className="mb-12">
               <div className="flex items-center justify-between mb-6">
@@ -646,6 +644,65 @@ const ProductsPage = () => {
           </TabsContent>
 
           <TabsContent value="stores">
+            {/* Search and Filters for Stores */}
+            <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
+              <div className="flex flex-col lg:flex-row gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      placeholder="Search stores..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                      data-testid="input-search-stores"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-4 flex-wrap">
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    data-testid="select-category-stores"
+                  >
+                    <option value="all">All Categories</option>
+                    {categories.map((category: any) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    data-testid="select-sort-stores"
+                  >
+                    <option value="relevance">Sort by Relevance</option>
+                    <option value="rating">Customer Rating</option>
+                    <option value="name">Name A-Z</option>
+                  </select>
+                  <Button
+                    variant={viewMode === 'grid' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                    data-testid="button-view-grid-stores"
+                  >
+                    <Grid className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === 'list' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setViewMode('list')}
+                    data-testid="button-view-list-stores"
+                  >
+                    <List className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             <div className="flex items-center justify-between mb-6">
               <p className="text-gray-600" data-testid="text-stores-count">
                 Showing {filteredStores.length} of {stores.length} stores
