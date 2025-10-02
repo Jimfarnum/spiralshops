@@ -8,12 +8,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCartStore } from '@/lib/cartStore';
 import { Link } from 'wouter';
 import { 
-  Search, Filter, Grid, List, Star, MapPin, 
+  Search, Filter, Grid, List, Star, MapPin, Store as StoreIcon,
   ShoppingCart, Heart, Package, ArrowUpDown
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { SocialPixelManager } from '@/utils/socialPixels';
 import WishlistButton from '@/components/WishlistButton';
+import StoreCard from '@/components/store-card';
+import VerifiedBadge from '@/components/VerifiedBadge';
 
 interface Product {
   id: number;
@@ -27,6 +29,20 @@ interface Product {
   inStock: boolean;
 }
 
+interface Store {
+  id: number;
+  name: string;
+  description: string;
+  category: string;
+  address: string;
+  rating: number;
+  reviewCount: number;
+  imageUrl?: string;
+  isVerified?: boolean;
+  verificationTier?: string;
+  distance?: string;
+}
+
 const ProductsPage = () => {
   const { toast } = useToast();
   const addItem = useCartStore(state => state.addItem);
@@ -34,8 +50,9 @@ const ProductsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('relevance');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [activeTab, setActiveTab] = useState('products');
 
-  const { data: products = [], isLoading } = useQuery({
+  const { data: products = [], isLoading: isLoadingProducts } = useQuery({
     queryKey: ['/api/products'],
     queryFn: async () => {
       const response = await fetch('/api/products');
@@ -52,6 +69,18 @@ const ProductsPage = () => {
       return response.json();
     }
   });
+
+  const { data: storesData, isLoading: isLoadingStores } = useQuery({
+    queryKey: ['/api/stores'],
+    queryFn: async () => {
+      const response = await fetch('/api/stores');
+      if (!response.ok) throw new Error('Failed to fetch stores');
+      const data = await response.json();
+      return data.stores || [];
+    }
+  });
+
+  const stores = Array.isArray(storesData) ? storesData : [];
 
   // Filter and sort products
   const filteredProducts = products
@@ -71,6 +100,25 @@ const ProductsPage = () => {
       }
     });
 
+  // Filter and sort stores
+  const filteredStores = stores
+    .filter((store: Store) => {
+      const matchesSearch = store.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           store.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           store.category.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || store.category.toLowerCase() === selectedCategory.toLowerCase();
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a: Store, b: Store) => {
+      switch (sortBy) {
+        case 'rating':
+          return (b.rating || 0) - (a.rating || 0);
+        case 'name':
+        default:
+          return a.name.localeCompare(b.name);
+      }
+    });
+
   const handleAddToCart = (product: Product) => {
     addItem({
       id: product.id,
@@ -81,7 +129,6 @@ const ProductsPage = () => {
       store: product.store
     });
 
-    // Track add to cart across all social platforms
     SocialPixelManager.trackAddToCart(
       product.id.toString(),
       product.name,
@@ -202,6 +249,8 @@ const ProductsPage = () => {
     </Card>
   );
 
+  const isLoading = isLoadingProducts || isLoadingStores;
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
@@ -229,12 +278,15 @@ const ProductsPage = () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Local Products</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              {activeTab === 'products' ? 'Local Products' : 'Local Stores'}
+            </h1>
             <div className="flex items-center gap-2">
               <Button
                 variant={viewMode === 'grid' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('grid')}
+                data-testid="button-view-grid"
               >
                 <Grid className="w-4 h-4" />
               </Button>
@@ -242,6 +294,7 @@ const ProductsPage = () => {
                 variant={viewMode === 'list' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('list')}
+                data-testid="button-view-list"
               >
                 <List className="w-4 h-4" />
               </Button>
@@ -254,10 +307,11 @@ const ProductsPage = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
-                  placeholder="Search products or stores..."
+                  placeholder={activeTab === 'products' ? "Search products or stores..." : "Search stores..."}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
+                  data-testid="input-search"
                 />
               </div>
             </div>
@@ -266,6 +320,7 @@ const ProductsPage = () => {
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                data-testid="select-category"
               >
                 <option value="all">All Categories</option>
                 {categories.map((category: any) => (
@@ -278,6 +333,7 @@ const ProductsPage = () => {
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                data-testid="select-sort"
               >
                 <option value="relevance">Sort by Relevance</option>
                 <option value="price-low">Price: Low to High</option>
@@ -290,33 +346,117 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      {/* Products */}
+      {/* Tabs */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-600">
-            Showing {filteredProducts.length} of {products.length} products
-          </p>
-        </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
+            <TabsTrigger value="products" data-testid="tab-products">
+              <Package className="w-4 h-4 mr-2" />
+              Products
+            </TabsTrigger>
+            <TabsTrigger value="stores" data-testid="tab-stores">
+              <StoreIcon className="w-4 h-4 mr-2" />
+              Stores
+            </TabsTrigger>
+          </TabsList>
 
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-12">
-            <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">No products found</h3>
-            <p className="text-gray-500">Try adjusting your search or filters</p>
-          </div>
-        ) : (
-          <div className={
-            viewMode === 'grid' 
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-              : "space-y-4"
-          }>
-            {filteredProducts.map((product: any) => (
-              viewMode === 'grid' 
-                ? <ProductCard key={product.id} product={product} />
-                : <ProductListItem key={product.id} product={product} />
-            ))}
-          </div>
-        )}
+          <TabsContent value="products">
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-gray-600" data-testid="text-products-count">
+                Showing {filteredProducts.length} of {products.length} products
+              </p>
+            </div>
+
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-12">
+                <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-600 mb-2">No products found</h3>
+                <p className="text-gray-500">Try adjusting your search or filters</p>
+              </div>
+            ) : (
+              <div className={
+                viewMode === 'grid' 
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                  : "space-y-4"
+              }>
+                {filteredProducts.map((product: any) => (
+                  viewMode === 'grid' 
+                    ? <ProductCard key={product.id} product={product} />
+                    : <ProductListItem key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="stores">
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-gray-600" data-testid="text-stores-count">
+                Showing {filteredStores.length} of {stores.length} stores
+              </p>
+            </div>
+
+            {filteredStores.length === 0 ? (
+              <div className="text-center py-12">
+                <StoreIcon className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-600 mb-2">No stores found</h3>
+                <p className="text-gray-500">Try adjusting your search or filters</p>
+              </div>
+            ) : (
+              <div className={
+                viewMode === 'grid' 
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  : "space-y-4"
+              }>
+                {filteredStores.map((store: Store) => (
+                  <Link key={store.id} href={`/store/${store.id}`}>
+                    <Card className="group hover:shadow-lg transition-shadow duration-200 cursor-pointer h-full">
+                      <CardHeader className="p-4">
+                        {store.imageUrl && (
+                          <div className="aspect-video bg-gray-100 rounded-lg mb-3 overflow-hidden">
+                            <img 
+                              src={store.imageUrl} 
+                              alt={store.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                            />
+                          </div>
+                        )}
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <CardTitle className="text-base font-semibold line-clamp-1">
+                              {store.name}
+                            </CardTitle>
+                            {store.isVerified && <VerifiedBadge tier={store.verificationTier as any} />}
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {store.category}
+                          </Badge>
+                          <p className="text-sm text-gray-600 line-clamp-2">
+                            {store.description}
+                          </p>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                            <span className="text-sm text-gray-600">
+                              {store.rating} ({store.reviewCount} reviews)
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <MapPin className="w-3 h-3" />
+                            <span className="line-clamp-1">{store.address}</span>
+                          </div>
+                          {store.distance && (
+                            <div className="text-xs text-blue-600 font-medium">
+                              {store.distance} away
+                            </div>
+                          )}
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
