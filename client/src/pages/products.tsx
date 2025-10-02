@@ -43,6 +43,23 @@ interface Store {
   distance?: string;
 }
 
+// Feature and content tab metadata
+const FEATURE_TABS = [
+  { id: 'shopping', label: 'Shopping', icon: ShoppingCart },
+  { id: 'loyalty', label: 'Loyalty Program', icon: Star },
+  { id: 'centers', label: 'SPIRAL Centers', icon: MapPin },
+  { id: 'logistics', label: 'Delivery & Logistics', icon: Package },
+  { id: 'social', label: 'Social Features', icon: Heart },
+  { id: 'giftcards', label: 'Gift Cards', icon: StoreIcon },
+];
+
+const CONTENT_TABS = [
+  { id: 'about', label: 'About' },
+  { id: 'products', label: 'Products' },
+  { id: 'stores', label: 'Stores' },
+  { id: 'malls', label: 'Malls' },
+];
+
 const ProductsPage = () => {
   const { toast } = useToast();
   const addItem = useCartStore(state => state.addItem);
@@ -50,7 +67,8 @@ const ProductsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('relevance');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [activeTab, setActiveTab] = useState('products');
+  const [featureTab, setFeatureTab] = useState('shopping');
+  const [contentTab, setContentTab] = useState('products');
 
   const { data: products = [], isLoading: isLoadingProducts } = useQuery({
     queryKey: ['/api/products'],
@@ -279,7 +297,7 @@ const ProductsPage = () => {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-3xl font-bold text-gray-900">
-              {activeTab === 'products' ? 'Local Products' : 'Local Stores'}
+              SPIRAL - Local Commerce Platform
             </h1>
             <div className="flex items-center gap-2">
               <Button
@@ -307,7 +325,7 @@ const ProductsPage = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
-                  placeholder={activeTab === 'products' ? "Search products or stores..." : "Search stores..."}
+                  placeholder="Search products, stores, or malls..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -346,19 +364,40 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Two-Tier Tabs */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
-            <TabsTrigger value="products" data-testid="tab-products">
-              <Package className="w-4 h-4 mr-2" />
-              Products
-            </TabsTrigger>
-            <TabsTrigger value="stores" data-testid="tab-stores">
-              <StoreIcon className="w-4 h-4 mr-2" />
-              Stores
-            </TabsTrigger>
+        {/* Feature Tabs - Top Level */}
+        <Tabs value={featureTab} onValueChange={setFeatureTab} className="w-full">
+          <TabsList className="flex flex-wrap justify-start gap-2 h-auto bg-transparent p-0 mb-4">
+            {FEATURE_TABS.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <TabsTrigger 
+                  key={tab.id} 
+                  value={tab.id}
+                  className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                  data-testid={`tab-feature-${tab.id}`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {tab.label}
+                </TabsTrigger>
+              );
+            })}
           </TabsList>
+          
+          {/* Content Tabs - Second Level */}
+          <Tabs value={contentTab} onValueChange={setContentTab} className="w-full mt-6">
+            <TabsList className="grid w-full max-w-2xl grid-cols-4 mb-8">
+              {CONTENT_TABS.map((tab) => (
+                <TabsTrigger 
+                  key={tab.id} 
+                  value={tab.id}
+                  data-testid={`tab-content-${tab.id}`}
+                >
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
           <TabsContent value="products">
             <div className="flex items-center justify-between mb-6">
@@ -456,7 +495,46 @@ const ProductsPage = () => {
               </div>
             )}
           </TabsContent>
+
+          <TabsContent value="about">
+            <Card className="p-6">
+              <h2 className="text-2xl font-bold mb-4">About {FEATURE_TABS.find(t => t.id === featureTab)?.label}</h2>
+              <div className="prose max-w-none">
+                {featureTab === 'shopping' && (
+                  <p>Discover local products from independent retailers in your area. Shop directly from local stores and support your community.</p>
+                )}
+                {featureTab === 'loyalty' && (
+                  <p>Earn SPIRALs with every purchase! Get 1 SPIRAL per $1 spent, with 2x for pickup, 3x for invites, and 5x for events. Redeem 100 SPIRALs for $1 credit.</p>
+                )}
+                {featureTab === 'centers' && (
+                  <p>SPIRAL Centers are physical hubs in malls providing pickup, returns, and community events for local shoppers.</p>
+                )}
+                {featureTab === 'logistics' && (
+                  <p>Advanced delivery options including Ship to Me, In-Store Pickup, and Ship to Mall SPIRAL Center with route optimization.</p>
+                )}
+                {featureTab === 'social' && (
+                  <p>Share your purchases, invite friends to shop, and earn rewards through our social features and referral program.</p>
+                )}
+                {featureTab === 'giftcards' && (
+                  <p>Purchase and send mall gift cards that can be used at any participating retailer in the SPIRAL network.</p>
+                )}
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="malls">
+            <Card className="p-6">
+              <h2 className="text-2xl font-bold mb-4">Malls Directory</h2>
+              <p className="text-gray-600">Browse local malls and shopping centers featuring SPIRAL retailers and centers.</p>
+              <div className="mt-6 text-center text-gray-500">
+                <MapPin className="w-12 h-12 mx-auto mb-2 text-gray-400" />
+                <p>Mall directory feature coming soon</p>
+              </div>
+            </Card>
+          </TabsContent>
+
         </Tabs>
+      </Tabs>
       </div>
     </div>
   );
