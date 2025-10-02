@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "wouter";
 import { useCartStore } from "@/lib/cartStore";
 import { useToast } from "@/hooks/use-toast";
 
@@ -42,7 +43,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     img.src = "/api/placeholder/300/200";
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    // Prevent navigation when clicking "Add to Cart"
+    e.preventDefault();
+    e.stopPropagation();
+    
     addItem({
       id: typeof product.id === 'string' ? parseInt(product.id) : product.id,
       name: product.name,
@@ -59,47 +64,50 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow">
-      <img
-        src={getImageUrl()}
-        alt={product.name}
-        className="w-full h-48 object-cover rounded mb-3"
-        onError={handleImageError}
-        loading="lazy"
-      />
-      
-      {/* SPIRALS earning indicator */}
-      <div className="bg-green-50 border border-green-200 rounded-md p-2 mb-3">
-        <span className="text-sm font-medium text-green-800">
-          🌀 Earn SPIRALs: ${Math.floor(product.price)} SPIRALs
-        </span>
-      </div>
-
-      <h2 className="text-lg font-semibold text-gray-900 mb-2">{product.name}</h2>
-      <p className="text-xl font-bold text-[var(--spiral-teal)] mb-2">
-        ${product.price.toFixed(2)}
-      </p>
-      
-      {product.store && (
-        <p className="text-sm text-gray-600 mb-3">
-          📍 {product.store} {product.location && `• ${product.location}`}
-        </p>
-      )}
-      
-      {product.rating && (
-        <div className="flex items-center mb-3">
-          <span className="text-yellow-400">★</span>
-          <span className="text-sm font-medium ml-1">{product.rating}</span>
+    <Link href={`/product/${product.id}`}>
+      <a className="block border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow cursor-pointer" data-testid={`product-card-${product.id}`}>
+        <img
+          src={getImageUrl()}
+          alt={product.name}
+          className="w-full h-48 object-cover rounded mb-3"
+          onError={handleImageError}
+          loading="lazy"
+        />
+        
+        {/* SPIRALS earning indicator */}
+        <div className="bg-green-50 border border-green-200 rounded-md p-2 mb-3">
+          <span className="text-sm font-medium text-green-800">
+            🌀 Earn SPIRALs: ${Math.floor(product.price)} SPIRALs
+          </span>
         </div>
-      )}
-      
-      <button 
-        onClick={handleAddToCart}
-        className="w-full bg-[var(--spiral-teal)] hover:bg-[var(--spiral-teal)]/90 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-      >
-        Add to Cart
-      </button>
-    </div>
+
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">{product.name}</h2>
+        <p className="text-xl font-bold text-[var(--spiral-teal)] mb-2">
+          ${product.price.toFixed(2)}
+        </p>
+        
+        {product.store && (
+          <p className="text-sm text-gray-600 mb-3">
+            📍 {product.store} {product.location && `• ${product.location}`}
+          </p>
+        )}
+        
+        {product.rating && (
+          <div className="flex items-center mb-3">
+            <span className="text-yellow-400">★</span>
+            <span className="text-sm font-medium ml-1">{product.rating}</span>
+          </div>
+        )}
+        
+        <button 
+          onClick={handleAddToCart}
+          className="w-full bg-[var(--spiral-teal)] hover:bg-[var(--spiral-teal)]/90 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+          data-testid={`button-add-to-cart-${product.id}`}
+        >
+          Add to Cart
+        </button>
+      </a>
+    </Link>
   );
 };
 

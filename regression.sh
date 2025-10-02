@@ -1,45 +1,57 @@
 #!/bin/sh
 set -e
-
 echo "===================================================="
-echo "🌀 SpiralShops — Regression Verification"
+echo "🌀 SPIRAL Platform — Regression Verification"
 echo "===================================================="
 
-# ✅ API endpoints
-echo "➡️ Checking API endpoints..."
-for ep in "" "api/health" "api/products" "api/stores"; do
-  CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://spiralshops.com/$ep" || echo 000)
-  echo "  /$ep : HTTP $CODE"
+BASE="${1:-https://spiralshops.com}"
+
+echo "➡️ Testing deployment at: $BASE"
+echo
+
+echo "➡️ Checking Core API endpoints..."
+for ep in "" "api/health" "api/products" "api/stores" "api/categories" "api/auth/me"; do
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/$ep" || echo 000)
+  printf "  %-30s : HTTP %s\n" "$BASE/${ep}" "$CODE"
 done
 echo
 
-# ✅ PWA assets
 echo "➡️ Checking PWA assets..."
-for file in "manifest.json" "sw.js" "images/logo-192.png" "images/logo-512.png"; do
-  CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://spiralshops.com/$file" || echo 000)
-  echo "  /$file : HTTP $CODE"
+for f in "manifest.json" "sw.js" "spiral-blue.svg" "images/logo-192.png" "images/logo-512.png"; do
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/$f" || echo 000)
+  printf "  %-30s : HTTP %s\n" "$BASE/$f" "$CODE"
 done
 echo
 
-# ✅ Wishlist page
-echo "➡️ Checking Wishlist page..."
-WISHLIST=$(curl -s https://spiralshops.com/wishlist || echo "")
-if echo "$WISHLIST" | grep -q "Loading"; then
-  echo "  ⚠️ Wishlist page shows 'Loading' → Needs fix"
-elif [ -z "$WISHLIST" ]; then
-  echo "  ✅ Wishlist route disabled"
-else
-  echo "  ✅ Wishlist page renders content"
-fi
+echo "➡️ Checking Homepage HTML sanity..."
+HOME=$(curl -s "$BASE/" || echo "")
+echo "$HOME" | grep -q "SPIRAL" && echo "  ✅ SPIRAL branding present" || echo "  ⚠️ SPIRAL text not found"
+echo "$HOME" | grep -q "Local" && echo "  ✅ Local commerce messaging present" || echo "  ⚠️ Local messaging not found"
 echo
 
-# ✅ Notifications system
+echo "➡️ Checking key routes..."
+for route in "products" "stores" "malls" "spirals" "login"; do
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/$route" || echo 000)
+  printf "  %-30s : HTTP %s\n" "$BASE/$route" "$CODE"
+done
+echo
+
+echo "➡️ Checking AI Agent endpoints..."
+for ep in "api/ai/agents" "api/ai/health"; do
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/$ep" || echo 000)
+  printf "  %-30s : HTTP %s\n" "$BASE/$ep" "$CODE"
+done
+echo
+
 echo "➡️ Checking Notifications..."
-NOTIFY=$(curl -s -o /dev/null -w "%{http_code}" "https://spiralshops.com/api/notifications/status" || echo 000)
-echo "  /api/notifications/status : HTTP $NOTIFY"
+NOTIFY=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/api/notifications/status" || echo 000)
+printf "  %-30s : HTTP %s\n" "$BASE/api/notifications/status" "$NOTIFY"
 echo
 
-# ✅ Report status
 echo "===================================================="
 echo "🎯 Regression check complete"
 echo "===================================================="
+echo
+echo "Usage: ./regression.sh [base_url]"
+echo "Example: ./regression.sh http://localhost:5000"
+echo "Example: ./regression.sh https://spiralshops.com"
